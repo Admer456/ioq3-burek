@@ -75,12 +75,7 @@ void BotVoiceChat_GetFlag(bot_state_t *bs, int client, int mode) {
 		if (!ctf_redflag.areanum || !ctf_blueflag.areanum)
 			return;
 	}
-#ifdef MISSIONPACK
-	else if (gametype == GT_1FCTF) {
-		if (!ctf_neutralflag.areanum || !ctf_redflag.areanum || !ctf_blueflag.areanum)
-			return;
-	}
-#endif
+
 	else {
 		return;
 	}
@@ -114,34 +109,11 @@ BotVoiceChat_Offense
 ==================
 */
 void BotVoiceChat_Offense(bot_state_t *bs, int client, int mode) {
-	if ( gametype == GT_CTF
-#ifdef MISSIONPACK
-		|| gametype == GT_1FCTF
-#endif
-		) {
+	if ( gametype == GT_CTF ) {
 		BotVoiceChat_GetFlag(bs, client, mode);
 		return;
 	}
-#ifdef MISSIONPACK
-	if (gametype == GT_HARVESTER) {
-		//
-		bs->decisionmaker = client;
-		bs->ordered = qtrue;
-		bs->order_time = FloatTime();
-		//set the time to send a message to the team mates
-		bs->teammessage_time = FloatTime() + 2 * random();
-		//set the ltg type
-		bs->ltgtype = LTG_HARVEST;
-		//set the team goal time
-		bs->teamgoal_time = FloatTime() + TEAM_HARVEST_TIME;
-		bs->harvestaway_time = 0;
-		//
-		BotSetTeamStatus(bs);
-		// remember last ordered task
-		BotRememberLastOrderedTask(bs);
-	}
-	else
-#endif
+
 	{
 		//
 		bs->decisionmaker = client;
@@ -170,22 +142,7 @@ BotVoiceChat_Defend
 ==================
 */
 void BotVoiceChat_Defend(bot_state_t *bs, int client, int mode) {
-#ifdef MISSIONPACK
-	if ( gametype == GT_OBELISK || gametype == GT_HARVESTER) {
-		//
-		switch(BotTeam(bs)) {
-			case TEAM_RED: memcpy(&bs->teamgoal, &redobelisk, sizeof(bot_goal_t)); break;
-			case TEAM_BLUE: memcpy(&bs->teamgoal, &blueobelisk, sizeof(bot_goal_t)); break;
-			default: return;
-		}
-	}
-	else
-#endif
-		if (gametype == GT_CTF
-#ifdef MISSIONPACK
-			|| gametype == GT_1FCTF
-#endif
-			) {
+		if (gametype == GT_CTF) {
 		//
 		switch(BotTeam(bs)) {
 			case TEAM_RED: memcpy(&bs->teamgoal, &ctf_redflag, sizeof(bot_goal_t)); break;
@@ -382,12 +339,7 @@ BotVoiceChat_ReturnFlag
 */
 void BotVoiceChat_ReturnFlag(bot_state_t *bs, int client, int mode) {
 	//if not in CTF mode
-	if (
-		gametype != GT_CTF
-#ifdef MISSIONPACK
-		&& gametype != GT_1FCTF
-#endif
-		) {
+	if ( gametype != GT_CTF ) {
 		return;
 	}
 	//
