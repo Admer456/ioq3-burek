@@ -1,3 +1,24 @@
+# BurekTech3
+
+Specialised version of idTech 3 (precisely ioquake3) for standalone game development.  
+
+## Features 
+
+  * Can compile directly in Visual Studio thanks to jpcy/ioq3-premake-msvc
+  * None really so far :p
+
+## Plans
+  
+  * Rewrite game library in C++
+  * Rewrite client library in C++
+  * Merge UI library into client library
+  * Convert engine code to C++
+  * Remove stringification of GLSL shaders, extend shader functionality
+  * Terrain system
+  * AI system for singleplayer NPCs
+  * C# script host with .NET Core and Roslyn
+
+## ioquake3 README
                    ,---------------------------------------.
                    |   _                     _       ____  |
                    |  (_)___  __ _ _  _ __ _| |_____|__ /  |
