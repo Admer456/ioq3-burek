@@ -1,6 +1,7 @@
 # Code style guidelines
 
 BurekTech's style is pretty straightforward.  
+**NOTE:** *BurekTech is still currently 90% in C, as of June 2020, and as such, it follows id Software's style. Once a portion of it gets rewritten in C++, then these guidelines will apply.*
  
 ## Do's
 
@@ -11,6 +12,7 @@ if ( condition )
 	// code
 }
 ``` 
+ 
  
 Spaces in function parameters:
 ```
@@ -24,6 +26,14 @@ void DoNothing();
 DoSomething( 5 );
 DoNothing();
 ```
+ 
+
+Pointers should "hug" the variable type instead of the variable name, as well as references:
+```
+BaseEntity* entity;
+BaseEntity& ref = /*some entity, dunno*/;
+```
+ 
 
 Have some tabs in classes:
 ```
@@ -40,6 +50,7 @@ private:
 }
 ```
  
+
 Templates would ideally have spaces like this:
 ```
 template<typename T>
@@ -60,9 +71,11 @@ Each class should be in its very own .cpp and .hpp file. E.g. `FuncBreakable.cpp
   
 ## Dont's
  
-Hungarian notation. Just no. If you don't know the type of a variable, just write it down on a notebook or something, or use an actual IDE.
+Hungarian notation. (light sin)
+Just no. If you don't know the type of a variable, just write it down on a notebook or something, or use an actual IDE.
   
-Including headers into headers. NO. Use forward-declarations instead. There is an exception, and that is including the minimum of needed headers with one. For example: 
+Including headers into headers. (heavy sin)
+NO. Use forward-declarations instead. There is an exception, and that is including the minimum of needed headers with one. For example: 
 ```
 // File: PhysicsCore.hpp
 
@@ -73,3 +86,8 @@ Including headers into headers. NO. Use forward-declarations instead. There is a
 That is okay. Otherwise, avoid including headers into headers. 
  
 *To-do: add more examples xwx*
+ 
+
+## Conclusion
+
+If you don't follow the rules and make light sins, your PR may still get accepted but in a form that follows the style guidelines. If you make heavy sins, then it will get rejected.
