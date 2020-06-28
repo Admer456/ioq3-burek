@@ -71,10 +71,10 @@ Each class should be in its very own .cpp and .hpp file. E.g. `FuncBreakable.cpp
   
 ## Dont's
  
-Hungarian notation. (light sin)
+Hungarian notation. (light sin)  
 Just no. If you don't know the type of a variable, just write it down on a notebook or something, or use an actual IDE.
   
-Including headers into headers. (heavy sin)
+Including headers into headers. (heavy sin)  
 NO. Use forward-declarations instead. There is an exception, and that is including the minimum of needed headers with one. For example: 
 ```
 // File: PhysicsCore.hpp
