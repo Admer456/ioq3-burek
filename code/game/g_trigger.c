@@ -470,8 +470,6 @@ extern void InitMover( gentity_t* ent );
 
 void func_breakable_pain( gentity_t* self, gentity_t* attacker, int damage )
 {
-	Com_Printf( "Breakable pain\n" );
-
 	if ( self->health - damage <= 0 )
 	{
 		// Gib me
@@ -481,11 +479,6 @@ void func_breakable_pain( gentity_t* self, gentity_t* attacker, int damage )
 
 		// Remove entity from world
 		G_FreeEntity( self );
-	}
-
-	else if ( self->health > 0 )
-	{
-		Com_Printf( "Breakable damaged, health %i\n", self->health );
 	}
 }
 
