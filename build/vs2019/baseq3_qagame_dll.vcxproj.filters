@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="game">
+      <UniqueIdentifier>{9F35977C-8B6C-980D-3459-7E10206F140F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon">
+      <UniqueIdentifier>{7F6839ED-EB47-B888-F45F-435F60BE1EEA}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\code\game\ai_chat.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\ai_cmd.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\ai_dmnet.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\ai_dmq3.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\ai_main.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\ai_team.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\ai_vcmd.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\bg_local.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\bg_public.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\chars.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\g_local.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\g_public.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\g_rankings.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\g_team.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\inv.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\match.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\syn.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\q_shared.h">
+      <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\surfaceflags.h">
+      <Filter>qcommon</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\code\game\ai_chat.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\ai_cmd.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\ai_dmnet.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\ai_dmq3.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\ai_main.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\ai_team.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\ai_vcmd.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\bg_misc.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\bg_pmove.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\bg_slidemove.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_active.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_arenas.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_bot.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_client.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_cmds.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_combat.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_items.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_main.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_mem.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_misc.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_missile.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_mover.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_session.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_spawn.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_svcmds.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_syscalls.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_target.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_team.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_trigger.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_utils.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\g_weapon.c">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_math.c">
+      <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_shared.c">
+      <Filter>qcommon</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

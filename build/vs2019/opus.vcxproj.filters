@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="opus-1.2.1">
+      <UniqueIdentifier>{C9BBBCE7-B573-FE34-1E7B-D7900A529925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opus-1.2.1\celt">
+      <UniqueIdentifier>{A006512A-0C92-BEEE-15A3-41E381AD1AEF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opus-1.2.1\silk">
+      <UniqueIdentifier>{ABDD592A-1769-C7EE-207A-4AE38C8423EF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opus-1.2.1\silk\float">
+      <UniqueIdentifier>{F088C7AF-5CF5-82AA-25E9-1A089114A512}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opus-1.2.1\src">
+      <UniqueIdentifier>{6036F3AB-4C04-E7B1-3598-57D82105C316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opusfile-0.9">
+      <UniqueIdentifier>{90B07ACF-7C13-0A74-2599-422A11DBD5F6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opusfile-0.9\src">
+      <UniqueIdentifier>{A7369C77-932F-BBC9-BC61-A04EA8B99AD5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\bands.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\celt.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\celt_decoder.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\celt_encoder.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\celt_lpc.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\cwrs.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\entcode.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\entdec.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\entenc.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\kiss_fft.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\laplace.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\mathops.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\mdct.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\modes.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\opus_custom_demo.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\pitch.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\quant_bands.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\rate.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\celt\vq.c">
+      <Filter>opus-1.2.1\celt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\A2NLSF.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\CNG.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\HP_variable_cutoff.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\LPC_analysis_filter.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\LPC_fit.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\LPC_inv_pred_gain.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\LP_variable_cutoff.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NLSF2A.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NLSF_VQ.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NLSF_VQ_weights_laroia.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NLSF_decode.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NLSF_del_dec_quant.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NLSF_encode.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NLSF_stabilize.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NLSF_unpack.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NSQ.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\NSQ_del_dec.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\PLC.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\VAD.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\VQ_WMat_EC.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\ana_filt_bank_1.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\biquad_alt.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\bwexpander.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\bwexpander_32.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\check_control_input.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\code_signs.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\control_SNR.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\control_audio_bandwidth.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\control_codec.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\debug.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\dec_API.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\decode_core.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\decode_frame.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\decode_indices.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\decode_parameters.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\decode_pitch.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\decode_pulses.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\decoder_set_fs.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\enc_API.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\encode_indices.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\encode_pulses.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\LPC_analysis_filter_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\LPC_inv_pred_gain_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\LTP_analysis_filter_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\LTP_scale_ctrl_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\apply_sine_window_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\autocorrelation_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\burg_modified_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\bwexpander_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\corrMatrix_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\encode_frame_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\energy_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\find_LPC_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\find_LTP_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\find_pitch_lags_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\find_pred_coefs_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\inner_product_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\k2a_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\noise_shape_analysis_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\pitch_analysis_core_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\process_gains_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\regularize_correlations_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\residual_energy_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\scale_copy_vector_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\scale_vector_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\schur_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\sort_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\warped_autocorrelation_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\float\wrappers_FLP.c">
+      <Filter>opus-1.2.1\silk\float</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\gain_quant.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\init_decoder.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\init_encoder.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\inner_prod_aligned.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\interpolate.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\lin2log.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\log2lin.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\pitch_est_tables.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\process_NLSFs.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\quant_LTP_gains.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\resampler.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\resampler_down2.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\resampler_down2_3.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\resampler_private_AR2.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\resampler_private_IIR_FIR.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\resampler_private_down_FIR.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\resampler_private_up2_HQ.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\resampler_rom.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\shell_coder.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\sigm_Q15.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\sort.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\stereo_LR_to_MS.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\stereo_MS_to_LR.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\stereo_decode_pred.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\stereo_encode_pred.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\stereo_find_predictor.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\stereo_quant_pred.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\sum_sqr_shift.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\table_LSF_cos.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\tables_LTP.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\tables_NLSF_CB_NB_MB.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\tables_NLSF_CB_WB.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\tables_gain.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\tables_other.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\tables_pitch_lag.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\silk\tables_pulses_per_block.c">
+      <Filter>opus-1.2.1\silk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\analysis.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\mlp.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\mlp_data.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\opus.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\opus_decoder.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\opus_encoder.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\opus_multistream.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\opus_multistream_decoder.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\opus_multistream_encoder.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opus-1.2.1\src\repacketizer.c">
+      <Filter>opus-1.2.1\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opusfile-0.9\src\http.c">
+      <Filter>opusfile-0.9\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opusfile-0.9\src\info.c">
+      <Filter>opusfile-0.9\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opusfile-0.9\src\internal.c">
+      <Filter>opusfile-0.9\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opusfile-0.9\src\opusfile.c">
+      <Filter>opusfile-0.9\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opusfile-0.9\src\stream.c">
+      <Filter>opusfile-0.9\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\opusfile-0.9\src\wincerts.c">
+      <Filter>opusfile-0.9\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
