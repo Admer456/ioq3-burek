@@ -1,21 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{A25D632C-8EC0-F2D0-3746-2B872388BE53}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ioquake3", "ioquake3.vcxproj", "{271947D3-13E6-A1DE-3CFF-8F86282BD76C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ioq3ded", "ioq3ded.vcxproj", "{6EA569A1-DA84-E83C-E39C-73134FFB4E9E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "game_dll", "game_dll", "{41442ED0-2D12-22D6-16A6-92FC0213FE3A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLLs", "DLLs", "{41442ED0-2D12-22D6-16A6-92FC0213FE3A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "baseq3_cgame_dll", "baseq3_cgame_dll.vcxproj", "{BB8D662E-A786-8580-D0B8-6A05BC10658C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "baseq3_cgame_dll.vcxproj", "{BB8D662E-A786-8580-D0B8-6A05BC10658C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "baseq3_qagame_dll", "baseq3_qagame_dll.vcxproj", "{AAABC479-16C2-C20F-5F39-4E31CB8E9397}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "baseq3_qagame_dll.vcxproj", "{AAABC479-16C2-C20F-5F39-4E31CB8E9397}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "baseq3_ui_dll", "baseq3_ui_dll.vcxproj", "{9C4CD901-080D-5538-D147-9EB53DC79914}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UI", "baseq3_ui_dll.vcxproj", "{9C4CD901-080D-5538-D147-9EB53DC79914}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{4317F77E-AF81-ABF5-F8BF-5C9B6469894A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{4317F77E-AF81-ABF5-F8BF-5C9B6469894A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL2", "SDL2.vcxproj", "{3ABE8B7C-26F5-8C0D-CFE1-7210BBF7080F}"
 EndProject
@@ -31,7 +33,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib.vcxproj", "{16
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "renderer", "renderer", "{03F2312D-EFBF-2533-D853-9659C4C00198}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "renderer_opengl2", "renderer_opengl2.vcxproj", "{1225D153-FE1D-F0A5-2750-D52A13A8CFB1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Renderer_OpenGL2", "renderer_opengl2.vcxproj", "{1225D153-FE1D-F0A5-2750-D52A13A8CFB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -154,5 +156,8 @@ Global
 		{FA903823-E632-63F9-CFED-764DBB2EEA49} = {4317F77E-AF81-ABF5-F8BF-5C9B6469894A}
 		{16CFA17C-0206-A30D-ABF2-881097081F0F} = {4317F77E-AF81-ABF5-F8BF-5C9B6469894A}
 		{1225D153-FE1D-F0A5-2750-D52A13A8CFB1} = {03F2312D-EFBF-2533-D853-9659C4C00198}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9CFB21E1-1A3C-4170-B4FF-E48082F28B9D}
 	EndGlobalSection
 EndGlobal
