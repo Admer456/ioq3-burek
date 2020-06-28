@@ -869,6 +869,7 @@ static void CG_AddCEntity( centity_t *cent ) {
 		CG_Missile( cent );
 		break;
 	case ET_MOVER:
+	case ET_BREAKABLE:
 		CG_Mover( cent );
 		break;
 	case ET_BEAM:

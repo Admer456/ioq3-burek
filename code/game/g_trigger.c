@@ -461,4 +461,64 @@ void SP_func_timer( gentity_t *self ) {
 	self->r.svFlags = SVF_NOCLIENT;
 }
 
+/*
+	Breakable object
+*/
+
+extern void GibEntity( gentity_t* self, int killer );
+extern void InitMover( gentity_t* ent );
+
+void func_breakable_pain( gentity_t* self, gentity_t* attacker, int damage )
+{
+	Com_Printf( "Breakable pain\n" );
+
+	if ( self->health - damage <= 0 )
+	{
+		// Gib me
+		GibEntity( self, 0 );
+		self->health = 0;
+		self->pain = 0;
+
+		// Remove entity from world
+		G_FreeEntity( self );
+	}
+
+	else if ( self->health > 0 )
+	{
+		Com_Printf( "Breakable damaged, health %i\n", self->health );
+	}
+}
+
+void func_breakable_use( gentity_t* self, gentity_t* other, gentity_t* activator )
+{
+	// Damage itself
+	func_breakable_pain( self, activator, self->health );
+}
+
+void SP_func_breakable( gentity_t* self )
+{
+	Com_Printf( "Breakable spawned\n" );
+
+	InitMover( self );
+
+	G_SpawnInt( "health", "50", &self->health );
+	G_SpawnString( "model", 0, &self->model );
+
+	self->pain = func_breakable_pain;
+	self->use = func_breakable_use;
+
+	trap_SetBrushModel( self, self->model );
+
+	VectorCopy( self->s.origin, self->s.pos.trBase );
+	VectorCopy( self->s.origin, self->r.currentOrigin );
+
+	self->r.contents = CONTENTS_SOLID;
+	//self->r.svFlags = SVF_NOCLIENT;
+
+	// Link entity into world
+	trap_LinkEntity( self );
+
+	self->s.eType = ET_BREAKABLE;
+	self->takedamage = 1;
+}
 

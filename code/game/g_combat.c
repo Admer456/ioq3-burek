@@ -820,7 +820,10 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 				targ->health = -999;
 
 			targ->enemy = attacker;
-			targ->die (targ, inflictor, attacker, take, mod);
+
+			if ( targ->die )
+				targ->die (targ, inflictor, attacker, take, mod);
+			
 			return;
 		} else if ( targ->pain ) {
 			targ->pain (targ, attacker, take);
