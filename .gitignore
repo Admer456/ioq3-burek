@@ -1,5 +1,19 @@
-build
+# Visual Studio
+###################
+# Ignore all .vs, obj, dynamic and bin* folders
+build/**/.vs
+build/**/obj
+build/**/dynamic
+build/**/bin*
+
+# Keep all project and solution files
+!build/**/*.vcxproj*
+!build/**/*.sln
+
+# Default
+###################
 Makefile.local
+
 *.swp
 *tags
 *~
