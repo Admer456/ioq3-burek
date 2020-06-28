@@ -62,10 +62,10 @@ player = static_cast<BasePlayer*>( entity );
 ```
 Hopefully you're getting acquainted with BurekTech's space philosophy by now. Whenever in doubt, look at the existing code! 
  
-Function names: PascalCase 
-Variable names: camelCase 
-Class names: PascalCase_UnderlineTolerant
-Struct names: camelCase_UnderlineTolerant
+Function names: PascalCase  
+Variable names: camelCase  
+Class names: PascalCase_UnderlineTolerant  
+Struct names: camelCase_UnderlineTolerant  
 
 Each class should be in its very own .cpp and .hpp file. E.g. `FuncBreakable.cpp` and `FuncBreakable.hpp`. Having a .hpp file is not mandatory, but it's nice to have. 
   
