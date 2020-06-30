@@ -98,12 +98,13 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;__CPP;_GAMEDLL;__CPPNDEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
+      <AdditionalIncludeDirectories>..\..\code\game\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,9 +137,10 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;__CPP;_GAMEDLL;__CPP_DEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\code\game\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,60 +165,64 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\code\game\ai_chat.h" />
-    <ClInclude Include="..\..\code\game\ai_cmd.h" />
-    <ClInclude Include="..\..\code\game\ai_dmnet.h" />
-    <ClInclude Include="..\..\code\game\ai_dmq3.h" />
-    <ClInclude Include="..\..\code\game\ai_main.h" />
-    <ClInclude Include="..\..\code\game\ai_team.h" />
-    <ClInclude Include="..\..\code\game\ai_vcmd.h" />
-    <ClInclude Include="..\..\code\game\bg_local.h" />
-    <ClInclude Include="..\..\code\game\bg_public.h" />
-    <ClInclude Include="..\..\code\game\chars.h" />
-    <ClInclude Include="..\..\code\game\g_local.h" />
-    <ClInclude Include="..\..\code\game\g_public.h" />
-    <ClInclude Include="..\..\code\game\g_rankings.h" />
-    <ClInclude Include="..\..\code\game\g_team.h" />
-    <ClInclude Include="..\..\code\game\inv.h" />
-    <ClInclude Include="..\..\code\game\match.h" />
-    <ClInclude Include="..\..\code\game\syn.h" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_chat.hpp" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_cmd.hpp" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_dmnet.hpp" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_dmq3.hpp" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_main.hpp" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_team.hpp" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_vcmd.hpp" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\chars.h" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\inv.hpp" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\match.hpp" />
+    <ClInclude Include="..\..\code\game\AI\ArenaBots\syn.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
+    <ClInclude Include="..\..\code\game\Game\g_local.hpp" />
+    <ClInclude Include="..\..\code\game\Game\g_public.hpp" />
+    <ClInclude Include="..\..\code\game\Game\g_rankings.hpp" />
     <ClInclude Include="..\..\code\qcommon\q_shared.h" />
     <ClInclude Include="..\..\code\qcommon\surfaceflags.h" />
+    <ClInclude Include="..\..\code\shared\bg_local.hpp" />
+    <ClInclude Include="..\..\code\shared\bg_public.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\game\ai_chat.c" />
-    <ClCompile Include="..\..\code\game\ai_cmd.c" />
-    <ClCompile Include="..\..\code\game\ai_dmnet.c" />
-    <ClCompile Include="..\..\code\game\ai_dmq3.c" />
-    <ClCompile Include="..\..\code\game\ai_main.c" />
-    <ClCompile Include="..\..\code\game\ai_team.c" />
-    <ClCompile Include="..\..\code\game\ai_vcmd.c" />
-    <ClCompile Include="..\..\code\game\bg_misc.c" />
-    <ClCompile Include="..\..\code\game\bg_pmove.c" />
-    <ClCompile Include="..\..\code\game\bg_slidemove.c" />
-    <ClCompile Include="..\..\code\game\g_active.c" />
-    <ClCompile Include="..\..\code\game\g_arenas.c" />
-    <ClCompile Include="..\..\code\game\g_bot.c" />
-    <ClCompile Include="..\..\code\game\g_client.c" />
-    <ClCompile Include="..\..\code\game\g_cmds.c" />
-    <ClCompile Include="..\..\code\game\g_combat.c" />
-    <ClCompile Include="..\..\code\game\g_items.c" />
-    <ClCompile Include="..\..\code\game\g_main.c" />
-    <ClCompile Include="..\..\code\game\g_mem.c" />
-    <ClCompile Include="..\..\code\game\g_misc.c" />
-    <ClCompile Include="..\..\code\game\g_missile.c" />
-    <ClCompile Include="..\..\code\game\g_mover.c" />
-    <ClCompile Include="..\..\code\game\g_session.c" />
-    <ClCompile Include="..\..\code\game\g_spawn.c" />
-    <ClCompile Include="..\..\code\game\g_svcmds.c" />
-    <ClCompile Include="..\..\code\game\g_syscalls.c" />
-    <ClCompile Include="..\..\code\game\g_target.c" />
-    <ClCompile Include="..\..\code\game\g_team.c" />
-    <ClCompile Include="..\..\code\game\g_trigger.c" />
-    <ClCompile Include="..\..\code\game\g_utils.c" />
-    <ClCompile Include="..\..\code\game\g_weapon.c" />
+    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_chat.cpp" />
+    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_cmd.cpp" />
+    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_dmnet.cpp" />
+    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_dmq3.cpp" />
+    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_main.cpp" />
+    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_team.cpp" />
+    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_vcmd.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\g_client.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\g_misc.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\g_mover.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\g_spawn.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\g_target.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\g_team.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\g_trigger.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_active.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_arenas.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_bot.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_cmds.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_combat.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_main.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_mem.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_session.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_svcmds.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_syscalls.cpp" />
+    <ClCompile Include="..\..\code\game\Game\g_utils.cpp" />
+    <ClCompile Include="..\..\code\game\Weapons\g_items.cpp" />
+    <ClCompile Include="..\..\code\game\Weapons\g_missile.cpp" />
+    <ClCompile Include="..\..\code\game\Weapons\g_weapon.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_math.c" />
     <ClCompile Include="..\..\code\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\code\shared\bg_misc.cpp" />
+    <ClCompile Include="..\..\code\shared\bg_pmove.cpp" />
+    <ClCompile Include="..\..\code\shared\bg_slidemove.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\code\game\Game\g_syscalls.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

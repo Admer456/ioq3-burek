@@ -27,8 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../ui/ui_public.h"
 #include "keys.h"
 #include "snd_public.h"
-#include "../cgame/cg_public.h"
-#include "../game/bg_public.h"
+#include "../cgame/cg_public.hpp"
+#include "../shared/bg_public.hpp"
 
 #ifdef USE_CURL
 #include "cl_curl.h"

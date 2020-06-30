@@ -607,7 +607,11 @@ void *Sys_LoadGameDll(const char *name,
 
 	if ( !*entryPoint || !dllEntry )
 	{
-		Com_Printf ( "Sys_LoadGameDll(%s) failed to find vmMain function:\n\"%s\" !\n", name, Sys_LibraryError( ) );
+		if ( !dllEntry )
+			Com_Printf( "Sys_LoadGameDll(%s) failed to find dllEntry function:\n\"%s\" !\n", name, Sys_LibraryError() );
+		else
+			Com_Printf ( "Sys_LoadGameDll(%s) failed to find vmMain function:\n\"%s\" !\n", name, Sys_LibraryError( ) );
+
 		Sys_UnloadLibrary(libHandle);
 
 		return NULL;

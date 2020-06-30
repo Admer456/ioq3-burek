@@ -98,12 +98,13 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_UIDLL;NDEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
+      <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\client\;..\..\code\ui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,9 +137,10 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_UIDLL;_DEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\client\;..\..\code\ui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,7 +169,6 @@
     <ClInclude Include="..\..\code\qcommon\q_shared.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\game\bg_misc.c" />
     <ClCompile Include="..\..\code\q3_ui\ui_addbots.c" />
     <ClCompile Include="..\..\code\q3_ui\ui_atoms.c" />
     <ClCompile Include="..\..\code\q3_ui\ui_cdkey.c" />
@@ -208,6 +209,7 @@
     <ClCompile Include="..\..\code\q3_ui\ui_video.c" />
     <ClCompile Include="..\..\code\qcommon\q_math.c" />
     <ClCompile Include="..\..\code\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\code\shared\bg_misc.cpp" />
     <ClCompile Include="..\..\code\ui\ui_syscalls.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

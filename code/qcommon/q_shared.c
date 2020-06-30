@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 //
 // q_shared.c -- stateless support routines that are included in each code dll
+#undef __CPP
 #include "q_shared.h"
 
 // ^[0-9a-zA-Z]

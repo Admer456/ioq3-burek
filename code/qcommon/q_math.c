@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define __Q3_VM_MATH
 #endif
 
+#undef __CPP
 #include "q_shared.h"
 
 vec3_t	vec3_origin = {0,0,0};

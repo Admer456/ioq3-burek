@@ -98,12 +98,15 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CLIENTDLL;__CPP;NDEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\client\;..\..\code\cgame\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,9 +139,12 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CLIENTDLL;__CPP;_DEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\client\;..\..\code\cgame\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,39 +169,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\code\cgame\cg_local.h" />
-    <ClInclude Include="..\..\code\cgame\cg_public.h" />
-    <ClInclude Include="..\..\code\game\bg_local.h" />
-    <ClInclude Include="..\..\code\game\bg_public.h" />
+    <ClInclude Include="..\..\code\cgame\cg_local.hpp" />
+    <ClInclude Include="..\..\code\cgame\cg_public.hpp" />
     <ClInclude Include="..\..\code\qcommon\q_shared.h" />
     <ClInclude Include="..\..\code\qcommon\surfaceflags.h" />
+    <ClInclude Include="..\..\code\shared\bg_local.hpp" />
+    <ClInclude Include="..\..\code\shared\bg_public.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\cgame\cg_consolecmds.c" />
-    <ClCompile Include="..\..\code\cgame\cg_draw.c" />
-    <ClCompile Include="..\..\code\cgame\cg_drawtools.c" />
-    <ClCompile Include="..\..\code\cgame\cg_effects.c" />
-    <ClCompile Include="..\..\code\cgame\cg_ents.c" />
-    <ClCompile Include="..\..\code\cgame\cg_event.c" />
-    <ClCompile Include="..\..\code\cgame\cg_info.c" />
-    <ClCompile Include="..\..\code\cgame\cg_localents.c" />
-    <ClCompile Include="..\..\code\cgame\cg_main.c" />
-    <ClCompile Include="..\..\code\cgame\cg_marks.c" />
-    <ClCompile Include="..\..\code\cgame\cg_particles.c" />
-    <ClCompile Include="..\..\code\cgame\cg_players.c" />
-    <ClCompile Include="..\..\code\cgame\cg_playerstate.c" />
-    <ClCompile Include="..\..\code\cgame\cg_predict.c" />
-    <ClCompile Include="..\..\code\cgame\cg_scoreboard.c" />
-    <ClCompile Include="..\..\code\cgame\cg_servercmds.c" />
-    <ClCompile Include="..\..\code\cgame\cg_snapshot.c" />
-    <ClCompile Include="..\..\code\cgame\cg_syscalls.c" />
-    <ClCompile Include="..\..\code\cgame\cg_view.c" />
-    <ClCompile Include="..\..\code\cgame\cg_weapons.c" />
-    <ClCompile Include="..\..\code\game\bg_misc.c" />
-    <ClCompile Include="..\..\code\game\bg_pmove.c" />
-    <ClCompile Include="..\..\code\game\bg_slidemove.c" />
+    <ClCompile Include="..\..\code\cgame\cg_consolecmds.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_draw.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_drawtools.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_effects.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_ents.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_event.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_info.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_localents.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_main.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_marks.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_particles.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_players.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_playerstate.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_predict.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_scoreboard.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_servercmds.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_snapshot.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_syscalls.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_view.cpp" />
+    <ClCompile Include="..\..\code\cgame\cg_weapons.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_math.c" />
     <ClCompile Include="..\..\code\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\code\shared\bg_misc.cpp" />
+    <ClCompile Include="..\..\code\shared\bg_pmove.cpp" />
+    <ClCompile Include="..\..\code\shared\bg_slidemove.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

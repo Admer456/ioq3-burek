@@ -23,6 +23,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __Q_SHARED_H
 #define __Q_SHARED_H
 
+#define ExternCStart extern "C" {
+#define ExternCEnd }
+
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
 
@@ -182,9 +185,28 @@ typedef int intptr_t;
 #endif
 
 #ifdef _WIN32
+
+// Temporary __CPP guards until we port the entire code to C++
+// *
+// In case any real beginners stumble upon this:
+// C++ mangles function names after compiling: myFunction becomes, I dunno, myFunction@@YAXHPADZZ
+// C doesn't mangle them, so when you try linking C and C++ object code, you get a linker error
+// The compiler looks for myFunction@YAXHPADZZ, but there's only myFunction, LOL
+// This is a temporary workaround, so that when we compile in C, we get unmangled names
+// and when we compile in C++, we expect unmangled names
+// *
+// For all the experienced programmers out there: God, forgive me for doing this mess, I swear I'll redeem myself :(
+#ifdef __CPP
+extern "C"
+{
+#endif
   // vsnprintf is ISO/IEC 9899:1999
   // abstracting this to make it portable
   int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap);
+#ifdef __CPP
+}
+#endif
+
 #else
   #define Q_vsnprintf vsnprintf
 #endif
@@ -198,7 +220,40 @@ typedef int intptr_t;
 
 typedef unsigned char 		byte;
 
+// Until we have the ENTIRE engine in C++,
+// qboolean will stay as a 32-bit enum
+// Otherwise, if we had 8-bit qbooleans
+// in one project and 32-bit qbooleans
+// in another, we'd get mismatches in traces,
+// and a lot of other structs, causing
+// "stack around the variable ' ' was corrupted"
+
+//#ifndef __CPP
+#if 1
 typedef enum {qfalse, qtrue}	qboolean;
+#else
+#define qfalse false
+#define qtrue true
+//#define qboolean bool
+class qboolean
+{
+public:
+	qboolean( bool b )
+	{
+		truth = b;
+	}
+
+	operator bool()
+	{
+		return truth != 0;
+	}
+
+private:
+	int truth;
+};
+#endif
+
+static_assert(sizeof( qboolean ) == 4U, "qboolean MUST be 4 bytes big!");
 
 typedef union {
 	float f;
@@ -398,6 +453,10 @@ extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
 #define	GIANTCHAR_WIDTH		32
 #define	GIANTCHAR_HEIGHT	48
 
+#ifdef __CPP
+extern "C"
+{
+#endif
 extern	vec4_t		colorBlack;
 extern	vec4_t		colorRed;
 extern	vec4_t		colorGreen;
@@ -410,9 +469,12 @@ extern	vec4_t		colorLtGrey;
 extern	vec4_t		colorMdGrey;
 extern	vec4_t		colorDkGrey;
 
-#define Q_COLOR_ESCAPE	'^'
 qboolean Q_IsColorString(const char *p);  // ^[0-9a-zA-Z]
+#ifdef __CPP
+}
+#endif
 
+#define Q_COLOR_ESCAPE	'^'
 #define COLOR_BLACK	'0'
 #define COLOR_RED	'1'
 #define COLOR_GREEN	'2'
@@ -433,8 +495,6 @@ qboolean Q_IsColorString(const char *p);  // ^[0-9a-zA-Z]
 #define S_COLOR_MAGENTA	"^6"
 #define S_COLOR_WHITE	"^7"
 
-extern vec4_t	g_color_table[8];
-
 #define	MAKERGB( v, r, g, b ) v[0]=r;v[1]=g;v[2]=b
 #define	MAKERGBA( v, r, g, b, a ) v[0]=r;v[1]=g;v[2]=b;v[3]=a
 
@@ -443,14 +503,20 @@ extern vec4_t	g_color_table[8];
 
 struct cplane_s;
 
+#ifdef __CPP
+extern "C"
+{
+#endif
+extern vec4_t	g_color_table[8];
 extern	vec3_t	vec3_origin;
 extern	vec3_t	axisDefault[3];
+int Q_isnan(float x);
+#ifdef __CPP
+}
+#endif
 
 #define	nanmask (255<<23)
-
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
-
-int Q_isnan(float x);
 
 #if idx64
   extern long qftolsse(float f);
@@ -535,12 +601,19 @@ float Q_rsqrt( float f );		// reciprocal square root
 
 #define SQRTFAST( x ) ( (x) * Q_rsqrt( x ) )
 
+#ifdef __CPP
+extern "C"
+{
+#endif
 signed char ClampChar( int i );
 signed short ClampShort( int i );
 
 // this isn't a real cheap function to call!
 int DirToByte( vec3_t dir );
 void ByteToDir( int b, vec3_t dir );
+#ifdef __CPP
+}
+#endif
 
 #if	1
 
@@ -584,6 +657,10 @@ typedef struct {
 
 #define	SnapVector(v) {v[0]=((int)(v[0]));v[1]=((int)(v[1]));v[2]=((int)(v[2]));}
 // just in case you don't want to use the macros
+#ifdef __CPP
+extern "C"
+{
+#endif
 vec_t _DotProduct( const vec3_t v1, const vec3_t v2 );
 void _VectorSubtract( const vec3_t veca, const vec3_t vecb, vec3_t out );
 void _VectorAdd( const vec3_t veca, const vec3_t vecb, vec3_t out );
@@ -591,14 +668,17 @@ void _VectorCopy( const vec3_t in, vec3_t out );
 void _VectorScale( const vec3_t in, float scale, vec3_t out );
 void _VectorMA( const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc );
 
-unsigned ColorBytes3 (float r, float g, float b);
-unsigned ColorBytes4 (float r, float g, float b, float a);
+unsigned ColorBytes3( float r, float g, float b );
+unsigned ColorBytes4( float r, float g, float b, float a );
 
 float NormalizeColor( const vec3_t in, vec3_t out );
 
 float RadiusFromBounds( const vec3_t mins, const vec3_t maxs );
 void ClearBounds( vec3_t mins, vec3_t maxs );
 void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs );
+#ifdef __CPP
+}
+#endif
 
 #if !defined( Q3_VM ) || ( defined( Q3_VM ) && defined( __Q3_VM_MATH ) )
 static ID_INLINE int VectorCompare( const vec3_t v1, const vec3_t v2 ) {
@@ -674,21 +754,32 @@ void CrossProduct( const vec3_t v1, const vec3_t v2, vec3_t cross );
 
 #endif
 
-vec_t VectorNormalize (vec3_t v);		// returns vector length
+#ifdef __CPP
+extern "C"
+{
+#endif
+vec_t VectorNormalize( vec3_t v );		// returns vector length
 vec_t VectorNormalize2( const vec3_t v, vec3_t out );
 void Vector4Scale( const vec4_t in, vec_t scale, vec4_t out );
 void VectorRotate( vec3_t in, vec3_t matrix[3], vec3_t out );
-int Q_log2(int val);
+int Q_log2( int val );
 
-float Q_acos(float c);
+float Q_acos( float c );
 
-int		Q_rand( int *seed );
-float	Q_random( int *seed );
-float	Q_crandom( int *seed );
+int		Q_rand( int* seed );
+float	Q_random( int* seed );
+float	Q_crandom( int* seed );
+#ifdef __CPP
+}
+#endif
 
 #define random()	((rand () & 0x7fff) / ((float)0x7fff))
 #define crandom()	(2.0 * (random() - 0.5))
 
+#ifdef __CPP
+extern "C"
+{
+#endif
 void vectoangles( const vec3_t value1, vec3_t angles);
 void AnglesToAxis( const vec3_t angles, vec3_t axis[3] );
 
@@ -726,6 +817,9 @@ void MakeNormalVectors( const vec3_t forward, vec3_t right, vec3_t up );
 void MatrixMultiply(float in1[3][3], float in2[3][3], float out[3][3]);
 void AngleVectors( const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
 void PerpendicularVector( vec3_t dst, const vec3_t src );
+#ifdef __CPP
+}
+#endif
 
 #ifndef MAX
 #define MAX(x,y) ((x)>(y)?(x):(y))
@@ -737,6 +831,10 @@ void PerpendicularVector( vec3_t dst, const vec3_t src );
 
 //=============================================
 
+#ifdef __CPP
+extern "C"
+{
+#endif
 float Com_Clamp( float min, float max, float value );
 
 char	*COM_SkipPath( char *pathname );
@@ -753,6 +851,9 @@ int		COM_Compress( char *data_p );
 void	COM_ParseError( char *format, ... ) __attribute__ ((format (printf, 1, 2)));
 void	COM_ParseWarning( char *format, ... ) __attribute__ ((format (printf, 1, 2)));
 //int		COM_ParseInfos( char *buf, int max, char infos[][MAX_INFO_STRING] );
+#ifdef __CPP
+}
+#endif
 
 #define MAX_TOKENLENGTH		1024
 
@@ -774,8 +875,12 @@ typedef struct pc_token_s
 	char string[MAX_TOKENLENGTH];
 } pc_token_t;
 
-// data is an in/out parm, returns a parsed out token
 
+#ifdef __CPP
+extern "C"
+{
+#endif
+// data is an in/out parm, returns a parsed out token
 void	COM_MatchToken( char**buf_p, char *match );
 
 qboolean SkipBracedSection (char **program, int depth);
@@ -792,6 +897,9 @@ char *Com_SkipTokens( char *s, int numTokens, char *sep );
 char *Com_SkipCharset( char *s, char *sep );
 
 void Com_RandomBytes( byte *string, int len );
+#ifdef __CPP
+}
+#endif
 
 // mode parm for FS_FOpenFile
 typedef enum {
@@ -809,6 +917,10 @@ typedef enum {
 
 //=============================================
 
+#ifdef __CPP
+extern "C"
+{
+#endif
 int Q_isprint( int c );
 int Q_islower( int c );
 int Q_isupper( int c );
@@ -834,6 +946,9 @@ int Q_PrintStrlen( const char *string );
 char *Q_CleanStr( char *string );
 // Count the number of char tocount encountered in string
 int Q_CountChar(const char *string, char tocount);
+#ifdef __CPP
+}
+#endif
 
 //=============================================
 
@@ -864,28 +979,34 @@ float	LittleFloat (const float *l);
 
 void	Swap_Init (void);
 */
-char	* QDECL va(char *format, ...) __attribute__ ((format (printf, 1, 2)));
+#ifdef __CPP
+extern "C"
+{
+#endif 
+char* QDECL va( char* format, ... ) __attribute__( (format( printf, 1, 2 )) );
 
 #define TRUNCATE_LENGTH	64
-void Com_TruncateLongString( char *buffer, const char *s );
+void Com_TruncateLongString( char* buffer, const char* s );
 
 //=============================================
 
 //
 // key / value info strings
 //
-char *Info_ValueForKey( const char *s, const char *key );
-void Info_RemoveKey( char *s, const char *key );
-void Info_RemoveKey_Big( char *s, const char *key );
-void Info_SetValueForKey( char *s, const char *key, const char *value );
-void Info_SetValueForKey_Big( char *s, const char *key, const char *value );
-qboolean Info_Validate( const char *s );
-void Info_NextPair( const char **s, char *key, char *value );
+char* Info_ValueForKey( const char* s, const char* key );
+void Info_RemoveKey( char* s, const char* key );
+void Info_RemoveKey_Big( char* s, const char* key );
+void Info_SetValueForKey( char* s, const char* key, const char* value );
+void Info_SetValueForKey_Big( char* s, const char* key, const char* value );
+qboolean Info_Validate( const char* s );
+void Info_NextPair( const char** s, char* key, char* value );
 
 // this is only here so the functions in q_shared.c and bg_*.c can link
-void	QDECL Com_Error( int level, const char *error, ... ) __attribute__ ((noreturn, format(printf, 2, 3)));
-void	QDECL Com_Printf( const char *msg, ... ) __attribute__ ((format (printf, 1, 2)));
-
+void	QDECL Com_Error( int level, const char* error, ... ) __attribute__( (noreturn, format( printf, 2, 3 )) );
+void	QDECL Com_Printf( const char* msg, ... ) __attribute__( (format( printf, 1, 2 )) );
+#ifdef __CPP
+}
+#endif 
 
 /*
 ==========================================================
@@ -1007,6 +1128,9 @@ PlaneTypeForNormal
 
 #define PlaneTypeForNormal(x) (x[0] == 1.0 ? PLANE_X : (x[1] == 1.0 ? PLANE_Y : (x[2] == 1.0 ? PLANE_Z : PLANE_NON_AXIAL) ) )
 
+#ifdef __CPP
+ExternCStart
+#endif
 // plane_t structure
 // !!! if this is changed, it must be changed in asm code too !!!
 typedef struct cplane_s {
@@ -1046,6 +1170,9 @@ typedef struct {
 	vec3_t		origin;
 	vec3_t		axis[3];
 } orientation_t;
+#ifdef __CPP
+ExternCEnd
+#endif
 
 //=====================================================================
 
