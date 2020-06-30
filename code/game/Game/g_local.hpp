@@ -394,6 +394,11 @@ typedef struct {
 	gentity_t	*bodyQue[BODY_QUEUE_SIZE];
 } level_locals_t;
 
+/*
+*	Functions prefixed with G_ will go to the Game namespace
+*	trap_ functions should go into some sorta System namespace
+*	We'll see :p
+*/
 
 //
 // g_spawn.c
