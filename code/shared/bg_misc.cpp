@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define __CPP
 #endif
 
-#include "../qcommon/q_shared.h"
+#include "../qcommon/q_shared.hpp"
 #include "bg_public.hpp"
 
 /*QUAKED item_***** ( 0 0 0 ) (-16 -16 -16) (16 16 16) suspended

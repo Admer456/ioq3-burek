@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // snddma_null.c
 // all other sound mixing is portable
 
-#include "../qcommon/q_shared.h"
+#include "../qcommon/q_shared.hpp"
 #include "../qcommon/qcommon.h"
 
 qboolean SNDDMA_Init(void)

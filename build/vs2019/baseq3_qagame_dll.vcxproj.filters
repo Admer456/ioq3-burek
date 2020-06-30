@@ -75,9 +75,6 @@
     <ClInclude Include="..\..\code\game\Game\g_rankings.hpp">
       <Filter>Sources\Game</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp">
-      <Filter>Sources\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\code\game\AI\ArenaBots\inv.hpp">
       <Filter>Sources\AI\ArenaBots</Filter>
     </ClInclude>
@@ -86,6 +83,12 @@
     </ClInclude>
     <ClInclude Include="..\..\code\game\AI\ArenaBots\syn.hpp">
       <Filter>Sources\AI\ArenaBots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\IEntity.hpp">
+      <Filter>Sources\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp">
+      <Filter>Sources\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Weapons\g_weapon.cpp">
       <Filter>Sources\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp">
+      <Filter>Sources\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

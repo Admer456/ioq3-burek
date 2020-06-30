@@ -177,6 +177,7 @@
     <ClInclude Include="..\..\code\game\AI\ArenaBots\match.hpp" />
     <ClInclude Include="..\..\code\game\AI\ArenaBots\syn.hpp" />
     <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_local.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_public.hpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_main.cpp" />
     <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_team.cpp" />
     <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_vcmd.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_client.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_misc.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_mover.cpp" />
