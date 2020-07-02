@@ -122,7 +122,7 @@ char *Sys_DefaultHomePath( void )
 
 		getFolderPathFunction = (qSHGetFolderPath_pf)qSHGetFolderPath;
 
-		if( !SUCCEEDED( getFolderPathFunction( NULL, CSIDL_APPDATA,
+		if( !SUCCEEDED( SHGetFolderPathA( NULL, CSIDL_APPDATA,
 						NULL, 0, szPath ) ) )
 		{
 			Com_Printf("Unable to detect CSIDL_APPDATA\n");

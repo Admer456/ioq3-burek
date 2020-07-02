@@ -30,10 +30,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 static intptr_t (QDECL *syscall)( intptr_t arg, ... ) = (intptr_t (QDECL *)( intptr_t, ...))-1;
 
-Q_EXPORT void dllEntry( intptr_t (QDECL *syscallptr)( intptr_t arg,... ) ) {
-	syscall = syscallptr;
+extern "C"
+{
+	Q_EXPORT void dllEntry( intptr_t( QDECL* syscallptr )(intptr_t arg, ...) ) {
+		syscall = syscallptr;
+	}
 }
-
 int PASSFLOAT( float x ) {
 	floatint_t fi;
 	fi.f = x;
