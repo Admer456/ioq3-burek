@@ -1066,12 +1066,7 @@ Handles the sequence numbers
 ===============
 */
 
-#if defined __CPP
-#ifndef _GAMEDLL
-extern "C" 
-#endif
-#endif
-void	trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int bufsize );
+void trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int bufsize );
 
 void BG_AddPredictableEventToPlayerstate( int newEvent, int eventParm, playerState_t *ps ) {
 

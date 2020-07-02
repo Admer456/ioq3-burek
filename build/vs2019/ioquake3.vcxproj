@@ -97,7 +97,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;__i386__;_WIN32;WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;BOTLIB;USE_CURL;USE_CURL_DLOPEN;USE_OPENAL;USE_OPENAL_DLOPEN;USE_RENDERER_DLOPEN;USE_LOCAL_HEADERS;STANDALONE;USE_CODEC_OPUS;USE_CODEC_VORBIS;USE_VOIP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;__CPP;NDEBUG;__i386__;_WIN32;WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;BOTLIB;USE_CURL;USE_CURL_DLOPEN;USE_OPENAL;USE_OPENAL_DLOPEN;USE_RENDERER_DLOPEN;USE_LOCAL_HEADERS;STANDALONE;USE_CODEC_OPUS;USE_CODEC_VORBIS;USE_VOIP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\code\AL;..\..\code\jpeg-8c;..\..\code\curl-7.54.0;..\..\code\SDL2\include;..\..\code\zlib;..\..\code\libogg-1.3.3\include;..\..\code\opus-1.2.1\include;..\..\code\opusfile-0.9\include;..\..\code\libvorbis-1.3.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -151,7 +151,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;__i386__;_WIN32;WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;BOTLIB;USE_CURL;USE_CURL_DLOPEN;USE_OPENAL;USE_OPENAL_DLOPEN;USE_RENDERER_DLOPEN;USE_LOCAL_HEADERS;STANDALONE;USE_CODEC_OPUS;USE_CODEC_VORBIS;USE_VOIP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;__CPP;_DEBUG;__i386__;_WIN32;WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;BOTLIB;USE_CURL;USE_CURL_DLOPEN;USE_OPENAL;USE_OPENAL_DLOPEN;USE_RENDERER_DLOPEN;USE_LOCAL_HEADERS;STANDALONE;USE_CODEC_OPUS;USE_CODEC_VORBIS;USE_VOIP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\code\AL;..\..\code\jpeg-8c;..\..\code\curl-7.54.0;..\..\code\SDL2\include;..\..\code\zlib;..\..\code\libogg-1.3.3\include;..\..\code\opus-1.2.1\include;..\..\code\opusfile-0.9\include;..\..\code\libvorbis-1.3.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>

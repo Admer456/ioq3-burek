@@ -276,7 +276,7 @@ void VM_LoadSymbols( vm_t *vm ) {
 			break;
 		}
 		chars = strlen( token );
-		sym = Hunk_Alloc( sizeof( *sym ) + chars, h_high );
+		sym = (vmSymbol_t*)Hunk_Alloc( sizeof( *sym ) + chars, h_high );
 		*prev = sym;
 		prev = &sym->next;
 		sym->next = NULL;
@@ -453,7 +453,7 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure)
 		// allocate zero filled space for initialized and uninitialized data
 		// leave some space beyond data mask so we can secure all mask operations
 		vm->dataAlloc = dataLength + 4;
-		vm->dataBase = Hunk_Alloc(vm->dataAlloc, h_high);
+		vm->dataBase = (byte*)Hunk_Alloc(vm->dataAlloc, h_high);
 		vm->dataMask = dataLength - 1;
 	}
 	else
@@ -492,7 +492,7 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure)
 
 		if(alloc)
 		{
-			vm->jumpTableTargets = Hunk_Alloc(header.h->jtrgLength, h_high);
+			vm->jumpTableTargets = (byte*)Hunk_Alloc(header.h->jtrgLength, h_high);
 		}
 		else
 		{
@@ -646,7 +646,7 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 
 	// allocate space for the jump targets, which will be filled in by the compile/prep functions
 	vm->instructionCount = header->instructionCount;
-	vm->instructionPointers = Hunk_Alloc(vm->instructionCount * sizeof(*vm->instructionPointers), h_high);
+	vm->instructionPointers = (intptr_t*)Hunk_Alloc(vm->instructionCount * sizeof(*vm->instructionPointers), h_high);
 
 	// copy or compile the instructions
 	vm->codeLength = header->codeLength;
@@ -911,7 +911,7 @@ void VM_VmProfile_f( void ) {
 		return;
 	}
 
-	sorted = Z_Malloc( vm->numSymbols * sizeof( *sorted ) );
+	sorted = (vmSymbol_t**)Z_Malloc( vm->numSymbols * sizeof( *sorted ) );
 	sorted[0] = vm->symbols;
 	total = sorted[0]->profileCount;
 	for ( i = 1 ; i < vm->numSymbols ; i++ ) {

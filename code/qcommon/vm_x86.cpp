@@ -1079,9 +1079,9 @@ void VM_Compile(vm_t *vm, vmHeader_t *header)
 
 	// allocate a very large temp buffer, we will shrink it later
 	maxLength = header->codeLength * 8 + 64;
-	buf = Z_Malloc(maxLength);
-	jused = Z_Malloc(jusedSize);
-	code = Z_Malloc(header->codeLength+32);
+	buf = (byte*)Z_Malloc(maxLength);
+	jused = (byte*)Z_Malloc(jusedSize);
+	code = (byte*)Z_Malloc(header->codeLength+32);
 	
 	Com_Memset(jused, 0, jusedSize);
 	Com_Memset(buf, 0, maxLength);
@@ -1653,7 +1653,7 @@ void VM_Compile(vm_t *vm, vmHeader_t *header)
 		Com_Error(ERR_FATAL, "VM_CompileX86: can't mmap memory");
 #elif _WIN32
 	// allocate memory with EXECUTE permissions under windows.
-	vm->codeBase = VirtualAlloc(NULL, compiledOfs, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	vm->codeBase = (byte*)VirtualAlloc(NULL, compiledOfs, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	if(!vm->codeBase)
 		Com_Error(ERR_FATAL, "VM_CompileX86: VirtualAlloc failed");
 #else
@@ -1744,7 +1744,7 @@ int VM_CallCompiled(vm_t *vm, int *args)
 
 	// off we go into generated code...
 	entryPoint = vm->codeBase + vm->entryOfs;
-	opStack = PADP(stack, 16);
+	opStack = (int*)PADP(stack, 16);
 	*opStack = 0xDEADBEEF;
 	opStackOfs = 0;
 

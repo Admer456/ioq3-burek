@@ -1323,9 +1323,6 @@ ExternCEnd
 // These functions are how the cgame communicates with the main game system
 //
 
-#ifdef __CPP
-ExternCStart
-#endif
 // print message on the local console
 void		trap_Print( const char *fmt );
 
@@ -1517,9 +1514,6 @@ void		trap_startCamera(int time);
 qboolean	trap_getCameraInfo(int time, vec3_t *origin, vec3_t *angles);
 
 qboolean	trap_GetEntityToken( char *buffer, int bufferSize );
-#ifdef __CPP
-ExternCEnd
-#endif
 
 void	CG_ClearParticles (void);
 void	CG_AddParticles (void);

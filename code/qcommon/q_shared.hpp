@@ -172,10 +172,10 @@ typedef int intptr_t;
 #ifdef _MSC_VER
   #include <io.h>
 
-  typedef __int64 int64_t;
-  typedef __int32 int32_t;
-  typedef __int16 int16_t;
-  typedef __int8 int8_t;
+  typedef signed __int64 int64_t;
+  typedef signed __int32 int32_t;
+  typedef signed __int16 int16_t;
+  typedef signed __int8 int8_t;
   typedef unsigned __int64 uint64_t;
   typedef unsigned __int32 uint32_t;
   typedef unsigned __int16 uint16_t;
@@ -196,16 +196,10 @@ typedef int intptr_t;
 // and when we compile in C++, we expect unmangled names
 // *
 // For all the experienced programmers out there: God, forgive me for doing this mess, I swear I'll redeem myself :(
-#ifdef __CPP
-extern "C"
-{
-#endif
-  // vsnprintf is ISO/IEC 9899:1999
-  // abstracting this to make it portable
-  int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap);
-#ifdef __CPP
-}
-#endif
+
+// vsnprintf is ISO/IEC 9899:1999
+// abstracting this to make it portable
+int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap);
 
 #else
   #define Q_vsnprintf vsnprintf
@@ -230,7 +224,10 @@ typedef unsigned char 		byte;
 
 //#ifndef __CPP
 #if 1
-typedef enum {qfalse, qtrue}	qboolean;
+#define qboolean unsigned int
+#define qfalse 0
+#define qtrue 1
+//typedef enum {qfalse, qtrue}	qboolean;
 #else
 #define qfalse false
 #define qtrue true
@@ -453,10 +450,6 @@ extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
 #define	GIANTCHAR_WIDTH		32
 #define	GIANTCHAR_HEIGHT	48
 
-#ifdef __CPP
-extern "C"
-{
-#endif
 extern	vec4_t		colorBlack;
 extern	vec4_t		colorRed;
 extern	vec4_t		colorGreen;
@@ -470,9 +463,6 @@ extern	vec4_t		colorMdGrey;
 extern	vec4_t		colorDkGrey;
 
 qboolean Q_IsColorString(const char *p);  // ^[0-9a-zA-Z]
-#ifdef __CPP
-}
-#endif
 
 #define Q_COLOR_ESCAPE	'^'
 #define COLOR_BLACK	'0'
@@ -503,21 +493,17 @@ qboolean Q_IsColorString(const char *p);  // ^[0-9a-zA-Z]
 
 struct cplane_s;
 
-#ifdef __CPP
-extern "C"
-{
-#endif
 extern vec4_t	g_color_table[8];
 extern	vec3_t	vec3_origin;
 extern	vec3_t	axisDefault[3];
 int Q_isnan(float x);
-#ifdef __CPP
-}
-#endif
 
 #define	nanmask (255<<23)
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
 
+#ifdef __CPP
+ExternCStart
+#endif
 #if idx64
   extern long qftolsse(float f);
   extern int qvmftolsse(void);
@@ -552,6 +538,10 @@ int Q_isnan(float x);
 		(*temp)[2] = round((*temp)[2]);\
 	} while(0)
 #endif
+#ifdef __CPP
+ExternCEnd
+#endif
+  
 /*
 // if your system does not have lrintf() and round() you can try this block. Please also open a bug report at bugzilla.icculus.org
 // or write a mail to the ioq3 mailing list.
@@ -601,19 +591,12 @@ float Q_rsqrt( float f );		// reciprocal square root
 
 #define SQRTFAST( x ) ( (x) * Q_rsqrt( x ) )
 
-#ifdef __CPP
-extern "C"
-{
-#endif
 signed char ClampChar( int i );
 signed short ClampShort( int i );
 
 // this isn't a real cheap function to call!
 int DirToByte( vec3_t dir );
 void ByteToDir( int b, vec3_t dir );
-#ifdef __CPP
-}
-#endif
 
 #if	1
 
@@ -657,10 +640,6 @@ typedef struct {
 
 #define	SnapVector(v) {v[0]=((int)(v[0]));v[1]=((int)(v[1]));v[2]=((int)(v[2]));}
 // just in case you don't want to use the macros
-#ifdef __CPP
-extern "C"
-{
-#endif
 vec_t _DotProduct( const vec3_t v1, const vec3_t v2 );
 void _VectorSubtract( const vec3_t veca, const vec3_t vecb, vec3_t out );
 void _VectorAdd( const vec3_t veca, const vec3_t vecb, vec3_t out );
@@ -676,9 +655,6 @@ float NormalizeColor( const vec3_t in, vec3_t out );
 float RadiusFromBounds( const vec3_t mins, const vec3_t maxs );
 void ClearBounds( vec3_t mins, vec3_t maxs );
 void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs );
-#ifdef __CPP
-}
-#endif
 
 #if !defined( Q3_VM ) || ( defined( Q3_VM ) && defined( __Q3_VM_MATH ) )
 static ID_INLINE int VectorCompare( const vec3_t v1, const vec3_t v2 ) {
@@ -754,10 +730,6 @@ void CrossProduct( const vec3_t v1, const vec3_t v2, vec3_t cross );
 
 #endif
 
-#ifdef __CPP
-extern "C"
-{
-#endif
 vec_t VectorNormalize( vec3_t v );		// returns vector length
 vec_t VectorNormalize2( const vec3_t v, vec3_t out );
 void Vector4Scale( const vec4_t in, vec_t scale, vec4_t out );
@@ -769,17 +741,10 @@ float Q_acos( float c );
 int		Q_rand( int* seed );
 float	Q_random( int* seed );
 float	Q_crandom( int* seed );
-#ifdef __CPP
-}
-#endif
 
 #define random()	((rand () & 0x7fff) / ((float)0x7fff))
 #define crandom()	(2.0 * (random() - 0.5))
 
-#ifdef __CPP
-extern "C"
-{
-#endif
 void vectoangles( const vec3_t value1, vec3_t angles);
 void AnglesToAxis( const vec3_t angles, vec3_t axis[3] );
 
@@ -817,9 +782,6 @@ void MakeNormalVectors( const vec3_t forward, vec3_t right, vec3_t up );
 void MatrixMultiply(float in1[3][3], float in2[3][3], float out[3][3]);
 void AngleVectors( const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
 void PerpendicularVector( vec3_t dst, const vec3_t src );
-#ifdef __CPP
-}
-#endif
 
 #ifndef MAX
 #define MAX(x,y) ((x)>(y)?(x):(y))
@@ -830,11 +792,6 @@ void PerpendicularVector( vec3_t dst, const vec3_t src );
 #endif
 
 //=============================================
-
-#ifdef __CPP
-extern "C"
-{
-#endif
 float Com_Clamp( float min, float max, float value );
 
 char	*COM_SkipPath( char *pathname );
@@ -851,9 +808,6 @@ int		COM_Compress( char *data_p );
 void	COM_ParseError( char *format, ... ) __attribute__ ((format (printf, 1, 2)));
 void	COM_ParseWarning( char *format, ... ) __attribute__ ((format (printf, 1, 2)));
 //int		COM_ParseInfos( char *buf, int max, char infos[][MAX_INFO_STRING] );
-#ifdef __CPP
-}
-#endif
 
 #define MAX_TOKENLENGTH		1024
 
@@ -875,11 +829,6 @@ typedef struct pc_token_s
 	char string[MAX_TOKENLENGTH];
 } pc_token_t;
 
-
-#ifdef __CPP
-extern "C"
-{
-#endif
 // data is an in/out parm, returns a parsed out token
 void	COM_MatchToken( char**buf_p, char *match );
 
@@ -897,9 +846,6 @@ char *Com_SkipTokens( char *s, int numTokens, char *sep );
 char *Com_SkipCharset( char *s, char *sep );
 
 void Com_RandomBytes( byte *string, int len );
-#ifdef __CPP
-}
-#endif
 
 // mode parm for FS_FOpenFile
 typedef enum {
@@ -917,10 +863,6 @@ typedef enum {
 
 //=============================================
 
-#ifdef __CPP
-extern "C"
-{
-#endif
 int Q_isprint( int c );
 int Q_islower( int c );
 int Q_isupper( int c );
@@ -946,9 +888,6 @@ int Q_PrintStrlen( const char *string );
 char *Q_CleanStr( char *string );
 // Count the number of char tocount encountered in string
 int Q_CountChar(const char *string, char tocount);
-#ifdef __CPP
-}
-#endif
 
 //=============================================
 
@@ -979,10 +918,6 @@ float	LittleFloat (const float *l);
 
 void	Swap_Init (void);
 */
-#ifdef __CPP
-extern "C"
-{
-#endif 
 char* QDECL va( char* format, ... ) __attribute__( (format( printf, 1, 2 )) );
 
 #define TRUNCATE_LENGTH	64
@@ -1004,9 +939,6 @@ void Info_NextPair( const char** s, char* key, char* value );
 // this is only here so the functions in q_shared.c and bg_*.c can link
 void	QDECL Com_Error( int level, const char* error, ... ) __attribute__( (noreturn, format( printf, 2, 3 )) );
 void	QDECL Com_Printf( const char* msg, ... ) __attribute__( (format( printf, 1, 2 )) );
-#ifdef __CPP
-}
-#endif 
 
 /*
 ==========================================================
@@ -1128,9 +1060,6 @@ PlaneTypeForNormal
 
 #define PlaneTypeForNormal(x) (x[0] == 1.0 ? PLANE_X : (x[1] == 1.0 ? PLANE_Y : (x[2] == 1.0 ? PLANE_Z : PLANE_NON_AXIAL) ) )
 
-#ifdef __CPP
-ExternCStart
-#endif
 // plane_t structure
 // !!! if this is changed, it must be changed in asm code too !!!
 typedef struct cplane_s {
@@ -1140,7 +1069,6 @@ typedef struct cplane_s {
 	byte	signbits;		// signx + (signy<<1) + (signz<<2), used as lookup during collision
 	byte	pad[2];
 } cplane_t;
-
 
 // a trace is returned when a box is swept through the world
 typedef struct {
@@ -1164,18 +1092,12 @@ typedef struct {
 	int		numPoints;
 } markFragment_t;
 
-
-
 typedef struct {
 	vec3_t		origin;
 	vec3_t		axis[3];
 } orientation_t;
-#ifdef __CPP
-ExternCEnd
-#endif
 
 //=====================================================================
-
 
 // in order from highest priority to lowest
 // if none of the catchers are active, bound key strings will be executed

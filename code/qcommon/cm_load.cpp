@@ -281,7 +281,7 @@ void CMod_LoadLeafs (lump_t *l)
 	if (count < 1)
 		Com_Error (ERR_DROP, "Map with no leafs");
 
-	cm.leafs = (cleaf_t*)Hunk_Alloc( ( BOX_LEAFS + count ) * sizeof( *cm.leafs ), h_high );
+	cm.leafs = (cLeaf_t*)Hunk_Alloc( (BOX_LEAFS + count) * sizeof( *cm.leafs ), h_high );
 	cm.numLeafs = count;
 
 	out = cm.leafs;	
@@ -324,7 +324,7 @@ void CMod_LoadPlanes (lump_t *l)
 
 	if (count < 1)
 		Com_Error (ERR_DROP, "Map with no planes");
-	cm.planes = Hunk_Alloc( ( BOX_PLANES + count ) * sizeof( *cm.planes ), h_high );
+	cm.planes = (cplane_t*)Hunk_Alloc( ( BOX_PLANES + count ) * sizeof( *cm.planes ), h_high );
 	cm.numPlanes = count;
 
 	out = cm.planes;	
@@ -357,12 +357,12 @@ void CMod_LoadLeafBrushes (lump_t *l)
 	int		 	*in;
 	int			count;
 	
-	in = (void *)(cmod_base + l->fileofs);
+	in = (int*)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Com_Error (ERR_DROP, "MOD_LoadBmodel: funny lump size");
 	count = l->filelen / sizeof(*in);
 
-	cm.leafbrushes = Hunk_Alloc( (count + BOX_BRUSHES) * sizeof( *cm.leafbrushes ), h_high );
+	cm.leafbrushes = (int*)Hunk_Alloc( (count + BOX_BRUSHES) * sizeof( *cm.leafbrushes ), h_high );
 	cm.numLeafBrushes = count;
 
 	out = cm.leafbrushes;
@@ -384,12 +384,12 @@ void CMod_LoadLeafSurfaces( lump_t *l )
 	int		 	*in;
 	int			count;
 	
-	in = (void *)(cmod_base + l->fileofs);
+	in = (int*)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Com_Error (ERR_DROP, "MOD_LoadBmodel: funny lump size");
 	count = l->filelen / sizeof(*in);
 
-	cm.leafsurfaces = Hunk_Alloc( count * sizeof( *cm.leafsurfaces ), h_high );
+	cm.leafsurfaces = (int*)Hunk_Alloc( count * sizeof( *cm.leafsurfaces ), h_high );
 	cm.numLeafSurfaces = count;
 
 	out = cm.leafsurfaces;
@@ -412,13 +412,13 @@ void CMod_LoadBrushSides (lump_t *l)
 	int				count;
 	int				num;
 
-	in = (void *)(cmod_base + l->fileofs);
+	in = (dbrushside_t*)(cmod_base + l->fileofs);
 	if ( l->filelen % sizeof(*in) ) {
 		Com_Error (ERR_DROP, "MOD_LoadBmodel: funny lump size");
 	}
 	count = l->filelen / sizeof(*in);
 
-	cm.brushsides = Hunk_Alloc( ( BOX_SIDES + count ) * sizeof( *cm.brushsides ), h_high );
+	cm.brushsides = (cbrushside_t*)Hunk_Alloc( ( BOX_SIDES + count ) * sizeof( *cm.brushsides ), h_high );
 	cm.numBrushSides = count;
 
 	out = cm.brushsides;	
@@ -441,7 +441,7 @@ CMod_LoadEntityString
 =================
 */
 void CMod_LoadEntityString( lump_t *l ) {
-	cm.entityString = Hunk_Alloc( l->filelen, h_high );
+	cm.entityString = (char*)Hunk_Alloc( l->filelen, h_high );
 	cm.numEntityChars = l->filelen;
 	Com_Memcpy (cm.entityString, cmod_base + l->fileofs, l->filelen);
 }
@@ -459,14 +459,14 @@ void CMod_LoadVisibility( lump_t *l ) {
     len = l->filelen;
 	if ( !len ) {
 		cm.clusterBytes = ( cm.numClusters + 31 ) & ~31;
-		cm.visibility = Hunk_Alloc( cm.clusterBytes, h_high );
+		cm.visibility = (byte*)Hunk_Alloc( cm.clusterBytes, h_high );
 		Com_Memset( cm.visibility, 255, cm.clusterBytes );
 		return;
 	}
 	buf = cmod_base + l->fileofs;
 
 	cm.vised = qtrue;
-	cm.visibility = Hunk_Alloc( len, h_high );
+	cm.visibility = (byte*)Hunk_Alloc( len, h_high );
 	cm.numClusters = LittleLong( ((int *)buf)[0] );
 	cm.clusterBytes = LittleLong( ((int *)buf)[1] );
 	Com_Memcpy (cm.visibility, buf + VIS_HEADER, len - VIS_HEADER );
@@ -492,13 +492,13 @@ void CMod_LoadPatches( lump_t *surfs, lump_t *verts ) {
 	int			width, height;
 	int			shaderNum;
 
-	in = (void *)(cmod_base + surfs->fileofs);
+	in = (dsurface_t*)(cmod_base + surfs->fileofs);
 	if (surfs->filelen % sizeof(*in))
 		Com_Error (ERR_DROP, "MOD_LoadBmodel: funny lump size");
 	cm.numSurfaces = count = surfs->filelen / sizeof(*in);
-	cm.surfaces = Hunk_Alloc( cm.numSurfaces * sizeof( cm.surfaces[0] ), h_high );
+	cm.surfaces = (cPatch_t**)Hunk_Alloc( cm.numSurfaces * sizeof( cm.surfaces[0] ), h_high );
 
-	dv = (void *)(cmod_base + verts->fileofs);
+	dv = (drawVert_t*)(cmod_base + verts->fileofs);
 	if (verts->filelen % sizeof(*dv))
 		Com_Error (ERR_DROP, "MOD_LoadBmodel: funny lump size");
 
@@ -510,7 +510,7 @@ void CMod_LoadPatches( lump_t *surfs, lump_t *verts ) {
 		}
 		// FIXME: check for non-colliding patches
 
-		cm.surfaces[ i ] = patch = Hunk_Alloc( sizeof( *patch ), h_high );
+		cm.surfaces[ i ] = patch = (cPatch_t*)Hunk_Alloc( sizeof( *patch ), h_high );
 
 		// load the full drawverts onto the stack
 		width = LittleLong( in->patchWidth );
@@ -600,7 +600,7 @@ void CM_LoadMap( const char *name, qboolean clientload, int *checksum ) {
 		cm.numLeafs = 1;
 		cm.numClusters = 1;
 		cm.numAreas = 1;
-		cm.cmodels = Hunk_Alloc( sizeof( *cm.cmodels ), h_high );
+		cm.cmodels = (cmodel_t*)Hunk_Alloc( sizeof( *cm.cmodels ), h_high );
 		*checksum = 0;
 		return;
 	}

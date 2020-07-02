@@ -23,9 +23,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define __UI_SHARED_H
 
 
-#include "../qcommon/q_shared.h"
+#include "../qcommon/q_shared.hpp"
 #include "../renderercommon/tr_types.h"
-#include "../client/keycodes.h"
+#include "../client/keycodes.hpp"
 
 #include "../../ui/menudef.h"
 

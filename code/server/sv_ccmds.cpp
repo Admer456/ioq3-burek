@@ -329,7 +329,7 @@ static void SV_MapRestart_f( void ) {
 		SV_AddServerCommand( client, "map_restart\n" );
 
 		// connect the client again, without the firstTime flag
-		denied = VM_ExplicitArgPtr( gvm, VM_Call( gvm, GAME_CLIENT_CONNECT, i, qfalse, isBot ) );
+		denied = (char*)VM_ExplicitArgPtr( gvm, VM_Call( gvm, GAME_CLIENT_CONNECT, i, qfalse, isBot ) );
 		if ( denied ) {
 			// this generally shouldn't happen, because the client
 			// was connected before the level change
@@ -660,7 +660,7 @@ static void SV_RehashBans_f(void)
 			return;
 		}
 
-		curpos = textbuf = Z_Malloc(filelen);
+		curpos = textbuf = (char*)Z_Malloc(filelen);
 		
 		filelen = FS_Read(textbuf, filelen, readfrom);
 		FS_FCloseFile(readfrom);
@@ -688,7 +688,7 @@ static void SV_RehashBans_f(void)
 			
 			if(NET_StringToAdr(curpos + 2, &serverBans[index].ip, NA_UNSPEC))
 			{
-				serverBans[index].isexception = (curpos[0] != '0');
+				serverBans[index].isexception = (qboolean)(curpos[0] != '0');
 				serverBans[index].subnet = atoi(maskpos);
 				
 				if(serverBans[index].ip.type == NA_IP &&

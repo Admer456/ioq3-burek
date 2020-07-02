@@ -301,7 +301,7 @@ void QDECL Com_Error( int code, const char *fmt, ... ) {
 	if (code != ERR_DISCONNECT && code != ERR_NEED_CD)
 		Cvar_Set("com_errorMessage", com_errorMessage);
 
-	restartClient = com_gameClientRestarting && !( com_cl_running && com_cl_running->integer );
+	restartClient = (qboolean)(com_gameClientRestarting && !( com_cl_running && com_cl_running->integer ));
 
 	com_gameRestarting = qfalse;
 	com_gameClientRestarting = qfalse;
@@ -951,7 +951,7 @@ void *Z_TagMallocDebug( int size, int tag, char *label, char *file, int line ) {
 void *Z_TagMalloc( int size, int tag ) {
 #endif
 	int		extra;
-	memblock_t	*start, *rover, *new, *base;
+	memblock_t	*start, *rover, *newBlock, *base;
 	memzone_t *zone;
 
 	if (!tag) {
@@ -1006,14 +1006,14 @@ void *Z_TagMalloc( int size, int tag ) {
 	extra = base->size - size;
 	if (extra > MINFRAGMENT) {
 		// there will be a free fragment after the allocated block
-		new = (memblock_t *) ((byte *)base + size );
-		new->size = extra;
-		new->tag = 0;			// free block
-		new->prev = base;
-		new->id = ZONEID;
-		new->next = base->next;
-		new->next->prev = new;
-		base->next = new;
+		newBlock = (memblock_t *) ((byte *)base + size );
+		newBlock->size = extra;
+		newBlock->tag = 0;			// free block
+		newBlock->prev = base;
+		newBlock->id = ZONEID;
+		newBlock->next = base->next;
+		newBlock->next->prev = newBlock;
+		base->next = newBlock;
 		base->size = size;
 	}
 	
@@ -1200,7 +1200,7 @@ char *CopyString( const char *in ) {
 			return ((char *)&numberstring[in[0]-'0']) + sizeof(memblock_t);
 		}
 	}
-	out = S_Malloc (strlen(in)+1);
+	out = (char*)S_Malloc (strlen(in)+1);
 	strcpy (out, in);
 	return out;
 }
@@ -1422,7 +1422,7 @@ Com_InitZoneMemory
 */
 void Com_InitSmallZoneMemory( void ) {
 	s_smallZoneTotal = 512 * 1024;
-	smallzone = calloc( s_smallZoneTotal, 1 );
+	smallzone = (memzone_t*)calloc( s_smallZoneTotal, 1 );
 	if ( !smallzone ) {
 		Com_Error( ERR_FATAL, "Small zone data failed to allocate %1.1f megs", (float)s_smallZoneTotal / (1024*1024) );
 	}
@@ -1447,7 +1447,7 @@ void Com_InitZoneMemory( void ) {
 		s_zoneTotal = cv->integer * 1024 * 1024;
 	}
 
-	mainzone = calloc( s_zoneTotal, 1 );
+	mainzone = (memzone_t*)calloc( s_zoneTotal, 1 );
 	if ( !mainzone ) {
 		Com_Error( ERR_FATAL, "Zone data failed to allocate %i megs", s_zoneTotal / (1024*1024) );
 	}
@@ -1572,7 +1572,7 @@ void Com_InitHunkMemory( void ) {
 		s_hunkTotal = cv->integer * 1024 * 1024;
 	}
 
-	s_hunkData = calloc( s_hunkTotal + 31, 1 );
+	s_hunkData = (byte*)calloc( s_hunkTotal + 31, 1 );
 	if ( !s_hunkData ) {
 		Com_Error( ERR_FATAL, "Hunk data failed to allocate %i megs", s_hunkTotal / (1024*1024) );
 	}
@@ -2028,7 +2028,7 @@ sysEvent_t Com_GetSystemEvent( void )
 		int   len;
 
 		len = strlen( s ) + 1;
-		b = Z_Malloc( len );
+		b = (char*)Z_Malloc( len );
 		strcpy( b, s );
 		Com_QueueEvent( 0, SE_CONSOLE, 0, 0, len, b );
 	}
@@ -2215,7 +2215,7 @@ int Com_EventLoop( void ) {
 		switch(ev.evType)
 		{
 			case SE_KEY:
-				CL_KeyEvent( ev.evValue, ev.evValue2, ev.evTime );
+				CL_KeyEvent( ev.evValue, (qboolean)ev.evValue2, ev.evTime );
 			break;
 			case SE_CHAR:
 				CL_CharEvent( ev.evValue );
@@ -2390,7 +2390,7 @@ void Com_GameRestart(int checksumFeed, qboolean disconnect)
 	if(!com_gameRestarting && com_fullyInitialized)
 	{
 		com_gameRestarting = qtrue;
-		com_gameClientRestarting = com_cl_running->integer;
+		com_gameClientRestarting = (qboolean)com_cl_running->integer;
 
 		// Kill server if we have one
 		if(com_sv_running->integer)
@@ -2574,7 +2574,7 @@ static void Com_DetectAltivec(void)
 		static qboolean altivec = qfalse;
 		static qboolean detected = qfalse;
 		if (!detected) {
-			altivec = ( Sys_GetProcessorFeatures( ) & CF_ALTIVEC );
+			altivec = (qboolean)( Sys_GetProcessorFeatures( ) & CF_ALTIVEC );
 			detected = qtrue;
 		}
 
@@ -3603,7 +3603,7 @@ qboolean Com_IsVoipTarget(uint8_t *voipTargets, int voipTargetsSize, int clientN
 	index = clientNum >> 3;
 	
 	if(index < voipTargetsSize)
-		return (voipTargets[index] & (1 << (clientNum & 0x07)));
+		return (qboolean)(voipTargets[index] & (1 << (clientNum & 0x07)));
 
 	return qfalse;
 }

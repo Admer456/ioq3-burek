@@ -27,12 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\code\qcommon\q_shared.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\code\qcommon\surfaceflags.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
       <Filter>Shared</Filter>
     </ClInclude>
@@ -90,14 +84,14 @@
     <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp">
       <Filter>Sources\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\q_shared.hpp">
+      <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp">
+      <Filter>qcommon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\qcommon\q_math.c">
-      <Filter>qcommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\qcommon\q_shared.c">
-      <Filter>qcommon</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
       <Filter>Shared</Filter>
     </ClCompile>
@@ -193,6 +187,12 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp">
       <Filter>Sources\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_math.cpp">
+      <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_shared.cpp">
+      <Filter>qcommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

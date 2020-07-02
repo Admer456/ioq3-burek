@@ -23,16 +23,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // bg_pmove.c -- both games player movement code
 // takes a playerstate and a usercmd as input and returns a modifed playerstate
 
-#ifndef __CPP
-#define __CPP
-#endif
 #include "../qcommon/q_shared.hpp"
 #include "bg_public.hpp"
 #include "bg_local.hpp"
 
-#ifdef __CPP
-ExternCStart
-#endif
 pmove_t		*pm;
 pml_t		pml;
 
@@ -52,9 +46,6 @@ float	pm_flightfriction = 3.0f;
 float	pm_spectatorfriction = 5.0f;
 
 int		c_pmove = 0;
-#ifdef __CPP
-ExternCEnd
-#endif
 
 /*
 ===============
@@ -1770,11 +1761,7 @@ PmoveSingle
 
 ================
 */
-#if defined __CPP
-#ifndef _GAMEDLL
-extern "C"
-#endif
-#endif
+
 void trap_SnapVector( float *v );
 
 void PmoveSingle (pmove_t *pmove) {

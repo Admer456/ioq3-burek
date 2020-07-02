@@ -276,7 +276,7 @@ qboolean SNDDMA_Init(void)
 	dma.submission_chunk = 1;
 	dma.speed = obtained.freq;
 	dmasize = (dma.samples * (dma.samplebits/8));
-	dma.buffer = calloc(1, dmasize);
+	dma.buffer = (byte*)calloc(1, dmasize);
 
 #ifdef USE_SDL_AUDIO_CAPTURE
 	// !!! FIXME: some of these SDL_OpenAudioDevice() values should be cvars.

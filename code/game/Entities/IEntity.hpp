@@ -2,6 +2,8 @@
 
 namespace Entities
 {
+	class IEntity;
+
 	typedef void (IEntity::* thinkPointer     )( void );
 	typedef void (IEntity::* usePointer       )( IEntity* activator, IEntity* caller, float value );
 	typedef void (IEntity::* touchPointer     )( IEntity* other, void* trace );
@@ -29,7 +31,7 @@ namespace Entities
 		template< typename function >
 		inline void					SetThink( function f )
 		{
-			thinkFunction = static_cast<void (IEntity::*)(void)>( f );
+			thinkFunction = static_cast<thinkPointer>( f );
 		}
 
 		template< typename function >

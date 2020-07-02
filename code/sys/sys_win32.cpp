@@ -89,6 +89,8 @@ void Sys_SetFloatEnv(void)
 	_controlfp(FPUCW, FPUCWMASK);
 }
 
+typedef HRESULT( *qSHGetFolderPath_pf )(HWND hwnd, int csidl, HANDLE hToken, DWORD dwFlags, LPSTR pszPath);
+
 /*
 ================
 Sys_DefaultHomePath
@@ -99,6 +101,8 @@ char *Sys_DefaultHomePath( void )
 	TCHAR szPath[MAX_PATH];
 	FARPROC qSHGetFolderPath;
 	HMODULE shfolder = LoadLibrary("shfolder.dll");
+
+	qSHGetFolderPath_pf getFolderPathFunction;
 
 	if(shfolder == NULL)
 	{
@@ -116,7 +120,9 @@ char *Sys_DefaultHomePath( void )
 			return NULL;
 		}
 
-		if( !SUCCEEDED( qSHGetFolderPath( NULL, CSIDL_APPDATA,
+		getFolderPathFunction = (qSHGetFolderPath_pf)qSHGetFolderPath;
+
+		if( !SUCCEEDED( getFolderPathFunction( NULL, CSIDL_APPDATA,
 						NULL, 0, szPath ) ) )
 		{
 			Com_Printf("Unable to detect CSIDL_APPDATA\n");
@@ -527,7 +533,7 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 		if (!nfiles)
 			return NULL;
 
-		listCopy = Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
+		listCopy = (char**)Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
 		for ( i = 0 ; i < nfiles ; i++ ) {
 			listCopy[i] = list[i];
 		}
@@ -590,7 +596,7 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 		return NULL;
 	}
 
-	listCopy = Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
+	listCopy = (char**)Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
 	for ( i = 0 ; i < nfiles ; i++ ) {
 		listCopy[i] = list[i];
 	}

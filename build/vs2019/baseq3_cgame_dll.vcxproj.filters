@@ -12,12 +12,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\code\qcommon\q_shared.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\code\qcommon\surfaceflags.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
       <Filter>Shared</Filter>
     </ClInclude>
@@ -30,14 +24,14 @@
     <ClInclude Include="..\..\code\cgame\cg_public.hpp">
       <Filter>cgame</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\q_shared.hpp">
+      <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp">
+      <Filter>qcommon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\qcommon\q_math.c">
-      <Filter>qcommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\qcommon\q_shared.c">
-      <Filter>qcommon</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
       <Filter>Shared</Filter>
     </ClCompile>
@@ -106,6 +100,12 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_weapons.cpp">
       <Filter>cgame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_math.cpp">
+      <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_shared.cpp">
+      <Filter>qcommon</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

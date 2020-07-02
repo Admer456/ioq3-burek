@@ -98,7 +98,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_UIDLL;NDEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_UIDLL;__CPP;NDEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -137,7 +137,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_UIDLL;_DEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_UIDLL;__CPP;_DEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\client\;..\..\code\ui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -165,52 +165,52 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\code\q3_ui\ui_local.h" />
-    <ClInclude Include="..\..\code\qcommon\q_shared.h" />
+    <ClInclude Include="..\..\code\q3_ui\ui_local.hpp" />
+    <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\q3_ui\ui_addbots.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_atoms.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_cdkey.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_cinematics.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_confirm.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_connect.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_controls2.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_credits.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_demo2.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_display.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_gameinfo.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_ingame.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_main.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_menu.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_mfield.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_mods.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_network.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_options.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_playermodel.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_players.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_playersettings.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_preferences.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_qmenu.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_removebots.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_serverinfo.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_servers2.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_setup.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_sound.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_sparena.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_specifyserver.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_splevel.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_sppostgame.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_spreset.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_spskill.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_startserver.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_team.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_teamorders.c" />
-    <ClCompile Include="..\..\code\q3_ui\ui_video.c" />
-    <ClCompile Include="..\..\code\qcommon\q_math.c" />
-    <ClCompile Include="..\..\code\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\code\q3_ui\ui_addbots.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_atoms.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_cdkey.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_cinematics.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_confirm.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_connect.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_controls2.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_credits.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_demo2.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_display.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_gameinfo.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_ingame.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_main.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_menu.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_mfield.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_mods.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_network.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_options.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_playermodel.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_players.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_playersettings.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_preferences.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_qmenu.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_removebots.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_serverinfo.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_servers2.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_setup.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_sound.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_sparena.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_specifyserver.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_splevel.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_sppostgame.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_spreset.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_spskill.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_startserver.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_team.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_teamorders.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_video.cpp" />
+    <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
+    <ClCompile Include="..\..\code\qcommon\q_shared.cpp" />
     <ClCompile Include="..\..\code\shared\bg_misc.cpp" />
-    <ClCompile Include="..\..\code\ui\ui_syscalls.c" />
+    <ClCompile Include="..\..\code\ui\ui_syscalls.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

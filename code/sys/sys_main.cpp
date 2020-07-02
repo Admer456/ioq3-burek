@@ -152,7 +152,7 @@ char *Sys_GetClipboardData(void)
 		if ( cliptext[0] != '\0' ) {
 			size_t bufsize = strlen( cliptext ) + 1;
 
-			data = Z_Malloc( bufsize );
+			data = (char*)Z_Malloc( bufsize );
 			Q_strncpyz( data, cliptext, bufsize );
 
 			// find first listed char and set to '\0'
@@ -318,7 +318,7 @@ Sys_GetProcessorFeatures
 */
 cpuFeatures_t Sys_GetProcessorFeatures( void )
 {
-	cpuFeatures_t features = 0;
+	int features = 0;
 
 #ifndef DEDICATED
 	if( SDL_HasRDTSC( ) )      features |= CF_RDTSC;
@@ -329,7 +329,7 @@ cpuFeatures_t Sys_GetProcessorFeatures( void )
 	if( SDL_HasAltiVec( ) )    features |= CF_ALTIVEC;
 #endif
 
-	return features;
+	return (cpuFeatures_t)features;
 }
 
 /*
@@ -602,8 +602,8 @@ void *Sys_LoadGameDll(const char *name,
 		return NULL;
 	}
 
-	dllEntry = Sys_LoadFunction( libHandle, "dllEntry" );
-	*entryPoint = Sys_LoadFunction( libHandle, "vmMain" );
+	dllEntry = (void (*)(intptr_t( *syscallptr )(intptr_t, ...)))Sys_LoadFunction( libHandle, "dllEntry" );
+	*entryPoint = (intptr_t( QDECL* )(int, ...))Sys_LoadFunction( libHandle, "vmMain" );
 
 	if ( !*entryPoint || !dllEntry )
 	{

@@ -7,7 +7,7 @@ using namespace Entities;
 
 void BaseEntity_Test::Spawn()
 {
-	SetThink( MyThink );
+	SetThink( &BaseEntity_Test::MyThink );
 }
 
 void BaseEntity_Test::MyThink()

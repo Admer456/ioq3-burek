@@ -171,8 +171,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\code\cgame\cg_local.hpp" />
     <ClInclude Include="..\..\code\cgame\cg_public.hpp" />
-    <ClInclude Include="..\..\code\qcommon\q_shared.h" />
-    <ClInclude Include="..\..\code\qcommon\surfaceflags.h" />
+    <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
+    <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp" />
     <ClInclude Include="..\..\code\shared\bg_local.hpp" />
     <ClInclude Include="..\..\code\shared\bg_public.hpp" />
   </ItemGroup>
@@ -197,8 +197,8 @@
     <ClCompile Include="..\..\code\cgame\cg_syscalls.cpp" />
     <ClCompile Include="..\..\code\cgame\cg_view.cpp" />
     <ClCompile Include="..\..\code\cgame\cg_weapons.cpp" />
-    <ClCompile Include="..\..\code\qcommon\q_math.c" />
-    <ClCompile Include="..\..\code\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
+    <ClCompile Include="..\..\code\qcommon\q_shared.cpp" />
     <ClCompile Include="..\..\code\shared\bg_misc.cpp" />
     <ClCompile Include="..\..\code\shared\bg_pmove.cpp" />
     <ClCompile Include="..\..\code\shared\bg_slidemove.cpp" />

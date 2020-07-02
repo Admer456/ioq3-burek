@@ -89,7 +89,7 @@ void SV_GetChallenge(netadr_t from)
 		gameMismatch = qfalse;
 	else
 #endif
-		gameMismatch = !*gameName || strcmp(gameName, com_gamename->string) != 0;
+		gameMismatch = (qboolean)(!*gameName || strcmp(gameName, com_gamename->string) != 0);
 
 	// reject client if the gamename string sent by the client doesn't match ours
 	if (gameMismatch)
@@ -561,7 +561,7 @@ gotnewcl:
 	denied = VM_Call( gvm, GAME_CLIENT_CONNECT, clientNum, qtrue, qfalse ); // firstTime = qtrue
 	if ( denied ) {
 		// we can't just use VM_ArgPtr, because that is only valid inside a VM_Call
-		char *str = VM_ExplicitArgPtr( gvm, denied );
+		char *str = (char*)VM_ExplicitArgPtr( gvm, denied );
 
 		NET_OutOfBandPrint( NS_SERVER, from, "print\n%s\n", str );
 		Com_DPrintf ("Game rejected a connection: %s.\n", str);
@@ -636,7 +636,7 @@ or crashing -- SV_FinalMessage() will handle that
 void SV_DropClient( client_t *drop, const char *reason ) {
 	int		i;
 	challenge_t	*challenge;
-	const qboolean isBot = drop->netchan.remoteAddress.type == NA_BOT;
+	const qboolean isBot = (qboolean)(drop->netchan.remoteAddress.type == NA_BOT);
 
 	if ( drop->state == CS_ZOMBIE ) {
 		return;		// already dropped
@@ -974,7 +974,7 @@ int SV_WriteDownloadToClient(client_t *cl, msg_t *msg)
 						missionPack = FS_idPak(pakbuf, BASETA, NUM_TA_PAKS);
 						idPack = missionPack;
 #endif
-						idPack = idPack || FS_idPak(pakbuf, BASEGAME, NUM_ID_PAKS);
+						idPack = (qboolean)(idPack || FS_idPak(pakbuf, BASEGAME, NUM_ID_PAKS));
 
 						break;
 					}
@@ -1057,7 +1057,7 @@ int SV_WriteDownloadToClient(client_t *cl, msg_t *msg)
 		curindex = (cl->downloadCurrentBlock % MAX_DOWNLOAD_WINDOW);
 
 		if (!cl->downloadBlocks[curindex])
-			cl->downloadBlocks[curindex] = Z_Malloc(MAX_DOWNLOAD_BLKSIZE);
+			cl->downloadBlocks[curindex] = (unsigned char*)Z_Malloc(MAX_DOWNLOAD_BLKSIZE);
 
 		cl->downloadBlockSize[curindex] = FS_Read( cl->downloadBlocks[curindex], MAX_DOWNLOAD_BLKSIZE, cl->download );
 
@@ -1235,9 +1235,9 @@ static void SV_VerifyPaks_f( client_t *cl ) {
 
 		nChkSum1 = nChkSum2 = 0;
 		// we run the game, so determine which cgame and ui the client "should" be running
-		bGood = (FS_FileIsInPAK("vm/cgame.qvm", &nChkSum1) == 1);
+		bGood = (qboolean)(FS_FileIsInPAK("vm/cgame.qvm", &nChkSum1) == 1);
 		if (bGood)
-			bGood = (FS_FileIsInPAK("vm/ui.qvm", &nChkSum2) == 1);
+			bGood = (qboolean)(FS_FileIsInPAK("vm/ui.qvm", &nChkSum2) == 1);
 
 		nClientPaks = Cmd_Argc();
 
@@ -1456,7 +1456,7 @@ void SV_UserinfoChanged( client_t *cl ) {
 #endif
 	{
 		val = Info_ValueForKey(cl->userinfo, "cl_voipProtocol");
-		cl->hasVoip = !Q_stricmp( val, "opus" );
+		cl->hasVoip = (qboolean)!Q_stricmp( val, "opus" );
 	}
 #endif
 
@@ -1862,7 +1862,7 @@ void SV_UserVoip(client_t *cl, msg_t *msg, qboolean ignoreData)
 			continue;  // no room for another packet right now.
 		}
 
-		packet = Z_Malloc(sizeof(*packet));
+		packet = (voipServerPacket_t*)Z_Malloc(sizeof(*packet));
 		packet->sender = sender;
 		packet->frames = frames;
 		packet->len = packetsize;
