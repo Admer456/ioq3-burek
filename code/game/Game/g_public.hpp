@@ -395,6 +395,7 @@ typedef enum {
 //
 // functions exported by the game subsystem
 //
+// TODO: Replace with an IGame interface
 typedef enum {
 	GAME_INIT,	// ( int levelTime, int randomSeed, int restart );
 	// init and shutdown will be called every single level

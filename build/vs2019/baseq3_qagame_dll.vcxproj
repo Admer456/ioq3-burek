@@ -182,6 +182,7 @@
     <ClInclude Include="..\..\code\game\Game\g_local.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_public.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_rankings.hpp" />
+    <ClInclude Include="..\..\code\game\Game\IGame.h" />
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
     <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp" />
     <ClInclude Include="..\..\code\shared\bg_local.hpp" />
