@@ -221,14 +221,14 @@ typedef enum {
 	G_FS_GETFILELIST,
 	G_DEBUG_POLYGON_CREATE,
 	G_DEBUG_POLYGON_DELETE,
-	G_REAL_TIME,
-	G_SNAPVECTOR,
+	G_REAL_TIME, // This one's also shared
+	G_SNAPVECTOR, // This one's also shared
 
 	G_TRACECAPSULE,	// ( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask );
 	G_ENTITY_CONTACTCAPSULE,	// ( const vec3_t mins, const vec3_t maxs, const gentity_t *ent );
 	
 	// 1.32
-	G_FS_SEEK,
+	G_FS_SEEK, // This one's also shared
 
 	BOTLIB_SETUP = 200,				// ( void );
 	BOTLIB_SHUTDOWN,				// ( void );
