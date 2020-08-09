@@ -16,7 +16,7 @@ public:
 	virtual void ClientThink( int clientNum ) = 0;
 
 	virtual void RunFrame( int levelTime ) = 0;
-	virtual void ConsoleCommand( void ) = 0;
+	virtual int ConsoleCommand( void ) = 0;
 
-	virtual void BotAI_StartFrame( int time ) = 0;
+	virtual int BotAI_StartFrame( int time ) = 0;
 };
