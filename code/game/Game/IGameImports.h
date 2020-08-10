@@ -1,5 +1,6 @@
 #pragma once
 
+// All the functions that the game DLL will call from the engine
 class IGameImports
 {
 public:

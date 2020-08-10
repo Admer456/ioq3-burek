@@ -30,6 +30,15 @@
     <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp">
       <Filter>qcommon</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\cgame\IClientGame.h">
+      <Filter>cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\IClientGameImports.h">
+      <Filter>cgame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\IEngineExports.h">
+      <Filter>qcommon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">

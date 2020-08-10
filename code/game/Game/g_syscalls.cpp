@@ -22,6 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 #include "Game/g_local.hpp"
 
+#include "Game/IGame.h"
+#include "Game/IGameImports.h"
+#include "Game/GameExportImport.h"
+#include "Game/GameLocal.h"
+
 // this file is only included when building a dll
 // g_syscalls.asm is included instead when building a qvm
 #ifdef Q3_VM
@@ -30,10 +35,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 static intptr_t (QDECL *syscall)( intptr_t arg, ... ) = (intptr_t (QDECL *)( intptr_t, ...))-1;
 
+GameLocal gameLocal;
+IGame* game = &gameLocal;
+IGameImports* engine;
+static GameExport_t gameExport;
+
 extern "C"
 {
 	Q_EXPORT void dllEntry( intptr_t( QDECL* syscallptr )(intptr_t arg, ...) ) {
 		syscall = syscallptr;
+	}
+
+	// The engine calls GetGameAPI in order to 
+	// retrieve a pointer to our game interface
+	// But also, it doubles as a way to retrieve
+	// functions from the engine, so the game DLL can call them
+	GameExport_t* GetGameAPI( GameImport_t* import )
+	{
+		engine = import->gameImports;
+
+		gameExport.game = game;
+		return &gameExport;
 	}
 }
 

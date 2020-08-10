@@ -22,10 +22,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // sv_game.c -- interface to the game dll
 
 #include "server.hpp"
-
 #include "../botlib/botlib.hpp"
+#include "../qcommon/vm_local.hpp"
+#include "../sys/sys_loadlib.hpp"
+
+#include "../game/Game/IGame.h"
+#include "../game/Game/IGameImports.h"
+#include "../game/Game/GameExportImport.h"
 
 botlib_export_t	*botlib_export;
+
+IGame* game = nullptr;
+GameImport_t gameImports;
 
 // these functions must be used instead of pointer arithmetic, because
 // the game allocates gentities with private information after the server shared part
@@ -85,7 +93,6 @@ void SV_GameSendServerCommand( int clientNum, const char *text ) {
 	}
 }
 
-
 /*
 ===============
 SV_GameDropClient
@@ -99,7 +106,6 @@ void SV_GameDropClient( int clientNum, const char *reason ) {
 	}
 	SV_DropClient( svs.clients + clientNum, reason );	
 }
-
 
 /*
 =================
@@ -134,8 +140,6 @@ void SV_SetBrushModel( sharedEntity_t *ent, const char *name ) {
 	SV_LinkEntity( ent );		// FIXME: remove
 }
 
-
-
 /*
 =================
 SV_inPVS
@@ -165,7 +169,6 @@ qboolean SV_inPVS (const vec3_t p1, const vec3_t p2)
 	return qtrue;
 }
 
-
 /*
 =================
 SV_inPVSIgnorePortals
@@ -192,7 +195,6 @@ qboolean SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2)
 	return qtrue;
 }
 
-
 /*
 ========================
 SV_AdjustAreaPortalState
@@ -207,7 +209,6 @@ void SV_AdjustAreaPortalState( sharedEntity_t *ent, qboolean open ) {
 	}
 	CM_AdjustAreaPortalState( svEnt->areanum, svEnt->areanum2, open );
 }
-
 
 /*
 ==================
@@ -229,7 +230,6 @@ qboolean	SV_EntityContact( vec3_t mins, vec3_t maxs, const sharedEntity_t *gEnt,
 
 	return trace.startsolid;
 }
-
 
 /*
 ===============
@@ -259,7 +259,6 @@ void SV_LocateGameData( sharedEntity_t *gEnts, int numGEntities, int sizeofGEnti
 	sv.gameClients = clients;
 	sv.gameClientSize = sizeofGameClient;
 }
-
 
 /*
 ===============
@@ -860,7 +859,10 @@ void SV_ShutdownGameProgs( void ) {
 	if ( !gvm ) {
 		return;
 	}
-	VM_Call( gvm, GAME_SHUTDOWN, qfalse );
+
+	//VM_Call( gvm, GAME_SHUTDOWN, qfalse );
+	game->Shutdown( false );
+	
 	VM_Free( gvm );
 	gvm = NULL;
 }
@@ -883,15 +885,14 @@ static void SV_InitGameVM( qboolean restart ) {
 	// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=522
 	//   now done before GAME_INIT call
 	for ( i = 0 ; i < sv_maxclients->integer ; i++ ) {
-		svs.clients[i].gentity = NULL;
+		svs.clients[i].gentity = nullptr;
 	}
-	
+
 	// use the current msec count for a random seed
 	// init for this gamestate
-	VM_Call (gvm, GAME_INIT, sv.time, Com_Milliseconds(), restart);
+	//VM_Call (gvm, GAME_INIT, sv.time, Com_Milliseconds(), restart); // Now replaced with an actual interfacey interface
+	game->Init( sv.time, Com_Milliseconds(), restart );
 }
-
-
 
 /*
 ===================
@@ -904,7 +905,9 @@ void SV_RestartGameProgs( void ) {
 	if ( !gvm ) {
 		return;
 	}
-	VM_Call( gvm, GAME_SHUTDOWN, qtrue );
+
+	//VM_Call( gvm, GAME_SHUTDOWN, qtrue );
+	game->Shutdown( true );
 
 	// do a restart instead of a free
 	gvm = VM_Restart(gvm, qtrue);
@@ -915,7 +918,6 @@ void SV_RestartGameProgs( void ) {
 	SV_InitGameVM( qtrue );
 }
 
-
 /*
 ===============
 SV_InitGameProgs
@@ -923,7 +925,8 @@ SV_InitGameProgs
 Called on a normal map change, not on a map_restart
 ===============
 */
-void SV_InitGameProgs( void ) {
+void SV_InitGameProgs( void ) 
+{
 	cvar_t	*var;
 	//FIXME these are temp while I make bots run in vm
 	extern int	bot_enable;
@@ -942,9 +945,21 @@ void SV_InitGameProgs( void ) {
 		Com_Error( ERR_FATAL, "VM_Create on game failed" );
 	}
 
+	void* gameDLLHandle = gvm->dllHandle;
+	auto gameInterfaceGrabber = (GetGameAPIFn)Sys_LoadFunction( gameDLLHandle, "GetGameAPI" );
+
+	if ( gameInterfaceGrabber )
+	{
+		GameExport_t* gameExport = gameInterfaceGrabber( &gameImports );
+		game = gameExport->game;
+	}
+	else
+	{
+		Com_Error( ERR_FATAL, "Could not find function GetGameAPI in qagame.dll" );
+	}
+
 	SV_InitGameVM( qfalse );
 }
-
 
 /*
 ====================
@@ -958,6 +973,5 @@ qboolean SV_GameCommand( void ) {
 		return qfalse;
 	}
 
-	return (qboolean)VM_Call( gvm, GAME_CONSOLE_COMMAND );
+	return game->ConsoleCommand();
 }
-

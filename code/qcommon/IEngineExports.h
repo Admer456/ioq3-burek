@@ -1,7 +1,6 @@
 #pragma once
 
-#pragma once
-
+// Engine exports get imported by the game and client DLLs
 class IEngineExports
 {
 public:

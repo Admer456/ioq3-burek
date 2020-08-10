@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "server.hpp"
 #include "../botlib/botlib.hpp"
+#include "../game/Game/IGame.h"
 
 typedef struct bot_debugpoly_s
 {
@@ -435,7 +436,9 @@ void SV_BotFrame( int time ) {
 	if (!bot_enable) return;
 	//NOTE: maybe the game is already shutdown
 	if (!gvm) return;
-	VM_Call( gvm, BOTAI_START_FRAME, time );
+
+	//VM_Call( gvm, BOTAI_START_FRAME, time );
+	game->BotAI_StartFrame( time );
 }
 
 /*

@@ -93,6 +93,9 @@
     <ClInclude Include="..\..\code\game\Game\IGame.h">
       <Filter>Sources\Game</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Game\IGameImports.h">
+      <Filter>Sources\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
