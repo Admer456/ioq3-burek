@@ -12,7 +12,7 @@ public:
 	virtual int		Milliseconds() = 0;
 
 	virtual int		ArgC( void ) = 0;
-	virtual int		ArgV( int n, char* buffer, int bufferLength ) = 0;
+	virtual void	ArgV( int n, char* buffer, int bufferLength ) = 0;
 
 	virtual bool	GetEntityToken( char* buffer, int bufferSize ) = 0;
 
@@ -27,3 +27,5 @@ public:
 	virtual int		RealTime( qtime_t* qtime ) = 0;
 	virtual void	SnapVector( float* v ) = 0;
 };
+
+extern IEngineExports* engine;

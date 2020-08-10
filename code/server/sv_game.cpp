@@ -26,12 +26,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/vm_local.hpp"
 #include "../sys/sys_loadlib.hpp"
 
+//struct gentity_t;
+
 #include "../game/Game/IGame.h"
 #include "../game/Game/IGameImports.h"
+#include "../qcommon/GameImportsLocal.h"
 #include "../game/Game/GameExportImport.h"
+
+#include "../qcommon/IEngineExports.h"
+#include "../qcommon/EngineLocal.h"
 
 botlib_export_t	*botlib_export;
 
+// Engine functions that get exported specifically to the game DLL
+GameImportsLocal toGameLocal;
+IGameImports* toGame = &toGameLocal;
+
+// Shared engine functions that get exported to a few other DLLs
+EngineLocal engineLocal;
+IEngineExports* engine = &engineLocal;
+
+// Interface that gets retrieved from the game DLL
 IGame* game = nullptr;
 GameImport_t gameImports;
 
@@ -946,10 +961,13 @@ void SV_InitGameProgs( void )
 	}
 
 	void* gameDLLHandle = gvm->dllHandle;
-	auto gameInterfaceGrabber = (GetGameAPIFn)Sys_LoadFunction( gameDLLHandle, "GetGameAPI" );
+	auto gameInterfaceGrabber = reinterpret_cast<GetGameAPIFn>( Sys_LoadFunction( gameDLLHandle, "GetGameAPI" ) );
 
 	if ( gameInterfaceGrabber )
 	{
+		gameImports.engineExports = engine;
+		gameImports.gameImports = toGame;
+
 		GameExport_t* gameExport = gameInterfaceGrabber( &gameImports );
 		game = gameExport->game;
 	}

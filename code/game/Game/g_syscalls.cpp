@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "Game/IGameImports.h"
 #include "Game/GameExportImport.h"
 #include "Game/GameLocal.h"
+#include "../qcommon/IEngineExports.h"
 
 // this file is only included when building a dll
 // g_syscalls.asm is included instead when building a qvm
@@ -33,11 +34,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #error "Do not use in VM build"
 #endif
 
+// OBSOLETE IN 5, 4, 3, 2, 1...
 static intptr_t (QDECL *syscall)( intptr_t arg, ... ) = (intptr_t (QDECL *)( intptr_t, ...))-1;
 
+// Engine callbacks
+IEngineExports* engine = nullptr;
+
+// Game interface statically points to this
 GameLocal gameLocal;
-IGame* game = &gameLocal;
-IGameImports* engine;
+IGame* game = &gameLocal; // What gets exported to the engine
+
+// Game-specific engine callbacks
+IGameImports* gameImports = nullptr;
 static GameExport_t gameExport;
 
 extern "C"
@@ -50,9 +58,10 @@ extern "C"
 	// retrieve a pointer to our game interface
 	// But also, it doubles as a way to retrieve
 	// functions from the engine, so the game DLL can call them
-	GameExport_t* GetGameAPI( GameImport_t* import )
+	Q_EXPORT GameExport_t* GetGameAPI( GameImport_t* import )
 	{
-		engine = import->gameImports;
+		engine = import->engineExports;
+		gameImports = import->gameImports;
 
 		gameExport.game = game;
 		return &gameExport;
@@ -66,25 +75,25 @@ int PASSFLOAT( float x ) {
 }
 
 void	trap_Print( const char *text ) {
-	syscall( G_PRINT, text );
+	engine->Print( text );
 }
 
 void trap_Error( const char *text )
 {
-	syscall( G_ERROR, text );
+	engine->Error( text );
 	// shut up GCC warning about returning functions, because we know better
 	exit(1);
 }
 
 int		trap_Milliseconds( void ) {
-	return syscall( G_MILLISECONDS ); 
+	return engine->Milliseconds();
 }
 int		trap_Argc( void ) {
-	return syscall( G_ARGC );
+	return engine->ArgC();
 }
 
 void	trap_Argv( int n, char *buffer, int bufferLength ) {
-	syscall( G_ARGV, n, buffer, bufferLength );
+	engine->ArgV( n, buffer, bufferLength );
 }
 
 int		trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode ) {

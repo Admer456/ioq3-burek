@@ -179,6 +179,9 @@
     <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
+    <ClInclude Include="..\..\code\game\Game\GameEntity.hpp" />
+    <ClInclude Include="..\..\code\game\Game\GameExportImport.h" />
+    <ClInclude Include="..\..\code\game\Game\GameLocal.h" />
     <ClInclude Include="..\..\code\game\Game\g_local.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_public.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_rankings.hpp" />
@@ -205,6 +208,7 @@
     <ClCompile Include="..\..\code\game\Entities\g_target.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_team.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_trigger.cpp" />
+    <ClCompile Include="..\..\code\game\Game\GameLocal.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_active.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_arenas.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_bot.cpp" />

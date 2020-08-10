@@ -1152,7 +1152,7 @@ void BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean 
 	s->pos.trType = TR_INTERPOLATE;
 	VectorCopy( ps->origin, s->pos.trBase );
 	if ( snap ) {
-		SnapVector( s->pos.trBase );
+		Macro_SnapVector( s->pos.trBase );
 	}
 	// set the trDelta for flag direction
 	VectorCopy( ps->velocity, s->pos.trDelta );
@@ -1160,7 +1160,7 @@ void BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean 
 	s->apos.trType = TR_INTERPOLATE;
 	VectorCopy( ps->viewangles, s->apos.trBase );
 	if ( snap ) {
-		SnapVector( s->apos.trBase );
+		Macro_SnapVector( s->apos.trBase );
 	}
 
 	s->angles2[YAW] = ps->movementDir;
@@ -1228,7 +1228,7 @@ void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 	s->pos.trType = TR_LINEAR_STOP;
 	VectorCopy( ps->origin, s->pos.trBase );
 	if ( snap ) {
-		SnapVector( s->pos.trBase );
+		Macro_SnapVector( s->pos.trBase );
 	}
 	// set the trDelta for flag direction and linear prediction
 	VectorCopy( ps->velocity, s->pos.trDelta );
@@ -1240,7 +1240,7 @@ void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 	s->apos.trType = TR_INTERPOLATE;
 	VectorCopy( ps->viewangles, s->apos.trBase );
 	if ( snap ) {
-		SnapVector( s->apos.trBase );
+		Macro_SnapVector( s->apos.trBase );
 	}
 
 	s->angles2[YAW] = ps->movementDir;

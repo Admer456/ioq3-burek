@@ -2,6 +2,7 @@
 
 class IGame;
 class IGameImports;
+class IEngineExports;
 
 // To be exported to the engine
 struct GameExport_t
@@ -15,6 +16,7 @@ struct GameImport_t
 {
 	unsigned int engineVersion;
 	IGameImports* gameImports;
+	IEngineExports* engineExports;
 };
 
 // Export-import function pointer type

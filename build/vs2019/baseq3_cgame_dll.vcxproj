@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\code\cgame\cg_local.hpp" />
     <ClInclude Include="..\..\code\cgame\cg_public.hpp" />
+    <ClInclude Include="..\..\code\cgame\ClientExportImport.h" />
     <ClInclude Include="..\..\code\cgame\IClientGame.h" />
     <ClInclude Include="..\..\code\cgame\IClientGameImports.h" />
     <ClInclude Include="..\..\code\qcommon\IEngineExports.h" />

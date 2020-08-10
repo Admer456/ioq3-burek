@@ -39,6 +39,9 @@
     <ClInclude Include="..\..\code\qcommon\IEngineExports.h">
       <Filter>qcommon</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\cgame\ClientExportImport.h">
+      <Filter>cgame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">

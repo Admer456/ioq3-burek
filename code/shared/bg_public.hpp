@@ -25,6 +25,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // because games can change separately from the main system version, we need a
 // second version that must match between game and cgame
 
+#pragma once
+
 #define	GAME_VERSION		BASEGAME "-1"
 
 #define	DEFAULT_GRAVITY		800
@@ -534,7 +536,7 @@ typedef struct animation_s {
 // changes so a restart of the same anim can be detected
 #define	ANIM_TOGGLEBIT		128
 
-
+#ifndef team_t
 typedef enum {
 	TEAM_FREE,
 	TEAM_RED,
@@ -543,6 +545,7 @@ typedef enum {
 
 	TEAM_NUM_TEAMS
 } team_t;
+#endif
 
 // Time between location updates
 #define TEAM_LOCATION_UPDATE_TIME		1000
