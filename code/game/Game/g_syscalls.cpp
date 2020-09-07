@@ -60,9 +60,11 @@ extern "C"
 	// functions from the engine, so the game DLL can call them
 	Q_EXPORT GameExport_t* GetGameAPI( GameImport_t* import )
 	{
-		engine = import->engineExports;
+		// Import functions from the engine
+		engine		= import->engineExports;
 		gameImports = import->gameImports;
 
+		// Export functions to the engine
 		gameExport.game = game;
 		return &gameExport;
 	}
@@ -74,193 +76,196 @@ int PASSFLOAT( float x ) {
 	return fi.i;
 }
 
-void	trap_Print( const char *text ) {
-	engine->Print( text );
+void trap_Print( const char *text ) {
+	return engine->Print( text );
 }
 
 void trap_Error( const char *text )
 {
 	engine->Error( text );
 	// shut up GCC warning about returning functions, because we know better
-	exit(1);
+	return exit(1);
 }
 
-int		trap_Milliseconds( void ) {
+int	trap_Milliseconds( void ) {
 	return engine->Milliseconds();
 }
-int		trap_Argc( void ) {
+int	trap_Argc( void ) {
 	return engine->ArgC();
 }
 
-void	trap_Argv( int n, char *buffer, int bufferLength ) {
-	engine->ArgV( n, buffer, bufferLength );
+void trap_Argv( int n, char *buffer, int bufferLength ) {
+	return engine->ArgV( n, buffer, bufferLength );
 }
 
-int		trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode ) {
-	return syscall( G_FS_FOPEN_FILE, qpath, f, mode );
+int trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode ) {
+	return engine->FileSystem_OpenFile( qpath, f, mode );
 }
 
-void	trap_FS_Read( void *buffer, int len, fileHandle_t f ) {
-	syscall( G_FS_READ, buffer, len, f );
+void trap_FS_Read( void *buffer, int len, fileHandle_t f ) {
+	return engine->FileSystem_Read( buffer, len, f );
 }
 
-void	trap_FS_Write( const void *buffer, int len, fileHandle_t f ) {
-	syscall( G_FS_WRITE, buffer, len, f );
+void trap_FS_Write( const void *buffer, int len, fileHandle_t f ) {
+	return engine->FileSystem_Write( buffer, len, f );
 }
 
-void	trap_FS_FCloseFile( fileHandle_t f ) {
-	syscall( G_FS_FCLOSE_FILE, f );
+void trap_FS_FCloseFile( fileHandle_t f ) {
+	return engine->FileSystem_CloseFile( f );
 }
 
 int trap_FS_GetFileList(  const char *path, const char *extension, char *listbuf, int bufsize ) {
-	return syscall( G_FS_GETFILELIST, path, extension, listbuf, bufsize );
+	return engine->FileSystem_GetFileList( path, extension, listbuf, bufsize );
 }
 
 int trap_FS_Seek( fileHandle_t f, long offset, int origin ) {
-	return syscall( G_FS_SEEK, f, offset, origin );
+	return engine->FileSystem_Seek( f, offset, origin );
 }
 
-void	trap_SendConsoleCommand( int exec_when, const char *text ) {
-	syscall( G_SEND_CONSOLE_COMMAND, exec_when, text );
+void trap_SendConsoleCommand( int exec_when, const char *text ) {
+	return engine->SendConsoleCommand( exec_when, text );
 }
 
-void	trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags ) {
-	syscall( G_CVAR_REGISTER, cvar, var_name, value, flags );
+void trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags ) {
+	return gameImports->ConsoleVariable_Register( cvar, var_name, value, flags );
 }
 
-void	trap_Cvar_Update( vmCvar_t *cvar ) {
-	syscall( G_CVAR_UPDATE, cvar );
+void trap_Cvar_Update( vmCvar_t *cvar ) {
+	return gameImports->ConsoleVariable_Update( cvar );
 }
 
 void trap_Cvar_Set( const char *var_name, const char *value ) {
-	syscall( G_CVAR_SET, var_name, value );
+	return gameImports->ConsoleVariable_Set( var_name, value );
 }
 
 int trap_Cvar_VariableIntegerValue( const char *var_name ) {
-	return syscall( G_CVAR_VARIABLE_INTEGER_VALUE, var_name );
+	return gameImports->ConsoleVariable_GetInteger( var_name );
 }
 
 void trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int bufsize ) {
-	syscall( G_CVAR_VARIABLE_STRING_BUFFER, var_name, buffer, bufsize );
+	return gameImports->ConsoleVariable_GetString( var_name, buffer, bufsize );
 }
 
-
-void trap_LocateGameData( gentity_t *gEnts, int numGEntities, int sizeofGEntity_t,
-						 playerState_t *clients, int sizeofGClient ) {
-	syscall( G_LOCATE_GAME_DATA, gEnts, numGEntities, sizeofGEntity_t, clients, sizeofGClient );
+void trap_LocateGameData( gentity_t *gEnts, int numGEntities, int sizeofGEntity_t, playerState_t *clients, int sizeofGClient ) {
+	return gameImports->LocateGameData( reinterpret_cast<sharedEntity_t*>( gEnts ), numGEntities, sizeofGEntity_t, clients, sizeofGClient );
 }
 
 void trap_DropClient( int clientNum, const char *reason ) {
-	syscall( G_DROP_CLIENT, clientNum, reason );
+	return gameImports->DropClient( clientNum, reason );
 }
 
 void trap_SendServerCommand( int clientNum, const char *text ) {
-	syscall( G_SEND_SERVER_COMMAND, clientNum, text );
+	return gameImports->SendServerCommand( clientNum, text );
 }
 
 void trap_SetConfigstring( int num, const char *string ) {
-	syscall( G_SET_CONFIGSTRING, num, string );
+	return gameImports->SetConfigString( num, string );
 }
 
 void trap_GetConfigstring( int num, char *buffer, int bufferSize ) {
-	syscall( G_GET_CONFIGSTRING, num, buffer, bufferSize );
+	return gameImports->GetConfigString( num, buffer, bufferSize );
 }
 
 void trap_GetUserinfo( int num, char *buffer, int bufferSize ) {
-	syscall( G_GET_USERINFO, num, buffer, bufferSize );
+	return gameImports->GetUserInfo( num, buffer, bufferSize );
 }
 
 void trap_SetUserinfo( int num, const char *buffer ) {
-	syscall( G_SET_USERINFO, num, buffer );
+	return gameImports->SetUserInfo( num, buffer );
 }
 
 void trap_GetServerinfo( char *buffer, int bufferSize ) {
-	syscall( G_GET_SERVERINFO, buffer, bufferSize );
+	return gameImports->GetServerInfo( buffer, bufferSize );
 }
 
 void trap_SetBrushModel( gentity_t *ent, const char *name ) {
-	syscall( G_SET_BRUSH_MODEL, ent, name );
+	return gameImports->SetBrushModel( reinterpret_cast<sharedEntity_t*>( ent ), name );
 }
 
 void trap_Trace( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) {
-	syscall( G_TRACE, results, start, mins, maxs, end, passEntityNum, contentmask );
+	return gameImports->Trace( results, start, mins, maxs, end, passEntityNum, contentmask );
 }
 
 void trap_TraceCapsule( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) {
-	syscall( G_TRACECAPSULE, results, start, mins, maxs, end, passEntityNum, contentmask );
+	return gameImports->TraceCapsule( results, start, mins, maxs, end, passEntityNum, contentmask );
 }
 
 int trap_PointContents( const vec3_t point, int passEntityNum ) {
-	return syscall( G_POINT_CONTENTS, point, passEntityNum );
+	return gameImports->PointContents( point, passEntityNum );
 }
 
-
 qboolean trap_InPVS( const vec3_t p1, const vec3_t p2 ) {
-	return (qboolean)syscall( G_IN_PVS, p1, p2 );
+	return gameImports->IsInPVS( p1, p2 );
 }
 
 qboolean trap_InPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
-	return (qboolean)syscall( G_IN_PVS_IGNORE_PORTALS, p1, p2 );
+	return gameImports->InPVSIgnorePortals( p1, p2 );
 }
 
 void trap_AdjustAreaPortalState( gentity_t *ent, qboolean open ) {
-	syscall( G_ADJUST_AREA_PORTAL_STATE, ent, open );
+	return gameImports->AdjustAreaPortalState( reinterpret_cast<sharedEntity_t*>( ent ), open );
 }
 
 qboolean trap_AreasConnected( int area1, int area2 ) {
-	return (qboolean)syscall( G_AREAS_CONNECTED, area1, area2 );
+	return gameImports->AreasConnected( area1, area2 );
 }
 
 void trap_LinkEntity( gentity_t *ent ) {
-	syscall( G_LINKENTITY, ent );
+	return gameImports->LinkEntity( reinterpret_cast<sharedEntity_t*>(ent) );
 }
 
 void trap_UnlinkEntity( gentity_t *ent ) {
-	syscall( G_UNLINKENTITY, ent );
+	return gameImports->UnlinkEntity( reinterpret_cast<sharedEntity_t*>( ent ) );
 }
 
 int trap_EntitiesInBox( const vec3_t mins, const vec3_t maxs, int *list, int maxcount ) {
-	return syscall( G_ENTITIES_IN_BOX, mins, maxs, list, maxcount );
+	return gameImports->EntitiesInBox( mins, maxs, list, maxcount );
 }
 
 qboolean trap_EntityContact( const vec3_t mins, const vec3_t maxs, const gentity_t *ent ) {
-	return (qboolean)syscall( G_ENTITY_CONTACT, mins, maxs, ent );
+	vec3_t _mins = { mins[0], mins[1], mins[2] };
+	vec3_t _maxs = { maxs[0], maxs[1], maxs[2] };
+
+	return gameImports->EntityContact( _mins, _maxs, reinterpret_cast<const sharedEntity_t*>( ent ) );
 }
 
 qboolean trap_EntityContactCapsule( const vec3_t mins, const vec3_t maxs, const gentity_t *ent ) {
-	return (qboolean)syscall( G_ENTITY_CONTACTCAPSULE, mins, maxs, ent );
+	vec3_t _mins = { mins[0], mins[1], mins[2] };
+	vec3_t _maxs = { maxs[0], maxs[1], maxs[2] };
+
+	return gameImports->EntityContactCapsule( _mins, _maxs, reinterpret_cast<const sharedEntity_t*>(ent) );
 }
 
 int trap_BotAllocateClient( void ) {
-	return syscall( G_BOT_ALLOCATE_CLIENT );
+	return gameImports->BotAllocateClient();
 }
 
 void trap_BotFreeClient( int clientNum ) {
-	syscall( G_BOT_FREE_CLIENT, clientNum );
+	return gameImports->BotFreeClient( clientNum );
 }
 
 void trap_GetUsercmd( int clientNum, usercmd_t *cmd ) {
-	syscall( G_GET_USERCMD, clientNum, cmd );
+	return gameImports->GetUsercmd( clientNum, cmd );
 }
 
 qboolean trap_GetEntityToken( char *buffer, int bufferSize ) {
-	return (qboolean)syscall( G_GET_ENTITY_TOKEN, buffer, bufferSize );
+	return engine->GetEntityToken( buffer, bufferSize );
 }
 
 int trap_DebugPolygonCreate(int color, int numPoints, vec3_t *points) {
-	return syscall( G_DEBUG_POLYGON_CREATE, color, numPoints, points );
+	return gameImports->DebugPolygonCreate( color, numPoints, points );
 }
 
 void trap_DebugPolygonDelete(int id) {
-	syscall( G_DEBUG_POLYGON_DELETE, id );
+	return gameImports->DebugPolygonDelete( id );
 }
 
 int trap_RealTime( qtime_t *qtime ) {
-	return syscall( G_REAL_TIME, qtime );
+	return engine->RealTime( qtime );
 }
 
 void trap_SnapVector( float *v ) {
-	syscall( G_SNAPVECTOR, v );
+	return engine->SnapVector( v );
 }
 
 // BotLib traps start here

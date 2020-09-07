@@ -32,8 +32,8 @@ public:
 
 	void			SetBrushModel( sharedEntity_t* ent, const char* name ) override;
 
-	void			Trace( trace_t* results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) override;
-	void			TraceCapsule( trace_t* results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) override;
+	void			Trace( trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) override;
+	void			TraceCapsule( trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) override;
 
 	int				PointContents( const vec3_t point, int passEntityNum ) override;
 

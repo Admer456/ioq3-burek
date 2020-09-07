@@ -31,8 +31,8 @@ public:
 
 	virtual void			SetBrushModel( sharedEntity_t* ent, const char* name ) = 0;
 
-	virtual void			Trace( trace_t* results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) = 0;
-	virtual void			TraceCapsule( trace_t* results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) = 0;
+	virtual void			Trace( trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) = 0;
+	virtual void			TraceCapsule( trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) = 0;
 
 	virtual int				PointContents( const vec3_t point, int passEntityNum ) = 0;
 

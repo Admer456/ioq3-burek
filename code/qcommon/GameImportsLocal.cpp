@@ -2,6 +2,9 @@
 //#include "../botlib/botlib.hpp"
 #include "../qcommon/vm_local.hpp"
 
+struct gentity_s;
+struct gentity_t;
+
 #include "../game/Game/IGameImports.h"
 #include "GameImportsLocal.h"
 //#include "../sys/sys_loadlib.hpp"
@@ -101,14 +104,20 @@ void GameImportsLocal::SetBrushModel( sharedEntity_t* ent, const char* name )
 	SV_SetBrushModel( ent, name );
 }
 
-void GameImportsLocal::Trace( trace_t* results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask )
+void GameImportsLocal::Trace( trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask )
 {
-	SV_Trace( results, start, mins, maxs, end, passEntityNum, contentmask, false );
+	vec3_t _mins = { mins[0], mins[1], mins[2] };
+	vec3_t _maxs = { maxs[0], maxs[1], maxs[2] };
+
+	SV_Trace( results, start, _mins, _maxs, end, passEntityNum, contentmask, false );
 }
 
-void GameImportsLocal::TraceCapsule( trace_t* results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask )
+void GameImportsLocal::TraceCapsule( trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask )
 {
-	SV_Trace( results, start, mins, maxs, end, passEntityNum, contentmask, true );
+	vec3_t _mins = { mins[0], mins[1], mins[2] };
+	vec3_t _maxs = { maxs[0], maxs[1], maxs[2] };
+
+	SV_Trace( results, start, _mins, _maxs, end, passEntityNum, contentmask, true );
 }
 
 int GameImportsLocal::PointContents( const vec3_t point, int passEntityNum )
