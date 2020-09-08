@@ -159,6 +159,8 @@ BotAI_GetClientState
 ==================
 */
 int BotAI_GetClientState( int clientNum, playerState_t *state ) {
+	return qfalse;
+
 	gentity_t	*ent;
 
 	ent = &g_entities[clientNum];
@@ -179,6 +181,8 @@ BotAI_GetEntityState
 ==================
 */
 int BotAI_GetEntityState( int entityNum, entityState_t *state ) {
+	return qfalse;
+
 	gentity_t	*ent;
 
 	ent = &g_entities[entityNum];
@@ -196,6 +200,8 @@ BotAI_GetSnapshotEntity
 ==================
 */
 int BotAI_GetSnapshotEntity( int clientNum, int sequence, entityState_t *state ) {
+	return 0;
+
 	int		entNum;
 
 	entNum = trap_BotGetSnapshotEntity( clientNum, sequence );
@@ -215,6 +221,8 @@ BotAI_BotInitialChat
 ==================
 */
 void QDECL BotAI_BotInitialChat( bot_state_t *bs, char *type, ... ) {
+	return;
+
 	int		i, mcontext;
 	va_list	ap;
 	char	*p;
@@ -244,6 +252,8 @@ BotTestAAS
 ==================
 */
 void BotTestAAS(vec3_t origin) {
+	return;
+
 	int areanum;
 	aas_areainfo_t info;
 
@@ -273,6 +283,8 @@ BotReportStatus
 ==================
 */
 void BotReportStatus(bot_state_t *bs) {
+	return;
+
 	char goalname[MAX_MESSAGE_SIZE];
 	char netname[MAX_MESSAGE_SIZE];
 	char *leader, flagstatus[32];
@@ -370,6 +382,8 @@ BotTeamplayReport
 ==================
 */
 void BotTeamplayReport(void) {
+	return;
+
 	int i;
 	char buf[MAX_INFO_STRING];
 
@@ -407,6 +421,8 @@ BotSetInfoConfigString
 ==================
 */
 void BotSetInfoConfigString(bot_state_t *bs) {
+	return;
+
 	char goalname[MAX_MESSAGE_SIZE];
 	char netname[MAX_MESSAGE_SIZE];
 	char action[MAX_MESSAGE_SIZE];
@@ -512,6 +528,8 @@ BotUpdateInfoConfigStrings
 ==============
 */
 void BotUpdateInfoConfigStrings(void) {
+	return;
+
 	int i;
 	char buf[MAX_INFO_STRING];
 
@@ -534,6 +552,8 @@ BotInterbreedBots
 ==============
 */
 void BotInterbreedBots(void) {
+	return;
+
 	float ranks[MAX_CLIENTS];
 	int parent1, parent2, child;
 	int i;
@@ -567,6 +587,8 @@ BotWriteInterbreeded
 ==============
 */
 void BotWriteInterbreeded(char *filename) {
+	return;
+
 	float rank, bestrank;
 	int i, bestbot;
 
@@ -599,6 +621,7 @@ add link back into ExitLevel?
 ==============
 */
 void BotInterbreedEndMatch(void) {
+	return;
 
 	if (!bot_interbreed) return;
 	bot_interbreedmatchcount++;
@@ -620,6 +643,8 @@ BotInterbreeding
 ==============
 */
 void BotInterbreeding(void) {
+	return;
+
 	int i;
 
 	trap_Cvar_Update(&bot_interbreedchar);
@@ -654,6 +679,7 @@ BotEntityInfo
 ==============
 */
 void BotEntityInfo(int entnum, aas_entityinfo_t *info) {
+	return;
 	trap_AAS_EntityInfo(entnum, info);
 }
 
@@ -663,6 +689,7 @@ NumBots
 ==============
 */
 int NumBots(void) {
+	return 0;
 	return numbots;
 }
 
@@ -672,6 +699,8 @@ BotTeamLeader
 ==============
 */
 int BotTeamLeader(bot_state_t *bs) {
+	return qtrue;
+
 	int leader;
 
 	leader = ClientFromName(bs->teamleader);
@@ -731,6 +760,8 @@ BotChangeViewAngles
 ==============
 */
 void BotChangeViewAngles(bot_state_t *bs, float thinktime) {
+	return;
+
 	float diff, factor, maxchange, anglespeed, disired_speed;
 	int i;
 
@@ -788,6 +819,8 @@ BotInputToUserCommand
 ==============
 */
 void BotInputToUserCommand(bot_input_t *bi, usercmd_t *ucmd, int delta_angles[3], int time) {
+	return;
+
 	vec3_t angles, forward, right;
 	short temp;
 	int j;
@@ -884,6 +917,8 @@ BotUpdateInput
 ==============
 */
 void BotUpdateInput(bot_state_t *bs, int time, int elapsed_time) {
+	return;
+
 	bot_input_t bi;
 	int j;
 
@@ -913,6 +948,8 @@ BotAIRegularUpdate
 ==============
 */
 void BotAIRegularUpdate(void) {
+	return;
+
 	if (regularupdate_time < FloatTime()) {
 		trap_BotUpdateEntityItems();
 		regularupdate_time = FloatTime() + 0.3;
@@ -946,6 +983,8 @@ BotAI
 ==============
 */
 int BotAI(int client, float thinktime) {
+	return qtrue;
+
 	bot_state_t *bs;
 	char buf[1024], *args;
 	int j;
@@ -1033,6 +1072,8 @@ BotScheduleBotThink
 ==================
 */
 void BotScheduleBotThink(void) {
+	return;
+
 	int i, botnum;
 
 	botnum = 0;
@@ -1053,6 +1094,8 @@ BotWriteSessionData
 ==============
 */
 void BotWriteSessionData(bot_state_t *bs) {
+	return;
+
 	const char	*s;
 	const char	*var;
 
@@ -1093,6 +1136,8 @@ BotReadSessionData
 ==============
 */
 void BotReadSessionData(bot_state_t *bs) {
+	return;
+
 	char	s[MAX_STRING_CHARS];
 	const char	*var;
 
@@ -1132,6 +1177,8 @@ BotAISetupClient
 ==============
 */
 int BotAISetupClient(int client, struct bot_settings_s *settings, qboolean restart) {
+	return qtrue;
+
 	char filename[144], name[144], gender[144];
 	bot_state_t *bs;
 	int errnum;
@@ -1232,6 +1279,8 @@ BotAIShutdownClient
 ==============
 */
 int BotAIShutdownClient(int client, qboolean restart) {
+	return qtrue;
+
 	bot_state_t *bs;
 
 	bs = botstates[client];
@@ -1281,6 +1330,8 @@ when the level is changed
 ==============
 */
 void BotResetState(bot_state_t *bs) {
+	return;
+
 	int client, entitynum, inuse;
 	int movestate, goalstate, chatstate, weaponstate;
 	bot_settings_t settings;
@@ -1331,6 +1382,8 @@ BotAILoadMap
 ==============
 */
 int BotAILoadMap( int restart ) {
+	return qtrue;
+
 	int			i;
 	vmCvar_t	mapname;
 
@@ -1357,6 +1410,8 @@ BotAIStartFrame
 ==================
 */
 int BotAIStartFrame(int time) {
+	return qtrue;
+
 	int i;
 	gentity_t	*ent;
 	bot_entitystate_t state;
@@ -1543,6 +1598,8 @@ BotInitLibrary
 int BotInitLibrary(void) {
 	char buf[144];
 
+	return qtrue;
+
 	//set the maxclients and maxentities library variables before calling BotSetupLibrary
 	Com_sprintf(buf, sizeof(buf), "%d", level.maxclients);
 	trap_BotLibVarSet("maxclients", buf);
@@ -1611,6 +1668,8 @@ BotAISetup
 int BotAISetup( int restart ) {
 	int			errnum;
 
+	return qtrue;
+
 	trap_Cvar_Register(&bot_thinktime, "bot_thinktime", "100", CVAR_CHEAT);
 	trap_Cvar_Register(&bot_memorydump, "bot_memorydump", "0", CVAR_CHEAT);
 	trap_Cvar_Register(&bot_saveroutingcache, "bot_saveroutingcache", "0", CVAR_CHEAT);
@@ -1643,6 +1702,7 @@ BotAIShutdown
 ==============
 */
 int BotAIShutdown( int restart ) {
+	return qtrue;
 
 	int i;
 
