@@ -223,15 +223,15 @@ int trap_EntitiesInBox( const vec3_t mins, const vec3_t maxs, int *list, int max
 }
 
 qboolean trap_EntityContact( const vec3_t mins, const vec3_t maxs, const gentity_t *ent ) {
-	vec3_t _mins = { mins[0], mins[1], mins[2] };
-	vec3_t _maxs = { maxs[0], maxs[1], maxs[2] };
+	vec_t* _mins = const_cast<vec_t*>(mins);
+	vec_t* _maxs = const_cast<vec_t*>(maxs);
 
 	return gameImports->EntityContact( _mins, _maxs, reinterpret_cast<const sharedEntity_t*>( ent ) );
 }
 
 qboolean trap_EntityContactCapsule( const vec3_t mins, const vec3_t maxs, const gentity_t *ent ) {
-	vec3_t _mins = { mins[0], mins[1], mins[2] };
-	vec3_t _maxs = { maxs[0], maxs[1], maxs[2] };
+	vec_t* _mins = const_cast<vec_t*>(mins);
+	vec_t* _maxs = const_cast<vec_t*>(maxs);
 
 	return gameImports->EntityContactCapsule( _mins, _maxs, reinterpret_cast<const sharedEntity_t*>(ent) );
 }
