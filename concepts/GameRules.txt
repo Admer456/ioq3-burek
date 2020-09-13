@@ -1,2 +1,21 @@
 Very much like Half-Life's GameRules class.
-IGameRules would be an interface containing several methods
+IGameRules would be an interface containing several methods such as the following:
+
+bool 		CanSpawn( const IPlayerComponent* player ) <- determines whether the player in question can spawn or not
+bool 		CanMonsterSpawn( const IAIComponent* ai ) <- determines whether the monster in question can spawn or not, e.g. "only zombies can spawn"
+PickupType 	CanPickup( const IPlayerComponent* player, const IPickupableComponent* item ) <- determines whether a player can, say, pick up weapons and whatnot, depending on the 'class' they're in or whatever 
+	Additionally, PickupType can be one of the following: PickupNone, PickupAmmo, PickupItem, PickupAmmoAndItem
+
+IEntity* 		LocateSpawn() <- finds a random spawn point in the map
+void 		Punish( IPlayerComponent* player, int punishmentType, int value ) <- will punish the player for doing something, e.g. "slap" the player for shooting at a teammate
+std::vector<string>  GetSpawnFilters() <- returns classnames of applicable spawn points: info_player_start, info_player_deathmatch, info_player_coop etc.
+
+Imaginary examples of GameRules classes:
+
+GameRulesCampaign - players can pick up any weapon, they spawn only on info_player_start etc.
+GameRulesMinigame - players can't pick up new weapons, only ammo for their own etc.
+GameRulesDeathmatch - any player can kill any player, monsters don't spawn, players spawn and respawn at info_player_deathmatch
+GameRulesTeamDeathmatch - players from the same team can't hurt each other unless friendly fire is on, up to 4 teams spawn at different info_player_teamN points
+GameRulesCooperative - players can't hurt each other, monsters may respawn, players may or may not respawn depending on the server options
+
+This interface would be implemented and used exclusively inside the game DLL.
