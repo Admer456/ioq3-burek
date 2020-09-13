@@ -1,5 +1,12 @@
 #pragma once
 
+#include <vector>
+
+namespace Components
+{
+	class IComponent;
+}
+
 namespace Entities
 {
 	class IEntity;
@@ -10,8 +17,6 @@ namespace Entities
 	typedef void (IEntity::* blockedPointer   )( IEntity* other );
 	typedef void (IEntity::* takeDamagePointer)( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage );
 	typedef void (IEntity::* diePointer       )( IEntity* killer );
-
-	//struct gentity_t; // Engine entity struct
 
 	class IEntity
 	{
@@ -28,37 +33,53 @@ namespace Entities
 		virtual void				Die( IEntity* killer ) = 0;
 		
 	public: // Modular function utilities. I know they're a little bit ugly, but they work
-		template< typename function >
+		template<typename function>
 		inline void					SetThink( function f )
 		{
 			thinkFunction = static_cast<thinkPointer>( f );
 		}
 
-		template< typename function >
+		template<typename function>
 		inline void					SetUse( function f )
 		{
 			useFunction = static_cast<void (IEntity::*)(IEntity* activator, IEntity* caller, float value)>(f);
 		}
 
-		template< typename function >
+		template<typename function>
 		inline void					SetTouch( function f )
 		{
 			touchFunction = static_cast<void (IEntity::*)(IEntity* other)>(f);
 		}
 
-		inline gentity_t*			GetEngineEntity()
-		{
-			return engineEntity;
-		}
+		// Component interface
 
-	protected:
+		// Use this if you're 100% sure you know a comp exists
+		template<typename componentType>
+		componentType*				GetComponent(); 
+		
+		// Use this if you're 100% sure you need a new comp
+		template<typename componentType>
+		componentType*				CreateComponent();
+		
+		// Use this if unsure; be careful since it's the slowest
+		template<typename componentType>
+		componentType*				GetOrCreateComponent();
+
+	public: // Engine interface (must get rid of one day)
+		virtual entityShared_t* GetEngineShared() const = 0;
+		virtual entityState_t* GetState() const = 0;
+
+	protected: // Component stuff
+		std::vector<Components::IComponent*> components;
+
+	protected: // Callbacks
 		void						(IEntity::* thinkFunction)( void );
 		void						(IEntity::* useFunction)( IEntity* activator, IEntity* caller, float value );
 		void						(IEntity::* touchFunction)( IEntity* other );
 		void						(IEntity::* blockedFunction)( IEntity* other );
 		void						(IEntity::* takeDamageFunction)( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage );
 		void						(IEntity::* dieFunction)( IEntity* killer );
-
-		gentity_t*					engineEntity;
 	};
+
+	constexpr unsigned int IEntitySize = sizeof( IEntity );
 }

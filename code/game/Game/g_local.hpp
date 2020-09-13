@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/q_shared.hpp"
 #include "../shared/bg_public.hpp"
 #include "g_public.hpp"
+#include "Entities/IEntity.hpp"
 
 //==================================================================
 
@@ -317,9 +318,13 @@ struct gclient_s {
 typedef struct {
 	struct gclient_s	*clients;		// [maxclients]
 
-	struct gentity_s	*gentities;
+	gentity_t*	gentities;
 	int			gentitySize;
 	int			num_entities;		// MAX_CLIENTS <= num_entities <= ENTITYNUM_MAX_NORMAL
+
+	IEntity**	entities;
+	int			entitySize;
+	int			numEntities;
 
 	int			warmupTime;			// restart match at this time
 
@@ -661,8 +666,9 @@ void BotTestAAS(vec3_t origin);
 
 #include "Entities/g_team.hpp" // teamplay specific stuff
 
-extern	level_locals_t	level;
-extern	gentity_t		g_entities[MAX_GENTITIES];
+extern	level_locals_t		level;
+extern Entities::IEntity*	gEntities[MAX_GENTITIES];
+extern gentity_t			g_entities[MAX_GENTITIES];
 
 #define	FOFS(x) ((size_t)&(((gentity_t *)0)->x))
 

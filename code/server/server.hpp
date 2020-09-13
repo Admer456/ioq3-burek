@@ -88,6 +88,10 @@ typedef struct {
 	int				gentitySize;
 	int				num_entities;		// current number, <= MAX_GENTITIES
 
+	Entities::IEntity** entities;
+	int				entitySize;
+	int				numEntities;
+
 	playerState_t	*gameClients;
 	int				gameClientSize;		// will be > sizeof(playerState_t) due to game private data
 

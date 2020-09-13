@@ -245,6 +245,7 @@
     <ClInclude Include="..\..\code\qcommon\IEngineExports.h" />
     <ClInclude Include="..\..\code\qcommon\ioapi.hpp" />
     <ClInclude Include="..\..\code\qcommon\json.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Maths\Vector.hpp" />
     <ClInclude Include="..\..\code\qcommon\puff.hpp" />
     <ClInclude Include="..\..\code\qcommon\q_platform.hpp" />
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
@@ -325,6 +326,7 @@
     <ClCompile Include="..\..\code\qcommon\GameImportsLocal.cpp" />
     <ClCompile Include="..\..\code\qcommon\huffman.cpp" />
     <ClCompile Include="..\..\code\qcommon\ioapi.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Maths\Vector.cpp" />
     <ClCompile Include="..\..\code\qcommon\md4.cpp" />
     <ClCompile Include="..\..\code\qcommon\md5.cpp" />
     <ClCompile Include="..\..\code\qcommon\msg.cpp" />

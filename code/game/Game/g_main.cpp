@@ -22,6 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
 #include "Game/g_local.hpp"
+#include "Entities/IEntity.hpp"
+#include "Game/GameWorld.hpp"
+#include "Game/IGameImports.h"
+
+using namespace Entities;
 
 level_locals_t	level;
 
@@ -36,7 +41,11 @@ typedef struct {
 } cvarTable_t;
 
 gentity_t		g_entities[MAX_GENTITIES];
+IEntity*		gEntities[MAX_GENTITIES];
+
 gclient_t		g_clients[MAX_CLIENTS];
+
+extern IGameImports* gameImports;
 
 vmCvar_t	g_gametype;
 vmCvar_t	g_dmflags;
@@ -419,6 +428,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_InitWorldSession();
 
 	// initialize all entities for this game
+	memset( gEntities, 0, MAX_GENTITIES * sizeof( gEntities[0] ) );
 	memset( g_entities, 0, MAX_GENTITIES * sizeof(g_entities[0]) );
 	level.gentities = g_entities;
 
@@ -442,8 +452,13 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 
 	// let the server system know where the entites are
-	trap_LocateGameData( level.gentities, level.num_entities, sizeof( gentity_t ), 
+	gameImports->LocateGameData( 
+		reinterpret_cast<sharedEntity_t*>( level.gentities ), level.num_entities, sizeof( gentity_t ),
+		level.entities, level.numEntities, sizeof( IEntity* ), 
 		&level.clients[0].ps, sizeof( level.clients[0] ) );
+
+	//trap_LocateGameData( level.gentities, level.num_entities, sizeof( gentity_t ), 
+	//	&level.clients[0].ps, sizeof( level.clients[0] ) );
 
 	// reserve some spots for dead player bodies
 	InitBodyQue();
@@ -496,6 +511,9 @@ void G_ShutdownGame( int restart ) {
 		trap_FS_FCloseFile( level.logFile );
 		level.logFile = 0;
 	}
+
+	// Do not delete gameWorld
+	gameWorld->Shutdown();
 
 	// write all the client session data so we can get it back
 	G_WriteSessionData();
@@ -1784,6 +1802,14 @@ void G_RunFrame( int levelTime ) {
 		}
 
 		G_RunThink( ent );
+	}
+
+	for ( auto ent : gEntities )
+	{
+		if ( nullptr == ent )
+			continue;
+
+		ent->Think();
 	}
 
 	// perform final fixups on the players

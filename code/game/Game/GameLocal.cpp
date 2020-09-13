@@ -5,6 +5,8 @@
 #include "Game/GameExportImport.h"
 #include "Game/GameLocal.h"
 
+#include "Game/GameWorld.hpp"
+
 extern void G_InitGame( int levelTime, int randomSeed, int restart );
 extern void G_ShutdownGame( int restart );
 extern void ClientUserinfoChanged( int clientNum );
@@ -21,12 +23,14 @@ extern void G_RunFrame( int levelTime );
 
 void GameLocal::Init( int levelTime, int randomSeed, int restart )
 {
-	::G_InitGame( levelTime, randomSeed, restart );
+	gameWorld = new GameWorld();
+
+	return ::G_InitGame( levelTime, randomSeed, restart );
 }
 
 void GameLocal::Shutdown( bool restart )
 {
-	::G_ShutdownGame( restart );
+	return ::G_ShutdownGame( restart );
 }
 
 const char* GameLocal::ClientConnect( int clientNum, bool firstTime, bool isBot )
@@ -36,32 +40,32 @@ const char* GameLocal::ClientConnect( int clientNum, bool firstTime, bool isBot 
 
 void GameLocal::ClientBegin( int clientNum )
 {
-	::ClientBegin( clientNum );
+	return ::ClientBegin( clientNum );
 }
 
 void GameLocal::ClientUserInfoChanged( int clientNum )
 {
-	::ClientUserinfoChanged( clientNum );
+	return ::ClientUserinfoChanged( clientNum );
 }
 
 void GameLocal::ClientDisconnect( int clientNum )
 {
-	::ClientDisconnect( clientNum );
+	return ::ClientDisconnect( clientNum );
 }
 
 void GameLocal::ClientCommand( int clientNum )
 {
-	::ClientCommand( clientNum );
+	return ::ClientCommand( clientNum );
 }
 
 void GameLocal::ClientThink( int clientNum )
 {
-	::ClientThink( clientNum );
+	return ::ClientThink( clientNum );
 }
 
 void GameLocal::RunFrame( int levelTime )
 {
-	::G_RunFrame( levelTime );
+	return ::G_RunFrame( levelTime );
 }
 
 bool GameLocal::ConsoleCommand( void )

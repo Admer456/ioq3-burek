@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
 #include "Game/g_local.hpp"
+#include "Game/GameWorld.hpp"
 
 qboolean	G_SpawnString( const char *key, const char *defaultString, char **out ) {
 	int		i;
@@ -69,8 +70,6 @@ qboolean	G_SpawnVector( const char *key, const char *defaultString, float *out )
 	return present;
 }
 
-
-
 //
 // fields are needed for spawning from the entity string
 //
@@ -89,7 +88,8 @@ typedef struct
 	fieldtype_t	type;
 } field_t;
 
-field_t fields[] = {
+field_t fields[] = 
+{
 	{"classname", FOFS(classname), F_STRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
 	{"model", FOFS(model), F_STRING},
@@ -113,8 +113,8 @@ field_t fields[] = {
 	{NULL}
 };
 
-
-typedef struct {
+typedef struct 
+{
 	char	*name;
 	void	(*spawn)(gentity_t *ent);
 } spawn_t;
@@ -132,7 +132,7 @@ void SP_func_button (gentity_t *ent);
 void SP_func_door (gentity_t *ent);
 void SP_func_train (gentity_t *ent);
 void SP_func_timer (gentity_t *self);
-void SP_func_breakable( gentity_t* self );
+void SP_func_breakable( gentity_t* self ); // Admer
 
 void SP_trigger_always (gentity_t *ent);
 void SP_trigger_multiple (gentity_t *ent);
@@ -177,7 +177,8 @@ void SP_team_CTF_bluespawn( gentity_t *ent );
 
 void SP_item_botroam( gentity_t *ent ) { }
 
-spawn_t	spawns[] = {
+spawn_t	spawns[] = 
+{
 	// info entities don't do anything at all, but provide positional
 	// information for things controlled by other processes
 	{"info_player_start", SP_info_player_start},
@@ -321,9 +322,6 @@ char *G_NewString( const char *string ) {
 	return newb;
 }
 
-
-
-
 /*
 ===============
 G_ParseField
@@ -455,8 +453,6 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 	}
 }
 
-
-
 /*
 ====================
 G_AddSpawnVarToken
@@ -505,13 +501,15 @@ qboolean G_ParseSpawnVars( void ) {
 		G_Error( "G_ParseSpawnVars: found %s when expecting {",com_token );
 	}
 
+	KeyValueLibrary kvLibrary;
+
 	// go through all the key / value pairs
 	while ( 1 ) {	
 		// parse key
 		if ( !trap_GetEntityToken( keyname, sizeof( keyname ) ) ) {
 			G_Error( "G_ParseSpawnVars: EOF without closing brace" );
 		}
-
+	
 		if ( keyname[0] == '}' ) {
 			break;
 		}
@@ -520,22 +518,27 @@ qboolean G_ParseSpawnVars( void ) {
 		if ( !trap_GetEntityToken( com_token, sizeof( com_token ) ) ) {
 			G_Error( "G_ParseSpawnVars: EOF without closing brace" );
 		}
-
+	
 		if ( com_token[0] == '}' ) {
 			G_Error( "G_ParseSpawnVars: closing brace without data" );
 		}
+	
 		if ( level.numSpawnVars == MAX_SPAWN_VARS ) {
 			G_Error( "G_ParseSpawnVars: MAX_SPAWN_VARS" );
 		}
-		level.spawnVars[ level.numSpawnVars ][0] = G_AddSpawnVarToken( keyname );
-		level.spawnVars[ level.numSpawnVars ][1] = G_AddSpawnVarToken( com_token );
+	
+		char* key = level.spawnVars[ level.numSpawnVars ][0] = G_AddSpawnVarToken( keyname );
+		char* value = level.spawnVars[ level.numSpawnVars ][1] = G_AddSpawnVarToken( com_token );
+	
+		kvLibrary.AddKeyValue( key, value );
+	
 		level.numSpawnVars++;
 	}
 
+	gameWorld->keyValueLibraries.push_back( kvLibrary );
+
 	return qtrue;
 }
-
-
 
 /*QUAKED worldspawn (0 0 0) ?
 
@@ -592,9 +595,7 @@ void SP_worldspawn( void ) {
 		trap_SetConfigstring( CS_WARMUP, va("%i", level.warmupTime) );
 		G_LogPrintf( "Warmup:\n" );
 	}
-
 }
-
 
 /*
 ==============
@@ -621,6 +622,7 @@ void G_SpawnEntitiesFromString( void ) {
 		G_SpawnGEntityFromSpawnVars();
 	}	
 
+	gameWorld->SpawnEntities();
+
 	level.spawning = qfalse;			// any future calls to G_Spawn*() will be errors
 }
-

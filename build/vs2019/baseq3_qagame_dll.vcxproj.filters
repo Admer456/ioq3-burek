@@ -25,6 +25,9 @@
     <Filter Include="Sources\Weapons">
       <UniqueIdentifier>{7a8ee1af-1b7d-4ce0-b4b3-19105a1c2d06}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Components">
+      <UniqueIdentifier>{dc86e3d6-6da8-4424-8532-487393db7dba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -102,8 +105,17 @@
     <ClInclude Include="..\..\code\game\Game\GameLocal.h">
       <Filter>Sources\Game</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\code\game\Game\GameEntity.hpp">
+    <ClInclude Include="..\..\code\game\Components\IComponent.hpp">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Game\GameWorld.hpp">
       <Filter>Sources\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\KeyValueElement.hpp">
+      <Filter>Sources\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\LegacyQuakeEntity.hpp">
+      <Filter>Sources\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +223,18 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Game\GameLocal.cpp">
       <Filter>Sources\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\IEntity.cpp">
+      <Filter>Sources\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Game\GameWorld.cpp">
+      <Filter>Sources\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\KeyValueElement.cpp">
+      <Filter>Sources\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\LegacyQuakeEntity.cpp">
+      <Filter>Sources\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

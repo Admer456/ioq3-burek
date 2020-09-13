@@ -1,0 +1,2 @@
+Very much like Half-Life's GameRules class.
+IGameRules would be an interface containing several methods

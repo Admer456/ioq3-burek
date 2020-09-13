@@ -484,7 +484,7 @@ void func_breakable_pain( gentity_t* self, gentity_t* attacker, int damage )
 
 void func_breakable_use( gentity_t* self, gentity_t* other, gentity_t* activator )
 {
-	// Damage itself
+	// Damage itself when triggered
 	func_breakable_pain( self, activator, self->health );
 }
 

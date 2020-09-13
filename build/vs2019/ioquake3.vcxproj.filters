@@ -25,6 +25,9 @@
     <Filter Include="sys">
       <UniqueIdentifier>{24AC880B-90B5-887C-1931-9F7C8539947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="qcommon\Maths">
+      <UniqueIdentifier>{5af5de05-31d1-46ec-8937-f3ebd026c639}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\res\win_resource.h">
@@ -215,6 +218,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\qcommon\GameImportsLocal.h">
       <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Maths\Vector.hpp">
+      <Filter>qcommon\Maths</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -499,6 +505,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\qcommon\GameImportsLocal.cpp">
       <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Maths\Vector.cpp">
+      <Filter>qcommon\Maths</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

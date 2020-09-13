@@ -23,6 +23,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // g_utils.c -- misc utility functions for game module
 
 #include "Game/g_local.hpp"
+#include "Game/IGameImports.h"
+
+extern IGameImports* gameImports;
+
+using namespace Entities;
 
 typedef struct {
   char oldShader[MAX_QPATH];
@@ -425,8 +430,13 @@ gentity_t *G_Spawn( void ) {
 	level.num_entities++;
 
 	// let the server system know that there are more entities
-	trap_LocateGameData( level.gentities, level.num_entities, sizeof( gentity_t ), 
+	gameImports->LocateGameData(
+		reinterpret_cast<sharedEntity_t*>(level.gentities), level.num_entities, sizeof( gentity_t ),
+		level.entities, level.numEntities, sizeof( IEntity* ),
 		&level.clients[0].ps, sizeof( level.clients[0] ) );
+
+	//trap_LocateGameData( level.gentities, level.num_entities, sizeof( gentity_t ), 
+	//	&level.clients[0].ps, sizeof( level.clients[0] ) );
 
 	G_InitGentity( e );
 	return e;
