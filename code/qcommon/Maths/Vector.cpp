@@ -1,8 +1,10 @@
 #include "Vector.hpp"
 
+constexpr float MPi = 3.14159f;
+
 const Vector Vector::Zero = Vector( 0, 0, 0 );
 
-const Vector& Vector::Normalized() const
+Vector Vector::Normalized() const
 {
 	float length = Length();
 	if ( length == 0.0f )
@@ -14,7 +16,7 @@ const Vector& Vector::Normalized() const
 	return *this / length;
 }
 
-const Vector& Vector::ToAngles( bool flipPitch = false ) const
+Vector Vector::ToAngles( bool flipPitch ) const
 {
 	float forward;
 	float yaw, pitch;
@@ -37,7 +39,7 @@ const Vector& Vector::ToAngles( bool flipPitch = false ) const
 	{
 		if ( x )
 		{
-			yaw = (atan2( y, x ) * 180 / M_PI);
+			yaw = (atan2( y, x ) * 180 / MPi);
 		}
 
 		else if ( y > 0 )
@@ -56,7 +58,7 @@ const Vector& Vector::ToAngles( bool flipPitch = false ) const
 		}
 
 		forward = sqrt( x * x + y * y );
-		pitch = (atan2( z, forward ) * 180 / M_PI);
+		pitch = (atan2( z, forward ) * 180 / MPi);
 
 		if ( pitch < 0 )
 		{
@@ -86,10 +88,10 @@ inline const Vector& Vector::ProjectedOnPlane( const Vector& normal )
 	return *this - (dot * inverseNormal);
 }
 
-const Vector& Vector::FromAngles( float pitch, float yaw, float radius = 1.0f )
+Vector Vector::FromAngles( float pitch, float yaw, float radius )
 {
-	pitch = pitch * (M_PI * 2 / 360);
-	yaw = yaw * (M_PI * 2 / 360);
+	pitch = pitch * (MPi * 2 / 360);
+	yaw = yaw * (MPi * 2 / 360);
 
 	return Vector(
 		cos( yaw ) * sin( pitch ) * radius,
@@ -103,15 +105,15 @@ void Vector::AngleVectors( const Vector& angles, Vector* forward, Vector* right,
 	float		angle;
 	float		sr, sp, sy, cr, cp, cy;
 
-	angle = angles.y * (M_PI * 2 / 360);
+	angle = angles.y * (MPi * 2 / 360);
 	sy = sin( angle );
 	cy = cos( angle );
 
-	angle = angles.x * (M_PI * 2 / 360);
+	angle = angles.x * (MPi * 2 / 360);
 	sp = sin( angle );
 	cp = cos( angle );
 
-	angle = angles.z * (M_PI * 2 / 360);
+	angle = angles.z * (MPi * 2 / 360);
 	sr = sin( angle );
 	cr = cos( angle );
 

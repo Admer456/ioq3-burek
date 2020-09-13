@@ -147,7 +147,8 @@ void trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int buf
 }
 
 void trap_LocateGameData( gentity_t *gEnts, int numGEntities, int sizeofGEntity_t, playerState_t *clients, int sizeofGClient ) {
-	return gameImports->LocateGameData( reinterpret_cast<sharedEntity_t*>( gEnts ), numGEntities, sizeofGEntity_t, clients, sizeofGClient );
+	return; // This is completely handled by gameImports now
+	//return gameImports->LocateGameData( reinterpret_cast<sharedEntity_t*>( gEnts ), numGEntities, sizeofGEntity_t, clients, sizeofGClient );
 }
 
 void trap_DropClient( int clientNum, const char *reason ) {

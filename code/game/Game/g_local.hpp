@@ -322,7 +322,7 @@ typedef struct {
 	int			gentitySize;
 	int			num_entities;		// MAX_CLIENTS <= num_entities <= ENTITYNUM_MAX_NORMAL
 
-	IEntity**	entities;
+	Entities::IEntity**	entities;
 	int			entitySize;
 	int			numEntities;
 

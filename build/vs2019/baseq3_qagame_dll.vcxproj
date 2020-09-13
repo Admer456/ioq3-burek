@@ -190,6 +190,7 @@
     <ClInclude Include="..\..\code\game\Game\g_rankings.hpp" />
     <ClInclude Include="..\..\code\game\Game\IGame.h" />
     <ClInclude Include="..\..\code\game\Game\IGameImports.h" />
+    <ClInclude Include="..\..\code\qcommon\Maths\Vector.hpp" />
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
     <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp" />
     <ClInclude Include="..\..\code\shared\bg_local.hpp" />
@@ -230,6 +231,7 @@
     <ClCompile Include="..\..\code\game\Weapons\g_items.cpp" />
     <ClCompile Include="..\..\code\game\Weapons\g_missile.cpp" />
     <ClCompile Include="..\..\code\game\Weapons\g_weapon.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Maths\Vector.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_shared.cpp" />
     <ClCompile Include="..\..\code\shared\bg_misc.cpp" />

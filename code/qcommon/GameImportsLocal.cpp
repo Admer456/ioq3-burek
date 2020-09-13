@@ -202,11 +202,13 @@ bool GameImportsLocal::InPVSIgnorePortals( const vec3_t p1, const vec3_t p2 )
 void GameImportsLocal::AdjustAreaPortalState( Entities::IEntity* ent, bool open )
 {
 	svEntity_t* svEnt;
-
 	svEnt = ServerEntityForEntity( ent );
-	if ( svEnt->areanum2 == -1 ) {
+
+	if ( svEnt->areanum2 == -1 ) 
+	{
 		return;
 	}
+
 	CM_AdjustAreaPortalState( svEnt->areanum, svEnt->areanum2, open );
 }
 
@@ -447,10 +449,11 @@ bool GameImportsLocal::EntityContact( vec3_t mins, vec3_t maxs, const IEntity* e
 	const float* origin, * angles;
 	clipHandle_t	ch;
 	trace_t			trace;
+	IEntity* _ent = const_cast<IEntity*>( ent );
 
 	// check for exact collision
-	origin = ent->GetEngineShared()->currentOrigin;
-	angles = ent->GetEngineShared()->currentAngles;
+	origin = _ent->GetEngineShared()->currentOrigin;
+	angles = _ent->GetEngineShared()->currentAngles;
 
 	ch = ClipHandleForEntity( ent );
 	CM_TransformedBoxTrace( &trace, vec3_origin, vec3_origin, mins, maxs,
@@ -496,19 +499,21 @@ void GameImportsLocal::DebugPolygonDelete( int id )
 
 clipHandle_t GameImportsLocal::ClipHandleForEntity( const IEntity* ent )
 {
-	if ( ent->GetEngineShared()->bmodel ) 
+	IEntity* _ent = const_cast<IEntity*>( ent );
+
+	if ( _ent->GetEngineShared()->bmodel ) 
 	{
 		// explicit hulls in the BSP model
-		return CM_InlineModel( ent->GetState()->modelindex );
+		return CM_InlineModel( _ent->GetState()->modelindex );
 	}
 
-	if ( ent->GetEngineShared()->svFlags & SVF_CAPSULE ) {
+	if ( _ent->GetEngineShared()->svFlags & SVF_CAPSULE ) {
 		// create a temp capsule from bounding box sizes
-		return CM_TempBoxModel( ent->GetEngineShared()->mins, ent->GetEngineShared()->maxs, qtrue );
+		return CM_TempBoxModel( _ent->GetEngineShared()->mins, _ent->GetEngineShared()->maxs, qtrue );
 	}
 
 	// create a temp tree from bounding box sizes
-	return CM_TempBoxModel( ent->GetEngineShared()->mins, ent->GetEngineShared()->maxs, qfalse );
+	return CM_TempBoxModel( _ent->GetEngineShared()->mins, _ent->GetEngineShared()->maxs, qfalse );
 }
 
 svEntity_t* GameImportsLocal::ServerEntityForEntity( IEntity* ent )

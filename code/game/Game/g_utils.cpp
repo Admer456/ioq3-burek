@@ -401,7 +401,7 @@ gentity_t *G_Spawn( void ) {
 		// override the normal minimum times before use
 		e = &g_entities[MAX_CLIENTS];
 		for ( i = MAX_CLIENTS ; i<level.num_entities ; i++, e++) {
-			if ( e->inuse ) {
+			if ( e->inuse || gEntities[e-g_entities] ) { // If there is an IEntity*, skip that too to avoid conflicts
 				continue;
 			}
 

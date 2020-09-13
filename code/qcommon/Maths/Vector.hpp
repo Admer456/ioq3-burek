@@ -8,7 +8,8 @@
 
 #include <math.h>
 
-constexpr float M_PI = 3.14159f;
+// We don't care about converting from double to float
+#pragma warning( disable : 4244 )
 
 class Vector
 {
@@ -29,7 +30,7 @@ public: // Utilities
 	// Length of the vector
 	inline float Length() const
 	{
-		return sqrt( x*x + y*y + z*z );
+		return sqrt( static_cast<float>( x*x + y*y + z*z ) );
 	}
 
 	inline float Length2D() const
@@ -39,7 +40,7 @@ public: // Utilities
 
 	// Returns a normalised vector, does not actually
 	// convert this vector into a normalised one
-	const Vector& Normalized() const;
+	Vector Normalized() const;
 
 	// Converts this vector into a normalised one
 	inline void Normalize()
@@ -50,7 +51,7 @@ public: // Utilities
 	// Returns an angle vector from this vector's XYZ coords
 	// Note: Returns in degrees
 	// Originally taken from vectoangles in q_math.cpp
-	const Vector& ToAngles( bool flipPitch = false ) const;
+	Vector ToAngles( bool flipPitch = false ) const;
 
 	// A cross product. What is there to say?
 	inline const Vector& CrossProduct( const Vector& op ) const
@@ -90,7 +91,9 @@ public: // Utilities
 	// otherwise if it's lower, then the reflection is more perpendicular to the normal vector
 	inline const Vector& Reflect( const Vector& normal, float mod = 2.0f ) const
 	{
-		return *this - mod * (*this * normal) * normal;
+		float dot = *this * normal;
+		Vector projected = (normal * (mod * dot));
+		return *this - projected;
 	}
 
 	// Similar to the == operator except it takes into account an epsilon
@@ -115,7 +118,7 @@ public: // Static methods
 
 	// A Vector from pitch and yaw angles, using spherical coordinates
 	// Expects angles in degrees
-	static const Vector& FromAngles( float pitch, float yaw, float radius = 1.0f );
+	static Vector FromAngles( float pitch, float yaw, float radius = 1.0f );
 
 	// Makes 3 directional vectors from given PYR angles
 	// Note: the 'right' vector should be subtracted from any vector 
@@ -171,7 +174,7 @@ public: // Operators
 	}
 
 	// Vector / float
-	inline const Vector& operator/ ( const float& operand ) const
+	inline Vector operator/ ( const float& operand ) const
 	{
 		return Vector( x / operand, y / operand, z / operand );
 	}

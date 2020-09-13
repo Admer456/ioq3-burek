@@ -139,7 +139,9 @@ entityType* GameWorld::CreateEntity()
 {
 	for ( int i = 0; i < MaxEntities; i++ )
 	{
-		if ( gEntities[i] == nullptr )
+		// Also check for g_entities so we don't get any conflicts
+		// on the client & server and whatnot
+		if ( gEntities[i] == nullptr && !g_entities[i].inuse )
 		{
 			gEntities[i] = new entityType();
 			return static_cast<entityType*>( gEntities[i] );

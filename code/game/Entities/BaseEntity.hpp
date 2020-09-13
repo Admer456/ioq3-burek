@@ -43,7 +43,11 @@ namespace Entities
 		// One day, the engine won't have client entities, server entities,
 		// game entities etc., but rather, everything will go through IEntity
 		entityState_t	state;
-		sharedEntity_t	shared;
+		entityShared_t	shared;
+
+	public:
+		entityShared_t*	GetEngineShared() override { return &shared; }
+		entityState_t*	GetState() override { return &state; }
 
 	public:
 		float			nextThink{ 0 };

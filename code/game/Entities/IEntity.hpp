@@ -66,8 +66,8 @@ namespace Entities
 		componentType*				GetOrCreateComponent();
 
 	public: // Engine interface (must get rid of one day)
-		virtual entityShared_t* GetEngineShared() const = 0;
-		virtual entityState_t* GetState() const = 0;
+		virtual entityShared_t*		GetEngineShared() = 0;
+		virtual entityState_t*		GetState() = 0;
 
 	protected: // Component stuff
 		std::vector<Components::IComponent*> components;

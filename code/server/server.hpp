@@ -26,6 +26,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../game/Game/g_public.hpp"
 #include "../shared/bg_public.hpp"
 
+namespace Entities
+{
+	class IEntity;
+}
+
 //=============================================================================
 
 #define	PERS_SCORE				0		// !!! MUST NOT CHANGE, SERVER AND
