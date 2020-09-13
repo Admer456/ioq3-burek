@@ -51,21 +51,6 @@
     <ClInclude Include="..\..\code\jpeg-8c\jversion.h">
       <Filter>jpeg-8c</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\code\qcommon\puff.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\code\qcommon\q_shared.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\code\qcommon\qcommon.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\code\qcommon\qfiles.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\code\qcommon\surfaceflags.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\code\renderercommon\iqm.h">
       <Filter>renderercommon</Filter>
     </ClInclude>
@@ -98,6 +83,21 @@
     </ClInclude>
     <ClInclude Include="..\..\code\renderergl2\tr_postprocess.h">
       <Filter>renderergl2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\puff.hpp">
+      <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\q_shared.hpp">
+      <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\qcommon.hpp">
+      <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\qfiles.hpp">
+      <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp">
+      <Filter>qcommon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -238,15 +238,6 @@
     </ClCompile>
     <ClCompile Include="..\..\code\jpeg-8c\jutils.c">
       <Filter>jpeg-8c</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\qcommon\puff.c">
-      <Filter>qcommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\qcommon\q_math.c">
-      <Filter>qcommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\qcommon\q_shared.c">
-      <Filter>qcommon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\renderercommon\tr_font.c">
       <Filter>renderercommon</Filter>
@@ -451,6 +442,15 @@
     </ClCompile>
     <ClCompile Include="dynamic\renderergl2\tonemap_vp.c">
       <Filter>dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\puff.cpp">
+      <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_math.cpp">
+      <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_shared.cpp">
+      <Filter>qcommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

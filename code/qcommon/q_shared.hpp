@@ -23,8 +23,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __Q_SHARED_H
 #define __Q_SHARED_H
 
+#ifdef __cplusplus
 #define ExternCStart extern "C" {
 #define ExternCEnd }
+#else 
+#define ExternCStart
+#define ExternCEnd
+#endif
 
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
