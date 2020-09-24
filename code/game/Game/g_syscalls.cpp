@@ -69,7 +69,7 @@ extern "C"
 		return &gameExport;
 	}
 }
-
+ 
 int PASSFLOAT( float x ) {
 	floatint_t fi;
 	fi.f = x;

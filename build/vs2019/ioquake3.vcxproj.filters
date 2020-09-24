@@ -28,6 +28,12 @@
     <Filter Include="qcommon\Maths">
       <UniqueIdentifier>{5af5de05-31d1-46ec-8937-f3ebd026c639}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{fe200ffe-e195-4870-b91b-826d4180fa8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Entities">
+      <UniqueIdentifier>{9fe72949-d5dd-4880-a788-3ee7d8039bff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\res\win_resource.h">
@@ -221,6 +227,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\qcommon\Maths\Vector.hpp">
       <Filter>qcommon\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\IEntity.hpp">
+      <Filter>Game\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

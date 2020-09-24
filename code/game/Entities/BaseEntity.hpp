@@ -46,10 +46,6 @@ namespace Entities
 		entityShared_t	shared;
 
 	public:
-		entityShared_t*	GetEngineShared() override { return &shared; }
-		entityState_t*	GetState() override { return &state; }
-
-	public:
 		float			nextThink{ 0 };
 
 		int				spawnFlags{ 0 };		// 64 bits of

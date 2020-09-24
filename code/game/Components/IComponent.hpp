@@ -18,7 +18,6 @@ namespace Components
 
 	protected:
 		Entities::IEntity* parent;
-
 	};
 
 	class TestComponent : public IComponent

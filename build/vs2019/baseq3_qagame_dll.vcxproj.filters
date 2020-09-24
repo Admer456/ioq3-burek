@@ -123,6 +123,9 @@
     <ClInclude Include="..\..\code\qcommon\Maths\Vector.hpp">
       <Filter>qcommon\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Components\SharedComponent.hpp">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -230,9 +233,6 @@
     <ClCompile Include="..\..\code\game\Game\GameLocal.cpp">
       <Filter>Sources\Game</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\code\game\Entities\IEntity.cpp">
-      <Filter>Sources\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\code\game\Game\GameWorld.cpp">
       <Filter>Sources\Game</Filter>
     </ClCompile>
@@ -244,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\qcommon\Maths\Vector.cpp">
       <Filter>qcommon\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Components\SharedComponent.cpp">
+      <Filter>Sources\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

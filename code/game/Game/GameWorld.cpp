@@ -1,6 +1,6 @@
 #include "g_local.hpp"
 #include "Entities/BaseEntity.hpp"
-
+#include "../qcommon/Maths/Vector.hpp"
 #include "GameWorld.hpp"
 #include "../qcommon/IEngineExports.h"
 
@@ -72,6 +72,21 @@ bool KeyValueLibrary::GetBool( const char* keyName, int defaultValue )
 	if ( keyValue && keyValue[0] )
 	{
 		return atoi( keyValue ) != 0;
+	}
+	else
+	{
+		return defaultValue;
+	}
+}
+
+Vector KeyValueLibrary::GetVector( const char* keyName, Vector defaultValue )
+{
+	const char* keyValue = library[keyName].c_str();
+	if ( keyValue && keyValue[0] )
+	{
+		Vector v = defaultValue;
+		sscanf( keyValue, "%f %f %f", &v.x, &v.y, &v.z );
+		return v;
 	}
 	else
 	{

@@ -55,19 +55,44 @@ namespace Entities
 
 		// Use this if you're 100% sure you know a comp exists
 		template<typename componentType>
-		componentType*				GetComponent(); 
+		componentType* GetComponent()
+		{
+			componentType* c = nullptr;
+
+			for ( auto component : components )
+			{
+				if ( c = dynamic_cast<componentType*>(component) )
+				{
+					return c;
+				}
+			}
+
+			return nullptr;
+		}
 		
 		// Use this if you're 100% sure you need a new comp
 		template<typename componentType>
-		componentType*				CreateComponent();
+		componentType* CreateComponent()
+		{
+			componentType* comp = new componentType();
+
+			components.push_back( comp );
+
+			return comp;
+		}
 		
 		// Use this if unsure; be careful since it's the slowest
 		template<typename componentType>
-		componentType*				GetOrCreateComponent();
+		componentType* GetOrCreateComponent()
+		{
+			componentType* comp;
+			if ( !(comp = GetComponent<componentType>()) )
+			{
+				comp = CreateComponent<componentType>();
+			}
 
-	public: // Engine interface (must get rid of one day)
-		virtual entityShared_t*		GetEngineShared() = 0;
-		virtual entityState_t*		GetState() = 0;
+			return comp;
+		}
 
 	protected: // Component stuff
 		std::vector<Components::IComponent*> components;

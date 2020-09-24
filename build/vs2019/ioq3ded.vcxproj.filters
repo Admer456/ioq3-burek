@@ -177,6 +177,12 @@
     <ClInclude Include="..\..\code\botlib\l_utils.hpp">
       <Filter>botlib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\GameImportsLocal.h">
+      <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\EngineLocal.h">
+      <Filter>qcommon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\server\sv_bot.cpp">
@@ -382,6 +388,12 @@
     </ClCompile>
     <ClCompile Include="..\..\code\botlib\l_struct.cpp">
       <Filter>botlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\GameImportsLocal.cpp">
+      <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\EngineLocal.cpp">
+      <Filter>qcommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

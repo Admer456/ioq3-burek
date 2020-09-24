@@ -232,6 +232,8 @@
     <ClInclude Include="..\..\code\qcommon\cm_patch.hpp" />
     <ClInclude Include="..\..\code\qcommon\cm_polylib.hpp" />
     <ClInclude Include="..\..\code\qcommon\cm_public.hpp" />
+    <ClInclude Include="..\..\code\qcommon\EngineLocal.h" />
+    <ClInclude Include="..\..\code\qcommon\GameImportsLocal.h" />
     <ClInclude Include="..\..\code\qcommon\ioapi.hpp" />
     <ClInclude Include="..\..\code\qcommon\json.hpp" />
     <ClInclude Include="..\..\code\qcommon\puff.hpp" />
@@ -286,7 +288,9 @@
     <ClCompile Include="..\..\code\qcommon\cm_trace.cpp" />
     <ClCompile Include="..\..\code\qcommon\common.cpp" />
     <ClCompile Include="..\..\code\qcommon\cvar.cpp" />
+    <ClCompile Include="..\..\code\qcommon\EngineLocal.cpp" />
     <ClCompile Include="..\..\code\qcommon\files.cpp" />
+    <ClCompile Include="..\..\code\qcommon\GameImportsLocal.cpp" />
     <ClCompile Include="..\..\code\qcommon\huffman.cpp" />
     <ClCompile Include="..\..\code\qcommon\ioapi.cpp" />
     <ClCompile Include="..\..\code\qcommon\md4.cpp" />

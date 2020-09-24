@@ -236,6 +236,7 @@
     <ClInclude Include="..\..\code\client\snd_codec.hpp" />
     <ClInclude Include="..\..\code\client\snd_local.hpp" />
     <ClInclude Include="..\..\code\client\snd_public.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
     <ClInclude Include="..\..\code\qcommon\cm_local.hpp" />
     <ClInclude Include="..\..\code\qcommon\cm_patch.hpp" />
     <ClInclude Include="..\..\code\qcommon\cm_polylib.hpp" />

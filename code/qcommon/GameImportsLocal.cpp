@@ -8,7 +8,10 @@ struct gentity_t;
 #include "../game/Game/IGameImports.h"
 #include "GameImportsLocal.h"
 //#include "../sys/sys_loadlib.hpp"
+#include "../qcommon/Maths/Vector.hpp"
 #include "../game/Entities/IEntity.hpp"
+#include "../game/Components/IComponent.hpp"
+#include "../game/Components/SharedComponent.hpp"
 
 typedef struct worldSector_s {
 	int		axis;		// -1 = leaf node
@@ -134,13 +137,7 @@ void GameImportsLocal::SetBrushModel( IEntity* ent, const char* name )
 	clipHandle_t	h;
 	vec3_t			mins, maxs;
 
-	/* Oh, the utopia...
-	auto brushComponent = ent->GetComponent<BrushComponent>();
-	if ( nullptr == brushComponent )
-	{
-		Error( "SetBrushModel: entity is not a brush entity!" );
-	}
-	*/
+	auto sharedComp = ent->GetComponent<Components::SharedComponent>();
 
 	if ( !name ) {
 		Com_Error( ERR_DROP, "SV_SetBrushModel: NULL" );
@@ -150,15 +147,15 @@ void GameImportsLocal::SetBrushModel( IEntity* ent, const char* name )
 		Com_Error( ERR_DROP, "SV_SetBrushModel: %s isn't a brush model", name );
 	}
 
-	ent->GetState()->modelindex = atoi( name + 1 );
-
-	h = CM_InlineModel( ent->GetState()->modelindex );
+	sharedComp->modelIndex = atoi( name + 1 );
+	
+	h = CM_InlineModel( sharedComp->modelIndex );
 	CM_ModelBounds( h, mins, maxs );
-	VectorCopy( mins, ent->GetEngineShared()->mins );
-	VectorCopy( maxs, ent->GetEngineShared()->maxs );
-	ent->GetEngineShared()->bmodel = qtrue;
+	VectorCopy( mins, sharedComp->mins );
+	VectorCopy( maxs, sharedComp->maxs );
+	sharedComp->bmodel = qtrue;
 
-	ent->GetEngineShared()->contents = -1;		// we don't know exactly what is in the brushes
+	sharedComp->contents = -1;		// we don't know exactly what is in the brushes
 
 	LinkEntity( ent ); // FIXME: remove
 }
@@ -234,6 +231,8 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 	float* origin, * angles;
 	svEntity_t* ent;
 
+	Components::SharedComponent* shared = gEnt->GetComponent<Components::SharedComponent>();
+
 	ent = ServerEntityForEntity( gEnt );
 
 	if ( ent->worldSector ) {
@@ -241,75 +240,75 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 	}
 
 	// encode the size into the entityState_t for client prediction
-	if ( gEnt->GetEngineShared()->bmodel ) 
+	if ( shared->bmodel )
 	{
-		gEnt->GetState()->solid = SOLID_BMODEL;		// a solid_box will never create this value
+		shared->solid = SOLID_BMODEL;		// a solid_box will never create this value
 	}
 	
-	else if ( gEnt->GetEngineShared()->contents & (CONTENTS_SOLID | CONTENTS_BODY) )
+	else if ( shared->contents & (CONTENTS_SOLID | CONTENTS_BODY) )
 	{
 		// assume that x/y are equal and symetric
-		i = gEnt->GetEngineShared()->maxs[0];
+		i = shared->maxs[0];
 		if ( i < 1 )
 			i = 1;
 		if ( i > 255 )
 			i = 255;
 
 		// z is not symetric
-		j = (-gEnt->GetEngineShared()->mins[2]);
+		j = (-shared->mins[2]);
 		if ( j < 1 )
 			j = 1;
 		if ( j > 255 )
 			j = 255;
 
 		// and z maxs can be negative...
-		k = (gEnt->GetEngineShared()->maxs[2] + 32);
+		k = (shared->maxs[2] + 32);
 		if ( k < 1 )
 			k = 1;
 		if ( k > 255 )
 			k = 255;
 
-		gEnt->GetState()->solid = (k << 16) | (j << 8) | i;
+		shared->solid = (k << 16) | (j << 8) | i;
 	}
 	
 	else 
 	{
-		gEnt->GetState()->solid = 0;
+		shared->solid = 0;
 	}
 
 	// get the position
-	origin = gEnt->GetEngineShared()->currentOrigin;
-	angles = gEnt->GetEngineShared()->currentAngles;
+	origin = shared->origin;
+	angles = shared->angles;
 
 	// set the abs box
-	if ( gEnt->GetEngineShared()->bmodel && (angles[0] || angles[1] || angles[2]) ) 
+	if ( shared->bmodel && (angles[0] || angles[1] || angles[2]) )
 	{
 		// expand for rotation
 		float		max;
 
-		max = RadiusFromBounds( gEnt->GetEngineShared()->mins, gEnt->GetEngineShared()->maxs );
+		max = RadiusFromBounds( shared->mins, shared->maxs );
 		for ( i = 0; i < 3; i++ ) 
 		{
-			gEnt->GetEngineShared()->absmin[i] = origin[i] - max;
-			gEnt->GetEngineShared()->absmax[i] = origin[i] + max;
+			shared->absmin[i] = origin[i] - max;
+			shared->absmax[i] = origin[i] + max;
 		}
 	}
 
 	else 
 	{
 		// normal
-		VectorAdd( origin, gEnt->GetEngineShared()->mins, gEnt->GetEngineShared()->absmin );
-		VectorAdd( origin, gEnt->GetEngineShared()->maxs, gEnt->GetEngineShared()->absmax );
+		VectorAdd( origin, shared->mins, shared->absmin );
+		VectorAdd( origin, shared->maxs, shared->absmax );
 	}
 
 	// because movement is clipped an epsilon away from an actual edge,
 	// we must fully check even when bounding boxes don't quite touch
-	gEnt->GetEngineShared()->absmin[0] -= 1;
-	gEnt->GetEngineShared()->absmin[1] -= 1;
-	gEnt->GetEngineShared()->absmin[2] -= 1;
-	gEnt->GetEngineShared()->absmax[0] += 1;
-	gEnt->GetEngineShared()->absmax[1] += 1;
-	gEnt->GetEngineShared()->absmax[2] += 1;
+	shared->absmin[0] -= 1;
+	shared->absmin[1] -= 1;
+	shared->absmin[2] -= 1;
+	shared->absmax[0] += 1;
+	shared->absmax[1] += 1;
+	shared->absmax[2] += 1;
 
 	// link to PVS leafs
 	ent->numClusters = 0;
@@ -318,7 +317,7 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 	ent->areanum2 = -1;
 
 	//get all leafs, including solids
-	num_leafs = CM_BoxLeafnums( gEnt->GetEngineShared()->absmin, gEnt->GetEngineShared()->absmax,
+	num_leafs = CM_BoxLeafnums( shared->absmin, shared->absmax,
 		leafs, MAX_TOTAL_ENT_LEAFS, &lastLeaf );
 
 	// if none of the leafs were inside the map, the
@@ -340,8 +339,8 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 				if ( ent->areanum2 != -1 && ent->areanum2 != area && sv.state == SS_LOADING ) 
 				{
 					Com_DPrintf( "Object %i touching 3 areas at %f %f %f\n",
-						gEnt->GetState()->number,
-						gEnt->GetEngineShared()->absmin[0], gEnt->GetEngineShared()->absmin[1], gEnt->GetEngineShared()->absmin[2] );
+						shared->entityIndex,
+						shared->absmin[0], shared->absmin[1], shared->absmin[2] );
 				}
 				ent->areanum2 = area;
 			}
@@ -374,7 +373,7 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 		ent->lastCluster = CM_LeafCluster( lastLeaf );
 	}
 
-	gEnt->GetEngineShared()->linkcount++;
+	shared->linkCount++;
 
 	// find the first world sector node that the ent's box crosses
 	node = sv_worldSectors;
@@ -382,9 +381,9 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 	{
 		if ( node->axis == -1 )
 			break;
-		if ( gEnt->GetEngineShared()->absmin[node->axis] > node->dist )
+		if ( shared->absmin[node->axis] > node->dist )
 			node = node->children[0];
-		else if ( gEnt->GetEngineShared()->absmax[node->axis] < node->dist )
+		else if ( shared->absmax[node->axis] < node->dist )
 			node = node->children[1];
 		else
 			break;		// crosses the node
@@ -395,7 +394,7 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 	ent->nextEntityInWorldSector = node->entities;
 	node->entities = ent;
 
-	gEnt->GetEngineShared()->linked = qtrue;
+	shared->linked = qtrue;
 }
 
 void GameImportsLocal::LinkEntity( sharedEntity_t* ent )
@@ -409,9 +408,11 @@ void GameImportsLocal::UnlinkEntity( IEntity* gEnt )
 	svEntity_t* scan;
 	worldSector_t* ws;
 
+	auto shared = gEnt->GetComponent<Components::SharedComponent>();
+
 	ent = ServerEntityForEntity( gEnt );
 
-	gEnt->GetEngineShared()->linked = qfalse;
+	shared->linked = qfalse;
 
 	ws = ent->worldSector;
 	if ( !ws ) {
@@ -450,10 +451,11 @@ bool GameImportsLocal::EntityContact( vec3_t mins, vec3_t maxs, const IEntity* e
 	clipHandle_t	ch;
 	trace_t			trace;
 	IEntity* _ent = const_cast<IEntity*>( ent );
+	auto shared = _ent->GetComponent<Components::SharedComponent>();
 
 	// check for exact collision
-	origin = _ent->GetEngineShared()->currentOrigin;
-	angles = _ent->GetEngineShared()->currentAngles;
+	origin = shared->origin;
+	angles = shared->angles;
 
 	ch = ClipHandleForEntity( ent );
 	CM_TransformedBoxTrace( &trace, vec3_origin, vec3_origin, mins, maxs,
@@ -500,30 +502,33 @@ void GameImportsLocal::DebugPolygonDelete( int id )
 clipHandle_t GameImportsLocal::ClipHandleForEntity( const IEntity* ent )
 {
 	IEntity* _ent = const_cast<IEntity*>( ent );
+	auto shared = _ent->GetComponent<Components::SharedComponent>();
 
-	if ( _ent->GetEngineShared()->bmodel ) 
+	if ( shared->bmodel )
 	{
 		// explicit hulls in the BSP model
-		return CM_InlineModel( _ent->GetState()->modelindex );
+		return CM_InlineModel( shared->modelIndex );
 	}
 
-	if ( _ent->GetEngineShared()->svFlags & SVF_CAPSULE ) {
+	if ( shared->serverFlags & SVF_CAPSULE ) {
 		// create a temp capsule from bounding box sizes
-		return CM_TempBoxModel( _ent->GetEngineShared()->mins, _ent->GetEngineShared()->maxs, qtrue );
+		return CM_TempBoxModel( shared->mins, shared->maxs, qtrue );
 	}
 
 	// create a temp tree from bounding box sizes
-	return CM_TempBoxModel( _ent->GetEngineShared()->mins, _ent->GetEngineShared()->maxs, qfalse );
+	return CM_TempBoxModel( shared->mins, shared->maxs, qfalse );
 }
 
 svEntity_t* GameImportsLocal::ServerEntityForEntity( IEntity* ent )
 {
-	if ( !ent || ent->GetState()->number < 0 || ent->GetState()->number >= MAX_GENTITIES )
+	auto shared = ent->GetComponent<Components::SharedComponent>();
+
+	if ( !ent || shared->entityIndex < 0 || shared->entityIndex >= MAX_GENTITIES )
 	{
 		Com_Error( ERR_DROP, "SV_SvEntityForGentity: bad gEnt" );
 	}
 
-	return &sv.svEntities[ent->GetState()->number];
+	return &sv.svEntities[shared->entityIndex];
 }
 
 IEntity* GameImportsLocal::EntityForServerEntity( svEntity_t* ent )

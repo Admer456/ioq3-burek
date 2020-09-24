@@ -1,14 +1,18 @@
+#include "../qcommon/Maths/Vector.hpp"
+
 #include "Game/g_local.hpp"
 #include "BaseEntity.hpp"
 #include "Entities/KeyValueElement.hpp"
 #include "Game/GameWorld.hpp"
+#include "Components/IComponent.hpp"
+#include "Components/SharedComponent.hpp"
 
 using namespace Entities;
 
 KeyValueElement BaseQuakeEntity::keyValues[] =
 {
-	//KeyValueElement( "origin",	0,												KVHandlers::Vector ),
-	//KeyValueElement( "angles",	0,												KVHandlers::Vector ),
+	//KeyValueElement( "origin",	0,													KVHandlers::Vector ),
+	//KeyValueElement( "angles",	0,													KVHandlers::Vector ),
 	KeyValueElement( "spawnflags",	offsetof( BaseQuakeEntity, spawnFlags ),		KVHandlers::Int ),
 	KeyValueElement( "spawnflags2", offsetof( BaseQuakeEntity, spawnFlagsExtra ),	KVHandlers::Int ),
 	KeyValueElement()
@@ -16,7 +20,9 @@ KeyValueElement BaseQuakeEntity::keyValues[] =
 
 void BaseQuakeEntity::Spawn()
 {
-
+	auto comp = CreateComponent<Components::SharedComponent>();
+	comp->origin = spawnArgs->GetVector( "origin", Vector::Zero );
+	comp->angles = spawnArgs->GetVector( "angles", Vector::Zero );
 }
 
 void BaseQuakeEntity::PreKeyValue()

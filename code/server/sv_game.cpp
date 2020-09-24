@@ -267,6 +267,8 @@ SV_LocateGameData
 */
 void SV_LocateGameData( sharedEntity_t *gEnts, int numGEntities, int sizeofGEntity_t,
 					   playerState_t *clients, int sizeofGameClient ) {
+	return;
+
 	sv.gentities = gEnts;
 	sv.gentitySize = sizeofGEntity_t;
 	sv.num_entities = numGEntities;

@@ -177,6 +177,7 @@
     <ClInclude Include="..\..\code\game\AI\ArenaBots\match.hpp" />
     <ClInclude Include="..\..\code\game\AI\ArenaBots\syn.hpp" />
     <ClInclude Include="..\..\code\game\Components\IComponent.hpp" />
+    <ClInclude Include="..\..\code\game\Components\SharedComponent.hpp" />
     <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_main.cpp" />
     <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_team.cpp" />
     <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_vcmd.cpp" />
+    <ClCompile Include="..\..\code\game\Components\SharedComponent.cpp" />
     <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_client.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_misc.cpp" />
@@ -212,7 +214,6 @@
     <ClCompile Include="..\..\code\game\Entities\g_target.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_team.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_trigger.cpp" />
-    <ClCompile Include="..\..\code\game\Entities\IEntity.cpp" />
     <ClCompile Include="..\..\code\game\Entities\KeyValueElement.cpp" />
     <ClCompile Include="..\..\code\game\Entities\LegacyQuakeEntity.cpp" />
     <ClCompile Include="..\..\code\game\Game\GameLocal.cpp" />

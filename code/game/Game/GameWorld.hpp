@@ -4,6 +4,8 @@
 #include <string>
 #include <unordered_map>
 
+class Vector;
+
 class KeyValueLibrary final
 {
 	using KVMap = std::unordered_map<std::string, std::string>;
@@ -21,6 +23,7 @@ public:
 	float			GetFloat( const char* keyName, float defaultValue );
 	int				GetInt( const char* keyName, int defaultValue );
 	bool			GetBool( const char* keyName, int defaultValue );
+	Vector			GetVector( const char* keyName, Vector defaultValue );
 
 	std::string& operator [] ( const char* val )
 	{
