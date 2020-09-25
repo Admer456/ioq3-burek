@@ -69,3 +69,5 @@ public:
 	virtual void			DebugPolygonDelete( int id ) = 0;
 };
 // BotLib is not here
+
+extern IGameImports* gameImports;

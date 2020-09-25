@@ -1,6 +1,6 @@
 #include "g_local.hpp"
 #include "Entities/BaseEntity.hpp"
-#include "../qcommon/Maths/Vector.hpp"
+#include "Maths/Vector.hpp"
 #include "GameWorld.hpp"
 #include "../qcommon/IEngineExports.h"
 

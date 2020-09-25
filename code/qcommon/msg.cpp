@@ -22,6 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "q_shared.hpp"
 #include "qcommon.hpp"
 
+#include "../game/Entities/IEntity.hpp"
+#include "../game/Components/IComponent.hpp"
+#include "Maths/Vector.hpp"
+#include "../game/Components/SharedComponent.hpp"
+
 static huffman_t		msgHuff;
 
 static qboolean			msgInit = qfalse;
@@ -259,8 +264,6 @@ int MSG_ReadBits( msg_t *msg, int bits ) {
 	return value;
 }
 
-
-
 //================================================================================
 
 //
@@ -370,7 +373,6 @@ void MSG_WriteAngle( msg_t *sb, float f ) {
 void MSG_WriteAngle16( msg_t *sb, float f ) {
 	MSG_WriteShort (sb, ANGLE2SHORT(f));
 }
-
 
 //============================================================
 
@@ -740,6 +742,8 @@ typedef struct {
 
 // using the stringizing operator to save typing...
 #define	NETF(x) #x,(size_t)&((entityState_t*)0)->x
+#define CompNetField( x ) #x, (size_t)&((Components::SharedComponent*)0)->x
+#define CompNetFieldExplicit( stringname, codename ) stringname, (size_t)&((Components::SharedComponent*)0)->codename
 
 netField_t	entityStateFields[] = 
 {
@@ -796,6 +800,63 @@ netField_t	entityStateFields[] =
 { NETF(frame), 16 }
 };
 
+// Not all members from SharedComponent will be delta'ed
+// Right now, we're trying to maintain compatibility with the old entity system
+// until we go deep enough to get rid of it
+netField_t sharedComponentFields[] =
+{
+	{ CompNetFieldExplicit( "pos.trTime", trPos.trTime ), 32 },
+	{ CompNetFieldExplicit( "pos.trBase[0]", trPos.trBase[0] ), 0 },
+	{ CompNetFieldExplicit( "pos.trBase[1]", trPos.trBase[1] ), 0 },
+	{ CompNetFieldExplicit( "pos.trDelta[0]", trPos.trDelta[0] ), 0 },
+	{ CompNetFieldExplicit( "pos.trDelta[1]", trPos.trDelta[1] ), 0 },
+	{ CompNetFieldExplicit( "pos.trBase[2]", trPos.trBase[2] ), 0 },
+	{ CompNetFieldExplicit( "apos.trBase[1]", trApos.trBase[1] ), 0 },
+	{ CompNetFieldExplicit( "pos.trDelta[2]", trPos.trDelta[2] ), 0 },
+	{ CompNetFieldExplicit( "apos.trBase[0]", trApos.trBase[0] ), 0 },
+	{ CompNetField( event ), 10 },
+	{ CompNetField( angles2[1] ), 0 },
+	{ CompNetFieldExplicit( "eType", entityType ), 8 },
+	{ CompNetField( torsoAnim ), 8 },
+	{ CompNetField( eventParm ), 8 },
+	{ CompNetField( legsAnim ), 8 },
+	{ CompNetFieldExplicit( "groundEntityNum", groundEntityIndex ), GENTITYNUM_BITS },
+	{ CompNetFieldExplicit( "pos.trType", trPos.trType ), 8 },
+	{ CompNetFieldExplicit( "eFlags", entityFlags ), 19 },
+	{ CompNetFieldExplicit( "otherEntityNum", otherEntityIndex[0] ), GENTITYNUM_BITS },
+	{ CompNetField( weapon ), 8 },
+	{ CompNetField( clientNum ), 8 },
+	{ CompNetField( angles[1] ), 0 },
+	{ CompNetFieldExplicit( "pos.trDuration", trPos.trDuration ), 32 },
+	{ CompNetFieldExplicit( "apos.trType", trApos.trType ), 8 },
+	{ CompNetField( origin[0] ), 0 },
+	{ CompNetField( origin[1] ), 0 },
+	{ CompNetField( origin[2] ), 0 },
+	{ CompNetField( solid ), 24 },
+	{ CompNetField( powerups ), MAX_POWERUPS },
+	{ CompNetFieldExplicit( "modelindex", modelIndex ), 8 },
+	{ CompNetFieldExplicit( "otherEntityNum2", otherEntityIndex[1] ), GENTITYNUM_BITS },
+	{ CompNetField( loopSound ), 8 },
+	{ CompNetField( generic1 ), 8 },
+	{ CompNetField( origin2[2] ), 0 },
+	{ CompNetField( origin2[0] ), 0 },
+	{ CompNetField( origin2[1] ), 0 },
+	{ CompNetFieldExplicit( "modelindex2", modelIndex2 ), 8 },
+	{ CompNetField( angles[0] ), 0 },
+	{ CompNetField( time ), 32 },
+	{ CompNetFieldExplicit( "apos.trTime", trApos.trTime ), 32 },
+	{ CompNetFieldExplicit( "apos.trDuration", trApos.trDuration ), 32 },
+	{ CompNetFieldExplicit( "apos.trBase[2]", trApos.trBase[2] ), 0 },
+	{ CompNetFieldExplicit( "apos.trDelta[0]", trApos.trDelta[0] ), 0 },
+	{ CompNetFieldExplicit( "apos.trDelta[1]", trApos.trDelta[1] ), 0 },
+	{ CompNetFieldExplicit( "apos.trDelta[2]", trApos.trDelta[2] ), 0 },
+	{ CompNetField( time2 ), 32 },
+	{ CompNetField( angles[2] ), 0 },
+	{ CompNetField( angles2[0] ), 0 },
+	{ CompNetField( angles2[2] ), 0 },
+	{ CompNetField( constantLight ), 32 },
+	{ CompNetField( frame ), 16 }
+};
 
 // if (int)f == f and (int)f + ( 1<<(FLOAT_INT_BITS-1) ) < ( 1 << FLOAT_INT_BITS )
 // the float will be sent with FLOAT_INT_BITS, otherwise all 32 bits will be sent
@@ -916,6 +977,147 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 			}
 		}
 	}
+}
+
+void MSG_WriteDeltaEntity( msg_t* msg, Entities::IEntity* from, Entities::IEntity* to, bool force )
+{
+	int i;
+	int lc;
+	int numFields;
+	netField_t* field;
+	int trunc;
+	float fullFloat;
+	int* fromF;
+	int* toF;
+
+	Components::SharedComponent* fromComp = nullptr;
+	Components::SharedComponent* toComp = nullptr;
+
+	if ( from )
+		fromComp = from->GetComponent<Components::SharedComponent>();
+
+	if ( to )
+		toComp = from->GetComponent<Components::SharedComponent>();
+
+	numFields = ARRAY_LEN( sharedComponentFields ); 
+
+	if ( nullptr == to )
+	{
+		if ( nullptr == from )
+		{
+			return;
+		}
+
+		MSG_WriteBits( msg, fromComp->entityIndex, GENTITYNUM_BITS );
+		MSG_WriteBits( msg, 1, 1 );
+		return;
+	}
+
+	if ( toComp->entityIndex < 0 || toComp->entityIndex >= MAX_GENTITIES )
+	{
+		Com_Error( ERR_FATAL, "MSG_WriteDeltaEntity: Bad entity number: %i", toComp->entityIndex );
+	}
+
+	lc = 0;
+	// build the change vector as bytes so it is endian independent
+	for ( i = 0, field = sharedComponentFields; i < numFields; i++, field++ )
+	{
+		fromF = (int*)((byte*)fromComp + field->offset);
+		toF = (int*)((byte*)toComp + field->offset);
+		
+		if ( *fromF != *toF ) 
+		{
+			lc = i + 1;
+		}
+	}
+
+	if ( lc == 0 ) 
+	{
+		// nothing at all changed
+		if ( !force ) 
+		{
+			return;		// nothing at all
+		}
+		
+		// write two bits for no change
+		MSG_WriteBits( msg, toComp->entityIndex, GENTITYNUM_BITS );
+		MSG_WriteBits( msg, 0, 1 );		// not removed
+		MSG_WriteBits( msg, 0, 1 );		// no delta
+		return;
+	}
+
+	MSG_WriteBits( msg, toComp->entityIndex, GENTITYNUM_BITS );
+	MSG_WriteBits( msg, 0, 1 );			// not removed
+	MSG_WriteBits( msg, 1, 1 );			// we have a delta
+
+	MSG_WriteByte( msg, lc );	// # of changes
+
+	oldsize += numFields;
+
+	for ( i = 0, field = entityStateFields; i < lc; i++, field++ ) 
+	{
+		fromF = (int*)((byte*)fromComp + field->offset);
+		toF = (int*)((byte*)toComp + field->offset);
+
+		if ( *fromF == *toF ) 
+		{
+			MSG_WriteBits( msg, 0, 1 );	// no change
+			continue;
+		}
+
+		MSG_WriteBits( msg, 1, 1 );	// changed
+
+		if ( field->bits == 0 ) 
+		{
+			// float
+			fullFloat = *(float*)toF;
+			trunc = (int)fullFloat;
+
+			if ( fullFloat == 0.0f ) 
+			{
+				MSG_WriteBits( msg, 0, 1 );
+				oldsize += FLOAT_INT_BITS;
+			}
+			
+			else 
+			{
+				MSG_WriteBits( msg, 1, 1 );
+				if ( trunc == fullFloat && trunc + FLOAT_INT_BIAS >= 0 &&
+					trunc + FLOAT_INT_BIAS < (1 << FLOAT_INT_BITS) ) 
+				{
+					// send as small integer
+					MSG_WriteBits( msg, 0, 1 );
+					MSG_WriteBits( msg, trunc + FLOAT_INT_BIAS, FLOAT_INT_BITS );
+				}
+				
+				else 
+				{
+					// send as full floating point value
+					MSG_WriteBits( msg, 1, 1 );
+					MSG_WriteBits( msg, *toF, 32 );
+				}
+			}
+		}
+		else 
+		{
+			if ( *toF == 0 ) 
+			{
+				MSG_WriteBits( msg, 0, 1 );
+			}
+			
+			else 
+			{
+				MSG_WriteBits( msg, 1, 1 );
+				// integer
+				MSG_WriteBits( msg, *toF, field->bits );
+			}
+		}
+	}
+}
+
+void MSG_WriteDeltaEntity( msg_t* msg, Components::SharedComponent* from, Components::SharedComponent* to, bool force )
+{
+
 }
 
 /*

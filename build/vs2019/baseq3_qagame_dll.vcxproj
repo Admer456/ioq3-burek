@@ -24,6 +24,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>baseq3_qagame_dll</RootNamespace>
     <ProjectName>Game</ProjectName>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -68,29 +69,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>bin_x86\baseq3\</OutDir>
-    <IntDir>obj\x86\Release\baseq3_qagame_dll\</IntDir>
+    <OutDir>..\..\bin\$(PlatformTarget).$(Configuration)\base\</OutDir>
+    <IntDir>obj\$(PlatformTarget).$(Configuration)\$(TargetName)\</IntDir>
     <TargetName>qagamex86</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>bin_x64\baseq3\</OutDir>
-    <IntDir>obj\x64\Release\baseq3_qagame_dll\</IntDir>
+    <OutDir>..\..\bin\$(PlatformTarget).$(Configuration)\base\</OutDir>
+    <IntDir>obj\$(PlatformTarget).$(Configuration)\$(TargetName)\</IntDir>
     <TargetName>qagamex86_64</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>bin_x86_debug\baseq3\</OutDir>
-    <IntDir>obj\x86\Debug\baseq3_qagame_dll\</IntDir>
+    <OutDir>..\..\bin\$(PlatformTarget).$(Configuration)\base\</OutDir>
+    <IntDir>obj\$(PlatformTarget).$(Configuration)\$(TargetName)\</IntDir>
     <TargetName>qagamex86</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>bin_x64_debug\baseq3\</OutDir>
-    <IntDir>obj\x64\Debug\baseq3_qagame_dll\</IntDir>
+    <OutDir>..\..\bin\$(PlatformTarget).$(Configuration)\base\</OutDir>
+    <IntDir>obj\$(PlatformTarget).$(Configuration)\$(TargetName)\</IntDir>
     <TargetName>qagamex86_64</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
@@ -104,14 +105,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <AdditionalIncludeDirectories>..\..\code\game\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;bLib.$(PlatformTarget).$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>bin_x86\baseq3\qagamex86.lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\libs\bLib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -124,13 +126,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
+      <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;bLib.$(PlatformTarget).$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>bin_x64\baseq3\qagamex86_64.lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\libs\bLib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -140,13 +144,14 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;__CPP;_GAMEDLL;__CPP_DEBUG;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\code\game\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;bLib.$(PlatformTarget).$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>bin_x86_debug\baseq3\qagamex86.lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\libs\bLib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -156,12 +161,14 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;_WIN64;__WIN64__;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;bLib.$(PlatformTarget).$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>bin_x64_debug\baseq3\qagamex86_64.lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\libs\bLib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -191,7 +198,6 @@
     <ClInclude Include="..\..\code\game\Game\g_rankings.hpp" />
     <ClInclude Include="..\..\code\game\Game\IGame.h" />
     <ClInclude Include="..\..\code\game\Game\IGameImports.h" />
-    <ClInclude Include="..\..\code\qcommon\Maths\Vector.hpp" />
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
     <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp" />
     <ClInclude Include="..\..\code\shared\bg_local.hpp" />
@@ -232,7 +238,6 @@
     <ClCompile Include="..\..\code\game\Weapons\g_items.cpp" />
     <ClCompile Include="..\..\code\game\Weapons\g_missile.cpp" />
     <ClCompile Include="..\..\code\game\Weapons\g_weapon.cpp" />
-    <ClCompile Include="..\..\code\qcommon\Maths\Vector.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_shared.cpp" />
     <ClCompile Include="..\..\code\shared\bg_misc.cpp" />

@@ -8,7 +8,7 @@ struct gentity_t;
 #include "../game/Game/IGameImports.h"
 #include "GameImportsLocal.h"
 //#include "../sys/sys_loadlib.hpp"
-#include "../qcommon/Maths/Vector.hpp"
+#include "Maths/Vector.hpp"
 #include "../game/Entities/IEntity.hpp"
 #include "../game/Components/IComponent.hpp"
 #include "../game/Components/SharedComponent.hpp"
@@ -39,6 +39,7 @@ extern qboolean SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2 );
 extern void SV_AdjustAreaPortalState( sharedEntity_t* ent, qboolean open );
 
 using namespace Entities;
+using namespace Components;
 
 void GameImportsLocal::AddConsoleCommand( const char* commandName )
 {
@@ -137,7 +138,7 @@ void GameImportsLocal::SetBrushModel( IEntity* ent, const char* name )
 	clipHandle_t	h;
 	vec3_t			mins, maxs;
 
-	auto sharedComp = ent->GetComponent<Components::SharedComponent>();
+	auto sharedComp = ent->GetComponent<SharedComponent>();
 
 	if ( !name ) {
 		Com_Error( ERR_DROP, "SV_SetBrushModel: NULL" );
@@ -153,7 +154,7 @@ void GameImportsLocal::SetBrushModel( IEntity* ent, const char* name )
 	CM_ModelBounds( h, mins, maxs );
 	VectorCopy( mins, sharedComp->mins );
 	VectorCopy( maxs, sharedComp->maxs );
-	sharedComp->bmodel = qtrue;
+	sharedComp->bmodel = true;
 
 	sharedComp->contents = -1;		// we don't know exactly what is in the brushes
 
@@ -231,11 +232,12 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 	float* origin, * angles;
 	svEntity_t* ent;
 
-	Components::SharedComponent* shared = gEnt->GetComponent<Components::SharedComponent>();
+	SharedComponent* shared = gEnt->GetComponent<SharedComponent>();
 
 	ent = ServerEntityForEntity( gEnt );
 
-	if ( ent->worldSector ) {
+	if ( ent->worldSector ) 
+	{
 		UnlinkEntity( gEnt );	// unlink from old position
 	}
 
@@ -322,7 +324,8 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 
 	// if none of the leafs were inside the map, the
 	// entity is outside the world and can be considered unlinked
-	if ( !num_leafs ) {
+	if ( !num_leafs ) 
+	{
 		return;
 	}
 
@@ -408,7 +411,7 @@ void GameImportsLocal::UnlinkEntity( IEntity* gEnt )
 	svEntity_t* scan;
 	worldSector_t* ws;
 
-	auto shared = gEnt->GetComponent<Components::SharedComponent>();
+	auto shared = gEnt->GetComponent<SharedComponent>();
 
 	ent = ServerEntityForEntity( gEnt );
 
@@ -451,7 +454,7 @@ bool GameImportsLocal::EntityContact( vec3_t mins, vec3_t maxs, const IEntity* e
 	clipHandle_t	ch;
 	trace_t			trace;
 	IEntity* _ent = const_cast<IEntity*>( ent );
-	auto shared = _ent->GetComponent<Components::SharedComponent>();
+	auto shared = _ent->GetComponent<SharedComponent>();
 
 	// check for exact collision
 	origin = shared->origin;
@@ -502,7 +505,7 @@ void GameImportsLocal::DebugPolygonDelete( int id )
 clipHandle_t GameImportsLocal::ClipHandleForEntity( const IEntity* ent )
 {
 	IEntity* _ent = const_cast<IEntity*>( ent );
-	auto shared = _ent->GetComponent<Components::SharedComponent>();
+	auto shared = _ent->GetComponent<SharedComponent>();
 
 	if ( shared->bmodel )
 	{
@@ -521,7 +524,7 @@ clipHandle_t GameImportsLocal::ClipHandleForEntity( const IEntity* ent )
 
 svEntity_t* GameImportsLocal::ServerEntityForEntity( IEntity* ent )
 {
-	auto shared = ent->GetComponent<Components::SharedComponent>();
+	auto shared = ent->GetComponent<SharedComponent>();
 
 	if ( !ent || shared->entityIndex < 0 || shared->entityIndex >= MAX_GENTITIES )
 	{

@@ -25,8 +25,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "Game/g_local.hpp"
 #include "Game/IGameImports.h"
 
-extern IGameImports* gameImports;
-
 using namespace Entities;
 
 typedef struct {

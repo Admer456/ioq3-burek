@@ -45,8 +45,6 @@ IEntity*		gEntities[MAX_GENTITIES];
 
 gclient_t		g_clients[MAX_CLIENTS];
 
-extern IGameImports* gameImports;
-
 vmCvar_t	g_gametype;
 vmCvar_t	g_dmflags;
 vmCvar_t	g_fraglimit;

@@ -58,6 +58,7 @@ typedef struct svEntity_s {
 	struct svEntity_s *nextEntityInWorldSector;
 	
 	entityState_t	baseline;		// for delta compression of initial sighting
+	Entities::IEntity* baselineIEnt; // same as above, but for the new entity system
 	int			numClusters;		// if -1, use headnode instead
 	int			clusternums[MAX_ENT_CLUSTERS];
 	int			lastCluster;		// if all the clusters don't fit in clusternums
@@ -249,8 +250,8 @@ typedef struct {
 	int			nextSnapshotEntities;		// next snapshotEntities to use
 	entityState_t	*snapshotEntities;		// [numSnapshotEntities]
 	
-	int numSnapshotIEntities;
-	int nextSnapshotIEntities;
+	int			numSnapshotIEntities;
+	int			nextSnapshotIEntities;
 	Entities::IEntity** snapshotIEntities;
 
 	int			nextHeartbeatTime;

@@ -3,7 +3,7 @@
 #include "Entities/KeyValueElement.hpp"
 #include "Game/GameWorld.hpp"
 
-#include "../qcommon/Maths/Vector.hpp"
+#include "Maths/Vector.hpp"
 
 #include "LegacyQuakeEntity.hpp"
 

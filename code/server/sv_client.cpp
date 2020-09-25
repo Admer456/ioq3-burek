@@ -23,6 +23,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "server.hpp"
 #include "../game/Game/IGame.h"
+#include "../game/Entities/IEntity.hpp"
+#include "../game/Components/IComponent.hpp"
+#include "../game/Components/SharedComponent.hpp"
 
 static void SV_CloseDownload( client_t *cl );
 
@@ -710,6 +713,8 @@ the wrong gamestate.
 static void SV_SendClientGameState( client_t *client ) {
 	int			start;
 	entityState_t	*base, nullstate;
+	Entities::IEntity* baseIent = nullptr;
+	Components::SharedComponent* baseComp, nullComp;
 	msg_t		msg;
 	byte		msgBuffer[MAX_MSGLEN];
 
@@ -751,6 +756,8 @@ static void SV_SendClientGameState( client_t *client ) {
 
 	// write the baselines
 	Com_Memset( &nullstate, 0, sizeof( nullstate ) );
+	Com_Memset( &nullComp, 0, sizeof( nullComp ) );
+
 	for ( start = 0 ; start < MAX_GENTITIES; start++ ) {
 		base = &sv.svEntities[start].baseline;
 		if ( !base->number ) {
@@ -758,6 +765,21 @@ static void SV_SendClientGameState( client_t *client ) {
 		}
 		MSG_WriteByte( &msg, svc_baseline );
 		MSG_WriteDeltaEntity( &msg, &nullstate, base, qtrue );
+	}
+
+	for ( start = 0; start < MAX_GENTITIES; start++ )
+	{
+		baseIent = sv.svEntities[start].baselineIEnt;
+		
+		if ( nullptr == baseIent )
+			continue;
+
+		baseComp = baseIent->GetComponent<Components::SharedComponent>();
+		if ( !baseComp->entityIndex )
+			continue;
+
+		MSG_WriteByte( &msg, svc_baseline );
+		MSG_WriteDeltaEntity( &msg, baseComp, &nullComp, true );
 	}
 
 	MSG_WriteByte( &msg, svc_EOF );

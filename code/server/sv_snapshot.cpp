@@ -20,8 +20,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
+#include "../game/Entities/IEntity.hpp"
 #include "server.hpp"
-
+#include "../game/Components/IComponent.hpp"
+#include "../game/Components/SharedComponent.hpp"
 
 /*
 =============================================================================
@@ -54,14 +56,22 @@ Writes a delta update of an entityState_t list to the message.
 */
 static void SV_EmitPacketEntities( clientSnapshot_t *from, clientSnapshot_t *to, msg_t *msg ) {
 	entityState_t	*oldent, *newent;
+	Entities::IEntity* oldIEnt;
+	Entities::IEntity* newIEnt;
+	Components::SharedComponent* oldComp;
+	Components::SharedComponent* newComp;
+
 	int		oldindex, newindex;
 	int		oldnum, newnum;
 	int		from_num_entities;
 
 	// generate the delta update
-	if ( !from ) {
+	if ( !from ) 
+	{
 		from_num_entities = 0;
-	} else {
+	} 
+	else 
+	{
 		from_num_entities = from->num_entities;
 	}
 
@@ -69,41 +79,85 @@ static void SV_EmitPacketEntities( clientSnapshot_t *from, clientSnapshot_t *to,
 	oldent = NULL;
 	newindex = 0;
 	oldindex = 0;
-	while ( newindex < to->num_entities || oldindex < from_num_entities ) {
-		if ( newindex >= to->num_entities ) {
+	while ( newindex < to->num_entities || oldindex < from_num_entities ) 
+	{
+		if ( newindex >= to->num_entities ) 
+		{
 			newnum = 9999;
-		} else {
-			newent = &svs.snapshotEntities[(to->first_entity+newindex) % svs.numSnapshotEntities];
-			newnum = newent->number;
+		} 
+
+		else 
+		{
+			newIEnt = svs.snapshotIEntities[(to->first_entity + newindex) % svs.numSnapshotEntities];
+			
+			if ( nullptr == newIEnt )
+			{
+				newent = &svs.snapshotEntities[(to->first_entity + newindex) % svs.numSnapshotEntities];
+				newnum = newent->number;
+			}
+			else
+			{
+				newComp = newIEnt->GetComponent<Components::SharedComponent>();
+				newnum = newComp->entityIndex;
+			}
 		}
 
-		if ( oldindex >= from_num_entities ) {
+		if ( oldindex >= from_num_entities ) 
+		{
 			oldnum = 9999;
-		} else {
-			oldent = &svs.snapshotEntities[(from->first_entity+oldindex) % svs.numSnapshotEntities];
-			oldnum = oldent->number;
+		} 
+
+		else
+		{
+			oldIEnt = svs.snapshotIEntities[(from->first_entity + newindex) % svs.numSnapshotEntities];
+
+			if ( nullptr == oldIEnt )
+			{
+				oldent = &svs.snapshotEntities[(from->first_entity + oldindex) % svs.numSnapshotEntities];
+				oldnum = oldent->number;
+			}
+			else
+			{
+				oldComp = oldIEnt->GetComponent<Components::SharedComponent>();
+				oldnum = oldComp->entityIndex;
+			}
 		}
 
-		if ( newnum == oldnum ) {
+		if ( newnum == oldnum ) 
+		{
 			// delta update from old position
 			// because the force parm is qfalse, this will not result
 			// in any bytes being emitted if the entity has not changed at all
-			MSG_WriteDeltaEntity (msg, oldent, newent, qfalse );
+			if ( nullptr == oldIEnt )
+				MSG_WriteDeltaEntity( msg, oldent, newent, qfalse );
+			else
+				MSG_WriteDeltaEntity( msg, oldIEnt, newIEnt, false );
+			
 			oldindex++;
 			newindex++;
 			continue;
 		}
 
-		if ( newnum < oldnum ) {
+		if ( newnum < oldnum ) 
+		{
 			// this is a new entity, send it from the baseline
-			MSG_WriteDeltaEntity (msg, &sv.svEntities[newnum].baseline, newent, qtrue );
+			if ( nullptr == newIEnt )
+				MSG_WriteDeltaEntity( msg, &sv.svEntities[newnum].baseline, newent, qtrue );
+			else
+				MSG_WriteDeltaEntity( msg, sv.svEntities[newnum].baselineIEnt, newIEnt, true );
+			
 			newindex++;
 			continue;
 		}
 
-		if ( newnum > oldnum ) {
+		if ( newnum > oldnum ) 
+		{
 			// the old entity isn't present in the new message
-			MSG_WriteDeltaEntity (msg, oldent, NULL, qtrue );
+			if ( nullptr == oldIEnt )
+				MSG_WriteDeltaEntity( msg, oldent, NULL, qtrue );
+			else
+				MSG_WriteDeltaEntity( msg, oldIEnt, nullptr, true );
+			
 			oldindex++;
 			continue;
 		}

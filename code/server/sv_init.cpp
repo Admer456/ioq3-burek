@@ -22,6 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "server.hpp"
 #include "../game/Game/IGame.h"
+#include "../game/Entities/IEntity.hpp"
+#include "../game/Components/IComponent.hpp"
+#include "../game/Components/SharedComponent.hpp"
 
 /*
 ===============
@@ -218,7 +221,8 @@ static void SV_CreateBaseline( void ) {
 	sharedEntity_t *svent;
 	int				entnum;	
 
-	for ( entnum = 1; entnum < sv.num_entities ; entnum++ ) {
+	for ( entnum = 1; entnum < sv.num_entities ; entnum++ ) 
+	{
 		svent = SV_GentityNum(entnum);
 		if (!svent->r.linked) {
 			continue;
@@ -229,6 +233,18 @@ static void SV_CreateBaseline( void ) {
 		// take current state as baseline
 		//
 		sv.svEntities[entnum].baseline = svent->s;
+	}
+
+	for ( entnum = 1; entnum < sv.numEntities; entnum++ )
+	{
+		Entities::IEntity* ient = (Entities::IEntity*)((byte*)sv.entities + sv.entitySize * (entnum));
+		Components::SharedComponent* shared = ient->GetComponent<Components::SharedComponent>();
+		if ( !shared->linked )
+			continue;
+
+		shared->entityIndex = entnum;
+
+		sv.svEntities[entnum].baselineIEnt = ient;
 	}
 }
 

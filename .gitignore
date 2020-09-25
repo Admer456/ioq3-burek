@@ -5,6 +5,7 @@ build/**/.vs
 build/**/obj
 build/**/dynamic
 build/**/bin*
+bin*
 
 # Keep all project and solution files
 !build/**/*.vcxproj*

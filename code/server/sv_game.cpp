@@ -48,7 +48,7 @@ IEngineExports* engine = &engineLocal;
 
 // Interface that gets retrieved from the game DLL
 IGame* game = nullptr;
-GameImport_t gameImports;
+GameImport_t engineGameImports;
 
 // these functions must be used instead of pointer arithmetic, because
 // the game allocates gentities with private information after the server shared part
@@ -967,10 +967,10 @@ void SV_InitGameProgs( void )
 
 	if ( gameInterfaceGrabber )
 	{
-		gameImports.engineExports = engine;
-		gameImports.gameImports = toGame;
+		engineGameImports.engineExports = engine;
+		engineGameImports.gameImports = toGame;
 
-		GameExport_t* gameExport = gameInterfaceGrabber( &gameImports );
+		GameExport_t* gameExport = gameInterfaceGrabber( &engineGameImports );
 		game = gameExport->game;
 	}
 	else

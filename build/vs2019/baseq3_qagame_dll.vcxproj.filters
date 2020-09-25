@@ -28,9 +28,6 @@
     <Filter Include="Sources\Components">
       <UniqueIdentifier>{dc86e3d6-6da8-4424-8532-487393db7dba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="qcommon\Maths">
-      <UniqueIdentifier>{5f566201-c1c6-4aa0-bdee-13bc02ada6d9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -119,9 +116,6 @@
     </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\LegacyQuakeEntity.hpp">
       <Filter>Sources\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\code\qcommon\Maths\Vector.hpp">
-      <Filter>qcommon\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\game\Components\SharedComponent.hpp">
       <Filter>Sources\Components</Filter>
@@ -241,9 +235,6 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\LegacyQuakeEntity.cpp">
       <Filter>Sources\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\qcommon\Maths\Vector.cpp">
-      <Filter>qcommon\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Components\SharedComponent.cpp">
       <Filter>Sources\Components</Filter>
