@@ -84,6 +84,7 @@ void CG_SetInitialSnapshot( snapshot_t *snap ) {
 	int				i;
 	centity_t		*cent;
 	entityState_t	*state;
+	Components::SharedComponent* comp;
 
 	cg.snap = snap;
 
@@ -98,7 +99,8 @@ void CG_SetInitialSnapshot( snapshot_t *snap ) {
 	// what the server has indicated the current weapon is
 	CG_Respawn();
 
-	for ( i = 0 ; i < cg.snap->numEntities ; i++ ) {
+	for ( i = 0 ; i < cg.snap->numEntities ; i++ ) 
+	{
 		state = &cg.snap->entities[ i ];
 		cent = &cg_entities[ state->number ];
 
@@ -321,33 +323,40 @@ of an interpolating one)
 
 ============
 */
-void CG_ProcessSnapshots( void ) {
+void CG_ProcessSnapshots( void ) 
+{
 	snapshot_t		*snap;
 	int				n;
 
 	// see what the latest snapshot the client system has is
 	trap_GetCurrentSnapshotNumber( &n, &cg.latestSnapshotTime );
-	if ( n != cg.latestSnapshotNum ) {
-		if ( n < cg.latestSnapshotNum ) {
+	if ( n != cg.latestSnapshotNum ) 
+	{
+		if ( n < cg.latestSnapshotNum ) 
+		{
 			// this should never happen
 			CG_Error( "CG_ProcessSnapshots: n < cg.latestSnapshotNum" );
 		}
+		
 		cg.latestSnapshotNum = n;
 	}
 
 	// If we have yet to receive a snapshot, check for it.
 	// Once we have gotten the first snapshot, cg.snap will
 	// always have valid data for the rest of the game
-	while ( !cg.snap ) {
+	while ( !cg.snap ) 
+	{
 		snap = CG_ReadNextSnapshot();
-		if ( !snap ) {
+		if ( !snap ) 
+		{
 			// we can't continue until we get a snapshot
 			return;
 		}
 
 		// set our weapon selection to what
 		// the playerstate is currently using
-		if ( !( snap->snapFlags & SNAPFLAG_NOT_ACTIVE ) ) {
+		if ( !( snap->snapFlags & SNAPFLAG_NOT_ACTIVE ) ) 
+		{
 			CG_SetInitialSnapshot( snap );
 		}
 	}
@@ -355,14 +364,17 @@ void CG_ProcessSnapshots( void ) {
 	// loop until we either have a valid nextSnap with a serverTime
 	// greater than cg.time to interpolate towards, or we run
 	// out of available snapshots
-	do {
+	do 
+	{
 		// if we don't have a nextframe, try and read a new one in
-		if ( !cg.nextSnap ) {
+		if ( !cg.nextSnap ) 
+		{
 			snap = CG_ReadNextSnapshot();
 
 			// if we still don't have a nextframe, we will just have to
 			// extrapolate
-			if ( !snap ) {
+			if ( !snap ) 
+			{
 				break;
 			}
 
@@ -370,13 +382,15 @@ void CG_ProcessSnapshots( void ) {
 
 
 			// if time went backwards, we have a level restart
-			if ( cg.nextSnap->serverTime < cg.snap->serverTime ) {
+			if ( cg.nextSnap->serverTime < cg.snap->serverTime ) 
+			{
 				CG_Error( "CG_ProcessSnapshots: Server time went backwards" );
 			}
 		}
 
 		// if our time is < nextFrame's, we have a nice interpolating state
-		if ( cg.time >= cg.snap->serverTime && cg.time < cg.nextSnap->serverTime ) {
+		if ( cg.time >= cg.snap->serverTime && cg.time < cg.nextSnap->serverTime ) 
+		{
 			break;
 		}
 
@@ -385,16 +399,20 @@ void CG_ProcessSnapshots( void ) {
 	} while ( 1 );
 
 	// assert our valid conditions upon exiting
-	if ( cg.snap == NULL ) {
+	if ( cg.snap == NULL ) 
+	{
 		CG_Error( "CG_ProcessSnapshots: cg.snap == NULL" );
 	}
-	if ( cg.time < cg.snap->serverTime ) {
+
+	if ( cg.time < cg.snap->serverTime ) 
+	{
 		// this can happen right after a vid_restart
 		cg.time = cg.snap->serverTime;
 	}
-	if ( cg.nextSnap != NULL && cg.nextSnap->serverTime <= cg.time ) {
+
+	if ( cg.nextSnap != NULL && cg.nextSnap->serverTime <= cg.time ) 
+	{
 		CG_Error( "CG_ProcessSnapshots: cg.nextSnap->serverTime <= cg.time" );
 	}
-
 }
 

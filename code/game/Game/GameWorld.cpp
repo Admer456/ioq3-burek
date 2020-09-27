@@ -152,13 +152,14 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 template<typename entityType>
 entityType* GameWorld::CreateEntity()
 {
-	for ( int i = 0; i < MaxEntities; i++ )
+	for ( unsigned int i = MAX_CLIENTS; i < MaxEntities; i++ )
 	{
 		// Also check for g_entities so we don't get any conflicts
 		// on the client & server and whatnot
 		if ( gEntities[i] == nullptr && !g_entities[i].inuse )
 		{
 			gEntities[i] = new entityType();
+			gEntities[i]->SetEntityIndex( i );
 			return static_cast<entityType*>( gEntities[i] );
 		}
 	}

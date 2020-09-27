@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "server.hpp"
 #include "../game/Game/IGame.h"
+#include "Maths/Vector.hpp"
 #include "../game/Entities/IEntity.hpp"
 #include "../game/Components/IComponent.hpp"
 #include "../game/Components/SharedComponent.hpp"

@@ -410,6 +410,7 @@ gentity_t *G_Spawn( void ) {
 			}
 
 			// reuse this slot
+			G_Printf( "Spawned gentity_t at: %i\n", i );
 			G_InitGentity( e );
 			return e;
 		}

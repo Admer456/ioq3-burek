@@ -26,8 +26,11 @@ void BaseQuakeEntity::Spawn()
 	auto comp = CreateComponent<SharedComponent>();
 	const char* model = spawnArgs->GetCString( "model", nullptr );
 
-	comp->origin = spawnArgs->GetVector( "origin", Vector::Zero );
+	comp->origin = spawnArgs->GetVector( "origin", Vector(0, 0, 64) );
 	comp->angles = spawnArgs->GetVector( "angles", Vector::Zero );
+	comp->entityIndex = GetEntityIndex();
+
+	engine->Print( va( "Spawned a BaseQuakeEntity at %i\n", GetEntityIndex() ) );
 
 	if ( !model )
 	{

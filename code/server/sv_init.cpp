@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "server.hpp"
 #include "../game/Game/IGame.h"
+#include "Maths/Vector.hpp"
 #include "../game/Entities/IEntity.hpp"
 #include "../game/Components/IComponent.hpp"
 #include "../game/Components/SharedComponent.hpp"
@@ -452,6 +453,7 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 
 	// allocate the snapshot entities on the hunk
 	svs.snapshotEntities = (entityState_t*)Hunk_Alloc( sizeof(entityState_t)*svs.numSnapshotEntities, h_high );
+	svs.snapshotIEntities = (Entities::IEntity**)Hunk_Alloc( sizeof( Entities::IEntity* ) * svs.numSnapshotEntities, h_high );
 	svs.nextSnapshotEntities = 0;
 
 	// toggle the server bit so clients can detect that a
@@ -668,7 +670,7 @@ void SV_Init (void)
 	sv_floodProtect = Cvar_Get ("sv_floodProtect", "1", CVAR_ARCHIVE | CVAR_SERVERINFO );
 
 	// systeminfo
-	Cvar_Get ("sv_cheats", "1", CVAR_SYSTEMINFO | CVAR_ROM );
+	Cvar_Get ("sv_cheats", "1", CVAR_SYSTEMINFO );
 	sv_serverid = Cvar_Get ("sv_serverid", "0", CVAR_SYSTEMINFO | CVAR_ROM );
 	sv_pure = Cvar_Get ("sv_pure", "1", CVAR_SYSTEMINFO );
 #ifdef USE_VOIP

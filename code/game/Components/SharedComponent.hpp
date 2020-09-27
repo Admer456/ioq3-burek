@@ -41,7 +41,8 @@ namespace Components
 		int				otherEntityIndex[2];
 		int				groundEntityIndex{ 0 };
 
-		bool			linked{ false };
+		// linked was a bool, but it's an int now because of some networking stuff
+		int				linked{ false };
 		int				linkCount{ 0 };
 		int				serverFlags{ 0 };	// SVF_NOCLIENT, SVF_BROADCAST, etc.
 
@@ -71,7 +72,7 @@ namespace Components
 		// if SVF_CLIENTMASK is set, use bitmask for clients to send to (maxclients must be <= 32, up to the mod to enforce this)
 		int				singleClient{ 0 };
 	
-		bool			bmodel{ false };// if false, assume an explicit mins / maxs bounding box
+		int				bmodel{ false };// if false, assume an explicit mins / maxs bounding box
 									// only set by trap_SetBrushModel
 	
 		Vector			mins, maxs;

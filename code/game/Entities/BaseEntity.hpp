@@ -26,6 +26,17 @@ namespace Entities
 		virtual void	TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) override { return; }
 		virtual void	Die( IEntity* killer ) override { return; }
 
+		// All entities have an entity index
+		unsigned int	GetEntityIndex() const
+		{
+			return entityIndex;
+		}
+
+		void			SetEntityIndex( const size_t& index )
+		{
+			entityIndex = index;
+		}
+
 		// Every entity that has custom keyvalues will need to declare this too
 		// THese are basically some sort of keyvalue handlers, and are used to
 		// set & get keyvalues
@@ -38,18 +49,14 @@ namespace Entities
 		// Each pair is stored in here
 		KeyValueLibrary* spawnArgs;
 
-		// Engine variables. We must get rid of them one day; they're here only
-		// because I haven't adapted the actual engine to not use gentity_t
-		// One day, the engine won't have client entities, server entities,
-		// game entities etc., but rather, everything will go through IEntity
-		entityState_t	state;
-		entityShared_t	shared;
-
 	public:
 		float			nextThink{ 0 };
 
 		int				spawnFlags{ 0 };		// 64 bits of
 		int				spawnFlagsExtra{ 0 };	// spawnflags cuz' why not
+	
+	protected:
+		unsigned int	entityIndex{ EntityIndexNotSet };
 	};
 
 	// Test base entity, will move a brush up'n'down

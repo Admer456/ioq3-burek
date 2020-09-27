@@ -2,8 +2,10 @@
 #include "BaseEntity.hpp"
 #include "Entities/KeyValueElement.hpp"
 #include "Game/GameWorld.hpp"
-
 #include "Maths/Vector.hpp"
+
+#include "Components/IComponent.hpp"
+#include "Components/SharedComponent.hpp"
 
 #include "LegacyQuakeEntity.hpp"
 
@@ -23,7 +25,7 @@ KeyValueElement( #variable_map, offsetof(LegacyQuakeEntity, variable_code), hand
 KeyValueElement LegacyQuakeEntity::keyValues[] =
 {	//| KV def type		| KV name	| KV code name		| Handler function		|
 	DefineKV(			classname,						&KVHandlers::CString )
-	DefineKV_Explicit(	origin,		state.origin,		&KVHandlers::Vector )
+	//DefineKV_Explicit(	origin,		state.origin,		&KVHandlers::Vector )
 	DefineKV(			model,							&KVHandlers::CString )
 	DefineKV(			model2,							&KVHandlers::CString )
 	DefineKV(			speed,							&KVHandlers::Float )
@@ -36,7 +38,7 @@ KeyValueElement LegacyQuakeEntity::keyValues[] =
 	DefineKV(			count,							&KVHandlers::Int )
 	DefineKV(			health,							&KVHandlers::Int )
 	DefineKV_Explicit(	dmg,		damage,				&KVHandlers::Int )
-	DefineKV_Explicit(	angles,		state.angles,		&KVHandlers::Vector )
+	//DefineKV_Explicit(	angles,		state.angles,		&KVHandlers::Vector )
 	DefineKV(			targetShaderName,				&KVHandlers::CString )
 	DefineKV(			targetShaderNewName,			&KVHandlers::CString )
 

@@ -154,24 +154,19 @@ static void CG_EntityEffects( centity_t *cent ) {
 
 }
 
-
-/*
-==================
-CG_General
-==================
-*/
-static void CG_General( centity_t *cent ) {
+static void CG_General_GEntity( centity_t* cent )
+{
 	refEntity_t			ent;
-	entityState_t		*s1;
+	entityState_t* s1;
 
 	s1 = &cent->currentState;
 
 	// if set to invisible, skip
-	if (!s1->modelindex) {
+	if ( !s1->modelindex ) {
 		return;
 	}
 
-	memset (&ent, 0, sizeof(ent));
+	memset( &ent, 0, sizeof( ent ) );
 
 	// set frame
 
@@ -179,13 +174,13 @@ static void CG_General( centity_t *cent ) {
 	ent.oldframe = ent.frame;
 	ent.backlerp = 0;
 
-	VectorCopy( cent->lerpOrigin, ent.origin);
-	VectorCopy( cent->lerpOrigin, ent.oldorigin);
+	VectorCopy( cent->lerpOrigin, ent.origin );
+	VectorCopy( cent->lerpOrigin, ent.oldorigin );
 
 	ent.hModel = cgs.gameModels[s1->modelindex];
 
 	// player model
-	if (s1->number == cg.snap->ps.clientNum) {
+	if ( s1->number == cg.snap->ps.clientNum ) {
 		ent.renderfx |= RF_THIRD_PERSON;	// only draw from mirrors
 	}
 
@@ -193,7 +188,58 @@ static void CG_General( centity_t *cent ) {
 	AnglesToAxis( cent->lerpAngles, ent.axis );
 
 	// add to refresh list
-	trap_R_AddRefEntityToScene (&ent);
+	trap_R_AddRefEntityToScene( &ent );
+}
+
+static void CG_General_IEntity( centity_t* cent )
+{
+	refEntity_t			ent;
+	Components::SharedComponent* s1;
+
+	s1 = &cent->currentComp;
+
+	// if set to invisible, skip
+	if ( !s1->modelIndex ) 
+	{
+		return;
+	}
+
+	memset( &ent, 0, sizeof( ent ) );
+
+	// set frame
+
+	ent.frame = s1->frame;
+	ent.oldframe = ent.frame;
+	ent.backlerp = 0;
+
+	VectorCopy( cent->lerpOrigin, ent.origin );
+	VectorCopy( cent->lerpOrigin, ent.oldorigin );
+
+	ent.hModel = cgs.gameModels[s1->modelIndex];
+
+	// player model
+	if ( s1->entityIndex == cg.snap->ps.clientNum ) {
+		ent.renderfx |= RF_THIRD_PERSON;	// only draw from mirrors
+	}
+
+	// convert angles to axis
+	AnglesToAxis( cent->lerpAngles, ent.axis );
+
+	// add to refresh list
+	trap_R_AddRefEntityToScene( &ent );
+}
+
+/*
+==================
+CG_General
+==================
+*/
+static void CG_General( centity_t *cent ) 
+{
+	if ( cent->entitySystemType == EntitySystem_gentity_t )
+		CG_General_GEntity( cent );
+	else if ( cent->entitySystemType == EntitySystem_IEntity )
+		CG_General_IEntity( cent );
 }
 
 /*
@@ -900,6 +946,7 @@ void CG_AddPacketEntities( void ) {
 	int					num;
 	centity_t			*cent;
 	playerState_t		*ps;
+	Components::SharedComponent* comp;
 
 	// set cg.frameInterpolation
 	if ( cg.nextSnap ) {
@@ -937,8 +984,22 @@ void CG_AddPacketEntities( void ) {
 	CG_CalcEntityLerpPositions( &cg_entities[ cg.snap->ps.clientNum ] );
 
 	// add each entity sent over by the server
-	for ( num = 0 ; num < cg.snap->numEntities ; num++ ) {
-		cent = &cg_entities[ cg.snap->entities[ num ].number ];
+	for ( num = 0 ; num < cg.snap->numEntities ; num++ ) 
+	{
+		byte entitySystemType = cg.snap->entitySystemTypes[num];
+
+		if ( entitySystemType == EntitySystem_gentity_t )
+		{
+			cent = &cg_entities[cg.snap->entities[num].number];
+		}
+		else if ( entitySystemType == EntitySystem_IEntity )
+		{
+			comp = &cg.snap->comps[num];
+			cent = &cg_entities[comp->entityIndex];
+		}
+		
+		cent->entitySystemType = entitySystemType;
+
 		CG_AddCEntity( cent );
 	}
 }

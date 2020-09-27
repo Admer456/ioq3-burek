@@ -48,10 +48,18 @@ typedef struct {
 
 	int				numEntities;			// all of the entities that need to be presented
 	entityState_t	entities[MAX_ENTITIES_IN_SNAPSHOT];	// at the time of this snapshot
+	Components::SharedComponent comps[MAX_ENTITIES_IN_SNAPSHOT];
+	byte			entitySystemTypes[MAX_ENTITIES_IN_SNAPSHOT]; // Whether this entity is a gentity_t or an IEntity
 
 	int				numServerCommands;		// text based server commands to execute when this
 	int				serverCommandSequence;	// snapshot becomes current
 } snapshot_t;
+
+enum EntitySystemType
+{
+	EntitySystem_gentity_t, // Old entity system, we wanna get rid of this
+	EntitySystem_IEntity	// New entity system
+};
 
 enum {
   CGAME_EVENT_NONE,

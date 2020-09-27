@@ -429,6 +429,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	memset( gEntities, 0, MAX_GENTITIES * sizeof( gEntities[0] ) );
 	memset( g_entities, 0, MAX_GENTITIES * sizeof(g_entities[0]) );
 	level.gentities = g_entities;
+	level.entities = gEntities;
 
 	// initialize all clients for this game
 	level.maxclients = g_maxclients.integer;

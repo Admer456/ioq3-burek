@@ -25,6 +25,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../shared/bg_public.hpp"
 #include "cg_public.hpp"
 
+#include "../game/Components/IComponent.hpp"
+#include "../game/Components/SharedComponent.hpp"
 
 // The entire cgame module is unloaded and reloaded on each level change,
 // so there is NO persistant data between levels on the client side.
@@ -151,13 +153,18 @@ typedef struct {
 
 //=================================================
 
-
-
 // centity_t have a direct corespondence with gentity_t in the game, but
 // only the entityState_t is directly communicated to the cgame
 typedef struct centity_s {
 	entityState_t	currentState;	// from cg.frame
 	entityState_t	nextState;		// from cg.nextFrame, if available
+
+	// BurekTech new entity system stuff
+	Components::SharedComponent currentComp;
+	Components::SharedComponent nextComp;
+
+	byte			entitySystemType; // Whether this is a gentity_t or represents an IEntity
+
 	qboolean		interpolate;	// true if next is valid to interpolate to
 	qboolean		currentValid;	// true if cg.frame holds this entity
 

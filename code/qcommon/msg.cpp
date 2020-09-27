@@ -997,7 +997,7 @@ void MSG_WriteDeltaEntity( msg_t* msg, Entities::IEntity* from, Entities::IEntit
 		fromComp = from->GetComponent<Components::SharedComponent>();
 
 	if ( to )
-		toComp = from->GetComponent<Components::SharedComponent>();
+		toComp = to->GetComponent<Components::SharedComponent>();
 
 	numFields = ARRAY_LEN( sharedComponentFields ); 
 
@@ -1025,6 +1025,13 @@ void MSG_WriteDeltaEntity( msg_t* msg, Entities::IEntity* from, Entities::IEntit
 		fromF = (int*)((byte*)fromComp + field->offset);
 		toF = (int*)((byte*)toComp + field->offset);
 		
+		// Hack for special cases when fromComp is a nullptr
+		if ( nullptr == fromComp )
+		{
+			lc = i + 1;
+			continue;
+		}
+
 		if ( *fromF != *toF ) 
 		{
 			lc = i + 1;
@@ -1059,10 +1066,13 @@ void MSG_WriteDeltaEntity( msg_t* msg, Entities::IEntity* from, Entities::IEntit
 		fromF = (int*)((byte*)fromComp + field->offset);
 		toF = (int*)((byte*)toComp + field->offset);
 
-		if ( *fromF == *toF ) 
+		if ( fromComp )
 		{
-			MSG_WriteBits( msg, 0, 1 );	// no change
-			continue;
+			if ( *fromF == *toF )
+			{
+				MSG_WriteBits( msg, 0, 1 );	// no change
+				continue;
+			}
 		}
 
 		MSG_WriteBits( msg, 1, 1 );	// changed

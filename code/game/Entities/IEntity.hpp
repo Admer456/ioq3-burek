@@ -32,6 +32,12 @@ namespace Entities
 		virtual void				TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) = 0;
 		virtual void				Die( IEntity* killer ) = 0;
 		
+		// All entities have an entity index
+		virtual unsigned int		GetEntityIndex() const = 0;
+		virtual void				SetEntityIndex( const size_t& index ) = 0;
+
+		constexpr static size_t		EntityIndexNotSet = 1 << 31U;
+
 	public: // Modular function utilities. I know they're a little bit ugly, but they work
 		template<typename function>
 		inline void					SetThink( function f )
@@ -58,6 +64,9 @@ namespace Entities
 		componentType* GetComponent()
 		{
 			componentType* c = nullptr;
+
+			if ( components.empty() )
+				return nullptr; 
 
 			for ( auto component : components )
 			{

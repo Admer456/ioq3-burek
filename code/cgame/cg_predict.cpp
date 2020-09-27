@@ -48,30 +48,64 @@ void CG_BuildSolidList( void ) {
 	centity_t	*cent;
 	snapshot_t	*snap;
 	entityState_t	*ent;
+	Components::SharedComponent* comp;
 
 	cg_numSolidEntities = 0;
 	cg_numTriggerEntities = 0;
 
-	if ( cg.nextSnap && !cg.nextFrameTeleport && !cg.thisFrameTeleport ) {
+	if ( cg.nextSnap && !cg.nextFrameTeleport && !cg.thisFrameTeleport ) 
+	{
 		snap = cg.nextSnap;
-	} else {
+	} 
+	else 
+	{
 		snap = cg.snap;
 	}
 
-	for ( i = 0 ; i < snap->numEntities ; i++ ) {
-		cent = &cg_entities[ snap->entities[ i ].number ];
-		ent = &cent->currentState;
+	for ( i = 0 ; i < snap->numEntities ; i++ ) 
+	{
+		byte entitySystemType = snap->entitySystemTypes[i];
+		cent = &cg_entities[snap->entities[i].number];
 
-		if ( ent->eType == ET_ITEM || ent->eType == ET_PUSH_TRIGGER || ent->eType == ET_TELEPORT_TRIGGER ) {
-			cg_triggerEntities[cg_numTriggerEntities] = cent;
-			cg_numTriggerEntities++;
-			continue;
+		if ( entitySystemType == EntitySystem_gentity_t )
+		{
+			ent = &cent->currentState;
+
+			if ( ent->eType == ET_ITEM || ent->eType == ET_PUSH_TRIGGER || ent->eType == ET_TELEPORT_TRIGGER )
+			{
+				cg_triggerEntities[cg_numTriggerEntities] = cent;
+				cg_numTriggerEntities++;
+				continue;
+			}
+
+			if ( cent->nextState.solid )
+			{
+				cg_solidEntities[cg_numSolidEntities] = cent;
+				cg_numSolidEntities++;
+				continue;
+			}
 		}
+		else if ( entitySystemType == EntitySystem_IEntity )
+		{
+			comp = &cent->currentComp;
+			
+			if ( comp->entityType == ET_ITEM || comp->entityType == ET_PUSH_TRIGGER || comp->entityType == ET_TELEPORT_TRIGGER )
+			{
+				cg_triggerEntities[cg_numTriggerEntities] = cent;
+				cg_numTriggerEntities++;
+				continue;
+			}
 
-		if ( cent->nextState.solid ) {
-			cg_solidEntities[cg_numSolidEntities] = cent;
-			cg_numSolidEntities++;
-			continue;
+			if ( cent->nextComp.solid )
+			{
+				cg_solidEntities[cg_numSolidEntities] = cent;
+				cg_numSolidEntities++;
+				continue;
+			}
+		}
+		else
+		{
+			Com_Printf( "CG_BuildSolidList: Bad entity system type %d\n", entitySystemType );
 		}
 	}
 }

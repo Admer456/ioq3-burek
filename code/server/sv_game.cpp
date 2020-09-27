@@ -68,6 +68,11 @@ sharedEntity_t *SV_GentityNum( int num ) {
 	return ent;
 }
 
+Entities::IEntity* SV_IEntityNum( int num )
+{
+	return sv.entities[num];
+}
+
 playerState_t *SV_GameClientNum( int num ) {
 	playerState_t	*ps;
 
