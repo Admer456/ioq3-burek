@@ -6,21 +6,46 @@ Specialised version of idTech 3 (precisely ioquake3) for standalone game develop
 
 ## Features 
 
+  * func_breakable entity, albeit with no gibs right now
+  * Nothing really significant so far :p
+
+## Changes so far
+
   * Can compile directly in Visual Studio thanks to jpcy/ioq3-premake-msvc
-  * None really so far :p
+  * Increased max entities from 1024 to 8192
+  * Increased max vertices on models
+  * Added IGame interface, replacing the system traps between the game and the engine
+  * Added an IEntity interface, from which all entities will inevitably inherit from
+  * Added very simple entity components which can be easily passed between the game, client & engine so far
+  * Client, game, UI DLLs and the engine EXE are compiled as C++ code (so will the renderer, soon)
+  * Added a keyvalue handling system for entities, while components can use `spawnArgs->GetXYZ( "keyvaluename", defaultValue );`
+  * Added a shared utility library called bLib (Burek library), which for now only contains a Vector class
 
 ## Plans
   
   * Rewrite game library in C++
   * Rewrite client library in C++
+  * Extend maximum visible entities to 1024
+  * Extend maximum weapons to 64
   * Merge UI library into client library
   * Convert engine code to C++
   * Remove stringification of GLSL shaders, extend shader functionality
   * Terrain system
+  * Modifications to the map compiler
+  * Entity events similar to Source I/O and CryEngine Sandbox Editor's events
   * AI system for singleplayer NPCs
-  * C# script host with .NET Core and Roslyn
+  * C# script host with .NET Core, or more likely .NET 5 depending on when this feature will be added
 
-## ioquake3 README
+## How to build
+
+Note: I haven't updated the makefiles for Linux, unfortunately. I am doing all development on Windows, but I will eventually get to it.  
+  
+In order to build BUREKTech, clone or download the code, go to the `build` directory, then go to `vs2019`, and open `BurekTech.sln`.  
+It's as simple as building the entire solution. The compiled binaries will appear in the `bin` directory in the repo's folder, not in the `build` folder.  
+  
+I am planning to use CMake as the build system in the future.
+
+## ioquake3 README (some of which may not apply any more)
                    ,---------------------------------------.
                    |   _                     _       ____  |
                    |  (_)___  __ _ _  _ __ _| |_____|__ /  |
