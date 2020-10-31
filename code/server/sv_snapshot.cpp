@@ -20,11 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#include "../game/Entities/IEntity.hpp"
 #include "server.hpp"
 #include "Maths/Vector.hpp"
-#include "../game/Components/IComponent.hpp"
-#include "../game/Components/SharedComponent.hpp"
 
 /*
 =============================================================================
@@ -57,22 +54,14 @@ Writes a delta update of an entityState_t list to the message.
 */
 static void SV_EmitPacketEntities( clientSnapshot_t *from, clientSnapshot_t *to, msg_t *msg ) {
 	entityState_t	*oldent, *newent;
-	Entities::IEntity* oldIEnt{ nullptr };
-	Entities::IEntity* newIEnt{ nullptr };
-	Components::SharedComponent* oldComp{ nullptr };
-	Components::SharedComponent* newComp{ nullptr };
-
 	int		oldindex, newindex;
 	int		oldnum, newnum;
 	int		from_num_entities;
 
 	// generate the delta update
-	if ( !from ) 
-	{
+	if ( !from ) {
 		from_num_entities = 0;
-	} 
-	else 
-	{
+	} else {
 		from_num_entities = from->num_entities;
 	}
 
@@ -80,104 +69,47 @@ static void SV_EmitPacketEntities( clientSnapshot_t *from, clientSnapshot_t *to,
 	oldent = NULL;
 	newindex = 0;
 	oldindex = 0;
-	while ( newindex < to->num_entities || oldindex < from_num_entities ) 
-	{
-		if ( newindex >= to->num_entities ) 
-		{
+	while ( newindex < to->num_entities || oldindex < from_num_entities ) {
+		if ( newindex >= to->num_entities ) {
 			newnum = 9999;
-		} 
-
-		else 
-		{
-			newIEnt = svs.snapshotIEntities[(to->first_entity + newindex) % svs.numSnapshotEntities];
-			
-			if ( nullptr == newIEnt )
-			{
-				newent = &svs.snapshotEntities[(to->first_entity + newindex) % svs.numSnapshotEntities];
-				newnum = newent->number;
-			}
-			else
-			{
-				newComp = newIEnt->GetComponent<Components::SharedComponent>();
-				newnum = newComp->entityIndex;
-			}
+		} else {
+			newent = &svs.snapshotEntities[(to->first_entity+newindex) % svs.numSnapshotEntities];
+			newnum = newent->number;
 		}
 
-		if ( oldindex >= from_num_entities ) 
-		{
+		if ( oldindex >= from_num_entities ) {
 			oldnum = 9999;
-		} 
-
-		else
-		{
-			oldIEnt = svs.snapshotIEntities[(from->first_entity + newindex) % svs.numSnapshotEntities];
-
-			if ( nullptr == oldIEnt )
-			{
-				oldent = &svs.snapshotEntities[(from->first_entity + oldindex) % svs.numSnapshotEntities];
-				oldnum = oldent->number;
-			}
-			else
-			{
-				oldComp = oldIEnt->GetComponent<Components::SharedComponent>();
-				oldnum = oldComp->entityIndex;
-			}
+		} else {
+			oldent = &svs.snapshotEntities[(from->first_entity+oldindex) % svs.numSnapshotEntities];
+			oldnum = oldent->number;
 		}
 
-		if ( newnum == oldnum ) 
-		{
+		if ( newnum == oldnum ) {
 			// delta update from old position
 			// because the force parm is qfalse, this will not result
 			// in any bytes being emitted if the entity has not changed at all
-			if ( nullptr == oldIEnt )
-			{
-				MSG_WriteDeltaEntity( msg, oldent, newent, qfalse );
-			}
-			else
-			{
-				MSG_WriteDeltaEntity( msg, oldIEnt, newIEnt, false );
-			}
-
+			MSG_WriteDeltaEntity (msg, oldent, newent, qfalse );
 			oldindex++;
 			newindex++;
 			continue;
 		}
 
-		if ( newnum < oldnum ) 
-		{
+		if ( newnum < oldnum ) {
 			// this is a new entity, send it from the baseline
-			if ( nullptr == newIEnt )
-			{
-				MSG_WriteDeltaEntity( msg, &sv.svEntities[newnum].baseline, newent, qtrue );
-			}
-			else
-			{
-				MSG_WriteDeltaEntity( msg, sv.svEntities[newnum].baselineIEnt, newIEnt, true );
-			}
-
+			MSG_WriteDeltaEntity (msg, &sv.svEntities[newnum].baseline, newent, qtrue );
 			newindex++;
 			continue;
 		}
 
-		if ( newnum > oldnum ) 
-		{
+		if ( newnum > oldnum ) {
 			// the old entity isn't present in the new message
-			if ( nullptr == oldIEnt )
-			{
-				MSG_WriteDeltaEntity( msg, oldent, NULL, qtrue );
-			}
-			else
-			{
-				MSG_WriteDeltaEntity( msg, oldIEnt, nullptr, true );
-			}
-
+			MSG_WriteDeltaEntity (msg, oldent, NULL, qtrue );
 			oldindex++;
 			continue;
 		}
 	}
 
 	MSG_WriteBits( msg, (MAX_GENTITIES-1), GENTITYNUM_BITS );	// end of packetentities
-	MSG_WriteByte( msg, 0 ); // null entity system type
 }
 
 
@@ -352,269 +284,21 @@ static void SV_AddEntToSnapshot( svEntity_t *svEnt, sharedEntity_t *gEnt, snapsh
 	eNums->numSnapshotEntities++;
 }
 
-static void SV_AddEntToSnapshot( svEntity_t* svEnt, Entities::IEntity* iEnt, snapshotEntityNumbers_t* eNums )
-{
-	// if we have already added this entity to this snapshot, don't add again
-	if ( svEnt->snapshotCounter == sv.snapshotCounter )
-		return;
-
-	svEnt->snapshotCounter = sv.snapshotCounter;
-
-	// if we are full, silently discard entities
-	if ( eNums->numSnapshotEntities == MAX_SNAPSHOT_ENTITIES ) 
-	{
-		Com_DPrintf( "Network: Warning: Exceeded maximum visible entities!\n" 
-		"Reduce the number of entities in this area or optimise the map better\n" );
-		return;
-	}
-
-	auto shared = iEnt->GetComponent<Components::SharedComponent>();
-	eNums->snapshotEntities[eNums->numSnapshotEntities] = shared->entityIndex;
-	eNums->numSnapshotEntities++;
-}
-
-static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t* frame,
-	snapshotEntityNumbers_t* eNums, qboolean portal );
-
-// This is a lotta arguments NGL, sorry for that -Admer
-static void SV_AddGEntityVisibleFromPoint( sharedEntity_t* ent, vec3_t origin, clientSnapshot_t* frame,
-	snapshotEntityNumbers_t* eNums, qboolean portal, byte* clientpvs, byte* bitvector, int& e, svEntity_t* svEnt, int& clientarea )
-{
-	// never send entities that aren't linked in
-	if ( !ent->r.linked ) {
-		return;
-	}
-
-	if ( ent->s.number != e ) {
-		Com_DPrintf( "FIXING ENT->S.NUMBER!!!\n" );
-		ent->s.number = e;
-	}
-
-	// entities can be flagged to explicitly not be sent to the client
-	if ( ent->r.svFlags & SVF_NOCLIENT ) {
-		return;
-	}
-
-	// entities can be flagged to be sent to only one client
-	if ( ent->r.svFlags & SVF_SINGLECLIENT ) {
-		if ( ent->r.singleClient != frame->ps.clientNum ) {
-			return;
-		}
-	}
-	// entities can be flagged to be sent to everyone but one client
-	if ( ent->r.svFlags & SVF_NOTSINGLECLIENT ) {
-		if ( ent->r.singleClient == frame->ps.clientNum ) {
-			return;
-		}
-	}
-	// entities can be flagged to be sent to a given mask of clients
-	if ( ent->r.svFlags & SVF_CLIENTMASK ) {
-		if ( frame->ps.clientNum >= 32 )
-			Com_Error( ERR_DROP, "SVF_CLIENTMASK: clientNum >= 32" );
-		if ( ~ent->r.singleClient & (1 << frame->ps.clientNum) )
-			return;
-	}
-
-	svEnt = SV_SvEntityForGentity( ent );
-
-	// don't double add an entity through portals
-	if ( svEnt->snapshotCounter == sv.snapshotCounter ) {
-		return;
-	}
-
-	// broadcast entities are always sent
-	if ( ent->r.svFlags & SVF_BROADCAST ) {
-		SV_AddEntToSnapshot( svEnt, ent, eNums );
-		return;
-	}
-
-	// ignore if not touching a PV leaf
-	// check area
-	if ( !CM_AreasConnected( clientarea, svEnt->areanum ) ) {
-		// doors can legally straddle two areas, so
-		// we may need to check another one
-		if ( !CM_AreasConnected( clientarea, svEnt->areanum2 ) ) {
-			return;		// blocked by a door
-		}
-	}
-
-	bitvector = clientpvs;
-
-	// check individual leafs
-	if ( !svEnt->numClusters ) {
-		return;
-	}
-	int l = 0;
-	int i = 0;
-	for ( i = 0; i < svEnt->numClusters; i++ ) {
-		l = svEnt->clusternums[i];
-		if ( bitvector[l >> 3] & (1 << (l & 7)) ) {
-			break;
-		}
-	}
-
-	// if we haven't found it to be visible,
-	// check overflow clusters that coudln't be stored
-	if ( i == svEnt->numClusters ) {
-		if ( svEnt->lastCluster ) {
-			for ( ; l <= svEnt->lastCluster; l++ ) {
-				if ( bitvector[l >> 3] & (1 << (l & 7)) ) {
-					break;
-				}
-			}
-			if ( l == svEnt->lastCluster ) {
-				return;	// not visible
-			}
-		}
-		else {
-			return;
-		}
-	}
-
-	// add it
-	SV_AddEntToSnapshot( svEnt, ent, eNums );
-
-	// if it's a portal entity, add everything visible from its camera position
-	if ( ent->r.svFlags & SVF_PORTAL ) {
-		if ( ent->s.generic1 ) {
-			vec3_t dir;
-			VectorSubtract( ent->s.origin, origin, dir );
-			if ( VectorLengthSquared( dir ) > (float)ent->s.generic1 * ent->s.generic1 ) {
-				return;
-			}
-		}
-		SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, qtrue );
-	}
-}
-
-static void SV_AddIEntityVisibleFromPoint( Entities::IEntity* ient, Components::SharedComponent* ent, vec3_t origin, clientSnapshot_t* frame,
-	snapshotEntityNumbers_t* eNums, qboolean portal, byte* clientpvs, byte* bitvector, int& e, svEntity_t* svEnt, int& clientarea )
-{
-	// never send entities that aren't linked in
-	if ( !ent->linked ) {
-		return;
-	}
-
-	if ( ent->entityIndex != e ) {
-		Com_DPrintf( "FIXING ENT->ENTITYINDEX!!!\n" );
-		ent->entityIndex = e;
-	}
-
-	// entities can be flagged to explicitly not be sent to the client
-	if ( ent->serverFlags & SVF_NOCLIENT ) {
-		return;
-	}
-
-	// entities can be flagged to be sent to only one client
-	if ( ent->serverFlags & SVF_SINGLECLIENT ) {
-		if ( ent->singleClient != frame->ps.clientNum ) {
-			return;
-		}
-	}
-	// entities can be flagged to be sent to everyone but one client
-	if ( ent->serverFlags & SVF_NOTSINGLECLIENT ) {
-		if ( ent->singleClient == frame->ps.clientNum ) {
-			return;
-		}
-	}
-	// entities can be flagged to be sent to a given mask of clients
-	if ( ent->serverFlags & SVF_CLIENTMASK ) {
-		if ( frame->ps.clientNum >= 32 )
-			Com_Error( ERR_DROP, "SVF_CLIENTMASK: clientNum >= 32" );
-		if ( ~ent->singleClient & (1 << frame->ps.clientNum) )
-			return;
-	}
-
-	svEnt = &sv.svEntities[ent->entityIndex];
-
-	// don't double add an entity through portals
-	if ( svEnt->snapshotCounter == sv.snapshotCounter ) {
-		return;
-	}
-
-	// broadcast entities are always sent
-	if ( ent->serverFlags & SVF_BROADCAST ) {
-		SV_AddEntToSnapshot( svEnt, ient, eNums );
-		return;
-	}
-
-	// ignore if not touching a PV leaf
-	// check area
-	if ( !CM_AreasConnected( clientarea, svEnt->areanum ) ) {
-		// doors can legally straddle two areas, so
-		// we may need to check another one
-		if ( !CM_AreasConnected( clientarea, svEnt->areanum2 ) ) {
-			return;		// blocked by a door
-		}
-	}
-
-	bitvector = clientpvs;
-
-	// check individual leafs
-	if ( !svEnt->numClusters ) {
-		return;
-	}
-	int l = 0;
-	int i = 0;
-	for ( i = 0; i < svEnt->numClusters; i++ ) {
-		l = svEnt->clusternums[i];
-		if ( bitvector[l >> 3] & (1 << (l & 7)) ) {
-			break;
-		}
-	}
-
-	// if we haven't found it to be visible,
-	// check overflow clusters that coudln't be stored
-	if ( i == svEnt->numClusters ) {
-		if ( svEnt->lastCluster ) {
-			for ( ; l <= svEnt->lastCluster; l++ ) {
-				if ( bitvector[l >> 3] & (1 << (l & 7)) ) {
-					break;
-				}
-			}
-			if ( l == svEnt->lastCluster ) {
-				return;	// not visible
-			}
-		}
-		else {
-			return;
-		}
-	}
-
-	// add it
-	SV_AddEntToSnapshot( svEnt, ient, eNums );
-
-	// if it's a portal entity, add everything visible from its camera position
-	if ( ent->serverFlags & SVF_PORTAL ) {
-		if ( ent->generic1 ) {
-			vec3_t dir;
-			VectorSubtract( ent->origin, origin, dir );
-			if ( VectorLengthSquared( dir ) > (float)ent->generic1 * ent->generic1 ) {
-				return;
-			}
-		}
-		SV_AddEntitiesVisibleFromPoint( ent->origin2, frame, eNums, qtrue );
-	}
-}
-
 /*
 ===============
 SV_AddEntitiesVisibleFromPoint
 ===============
 */
-static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t* frame,
-	snapshotEntityNumbers_t* eNums, qboolean portal ) 
-{
-	int		e{ 0 }, i{ 0 };
-	sharedEntity_t* ent{ nullptr };
-	Entities::IEntity* ient{ nullptr };
-	Components::SharedComponent* sharedComp{ nullptr };
-	svEntity_t* svEnt{ nullptr };
-	int		l{ 0 };
-	int		clientarea{ 0 }, clientcluster{ 0 };
-	int		leafnum{ 0 };
-	byte	*clientpvs{ nullptr };
-	byte	*bitvector{ nullptr };
+static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *frame, 
+									snapshotEntityNumbers_t *eNums, qboolean portal ) {
+	int		e, i;
+	sharedEntity_t *ent;
+	svEntity_t	*svEnt;
+	int		l;
+	int		clientarea, clientcluster;
+	int		leafnum;
+	byte	*clientpvs;
+	byte	*bitvector;
 
 	// during an error shutdown message we may need to transmit
 	// the shutdown message after the server has shutdown, so
@@ -632,25 +316,113 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t* fra
 
 	clientpvs = CM_ClusterPVS (clientcluster);
 
-	for ( e = 0; e < sv.num_entities; e++ )
-	{
-		ent = SV_GentityNum( e );
-		ient = SV_IEntityNum( e );
+	for ( e = 0 ; e < sv.num_entities ; e++ ) {
+		ent = SV_GentityNum(e);
 
-		if ( ient )
-		{
-			sharedComp = ient->GetComponent<Components::SharedComponent>();
-			if ( nullptr == sharedComp )
+		// never send entities that aren't linked in
+		if ( !ent->r.linked ) {
+			continue;
+		}
+
+		if (ent->s.number != e) {
+			Com_DPrintf ("FIXING ENT->S.NUMBER!!!\n");
+			ent->s.number = e;
+		}
+
+		// entities can be flagged to explicitly not be sent to the client
+		if ( ent->r.svFlags & SVF_NOCLIENT ) {
+			continue;
+		}
+
+		// entities can be flagged to be sent to only one client
+		if ( ent->r.svFlags & SVF_SINGLECLIENT ) {
+			if ( ent->r.singleClient != frame->ps.clientNum ) {
 				continue;
+			}
+		}
+		// entities can be flagged to be sent to everyone but one client
+		if ( ent->r.svFlags & SVF_NOTSINGLECLIENT ) {
+			if ( ent->r.singleClient == frame->ps.clientNum ) {
+				continue;
+			}
+		}
+		// entities can be flagged to be sent to a given mask of clients
+		if ( ent->r.svFlags & SVF_CLIENTMASK ) {
+			if (frame->ps.clientNum >= 32)
+				Com_Error( ERR_DROP, "SVF_CLIENTMASK: clientNum >= 32" );
+			if (~ent->r.singleClient & (1 << frame->ps.clientNum))
+				continue;
+		}
 
-			SV_AddIEntityVisibleFromPoint( ient, sharedComp, origin, frame, eNums, portal, 
-				clientpvs, bitvector, e, svEnt, clientarea );
+		svEnt = SV_SvEntityForGentity( ent );
+
+		// don't double add an entity through portals
+		if ( svEnt->snapshotCounter == sv.snapshotCounter ) {
+			continue;
 		}
-		else
-		{
-			SV_AddGEntityVisibleFromPoint( ent, origin, frame, eNums, portal, 
-				clientpvs, bitvector, e, svEnt, clientarea );
+
+		// broadcast entities are always sent
+		if ( ent->r.svFlags & SVF_BROADCAST ) {
+			SV_AddEntToSnapshot( svEnt, ent, eNums );
+			continue;
 		}
+
+		// ignore if not touching a PV leaf
+		// check area
+		if ( !CM_AreasConnected( clientarea, svEnt->areanum ) ) {
+			// doors can legally straddle two areas, so
+			// we may need to check another one
+			if ( !CM_AreasConnected( clientarea, svEnt->areanum2 ) ) {
+				continue;		// blocked by a door
+			}
+		}
+
+		bitvector = clientpvs;
+
+		// check individual leafs
+		if ( !svEnt->numClusters ) {
+			continue;
+		}
+		l = 0;
+		for ( i=0 ; i < svEnt->numClusters ; i++ ) {
+			l = svEnt->clusternums[i];
+			if ( bitvector[l >> 3] & (1 << (l&7) ) ) {
+				break;
+			}
+		}
+
+		// if we haven't found it to be visible,
+		// check overflow clusters that coudln't be stored
+		if ( i == svEnt->numClusters ) {
+			if ( svEnt->lastCluster ) {
+				for ( ; l <= svEnt->lastCluster ; l++ ) {
+					if ( bitvector[l >> 3] & (1 << (l&7) ) ) {
+						break;
+					}
+				}
+				if ( l == svEnt->lastCluster ) {
+					continue;	// not visible
+				}
+			} else {
+				continue;
+			}
+		}
+
+		// add it
+		SV_AddEntToSnapshot( svEnt, ent, eNums );
+
+		// if it's a portal entity, add everything visible from its camera position
+		if ( ent->r.svFlags & SVF_PORTAL ) {
+			if ( ent->s.generic1 ) {
+				vec3_t dir;
+				VectorSubtract(ent->s.origin, origin, dir);
+				if ( VectorLengthSquared(dir) > (float) ent->s.generic1 * ent->s.generic1 ) {
+					continue;
+				}
+			}
+			SV_AddEntitiesVisibleFromPoint( ent->s.origin2, frame, eNums, qtrue );
+		}
+
 	}
 }
 
@@ -674,8 +446,6 @@ static void SV_BuildClientSnapshot( client_t *client ) {
 	int							i;
 	sharedEntity_t				*ent;
 	entityState_t				*state;
-	Entities::IEntity*			ient{ nullptr };
-	Components::SharedComponent* com{ nullptr };
 	svEntity_t					*svEnt;
 	sharedEntity_t				*clent;
 	int							clientNum;
@@ -737,30 +507,15 @@ static void SV_BuildClientSnapshot( client_t *client ) {
 	// copy the entity states out
 	frame->num_entities = 0;
 	frame->first_entity = svs.nextSnapshotEntities;
-	
-	for ( i = 0 ; i < entityNumbers.numSnapshotEntities ; i++ ) 
-	{
+	for ( i = 0 ; i < entityNumbers.numSnapshotEntities ; i++ ) {
 		ent = SV_GentityNum(entityNumbers.snapshotEntities[i]);
-		ient = SV_IEntityNum( entityNumbers.snapshotEntities[i] );
-
-		if ( nullptr == ient )
-		{
-			state = &svs.snapshotEntities[svs.nextSnapshotEntities % svs.numSnapshotEntities];
-			*state = ent->s;
-			svs.nextSnapshotEntities++;
-		}
-		else
-		{
-			Entities::IEntity** ientSnapshotLocation = &svs.snapshotIEntities[svs.nextSnapshotEntities % svs.numSnapshotEntities];
-			*ientSnapshotLocation = ient; // Copy the pointer to the snapshot entities array
-			svs.nextSnapshotEntities++;
-		}
-
+		state = &svs.snapshotEntities[svs.nextSnapshotEntities % svs.numSnapshotEntities];
+		*state = ent->s;
+		svs.nextSnapshotEntities++;
 		// this should never hit, map should always be restarted first in SV_Frame
 		if ( svs.nextSnapshotEntities >= 0x7FFFFFFE ) {
-			Com_Error( ERR_FATAL, "svs.nextSnapshotEntities wrapped" );
+			Com_Error(ERR_FATAL, "svs.nextSnapshotEntities wrapped");
 		}
-		
 		frame->num_entities++;
 	}
 }

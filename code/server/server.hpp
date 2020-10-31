@@ -58,8 +58,6 @@ typedef struct svEntity_s {
 	struct svEntity_s *nextEntityInWorldSector;
 	
 	entityState_t	baseline;		// for delta compression of initial sighting
-	Entities::IEntity* baselineIEnt; // same as above, but for the new entity system
-	byte		entitySystemType;	// Belongs to which entity system
 	int			numClusters;		// if -1, use headnode instead
 	int			clusternums[MAX_ENT_CLUSTERS];
 	int			lastCluster;		// if all the clusters don't fit in clusternums
@@ -423,7 +421,6 @@ void SV_SendClientSnapshot( client_t *client );
 //
 int	SV_NumForGentity( sharedEntity_t *ent );
 sharedEntity_t *SV_GentityNum( int num );
-Entities::IEntity* SV_IEntityNum( int num );
 playerState_t *SV_GameClientNum( int num );
 svEntity_t	*SV_SvEntityForGentity( sharedEntity_t *gEnt );
 sharedEntity_t *SV_GEntityForSvEntity( svEntity_t *svEnt );

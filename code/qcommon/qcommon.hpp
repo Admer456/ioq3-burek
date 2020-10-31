@@ -108,11 +108,10 @@ int		MSG_LookaheadByte (msg_t *msg);
 void	MSG_WriteDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *to );
 void	MSG_ReadDeltaUsercmdKey( msg_t *msg, int key, usercmd_t *from, usercmd_t *to );
 
-void	MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entityState_s* to, qboolean force );
-void	MSG_WriteDeltaEntity( msg_t* msg, Entities::IEntity* from, Entities::IEntity* to, bool force );
-void	MSG_WriteDeltaEntity( msg_t* msg, Components::SharedComponent* from, Components::SharedComponent* to, bool force );
-void	MSG_ReadDeltaEntity( msg_t* msg, entityState_t *from, entityState_t *to, int number );
-void	MSG_ReadDeltaEntity( msg_t* msg, Components::SharedComponent* from, Components::SharedComponent* to, int number );
+void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entityState_s *to
+						   , qboolean force );
+void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to, 
+						 int number );
 
 void	MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct playerState_s *to );
 void	MSG_ReadDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct playerState_s *to );

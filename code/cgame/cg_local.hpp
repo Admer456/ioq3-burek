@@ -158,13 +158,6 @@ typedef struct {
 typedef struct centity_s {
 	entityState_t	currentState;	// from cg.frame
 	entityState_t	nextState;		// from cg.nextFrame, if available
-
-	// BurekTech new entity system stuff
-	Components::SharedComponent currentComp;
-	Components::SharedComponent nextComp;
-
-	byte			entitySystemType; // Whether this is a gentity_t or represents an IEntity
-
 	qboolean		interpolate;	// true if next is valid to interpolate to
 	qboolean		currentValid;	// true if cg.frame holds this entity
 

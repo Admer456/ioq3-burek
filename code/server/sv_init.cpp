@@ -23,9 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "server.hpp"
 #include "../game/Game/IGame.h"
 #include "Maths/Vector.hpp"
-#include "../game/Entities/IEntity.hpp"
-#include "../game/Components/IComponent.hpp"
-#include "../game/Components/SharedComponent.hpp"
 
 /*
 ===============
@@ -218,36 +215,21 @@ to the clients -- only the fields that differ from the
 baseline will be transmitted
 ================
 */
-static void SV_CreateBaseline( void ) 
-{
+static void SV_CreateBaseline( void ) {
 	sharedEntity_t *svent;
 	int				entnum;	
 
-	for ( entnum = 1; entnum < sv.num_entities ; entnum++ ) 
-	{
-		Entities::IEntity* ient = sv.entities[entnum];
-		if ( ient )
-		{
-			Components::SharedComponent* shared = ient->GetComponent<Components::SharedComponent>();
-			
-			if ( shared && shared->linked )
-			{
-				shared->entityIndex = entnum;
-				sv.svEntities[entnum].baselineIEnt = ient;
-				sv.svEntities[entnum].entitySystemType = EntitySystem_IEntity;
-				continue;
-			}
-		}
-
+	for ( entnum = 1; entnum < sv.num_entities ; entnum++ ) {
 		svent = SV_GentityNum(entnum);
-		if (svent->r.linked) 
-		{
-			svent->s.number = entnum;
-			
-			// take current state as baseline
-			sv.svEntities[entnum].baseline = svent->s;
-			sv.svEntities[entnum].entitySystemType = EntitySystem_gentity_t;
+		if (!svent->r.linked) {
+			continue;
 		}
+		svent->s.number = entnum;
+
+		//
+		// take current state as baseline
+		//
+		sv.svEntities[entnum].baseline = svent->s;
 	}
 }
 
@@ -455,7 +437,6 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 
 	// allocate the snapshot entities on the hunk
 	svs.snapshotEntities = (entityState_t*)Hunk_Alloc( sizeof(entityState_t)*svs.numSnapshotEntities, h_high );
-	svs.snapshotIEntities = (Entities::IEntity**)Hunk_Alloc( sizeof( Entities::IEntity* ) * svs.numSnapshotEntities, h_high );
 	svs.nextSnapshotEntities = 0;
 
 	// toggle the server bit so clients can detect that a

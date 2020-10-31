@@ -168,14 +168,9 @@ qboolean	CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot )
 	}
 	
 	snapshot->numEntities = count;
-	
-	for ( i = 0 ; i < count ; i++ ) 
-	{
-		uint16_t index = (clSnap->parseEntitiesNum + i) & (MAX_PARSE_ENTITIES - 1);
-
-		snapshot->entities[i] = cl.parseEntities[index];
-		snapshot->comps[i] = cl.parseComps[index];
-		snapshot->entitySystemTypes[i] = cl.parseEntitySystemTypes[index];
+	for ( i = 0 ; i < count ; i++ ) {
+		snapshot->entities[i] = 
+			cl.parseEntities[ ( clSnap->parseEntitiesNum + i ) & (MAX_PARSE_ENTITIES-1) ];
 	}
 
 	// FIXME: configstring changes and server commands!!!
