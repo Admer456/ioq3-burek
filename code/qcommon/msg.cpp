@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 #include "q_shared.hpp"
+#include "../game/Game/g_public.hpp"
 #include "qcommon.hpp"
 
 #include "../game/Entities/IEntity.hpp"
@@ -898,7 +899,6 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 		}
 
 		MSG_WriteBits( msg, from->number, GENTITYNUM_BITS );
-		MSG_WriteByte( msg, EntitySystem_gentity_t );
 		MSG_WriteBits( msg, 1, 1 );
 		return;
 	}
@@ -924,14 +924,12 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 		}
 		// write two bits for no change
 		MSG_WriteBits( msg, to->number, GENTITYNUM_BITS );
-		MSG_WriteByte( msg, EntitySystem_gentity_t );
 		MSG_WriteBits( msg, 0, 1 );		// not removed
 		MSG_WriteBits( msg, 0, 1 );		// no delta
 		return;
 	}
 
 	MSG_WriteBits( msg, to->number, GENTITYNUM_BITS );
-	MSG_WriteByte( msg, EntitySystem_gentity_t );
 	MSG_WriteBits( msg, 0, 1 );			// not removed
 	MSG_WriteBits( msg, 1, 1 );			// we have a delta
 
@@ -975,261 +973,6 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 			if (*toF == 0) {
 				MSG_WriteBits( msg, 0, 1 );
 			} else {
-				MSG_WriteBits( msg, 1, 1 );
-				// integer
-				MSG_WriteBits( msg, *toF, field->bits );
-			}
-		}
-	}
-}
-
-void MSG_WriteDeltaEntity( msg_t* msg, Entities::IEntity* from, Entities::IEntity* to, bool force )
-{
-	int i;
-	int lc;
-	int numFields;
-	netField_t* field;
-	int trunc;
-	float fullFloat;
-	int* fromF;
-	int* toF;
-
-	Components::SharedComponent* fromComp = nullptr;
-	Components::SharedComponent* toComp = nullptr;
-
-	if ( from )
-		fromComp = from->GetComponent<Components::SharedComponent>();
-
-	if ( to )
-		toComp = to->GetComponent<Components::SharedComponent>();
-
-	numFields = ARRAY_LEN( sharedComponentFields ); 
-
-	if ( nullptr == to )
-	{
-		if ( nullptr == from )
-		{
-			return;
-		}
-
-		MSG_WriteBits( msg, fromComp->entityIndex, GENTITYNUM_BITS );
-		MSG_WriteByte( msg, EntitySystem_IEntity );
-		MSG_WriteBits( msg, 1, 1 );
-		return;
-	}
-
-	if ( toComp->entityIndex < 0 || toComp->entityIndex >= MAX_GENTITIES )
-	{
-		Com_Error( ERR_FATAL, "MSG_WriteDeltaEntity: Bad entity number: %i", toComp->entityIndex );
-	}
-
-	lc = 0;
-	// build the change vector as bytes so it is endian independent
-	for ( i = 0, field = sharedComponentFields; i < numFields; i++, field++ )
-	{
-		fromF = (int*)((byte*)fromComp + field->offset);
-		toF = (int*)((byte*)toComp + field->offset);
-		
-		// Hack for special cases when fromComp is a nullptr
-		if ( nullptr == fromComp )
-		{
-			lc = i + 1;
-			continue;
-		}
-
-		if ( *fromF != *toF ) 
-		{
-			lc = i + 1;
-		}
-	}
-
-	if ( lc == 0 ) 
-	{
-		// nothing at all changed
-		if ( !force ) 
-		{
-			return;		// nothing at all
-		}
-		
-		// write two bits for no change
-		MSG_WriteBits( msg, toComp->entityIndex, GENTITYNUM_BITS );
-		MSG_WriteByte( msg, EntitySystem_IEntity );
-		MSG_WriteBits( msg, 0, 1 );		// not removed
-		MSG_WriteBits( msg, 0, 1 );		// no delta
-		return;
-	}
-
-	MSG_WriteBits( msg, toComp->entityIndex, GENTITYNUM_BITS );
-	MSG_WriteByte( msg, EntitySystem_IEntity );
-	MSG_WriteBits( msg, 0, 1 );			// not removed
-	MSG_WriteBits( msg, 1, 1 );			// we have a delta
-
-	MSG_WriteByte( msg, lc );	// # of changes
-
-	oldsize += numFields;
-
-	for ( i = 0, field = sharedComponentFields; i < lc; i++, field++ )
-	{
-		fromF = (int*)((byte*)fromComp + field->offset);
-		toF = (int*)((byte*)toComp + field->offset);
-
-		if ( fromComp )
-		{
-			if ( *fromF == *toF )
-			{
-				MSG_WriteBits( msg, 0, 1 );	// no change
-				continue;
-			}
-		}
-
-		MSG_WriteBits( msg, 1, 1 );	// changed
-
-		if ( field->bits == 0 ) 
-		{
-			// float
-			fullFloat = *(float*)toF;
-			trunc = (int)fullFloat;
-
-			if ( fullFloat == 0.0f ) 
-			{
-				MSG_WriteBits( msg, 0, 1 );
-				oldsize += FLOAT_INT_BITS;
-			}
-			
-			else 
-			{
-				MSG_WriteBits( msg, 1, 1 );
-				if ( trunc == fullFloat && trunc + FLOAT_INT_BIAS >= 0 &&
-					trunc + FLOAT_INT_BIAS < (1 << FLOAT_INT_BITS) ) 
-				{
-					// send as small integer
-					MSG_WriteBits( msg, 0, 1 );
-					MSG_WriteBits( msg, trunc + FLOAT_INT_BIAS, FLOAT_INT_BITS );
-				}
-				
-				else 
-				{
-					// send as full floating point value
-					MSG_WriteBits( msg, 1, 1 );
-					MSG_WriteBits( msg, *toF, 32 );
-				}
-			}
-		}
-		else 
-		{
-			if ( *toF == 0 ) 
-			{
-				MSG_WriteBits( msg, 0, 1 );
-			}
-			
-			else 
-			{
-				MSG_WriteBits( msg, 1, 1 );
-				// integer
-				MSG_WriteBits( msg, *toF, field->bits );
-			}
-		}
-	}
-}
-
-void MSG_WriteDeltaEntity( msg_t* msg, Components::SharedComponent* from, Components::SharedComponent* to, bool force )
-{
-	int			i, lc;
-	int			numFields;
-	netField_t* field;
-	int			trunc;
-	float		fullFloat;
-	int* fromF, * toF;
-
-	numFields = ARRAY_LEN( sharedComponentFields );
-
-	// a NULL to is a delta remove message
-	if ( to == nullptr ) {
-		if ( from == nullptr ) {
-			return;
-		}
-		MSG_WriteBits( msg, from->entityIndex, GENTITYNUM_BITS );
-		MSG_WriteByte( msg, EntitySystem_IEntity );
-		MSG_WriteBits( msg, 1, 1 );
-		return;
-	}
-
-	if ( to->entityIndex < 0 || to->entityIndex >= MAX_GENTITIES ) {
-		Com_Error( ERR_FATAL, "MSG_WriteDeltaEntity: Bad entity number: %i", to->entityIndex );
-	}
-
-	lc = 0;
-	// build the change vector as bytes so it is endien independent
-	for ( i = 0, field = sharedComponentFields; i < numFields; i++, field++ ) {
-		fromF = (int*)((byte*)from + field->offset);
-		toF = (int*)((byte*)to + field->offset);
-		if ( *fromF != *toF ) {
-			lc = i + 1;
-		}
-	}
-
-	if ( lc == 0 ) {
-		// nothing at all changed
-		if ( !force ) {
-			return;		// nothing at all
-		}
-		// write two bits for no change
-		MSG_WriteBits( msg, to->entityIndex, GENTITYNUM_BITS );
-		MSG_WriteByte( msg, EntitySystem_IEntity );
-		MSG_WriteBits( msg, 0, 1 );		// not removed
-		MSG_WriteBits( msg, 0, 1 );		// no delta
-		return;
-	}
-
-	MSG_WriteBits( msg, to->entityIndex, GENTITYNUM_BITS );
-	MSG_WriteByte( msg, EntitySystem_IEntity );
-	MSG_WriteBits( msg, 0, 1 );			// not removed
-	MSG_WriteBits( msg, 1, 1 );			// we have a delta
-
-	MSG_WriteByte( msg, lc );	// # of changes
-
-	oldsize += numFields;
-
-	for ( i = 0, field = sharedComponentFields; i < lc; i++, field++ ) {
-		fromF = (int*)((byte*)from + field->offset);
-		toF = (int*)((byte*)to + field->offset);
-
-		if ( *fromF == *toF ) {
-			MSG_WriteBits( msg, 0, 1 );	// no change
-			continue;
-		}
-
-		MSG_WriteBits( msg, 1, 1 );	// changed
-
-		if ( field->bits == 0 ) {
-			// float
-			fullFloat = *(float*)toF;
-			trunc = (int)fullFloat;
-
-			if ( fullFloat == 0.0f ) {
-				MSG_WriteBits( msg, 0, 1 );
-				oldsize += FLOAT_INT_BITS;
-			}
-			else {
-				MSG_WriteBits( msg, 1, 1 );
-				if ( trunc == fullFloat && trunc + FLOAT_INT_BIAS >= 0 &&
-					trunc + FLOAT_INT_BIAS < (1 << FLOAT_INT_BITS) ) {
-					// send as small integer
-					MSG_WriteBits( msg, 0, 1 );
-					MSG_WriteBits( msg, trunc + FLOAT_INT_BIAS, FLOAT_INT_BITS );
-				}
-				else {
-					// send as full floating point value
-					MSG_WriteBits( msg, 1, 1 );
-					MSG_WriteBits( msg, *toF, 32 );
-				}
-			}
-		}
-		else {
-			if ( *toF == 0 ) {
-				MSG_WriteBits( msg, 0, 1 );
-			}
-			else {
 				MSG_WriteBits( msg, 1, 1 );
 				// integer
 				MSG_WriteBits( msg, *toF, field->bits );

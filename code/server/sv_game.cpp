@@ -36,6 +36,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/IEngineExports.h"
 #include "../qcommon/EngineLocal.h"
 
+#include "../game/Entities/IEntity.hpp"
+
 botlib_export_t	*botlib_export;
 
 // Engine functions that get exported specifically to the game DLL
@@ -53,17 +55,20 @@ GameImport_t engineGameImports;
 // these functions must be used instead of pointer arithmetic, because
 // the game allocates gentities with private information after the server shared part
 int	SV_NumForGentity( sharedEntity_t *ent ) {
-	int		num;
+	int	num = 0;
 
-	num = ( (byte *)ent - (byte *)sv.gentities ) / sv.gentitySize;
+	//num = ( (byte *)ent - (byte *)sv.gentities ) / sv.gentitySize;
 
 	return num;
 }
 
 sharedEntity_t *SV_GentityNum( int num ) {
-	sharedEntity_t *ent;
+	sharedEntity_t *ent = nullptr;
 
-	ent = (sharedEntity_t *)((byte *)sv.gentities + sv.gentitySize*(num));
+	//ent = (sharedEntity_t *)((byte *)sv.gentities + sv.gentitySize*(num));
+
+	if ( sv.entities[num] )
+		ent = sv.entities[num]->GetSharedEntity();
 
 	return ent;
 }

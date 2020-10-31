@@ -57,6 +57,11 @@ namespace Entities
 			touchFunction = static_cast<void (IEntity::*)(IEntity* other)>(f);
 		}
 
+		// entityState and entityShared are something all ents have in common
+		virtual entityState_t* GetState() = 0;
+		virtual entityShared_t* GetShared() = 0;
+		virtual sharedEntity_t* GetSharedEntity() = 0;
+
 		// Component interface
 
 		// Use this if you're 100% sure you know a comp exists

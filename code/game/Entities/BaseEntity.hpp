@@ -49,6 +49,21 @@ namespace Entities
 		// Each pair is stored in here
 		KeyValueLibrary* spawnArgs;
 
+		entityState_t* GetState() override
+		{
+			return &shared.s;
+		}
+
+		entityShared_t* GetShared() override
+		{
+			return &shared.r;
+		}
+
+		sharedEntity_t* GetSharedEntity() override
+		{
+			return &shared;
+		}
+
 	public:
 		float			nextThink{ 0 };
 
@@ -57,6 +72,8 @@ namespace Entities
 	
 	protected:
 		unsigned int	entityIndex{ EntityIndexNotSet };
+
+		sharedEntity_t	shared;
 	};
 
 	// Test base entity, will move a brush up'n'down
