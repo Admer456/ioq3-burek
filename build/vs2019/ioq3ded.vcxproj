@@ -338,10 +338,10 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ml /c /Zi /Fo"$(IntDir)/%(Filename).asm.obj" "%(Identity)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64 /c /D idx64 /Zi /Fo"$(IntDir)/%(Filename).asm.obj" "%(Identity)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ml64 /c /D idx64 /Zi /Fo"$(IntDir)/%(Filename).asm.obj" "%(Identity)"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">obj/x86/Release/ioq3ded/ftola.asm.obj</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">obj/x64/Release/ioq3ded/ftola.asm.obj</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">obj/x86/Debug/ioq3ded/ftola.asm.obj</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">obj/x64/Debug/ioq3ded/ftola.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">obj/$(PlatformTarget).$(Configuration)/ioquake3/ftola.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">obj/$(PlatformTarget).$(Configuration)/ioquake3/ftola.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">obj/$(PlatformTarget).$(Configuration)/ioquake3/ftola.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">obj/$(PlatformTarget).$(Configuration)/ioquake3/ftola.asm.obj</Outputs>
       <Message>Assembling...</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\asm\snapvector.asm">
@@ -350,10 +350,10 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ml /c /Zi /Fo"$(IntDir)/%(Filename).asm.obj" "%(Identity)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64 /c /D idx64 /Zi /Fo"$(IntDir)/%(Filename).asm.obj" "%(Identity)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ml64 /c /D idx64 /Zi /Fo"$(IntDir)/%(Filename).asm.obj" "%(Identity)"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">obj/x86/Release/ioq3ded/snapvector.asm.obj</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">obj/x64/Release/ioq3ded/snapvector.asm.obj</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">obj/x86/Debug/ioq3ded/snapvector.asm.obj</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">obj/x64/Debug/ioq3ded/snapvector.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">obj/$(PlatformTarget).$(Configuration)/ioquake3/snapvector.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">obj/$(PlatformTarget).$(Configuration)/ioquake3/snapvector.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">obj/$(PlatformTarget).$(Configuration)/ioquake3/snapvector.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">obj/$(PlatformTarget).$(Configuration)/ioquake3/snapvector.asm.obj</Outputs>
       <Message>Assembling...</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\asm\vm_x86_64.asm">
