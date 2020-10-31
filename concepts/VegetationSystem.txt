@@ -1,0 +1,30 @@
+The core idea of this vegetation system is to provide a way to render models on the clientside.
+The server doesn't even have to be aware of them, unless we're talking about collision detection and stuff like that. In most cases, AABB collision could be utilised, or capsular collision, or cylindrical.
+
+- Modifications to map editors & compilers, compatibility with other map editors -
+
+There are several ways to achieve this:
+
+1) The map editor has a special tool for editing vegetation, and it'll export an extra file along the .map file
+2) The map editor treats a vegetation object just like any other entity, but the map compiler will generate an extra file along the .bsp and strip out vegetation entities from the .bsp's entity lump
+
+I am certainly planning to modify TrenchBroom for some BUREKTech features (of course, in a way that it won't break anything else), however, for this specific feature, I am considering compatibility with other editors out of the box. Map editors like gtkRadiant, NetRadiant, J.A.C.K. etc. will be able to place vegetation entities in the map if I implemented it via 2).
+
+Now, the FUN part of this is that I can achieve it with both 1) and 2) at once. TrenchBroom could be modified to export some sort of "vegetation scene" file, while other editors can just simply use special veg_ entities. That is, entity classnames prefixed with veg_
+
+The advantage of doing it in an editor that is modified for this feature is, for example, painting. You could simply paint a lot of instances of grass and bushes, and place trees manually.
+
+- Specifications -
+
+Vegetation objects will have several properties:
+- position
+- angles
+- inclination (0 to 1) - controls how much the surface normal is taken into account, when determining the orientation
+- scale (0.01 to 1000)
+- solid (true-false)
+- swaying (-1000 to 1000) - controls how much the model's vertices are going to sway in a wavy fashion
+- wind direction - an optional directional vector that overrides the wind direction for this instance
+- render distance (0 to 32768) - the distance in units at which it'll not render
+- always render (true-false)
+
+The client will, of course, load this file and submit refentities when they're visible.
