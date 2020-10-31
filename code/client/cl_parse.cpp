@@ -64,10 +64,12 @@ to the current frame
 void CL_DeltaEntity (msg_t *msg, clSnapshot_t *frame, int newnum, entityState_t *old, 
 					 qboolean unchanged) {
 	entityState_t	*state;
+	uint16_t index = cl.parseEntitiesNum & (MAX_PARSE_ENTITIES - 1);
 
 	// save the parsed entity state into the big circular buffer so
 	// it can be used as the source for a later delta
 	state = &cl.parseEntities[cl.parseEntitiesNum & (MAX_PARSE_ENTITIES-1)];
+	cl.parseEntitySystemTypes[index] = EntitySystem_gentity_t;
 
 	if ( unchanged ) {
 		*state = *old;
@@ -76,10 +78,45 @@ void CL_DeltaEntity (msg_t *msg, clSnapshot_t *frame, int newnum, entityState_t 
 	}
 
 	if ( state->number == (MAX_GENTITIES-1) ) {
+		cl.parseEntitySystemTypes[index] = EntitySystem_None;
 		return;		// entity was delta removed
 	}
 	cl.parseEntitiesNum++;
 	frame->numEntities++;
+}
+
+void CL_DeltaEntity( msg_t* msg, clSnapshot_t* frame, int newnum, Components::SharedComponent* old, bool unchanged )
+{
+	Components::SharedComponent* comp;
+	uint16_t index = cl.parseEntitiesNum & (MAX_PARSE_ENTITIES - 1);
+
+	// save the parsed entity state into the big circular buffer so
+	// it can be used as the source for a later delta
+	comp = &cl.parseComps[index];
+	cl.parseEntitySystemTypes[index] = EntitySystem_IEntity;
+
+	if ( unchanged )
+	{
+		*comp = *old;
+	}
+	else
+	{
+		MSG_ReadDeltaEntity( msg, old, comp, newnum );
+	}
+
+	if ( comp->entityIndex == (MAX_GENTITIES - 1) )
+	{
+		cl.parseEntitySystemTypes[index] = EntitySystem_None;
+		return; // entity was delta-removed
+	}
+
+	cl.parseEntitiesNum++;
+	frame->numEntities++;
+}
+
+bool CL_CheckEntitySystemType( int index, byte est )
+{
+	return cl.parseEntitySystemTypes[index] == est;
 }
 
 /*
@@ -89,9 +126,10 @@ CL_ParsePacketEntities
 ==================
 */
 void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *newframe) {
-	int			newnum;
-	entityState_t	*oldstate;
-	int			oldindex, oldnum;
+	int				newnum = 0;
+	entityState_t*	oldstate;
+	Components::SharedComponent* oldComp = nullptr;
+	int				oldindex = 0, oldnum = 0;
 
 	newframe->parseEntitiesNum = cl.parseEntitiesNum;
 	newframe->numEntities = 0;
@@ -99,93 +137,187 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 	// delta from the entities present in oldframe
 	oldindex = 0;
 	oldstate = NULL;
-	if (!oldframe) {
+
+	if ( !oldframe ) 
+	{
 		oldnum = 99999;
-	} else {
-		if ( oldindex >= oldframe->numEntities ) {
+	} 
+	
+	else 
+	{
+		if ( oldindex >= oldframe->numEntities ) 
+		{
 			oldnum = 99999;
-		} else {
-			oldstate = &cl.parseEntities[
-				(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
-			oldnum = oldstate->number;
+		} 
+		
+		else 
+		{
+			uint16_t index = (oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES - 1);
+
+			oldstate = &cl.parseEntities[index];
+			oldComp = &cl.parseComps[index];
+			byte entitySystemType = cl.parseEntitySystemTypes[index];
+
+			if ( entitySystemType == EntitySystem_gentity_t )
+				oldnum = oldstate->number;
+			else if ( entitySystemType == EntitySystem_IEntity )
+				oldnum = oldComp->entityIndex;
 		}
 	}
 
-	while ( 1 ) {
+	while ( 1 ) 
+	{
 		// read the entity index number
 		newnum = MSG_ReadBits( msg, GENTITYNUM_BITS );
 
-		if ( newnum == (MAX_GENTITIES-1) ) {
+		// Read the entity system type
+		byte entitySystemType = MSG_ReadByte( msg );
+		
+		if ( entitySystemType == EntitySystem_IEntity )
+		{
+			Com_Printf( "%d IEntity\n", newnum );
+		}
+		else if ( entitySystemType == EntitySystem_gentity_t )
+		{
+			Com_Printf( "%d gentity_t\n", newnum );
+		}
+
+		// If we parsed all entities, stop
+		if ( newnum == (MAX_GENTITIES - 1) )
+		{
 			break;
 		}
+		
+		cl.entitySystemTypes[newnum] = entitySystemType;
 
-		if ( msg->readcount > msg->cursize ) {
-			Com_Error (ERR_DROP,"CL_ParsePacketEntities: end of message");
+		if ( msg->readcount > msg->cursize )
+		{
+			Com_Error( ERR_DROP, "CL_ParsePacketEntities: end of message" );
 		}
 
-		while ( oldnum < newnum ) {
+		while ( oldnum < newnum ) 
+		{
 			// one or more entities from the old packet are unchanged
-			if ( cl_shownet->integer == 3 ) {
+			if ( cl_shownet->integer == 3 ) 
+			{
 				Com_Printf ("%3i:  unchanged: %i\n", msg->readcount, oldnum);
 			}
-			CL_DeltaEntity( msg, newframe, oldnum, oldstate, qtrue );
 			
+			if ( entitySystemType == EntitySystem_gentity_t )
+				CL_DeltaEntity( msg, newframe, oldnum, oldstate, qtrue );
+			else if ( entitySystemType == EntitySystem_IEntity )
+				CL_DeltaEntity( msg, newframe, oldnum, oldComp, qtrue );
+
 			oldindex++;
 
-			if ( oldindex >= oldframe->numEntities ) {
+			if ( oldindex >= oldframe->numEntities ) 
+			{
 				oldnum = 99999;
-			} else {
-				oldstate = &cl.parseEntities[
-					(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
-				oldnum = oldstate->number;
+			} 
+			
+			else 
+			{
+				uint16_t index = (oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES - 1);
+
+				oldstate = &cl.parseEntities[index];
+				oldComp = &cl.parseComps[index];
+
+				if ( entitySystemType == EntitySystem_gentity_t )
+					oldnum = oldstate->number;
+				else if ( entitySystemType == EntitySystem_IEntity )
+					oldnum = oldComp->entityIndex;
 			}
 		}
-		if (oldnum == newnum) {
+		
+		if (oldnum == newnum) 
+		{
 			// delta from previous state
-			if ( cl_shownet->integer == 3 ) {
+			if ( cl_shownet->integer == 3 ) 
+			{
 				Com_Printf ("%3i:  delta: %i\n", msg->readcount, newnum);
 			}
-			CL_DeltaEntity( msg, newframe, newnum, oldstate, qfalse );
+			
+			if ( entitySystemType == EntitySystem_gentity_t )
+				CL_DeltaEntity( msg, newframe, newnum, oldstate, qfalse );
+			else if ( entitySystemType == EntitySystem_IEntity )
+				CL_DeltaEntity( msg, newframe, newnum, oldComp, false );
 
 			oldindex++;
 
-			if ( oldindex >= oldframe->numEntities ) {
+			if ( oldindex >= oldframe->numEntities ) 
+			{
 				oldnum = 99999;
-			} else {
-				oldstate = &cl.parseEntities[
-					(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
-				oldnum = oldstate->number;
+			} 
+			
+			else 
+			{
+				uint16_t index = (oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES - 1);
+
+				oldstate = &cl.parseEntities[index];
+				oldComp = &cl.parseComps[index];
+
+				if ( entitySystemType == EntitySystem_gentity_t )
+					oldnum = oldstate->number;
+				else if ( entitySystemType == EntitySystem_IEntity )
+					oldnum = oldComp->entityIndex;
 			}
+		
 			continue;
 		}
 
-		if ( oldnum > newnum ) {
+		if ( oldnum > newnum ) 
+		{
 			// delta from baseline
-			if ( cl_shownet->integer == 3 ) {
+			if ( cl_shownet->integer == 3 ) 
+			{
 				Com_Printf ("%3i:  baseline: %i\n", msg->readcount, newnum);
 			}
-			CL_DeltaEntity( msg, newframe, newnum, &cl.entityBaselines[newnum], qfalse );
+			
+			if ( entitySystemType == EntitySystem_gentity_t )
+				CL_DeltaEntity( msg, newframe, newnum, &cl.entityBaselines[newnum], qfalse );
+			else if ( entitySystemType == EntitySystem_IEntity )
+				CL_DeltaEntity( msg, newframe, newnum, &cl.compBaselines[newnum], false );
+
 			continue;
 		}
 
 	}
 
 	// any remaining entities in the old frame are copied over
-	while ( oldnum != 99999 ) {
+	while ( oldnum != 99999 ) 
+	{
 		// one or more entities from the old packet are unchanged
-		if ( cl_shownet->integer == 3 ) {
+		if ( cl_shownet->integer == 3 ) 
+		{
 			Com_Printf ("%3i:  unchanged: %i\n", msg->readcount, oldnum);
 		}
-		CL_DeltaEntity( msg, newframe, oldnum, oldstate, qtrue );
+
+		if ( CL_CheckEntitySystemType( oldnum, EntitySystem_gentity_t ) )
+			CL_DeltaEntity( msg, newframe, oldnum, oldstate, qtrue );
+
+		else if ( CL_CheckEntitySystemType( oldnum, EntitySystem_IEntity ) )
+			CL_DeltaEntity( msg, newframe, oldnum, oldComp, true );
 		
 		oldindex++;
 
-		if ( oldindex >= oldframe->numEntities ) {
+		if ( oldindex >= oldframe->numEntities ) 
+		{
 			oldnum = 99999;
-		} else {
-			oldstate = &cl.parseEntities[
-				(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
-			oldnum = oldstate->number;
+		} 
+		
+		else 
+		{
+			uint16_t index = (oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES - 1);
+
+			oldstate = &cl.parseEntities[index];
+			oldComp = &cl.parseComps[index];
+
+			byte est = cl.parseEntitySystemTypes[index];
+
+			if ( est == EntitySystem_gentity_t )
+				oldnum = oldstate->number;
+			else if ( est == EntitySystem_IEntity )
+				oldnum = oldComp->entityIndex;
 		}
 	}
 }
@@ -464,6 +596,7 @@ void CL_ParseGamestate( msg_t *msg ) {
 	entityState_t	*es;
 	int				newnum;
 	entityState_t	nullstate;
+	Components::SharedComponent nullComp;
 	int				cmd;
 	char			*s;
 	char oldGame[MAX_QPATH];
@@ -487,17 +620,22 @@ void CL_ParseGamestate( msg_t *msg ) {
 			break;
 		}
 		
-		if ( cmd == svc_configstring ) {
+		if ( cmd == svc_configstring ) 
+		{
 			int		len;
 
 			i = MSG_ReadShort( msg );
-			if ( i < 0 || i >= MAX_CONFIGSTRINGS ) {
+
+			if ( i < 0 || i >= MAX_CONFIGSTRINGS ) 
+			{
 				Com_Error( ERR_DROP, "configstring > MAX_CONFIGSTRINGS" );
 			}
+
 			s = MSG_ReadBigString( msg );
 			len = strlen( s );
 
-			if ( len + 1 + cl.gameState.dataCount > MAX_GAMESTATE_CHARS ) {
+			if ( len + 1 + cl.gameState.dataCount > MAX_GAMESTATE_CHARS ) 
+			{
 				Com_Error( ERR_DROP, "MAX_GAMESTATE_CHARS exceeded" );
 			}
 
@@ -505,15 +643,42 @@ void CL_ParseGamestate( msg_t *msg ) {
 			cl.gameState.stringOffsets[ i ] = cl.gameState.dataCount;
 			Com_Memcpy( cl.gameState.stringData + cl.gameState.dataCount, s, len + 1 );
 			cl.gameState.dataCount += len + 1;
-		} else if ( cmd == svc_baseline ) {
+		} 
+
+		else if ( cmd == svc_baseline ) 
+		{
 			newnum = MSG_ReadBits( msg, GENTITYNUM_BITS );
-			if ( newnum < 0 || newnum >= MAX_GENTITIES ) {
+			byte entitySystemType = MSG_ReadByte( msg );
+
+			if ( newnum < 0 || newnum >= MAX_GENTITIES ) 
+			{
 				Com_Error( ERR_DROP, "Baseline number out of range: %i", newnum );
 			}
-			Com_Memset (&nullstate, 0, sizeof(nullstate));
-			es = &cl.entityBaselines[ newnum ];
-			MSG_ReadDeltaEntity( msg, &nullstate, es, newnum );
-		} else {
+
+			Com_Memset( &nullstate, 0, sizeof( nullstate ) );
+			Com_Memset( &nullComp, 0, sizeof( nullComp ) );
+			
+			es = &cl.entityBaselines[newnum];
+			//cl.entitySystemTypes[newnum] = entitySystemType;
+
+			if ( entitySystemType == EntitySystem_gentity_t )
+			{
+				MSG_ReadDeltaEntity( msg, &nullstate, es, newnum );
+			}
+			
+			else if ( entitySystemType == EntitySystem_IEntity )
+			{
+				MSG_ReadDeltaEntity( msg, &nullComp, &cl.compBaselines[newnum], newnum );
+			}
+
+			else
+			{
+				Com_Printf( "Bad entity type: %d at %d\n", entitySystemType, newnum );
+			}
+		} 
+
+		else 
+		{
 			Com_Error( ERR_DROP, "CL_ParseGamestate: bad command byte" );
 		}
 	}

@@ -101,16 +101,36 @@ CG_SetEntitySoundPosition
 Also called by event processing code
 ======================
 */
-void CG_SetEntitySoundPosition( centity_t *cent ) {
-	if ( cent->currentState.solid == SOLID_BMODEL ) {
+void CG_SetEntitySoundPosition( centity_t *cent ) 
+{
+	int solid{ 0 }, modelIndex{ 0 }, entityIndex{ 0 };
+
+	if ( cent->entitySystemType == EntitySystem_gentity_t )
+	{
+		solid = cent->currentState.solid;
+		modelIndex = cent->currentState.modelindex;
+		entityIndex = cent->currentState.number;
+	}
+	else if ( cent->entitySystemType == EntitySystem_IEntity )
+	{
+		solid = cent->currentComp.solid;
+		modelIndex = cent->currentComp.modelIndex;
+		entityIndex = cent->currentComp.entityIndex;
+	}
+
+	if ( cent->currentState.solid == SOLID_BMODEL ) 
+	{
 		vec3_t	origin;
 		float	*v;
 
-		v = cgs.inlineModelMidpoints[ cent->currentState.modelindex ];
+		v = cgs.inlineModelMidpoints[ modelIndex ];
 		VectorAdd( cent->lerpOrigin, v, origin );
-		trap_S_UpdateEntityPosition( cent->currentState.number, origin );
-	} else {
-		trap_S_UpdateEntityPosition( cent->currentState.number, cent->lerpOrigin );
+		trap_S_UpdateEntityPosition( entityIndex, origin );
+	} 
+	
+	else 
+	{
+		trap_S_UpdateEntityPosition( entityIndex, cent->lerpOrigin );
 	}
 }
 
@@ -121,30 +141,51 @@ CG_EntityEffects
 Add continuous entity effects, like local entity emission and lighting
 ==================
 */
-static void CG_EntityEffects( centity_t *cent ) {
-
+static void CG_EntityEffects( centity_t *cent ) 
+{
 	// update sound origins
 	CG_SetEntitySoundPosition( cent );
 
+	int loopSound{ 0 }, entityType{ 0 }, entityIndex{ 0 }, constantLight{ 0 };
+
+	if ( cent->entitySystemType == EntitySystem_gentity_t )
+	{
+		loopSound = cent->currentState.loopSound;
+		entityType = cent->currentState.eType;
+		entityIndex = cent->currentState.number;
+		constantLight = cent->currentState.constantLight;
+	}
+
+	else if ( cent->entitySystemType == EntitySystem_IEntity )
+	{
+		loopSound = cent->currentComp.loopSound;
+		entityType = cent->currentComp.entityType;
+		entityIndex = cent->currentComp.entityIndex;
+		constantLight = cent->currentComp.constantLight;
+	}
+
 	// add loop sound
-	if ( cent->currentState.loopSound ) {
-		if (cent->currentState.eType != ET_SPEAKER) {
-			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, 
-				cgs.gameSounds[ cent->currentState.loopSound ] );
-		} else {
-			trap_S_AddRealLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, 
-				cgs.gameSounds[ cent->currentState.loopSound ] );
+	if ( loopSound ) 
+	{
+		if ( entityIndex != ET_SPEAKER ) 
+		{
+			trap_S_AddLoopingSound( entityIndex, cent->lerpOrigin, vec3_origin, cgs.gameSounds[loopSound] );
+		} 
+		
+		else 
+		{
+			trap_S_AddRealLoopingSound( entityIndex, cent->lerpOrigin, vec3_origin, cgs.gameSounds[loopSound] );
 		}
 	}
 
 
 	// constant light glow
-	if(cent->currentState.constantLight)
+	if ( constantLight )
 	{
-		int		cl;
-		float		i, r, g, b;
+		int cl;
+		float i, r, g, b;
 
-		cl = cent->currentState.constantLight;
+		cl = constantLight;
 		r = (float) (cl & 0xFF) / 255.0;
 		g = (float) ((cl >> 8) & 0xFF) / 255.0;
 		b = (float) ((cl >> 16) & 0xFF) / 255.0;
@@ -884,8 +925,19 @@ CG_AddCEntity
 */
 static void CG_AddCEntity( centity_t *cent ) {
 	// event-only entities will have been dealt with already
-	if ( cent->currentState.eType >= ET_EVENTS ) {
-		return;
+	if ( cent->entitySystemType == EntitySystem_gentity_t ) 
+	{
+		if ( cent->currentState.eType >= ET_EVENTS )
+		{
+			return;
+		}
+	}
+	else if ( cent->entitySystemType == EntitySystem_IEntity )
+	{
+		if ( cent->currentComp.entityType >= ET_EVENTS )
+		{
+			return;
+		}
 	}
 
 	// calculate the current origin
@@ -944,7 +996,7 @@ CG_AddPacketEntities
 */
 void CG_AddPacketEntities( void ) {
 	int					num;
-	centity_t			*cent;
+	centity_t			*cent = nullptr;
 	playerState_t		*ps;
 	Components::SharedComponent* comp;
 
@@ -984,7 +1036,7 @@ void CG_AddPacketEntities( void ) {
 	CG_CalcEntityLerpPositions( &cg_entities[ cg.snap->ps.clientNum ] );
 
 	// add each entity sent over by the server
-	for ( num = 0 ; num < cg.snap->numEntities ; num++ ) 
+	for ( num = 0; num < cg.snap->numEntities; num++ )
 	{
 		byte entitySystemType = cg.snap->entitySystemTypes[num];
 
@@ -997,10 +1049,17 @@ void CG_AddPacketEntities( void ) {
 			comp = &cg.snap->comps[num];
 			cent = &cg_entities[comp->entityIndex];
 		}
-		
-		cent->entitySystemType = entitySystemType;
+		else
+		{
+			Com_Printf( "CG_AddPacketEntities: %d has invalid entity system type %d", num, entitySystemType );
+			cent = nullptr;
+		}
 
-		CG_AddCEntity( cent );
+		if ( cent )
+		{
+			cent->entitySystemType = entitySystemType;
+			CG_AddCEntity( cent );
+		}
 	}
 }
 

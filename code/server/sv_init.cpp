@@ -218,34 +218,36 @@ to the clients -- only the fields that differ from the
 baseline will be transmitted
 ================
 */
-static void SV_CreateBaseline( void ) {
+static void SV_CreateBaseline( void ) 
+{
 	sharedEntity_t *svent;
 	int				entnum;	
 
 	for ( entnum = 1; entnum < sv.num_entities ; entnum++ ) 
 	{
-		svent = SV_GentityNum(entnum);
-		if (!svent->r.linked) {
-			continue;
+		Entities::IEntity* ient = sv.entities[entnum];
+		if ( ient )
+		{
+			Components::SharedComponent* shared = ient->GetComponent<Components::SharedComponent>();
+			
+			if ( shared && shared->linked )
+			{
+				shared->entityIndex = entnum;
+				sv.svEntities[entnum].baselineIEnt = ient;
+				sv.svEntities[entnum].entitySystemType = EntitySystem_IEntity;
+				continue;
+			}
 		}
-		svent->s.number = entnum;
 
-		//
-		// take current state as baseline
-		//
-		sv.svEntities[entnum].baseline = svent->s;
-	}
-
-	for ( entnum = 1; entnum < sv.numEntities; entnum++ )
-	{
-		Entities::IEntity* ient = (Entities::IEntity*)((byte*)sv.entities + sv.entitySize * (entnum));
-		Components::SharedComponent* shared = ient->GetComponent<Components::SharedComponent>();
-		if ( !shared->linked )
-			continue;
-
-		shared->entityIndex = entnum;
-
-		sv.svEntities[entnum].baselineIEnt = ient;
+		svent = SV_GentityNum(entnum);
+		if (svent->r.linked) 
+		{
+			svent->s.number = entnum;
+			
+			// take current state as baseline
+			sv.svEntities[entnum].baseline = svent->s;
+			sv.svEntities[entnum].entitySystemType = EntitySystem_gentity_t;
+		}
 	}
 }
 
@@ -523,7 +525,7 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	}
 
 	// create a baseline for more efficient communications
-	SV_CreateBaseline ();
+	SV_CreateBaseline();
 
 	for (i=0 ; i<sv_maxclients->integer ; i++) {
 		// send the new gamestate to all connected clients

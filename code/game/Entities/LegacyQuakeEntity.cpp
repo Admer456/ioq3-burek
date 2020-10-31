@@ -12,10 +12,10 @@
 using namespace Entities;
 
 #define DefineKV( variable, handler ) \
-KeyValueElement( #variable, offsetof(LegacyQuakeEntity, variable), handler ),
+KeyValueElement( #variable, offsetof(LegacyQuakeEntity, variable), &KVHandlers::##handler ),
 
 #define DefineKV_Explicit( variable_map, variable_code, handler ) \
-KeyValueElement( #variable_map, offsetof(LegacyQuakeEntity, variable_code), handler ),
+KeyValueElement( #variable_map, offsetof(LegacyQuakeEntity, variable_code), &KVHandlers::##handler ),
 
 #ifdef random
 #undef random
@@ -23,24 +23,24 @@ KeyValueElement( #variable_map, offsetof(LegacyQuakeEntity, variable_code), hand
 
 // It ain't the prettiest right now, but it'll work until I get rid of gentity_t
 KeyValueElement LegacyQuakeEntity::keyValues[] =
-{	//| KV def type		| KV name	| KV code name		| Handler function		|
-	DefineKV(			classname,						&KVHandlers::CString )
-	//DefineKV_Explicit(	origin,		state.origin,		&KVHandlers::Vector )
-	DefineKV(			model,							&KVHandlers::CString )
-	DefineKV(			model2,							&KVHandlers::CString )
-	DefineKV(			speed,							&KVHandlers::Float )
-	DefineKV(			target,							&KVHandlers::CString )
-	DefineKV(			targetname,						&KVHandlers::CString )
-	DefineKV(			message,						&KVHandlers::CString )
-	DefineKV(			team,							&KVHandlers::CString )
-	DefineKV(			wait,							&KVHandlers::Float )
-	DefineKV(			random,							&KVHandlers::Float )
-	DefineKV(			count,							&KVHandlers::Int )
-	DefineKV(			health,							&KVHandlers::Int )
-	DefineKV_Explicit(	dmg,		damage,				&KVHandlers::Int )
-	//DefineKV_Explicit(	angles,		state.angles,		&KVHandlers::Vector )
-	DefineKV(			targetShaderName,				&KVHandlers::CString )
-	DefineKV(			targetShaderNewName,			&KVHandlers::CString )
+{	//| KV def type		| KV name	| KV code name		| Handler function	|
+	DefineKV(			classname,						CString )
+	DefineKV(			model,							CString )
+	DefineKV(			model2,							CString )
+	DefineKV(			speed,							Float )
+	DefineKV(			target,							CString )
+	DefineKV(			targetname,						CString )
+	DefineKV(			message,						CString )
+	DefineKV(			team,							CString )
+	DefineKV(			wait,							Float )
+	DefineKV(			random,							Float )
+	DefineKV(			count,							Int )
+	DefineKV(			health,							Int )
+	DefineKV(			targetShaderName,				CString )
+	DefineKV(			targetShaderNewName,			CString )
+	DefineKV_Explicit(	dmg,		damage,				Int )
+	//DefineKV_Explicit(	origin,		state.origin,		Vector )
+	//DefineKV_Explicit(	angles,		state.angles,		Vector )
 
 	// Inherit keyvalues from BaseQuakeEntity
 	KeyValueElement(	BaseQuakeEntity::keyValues ),

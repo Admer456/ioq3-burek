@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 //
 
+#include "Maths/Vector.hpp"
+#include "../game/Components/IComponent.hpp"
+#include "../game/Components/SharedComponent.hpp"
 
 #define	CMD_BACKUP			64	
 #define	CMD_MASK			(CMD_BACKUP - 1)
@@ -54,12 +57,6 @@ typedef struct {
 	int				numServerCommands;		// text based server commands to execute when this
 	int				serverCommandSequence;	// snapshot becomes current
 } snapshot_t;
-
-enum EntitySystemType
-{
-	EntitySystem_gentity_t, // Old entity system, we wanna get rid of this
-	EntitySystem_IEntity	// New entity system
-};
 
 enum {
   CGAME_EVENT_NONE,

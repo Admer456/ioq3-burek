@@ -139,8 +139,13 @@ typedef struct {
 	clSnapshot_t	snapshots[PACKET_BACKUP];
 
 	entityState_t	entityBaselines[MAX_GENTITIES];	// for delta compression when not in previous frame
+	Components::SharedComponent compBaselines[MAX_GENTITIES];
 
 	entityState_t	parseEntities[MAX_PARSE_ENTITIES];
+	Components::SharedComponent parseComps[MAX_PARSE_ENTITIES];
+
+	byte			entitySystemTypes[MAX_GENTITIES];
+	byte			parseEntitySystemTypes[MAX_PARSE_ENTITIES];
 } clientActive_t;
 
 extern	clientActive_t		cl;

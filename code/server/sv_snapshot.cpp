@@ -130,10 +130,14 @@ static void SV_EmitPacketEntities( clientSnapshot_t *from, clientSnapshot_t *to,
 			// because the force parm is qfalse, this will not result
 			// in any bytes being emitted if the entity has not changed at all
 			if ( nullptr == oldIEnt )
+			{
 				MSG_WriteDeltaEntity( msg, oldent, newent, qfalse );
+			}
 			else
+			{
 				MSG_WriteDeltaEntity( msg, oldIEnt, newIEnt, false );
-			
+			}
+
 			oldindex++;
 			newindex++;
 			continue;
@@ -143,10 +147,14 @@ static void SV_EmitPacketEntities( clientSnapshot_t *from, clientSnapshot_t *to,
 		{
 			// this is a new entity, send it from the baseline
 			if ( nullptr == newIEnt )
+			{
 				MSG_WriteDeltaEntity( msg, &sv.svEntities[newnum].baseline, newent, qtrue );
+			}
 			else
+			{
 				MSG_WriteDeltaEntity( msg, sv.svEntities[newnum].baselineIEnt, newIEnt, true );
-			
+			}
+
 			newindex++;
 			continue;
 		}
@@ -155,16 +163,21 @@ static void SV_EmitPacketEntities( clientSnapshot_t *from, clientSnapshot_t *to,
 		{
 			// the old entity isn't present in the new message
 			if ( nullptr == oldIEnt )
+			{
 				MSG_WriteDeltaEntity( msg, oldent, NULL, qtrue );
+			}
 			else
+			{
 				MSG_WriteDeltaEntity( msg, oldIEnt, nullptr, true );
-			
+			}
+
 			oldindex++;
 			continue;
 		}
 	}
 
 	MSG_WriteBits( msg, (MAX_GENTITIES-1), GENTITYNUM_BITS );	// end of packetentities
+	MSG_WriteByte( msg, 0 ); // null entity system type
 }
 
 

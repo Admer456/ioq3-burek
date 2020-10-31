@@ -64,8 +64,8 @@ void CG_BuildSolidList( void ) {
 
 	for ( i = 0 ; i < snap->numEntities ; i++ ) 
 	{
-		byte entitySystemType = snap->entitySystemTypes[i];
 		cent = &cg_entities[snap->entities[i].number];
+		byte entitySystemType = cent->entitySystemType;
 
 		if ( entitySystemType == EntitySystem_gentity_t )
 		{
@@ -103,7 +103,7 @@ void CG_BuildSolidList( void ) {
 				continue;
 			}
 		}
-		else
+		else if ( entitySystemType != EntitySystem_None )
 		{
 			Com_Printf( "CG_BuildSolidList: Bad entity system type %d\n", entitySystemType );
 		}

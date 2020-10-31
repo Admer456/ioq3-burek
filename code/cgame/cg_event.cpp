@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // cg_event.c -- handle entity events at snapshot or playerstate transitions
 
+#include "Maths/Vector.hpp"
 #include "cg_local.hpp"
 
 //==========================================================================
@@ -1071,33 +1072,96 @@ CG_CheckEvents
 
 ==============
 */
-void CG_CheckEvents( centity_t *cent ) {
-	// check for event-only entities
-	if ( cent->currentState.eType > ET_EVENTS ) {
-		if ( cent->previousEvent ) {
-			return;	// already fired
-		}
-		// if this is a player event set the entity number of the client entity number
-		if ( cent->currentState.eFlags & EF_PLAYER_EVENT ) {
-			cent->currentState.number = cent->currentState.otherEntityNum;
+void CG_CheckEvents( centity_t *cent ) 
+{
+	if ( cent->entitySystemType == EntitySystem_gentity_t )
+	{
+		// check for event-only entities
+		if ( cent->currentState.eType > ET_EVENTS )
+		{
+			if ( cent->previousEvent )
+			{
+				return;	// already fired
+			}
+
+			// if this is a player event set the entity number of the client entity number
+			if ( cent->currentState.eFlags & EF_PLAYER_EVENT )
+			{
+				cent->currentState.number = cent->currentState.otherEntityNum;
+			}
+
+			cent->previousEvent = 1;
+
+			cent->currentState.event = cent->currentState.eType - ET_EVENTS;
 		}
 
-		cent->previousEvent = 1;
+		else
+		{
+			// check for events riding with another entity
+			if ( cent->currentState.event == cent->previousEvent )
+			{
+				return;
+			}
 
-		cent->currentState.event = cent->currentState.eType - ET_EVENTS;
-	} else {
-		// check for events riding with another entity
-		if ( cent->currentState.event == cent->previousEvent ) {
-			return;
+			cent->previousEvent = cent->currentState.event;
+
+			if ( (cent->currentState.event & ~EV_EVENT_BITS) == 0 )
+			{
+				return;
+			}
 		}
-		cent->previousEvent = cent->currentState.event;
-		if ( ( cent->currentState.event & ~EV_EVENT_BITS ) == 0 ) {
-			return;
-		}
+
+		// calculate the position at exactly the frame time
+		BG_EvaluateTrajectory( &cent->currentState.pos, cg.snap->serverTime, cent->lerpOrigin );
 	}
 
-	// calculate the position at exactly the frame time
-	BG_EvaluateTrajectory( &cent->currentState.pos, cg.snap->serverTime, cent->lerpOrigin );
+	else if ( cent->entitySystemType == EntitySystem_IEntity )
+	{
+		// check for event-only entities
+		if ( cent->currentComp.entityType > ET_EVENTS )
+		{
+			if ( cent->previousEvent )
+			{
+				return;	// already fired
+			}
+
+			// if this is a player event set the entity number of the client entity number
+			if ( cent->currentComp.entityFlags & EF_PLAYER_EVENT )
+			{
+				cent->currentComp.entityIndex = cent->currentComp.otherEntityIndex[0];
+			}
+
+			cent->previousEvent = 1;
+			cent->currentComp.event = cent->currentComp.entityType - ET_EVENTS;
+		}
+
+		else
+		{
+			// check for events riding with another entity
+			if ( cent->currentComp.event == cent->previousEvent )
+			{
+				return;
+			}
+
+			cent->previousEvent = cent->currentComp.event;
+
+			if ( (cent->currentComp.event & ~EV_EVENT_BITS) == 0 )
+			{
+				return;
+			}
+		}
+
+		trajectory_t trPos;
+		cent->currentComp.trPos.trBase.CopyToArray( trPos.trBase );
+		cent->currentComp.trPos.trDelta.CopyToArray( trPos.trDelta );
+		trPos.trType = (trType_t)cent->currentComp.trPos.trType;
+		trPos.trDuration = cent->currentComp.trPos.trDuration;
+		trPos.trTime = cent->currentComp.trPos.trTime;
+
+		// calculate the position at exactly the frame time
+		BG_EvaluateTrajectory( &trPos, cg.snap->serverTime, cent->lerpOrigin );
+	}
+
 	CG_SetEntitySoundPosition( cent );
 
 	CG_EntityEvent( cent, cent->lerpOrigin );

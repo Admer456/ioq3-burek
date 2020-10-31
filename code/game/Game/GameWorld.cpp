@@ -3,6 +3,7 @@
 #include "Maths/Vector.hpp"
 #include "GameWorld.hpp"
 #include "../qcommon/IEngineExports.h"
+#include "Game/IGameImports.h"
 
 #include <type_traits>
 
@@ -142,6 +143,15 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 	{
 		engine->Error( "Tried to spawn a non-existing entity!\n" );
 	}
+
+	// THERE SHALL BE MORE ENTITIES
+	level.num_entities++;
+
+	// let the server system know that there are more entities
+	gameImports->LocateGameData(
+		reinterpret_cast<sharedEntity_t*>(level.gentities), level.num_entities, sizeof( gentity_t ),
+		level.entities, level.numEntities, sizeof( IEntity* ),
+		&level.clients[0].ps, sizeof( level.clients[0] ) );
 
 	ent->spawnArgs = &map;
 

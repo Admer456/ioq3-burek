@@ -86,8 +86,11 @@ int CL_GetCurrentCmdNumber( void ) {
 /*
 ====================
 CL_GetParseEntityState
+
+Seems to be dead code; might get removed soon
 ====================
 */
+/*
 qboolean	CL_GetParseEntityState( int parseEntityNumber, entityState_t *state ) {
 	// can't return anything that hasn't been parsed yet
 	if ( parseEntityNumber >= cl.parseEntitiesNum ) {
@@ -102,7 +105,7 @@ qboolean	CL_GetParseEntityState( int parseEntityNumber, entityState_t *state ) {
 
 	*state = cl.parseEntities[ parseEntityNumber & ( MAX_PARSE_ENTITIES - 1 ) ];
 	return qtrue;
-}
+}*/
 
 /*
 ====================
@@ -119,28 +122,33 @@ void	CL_GetCurrentSnapshotNumber( int *snapshotNumber, int *serverTime ) {
 CL_GetSnapshot
 ====================
 */
-qboolean	CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
+qboolean	CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) 
+{
 	clSnapshot_t	*clSnap;
 	int				i, count;
 
-	if ( snapshotNumber > cl.snap.messageNum ) {
+	if ( snapshotNumber > cl.snap.messageNum ) 
+	{
 		Com_Error( ERR_DROP, "CL_GetSnapshot: snapshotNumber > cl.snapshot.messageNum" );
 	}
 
 	// if the frame has fallen out of the circular buffer, we can't return it
-	if ( cl.snap.messageNum - snapshotNumber >= PACKET_BACKUP ) {
+	if ( cl.snap.messageNum - snapshotNumber >= PACKET_BACKUP ) 
+	{
 		return qfalse;
 	}
 
 	// if the frame is not valid, we can't return it
 	clSnap = &cl.snapshots[snapshotNumber & PACKET_MASK];
-	if ( !clSnap->valid ) {
+	if ( !clSnap->valid ) 
+	{
 		return qfalse;
 	}
 
 	// if the entities in the frame have fallen out of their
 	// circular buffer, we can't return it
-	if ( cl.parseEntitiesNum - clSnap->parseEntitiesNum >= MAX_PARSE_ENTITIES ) {
+	if ( cl.parseEntitiesNum - clSnap->parseEntitiesNum >= MAX_PARSE_ENTITIES ) 
+	{
 		return qfalse;
 	}
 
@@ -152,14 +160,22 @@ qboolean	CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
 	Com_Memcpy( snapshot->areamask, clSnap->areamask, sizeof( snapshot->areamask ) );
 	snapshot->ps = clSnap->ps;
 	count = clSnap->numEntities;
-	if ( count > MAX_ENTITIES_IN_SNAPSHOT ) {
+	
+	if ( count > MAX_ENTITIES_IN_SNAPSHOT ) 
+	{
 		Com_DPrintf( "CL_GetSnapshot: truncated %i entities to %i\n", count, MAX_ENTITIES_IN_SNAPSHOT );
 		count = MAX_ENTITIES_IN_SNAPSHOT;
 	}
+	
 	snapshot->numEntities = count;
-	for ( i = 0 ; i < count ; i++ ) {
-		snapshot->entities[i] = 
-			cl.parseEntities[ ( clSnap->parseEntitiesNum + i ) & (MAX_PARSE_ENTITIES-1) ];
+	
+	for ( i = 0 ; i < count ; i++ ) 
+	{
+		uint16_t index = (clSnap->parseEntitiesNum + i) & (MAX_PARSE_ENTITIES - 1);
+
+		snapshot->entities[i] = cl.parseEntities[index];
+		snapshot->comps[i] = cl.parseComps[index];
+		snapshot->entitySystemTypes[i] = cl.parseEntitySystemTypes[index];
 	}
 
 	// FIXME: configstring changes and server commands!!!

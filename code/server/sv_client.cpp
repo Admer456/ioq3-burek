@@ -711,7 +711,8 @@ It will be resent if the client acknowledges a later message but has
 the wrong gamestate.
 ================
 */
-static void SV_SendClientGameState( client_t *client ) {
+static void SV_SendClientGameState( client_t *client ) 
+{
 	int			start;
 	entityState_t	*base, nullstate;
 	Entities::IEntity* baseIent = nullptr;
@@ -747,8 +748,10 @@ static void SV_SendClientGameState( client_t *client ) {
 	MSG_WriteLong( &msg, client->reliableSequence );
 
 	// write the configstrings
-	for ( start = 0 ; start < MAX_CONFIGSTRINGS ; start++ ) {
-		if (sv.configstrings[start][0]) {
+	for ( start = 0 ; start < MAX_CONFIGSTRINGS ; start++ ) 
+	{
+		if (sv.configstrings[start][0]) 
+		{
 			MSG_WriteByte( &msg, svc_configstring );
 			MSG_WriteShort( &msg, start );
 			MSG_WriteBigString( &msg, sv.configstrings[start] );
@@ -759,28 +762,27 @@ static void SV_SendClientGameState( client_t *client ) {
 	Com_Memset( &nullstate, 0, sizeof( nullstate ) );
 	Com_Memset( &nullComp, 0, sizeof( nullComp ) );
 
-	for ( start = 0 ; start < MAX_GENTITIES; start++ ) {
+	for ( start = 0 ; start < MAX_GENTITIES; start++ ) 
+	{
 		base = &sv.svEntities[start].baseline;
-		if ( !base->number ) {
+		if ( base->number ) 
+		{
+			MSG_WriteByte( &msg, svc_baseline );
+			MSG_WriteDeltaEntity( &msg, &nullstate, base, qtrue );
 			continue;
 		}
-		MSG_WriteByte( &msg, svc_baseline );
-		MSG_WriteDeltaEntity( &msg, &nullstate, base, qtrue );
-	}
 
-	for ( start = 0; start < MAX_GENTITIES; start++ )
-	{
 		baseIent = sv.svEntities[start].baselineIEnt;
-		
-		if ( nullptr == baseIent )
-			continue;
-
-		baseComp = baseIent->GetComponent<Components::SharedComponent>();
-		if ( !baseComp->entityIndex )
-			continue;
-
-		MSG_WriteByte( &msg, svc_baseline );
-		MSG_WriteDeltaEntity( &msg, baseComp, &nullComp, true );
+		if ( baseIent )
+		{
+			baseComp = baseIent->GetComponent<Components::SharedComponent>();
+			if ( baseComp->entityIndex )
+			{
+				MSG_WriteByte( &msg, svc_baseline );
+				MSG_WriteDeltaEntity( &msg, &nullComp, baseComp, true );
+				continue;
+			}
+		}
 	}
 
 	MSG_WriteByte( &msg, svc_EOF );

@@ -57,6 +57,7 @@ cent->nextState is moved to cent->currentState and events are fired
 */
 static void CG_TransitionEntity( centity_t *cent ) {
 	cent->currentState = cent->nextState;
+	cent->currentComp = cent->nextComp;
 	cent->currentValid = qtrue;
 
 	// reset if the entity wasn't in the last frame or was teleported
@@ -80,7 +81,8 @@ This will only happen on the very first snapshot.
 All other times will use CG_TransitionSnapshot instead.
 ==================
 */
-void CG_SetInitialSnapshot( snapshot_t *snap ) {
+void CG_SetInitialSnapshot( snapshot_t *snap ) 
+{
 	int				i;
 	centity_t		*cent;
 	entityState_t	*state;
@@ -88,7 +90,7 @@ void CG_SetInitialSnapshot( snapshot_t *snap ) {
 
 	cg.snap = snap;
 
-	BG_PlayerStateToEntityState( &snap->ps, &cg_entities[ snap->ps.clientNum ].currentState, qfalse );
+	BG_PlayerStateToEntityState( &snap->ps, &cg_entities[snap->ps.clientNum].currentState, qfalse );
 
 	// sort out solid entities
 	CG_BuildSolidList();
@@ -99,13 +101,27 @@ void CG_SetInitialSnapshot( snapshot_t *snap ) {
 	// what the server has indicated the current weapon is
 	CG_Respawn();
 
-	for ( i = 0 ; i < cg.snap->numEntities ; i++ ) 
+	for ( i = 0; i < cg.snap->numEntities; i++ ) 
 	{
-		state = &cg.snap->entities[ i ];
-		cent = &cg_entities[ state->number ];
+		state = &cg.snap->entities[i];
+		comp = &cg.snap->comps[i];
+		cent = &cg_entities[state->number];
+		byte entitySystemType = cg.snap->entitySystemTypes[i];
 
-		memcpy(&cent->currentState, state, sizeof(entityState_t));
-		//cent->currentState = *state;
+		if ( entitySystemType == EntitySystem_gentity_t )
+		{
+			memcpy( &cent->currentState, state, sizeof( entityState_t ) );
+			memset( &cent->currentComp, 0, sizeof( Components::SharedComponent ) );
+		}
+		
+		else if ( entitySystemType == EntitySystem_IEntity )
+		{
+			memset( &cent->currentState, 0, sizeof( entityState_t ) );
+			memcpy( &cent->currentComp, comp, sizeof( Components::SharedComponent ) );
+		}
+
+		cent->entitySystemType = entitySystemType;
+		
 		cent->interpolate = qfalse;
 		cent->currentValid = qtrue;
 
@@ -124,15 +140,18 @@ CG_TransitionSnapshot
 The transition point from snap to nextSnap has passed
 ===================
 */
-static void CG_TransitionSnapshot( void ) {
+static void CG_TransitionSnapshot( void ) 
+{
 	centity_t			*cent;
 	snapshot_t			*oldFrame;
 	int					i;
 
-	if ( !cg.snap ) {
+	if ( !cg.snap ) 
+	{
 		CG_Error( "CG_TransitionSnapshot: NULL cg.snap" );
 	}
-	if ( !cg.nextSnap ) {
+	if ( !cg.nextSnap ) 
+	{
 		CG_Error( "CG_TransitionSnapshot: NULL cg.nextSnap" );
 	}
 
@@ -140,7 +159,8 @@ static void CG_TransitionSnapshot( void ) {
 	CG_ExecuteNewServerCommands( cg.nextSnap->serverCommandSequence );
 
 	// if we had a map_restart, set everything with initial
-	if ( cg.mapRestart ) {
+	if ( cg.mapRestart ) 
+	{
 	}
 
 	// clear the currentValid flag for all entities in the existing snapshot
@@ -156,7 +176,8 @@ static void CG_TransitionSnapshot( void ) {
 	BG_PlayerStateToEntityState( &cg.snap->ps, &cg_entities[ cg.snap->ps.clientNum ].currentState, qfalse );
 	cg_entities[ cg.snap->ps.clientNum ].interpolate = qfalse;
 
-	for ( i = 0 ; i < cg.snap->numEntities ; i++ ) {
+	for ( i = 0 ; i < cg.snap->numEntities ; i++ ) 
+	{
 		cent = &cg_entities[ cg.snap->entities[ i ].number ];
 		CG_TransitionEntity( cent );
 
@@ -167,20 +188,23 @@ static void CG_TransitionSnapshot( void ) {
 	cg.nextSnap = NULL;
 
 	// check for playerstate transition events
-	if ( oldFrame ) {
+	if ( oldFrame ) 
+	{
 		playerState_t	*ops, *ps;
 
 		ops = &oldFrame->ps;
 		ps = &cg.snap->ps;
 		// teleporting checks are irrespective of prediction
-		if ( ( ps->eFlags ^ ops->eFlags ) & EF_TELEPORT_BIT ) {
+		if ( ( ps->eFlags ^ ops->eFlags ) & EF_TELEPORT_BIT ) 
+		{
 			cg.thisFrameTeleport = qtrue;	// will be cleared by prediction code
 		}
 
 		// if we are not doing client side movement prediction for any
 		// reason, then the client events and view changes will be issued now
 		if ( cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW)
-			|| cg_nopredict.integer || cg_synchronousClients.integer ) {
+			|| cg_nopredict.integer || cg_synchronousClients.integer ) 
+		{
 			CG_TransitionPlayerState( ps, ops );
 		}
 	}

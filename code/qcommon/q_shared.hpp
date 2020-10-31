@@ -1471,7 +1471,12 @@ typedef enum _flag_status {
 	FLAG_DROPPED
 } flagStatus_t;
 
-
+enum EntitySystemType
+{
+	EntitySystem_None = 99, // For entities that are removed or not there
+	EntitySystem_gentity_t = 254, // Old entity system, we wanna get rid of this
+	EntitySystem_IEntity = 137	// New entity system
+};
 
 #define	MAX_GLOBAL_SERVERS				4096
 #define	MAX_OTHER_SERVERS					128

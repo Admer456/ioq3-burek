@@ -59,6 +59,7 @@ typedef struct svEntity_s {
 	
 	entityState_t	baseline;		// for delta compression of initial sighting
 	Entities::IEntity* baselineIEnt; // same as above, but for the new entity system
+	byte		entitySystemType;	// Belongs to which entity system
 	int			numClusters;		// if -1, use headnode instead
 	int			clusternums[MAX_ENT_CLUSTERS];
 	int			lastCluster;		// if all the clusters don't fit in clusternums
@@ -96,7 +97,7 @@ typedef struct {
 
 	Entities::IEntity** entities;
 	int				entitySize;
-	int				numEntities;
+//	int				numEntities;
 
 	playerState_t	*gameClients;
 	int				gameClientSize;		// will be > sizeof(playerState_t) due to game private data
