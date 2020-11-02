@@ -4,6 +4,7 @@
 #include "GameWorld.hpp"
 #include "../qcommon/IEngineExports.h"
 #include "Game/IGameImports.h"
+#include "Entities/Worldspawn.hpp"
 
 #include <type_traits>
 
@@ -116,11 +117,17 @@ void GameWorld::Shutdown()
 
 void GameWorld::SpawnEntities()
 {
+	SpawnWorldspawn();
+
 	// For every keyvalue pair library in the map
 	for ( auto& lib : keyValueLibraries )
 	{
 		// Get the unordered_map so we can read keyvalues
 		std::string &className = lib["classname"];
+
+		// Skip worldspawn
+		if ( className == "worldspawn" )
+			continue;
 
 		// In this very early phase of my entity system,
 		// we'll only spawn instances of func_nothing
@@ -130,6 +137,35 @@ void GameWorld::SpawnEntities()
 			SpawnEntity( lib );
 		}
 	}
+}
+
+void GameWorld::SpawnWorldspawn()
+{
+	using namespace Entities;
+
+	KeyValueLibrary* worldLib = nullptr;
+
+	for ( auto& lib : keyValueLibraries )
+	{
+		std::string& className = lib["classname"];
+
+		if ( className == "worldspawn" )
+		{
+			worldLib = &lib;
+			break;
+		}
+	}
+
+	auto ent = CreateEntity<Worldspawn>( ENTITYNUM_WORLD );
+	ent->GetShared()->ownerNum = ENTITYNUM_NONE;
+	ent->spawnArgs = worldLib;
+
+	ent->KeyValue();
+	ent->Spawn();
+
+	auto nothingEnt = CreateEntity<BaseQuakeEntity>( ENTITYNUM_NONE );
+	nothingEnt->GetShared()->ownerNum = ENTITYNUM_NONE;
+	nothingEnt->spawnArgs = nullptr;
 }
 
 void GameWorld::SpawnEntity( KeyValueLibrary& map )
@@ -176,6 +212,20 @@ entityType* GameWorld::CreateEntity()
 
 	engine->Error( "Exceeded maximum number of entities\n" );
 	return nullptr;
+}
+
+template<typename entityType>
+entityType* GameWorld::CreateEntity( const uint16_t& index )
+{
+	if ( nullptr != gEntities[index] )
+	{
+		engine->Error( va( "Entity slot %d is taken, please consult your programmer\n", index ) );
+		return nullptr;
+	}
+
+	gEntities[index] = new entityType();
+	gEntities[index]->SetEntityIndex( index );
+	return static_cast<entityType*>( gEntities[index] );
 }
 
 void GameWorld::ParseKeyValues()

@@ -47,12 +47,19 @@ public:
 	// Spawns worldspawn, goes on to do some more stuff
 	void			SpawnEntities();
 
+	// Spawns worldspawn
+	void			SpawnWorldspawn();
+
 	// Dispatches the spawn of an individual entity, from keyvalues
 	void			SpawnEntity( KeyValueLibrary& map );
 
 	// Allocates an entity
 	template<typename entityType>
 	entityType*		CreateEntity();
+
+	// Allocates an entity at a specified index
+	template<typename entityType>
+	entityType*		CreateEntity( const uint16_t& index );
 
 	// Reads out keyvalues and populates the stuff
 	void			ParseKeyValues();

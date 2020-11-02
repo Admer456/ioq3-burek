@@ -120,6 +120,9 @@
     <ClInclude Include="..\..\code\game\Components\SharedComponent.hpp">
       <Filter>Sources\Components</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Worldspawn.hpp">
+      <Filter>Sources\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -238,6 +241,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Components\SharedComponent.cpp">
       <Filter>Sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Worldspawn.cpp">
+      <Filter>Sources\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
