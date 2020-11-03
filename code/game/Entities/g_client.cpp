@@ -21,6 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 //
 #include "Game/g_local.hpp"
+#include "BaseEntity.hpp"
+#include "../qcommon/IEngineExports.h"
+#include "Game/IGameImports.h"
+#include "Game/GameWorld.hpp"
+#include "Maths/Vector.hpp"
+#include "Entities/BasePlayer.hpp"
 
 // g_client.c -- client functions that don't happen every frame
 
@@ -942,37 +948,51 @@ and on transition between teams, but doesn't happen on respawns
 ============
 */
 void ClientBegin( int clientNum ) {
-	gentity_t	*ent;
+	Entities::IEntity* ent;
+	Entities::BasePlayer* player;
 	gclient_t	*client;
 	int			flags;
 
-	ent = g_entities + clientNum;
+	//ent = g_entities + clientNum;
+	ent = gEntities[clientNum];
 
 	client = level.clients + clientNum;
 
-	if ( ent->r.linked ) {
-		trap_UnlinkEntity( ent );
+	if ( nullptr != ent )
+	{
+		engine->Error( va( "Entity slot %d taken by another entity, yet it's reserved for clients!\n", clientNum ) );
+		return;
 	}
-	G_InitGentity( ent );
-	ent->touch = 0;
-	ent->pain = 0;
-	ent->client = client;
+
+	// Does this really need to be checked?
+	//// Is this entity linked into the world?
+	//if ( ent->GetShared()->linked ) { // Crash happins on dis loin
+	//	gameImports->UnlinkEntity( ent );
+	//}
+
+	ent = gameWorld->CreateEntity<Entities::BasePlayer>( clientNum );
+	player = static_cast<Entities::BasePlayer*>( ent );
+
+	player->GetShared()->ownerNum = ENTITYNUM_NONE;
+	player->SetClient( client );
 
 	client->pers.connected = CON_CONNECTED;
 	client->pers.enterTime = level.time;
 	client->pers.teamState.state = TEAM_BEGIN;
 
-	// save eflags around this, because changing teams will
-	// cause this to happen with a valid entity, and we
-	// want to make sure the teleport bit is set right
-	// so the viewpoint doesn't interpolate through the
-	// world to the new position
-	flags = client->ps.eFlags;
-	memset( &client->ps, 0, sizeof( client->ps ) );
-	client->ps.eFlags = flags;
+	gameWorld->SpawnClient( player );
 
-	// locate ent at a spawn point
-	ClientSpawn( ent );
+	//// save eflags around this, because changing teams will
+	//// cause this to happen with a valid entity, and we
+	//// want to make sure the teleport bit is set right
+	//// so the viewpoint doesn't interpolate through the
+	//// world to the new position
+	//flags = client->ps.eFlags;
+	//memset( &client->ps, 0, sizeof( client->ps ) );
+	//client->ps.eFlags = flags;
+
+	//// locate ent at a spawn point
+	//ClientSpawn( ent );
 
 	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
 		if ( g_gametype.integer != GT_TOURNAMENT  ) {
@@ -1019,10 +1039,13 @@ void ClientSpawn(gentity_t *ent) {
 	// find a spawn point
 	// do it before setting health back up, so farthest
 	// ranging doesn't count this client
-	if ( client->sess.sessionTeam == TEAM_SPECTATOR ) {
+	if ( client->sess.sessionTeam == TEAM_SPECTATOR ) 
+	{
 		spawnPoint = SelectSpectatorSpawnPoint ( 
 						spawn_origin, spawn_angles);
-	} else if (g_gametype.integer >= GT_CTF ) {
+	}
+	else if (g_gametype.integer >= GT_CTF ) 
+	{
 		// all base oriented team games use the CTF spawn points
 		spawnPoint = SelectCTFSpawnPoint ( 
 						client->sess.sessionTeam, 

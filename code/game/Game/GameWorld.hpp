@@ -34,6 +34,11 @@ private:
 	KVMap library;
 };
 
+namespace Entities
+{
+	class BasePlayer;
+}
+
 class GameWorld final
 {
 	using KVMap = std::unordered_map<std::string, std::string>;
@@ -60,6 +65,13 @@ public:
 	// Allocates an entity at a specified index
 	template<typename entityType>
 	entityType*		CreateEntity( const uint16_t& index );
+
+	// Locate a client at a spawnpoint
+	void			SpawnClient( Entities::BasePlayer* player );
+
+	// Simple spawnpoint finder
+	template<typename entityType>
+	entityType*		FindSpawnPoint( Vector avoidPoint, bool isBot );
 
 	// Reads out keyvalues and populates the stuff
 	void			ParseKeyValues();

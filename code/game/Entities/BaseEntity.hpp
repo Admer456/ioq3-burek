@@ -65,8 +65,23 @@ namespace Entities
 		}
 
 	public:
+		std::string		className;
+		std::string		targetName;
+		std::string		target;
+
+		int				health{ 0 };
+
+		bool			takeDamage{ false };
+		int				clipMask{ 0 };	// brushes with this content value will be collided against
+										// when moving.  items and corpses do not collide against
+										// players, for instance
+
+		byte			waterLevel{ 0 };
+		byte			waterType{ 0 };
+		
 		float			nextThink{ 0 };
 
+		int				flags{ 0 };				// FL_* variables
 		int				spawnFlags{ 0 };		// 64 bits of
 		int				spawnFlagsExtra{ 0 };	// spawnflags cuz' why not
 	

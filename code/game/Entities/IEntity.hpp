@@ -58,9 +58,14 @@ namespace Entities
 		}
 
 		// entityState and entityShared are something all ents have in common
-		virtual entityState_t* GetState() = 0;
+		virtual entityState_t*	GetState() = 0;
 		virtual entityShared_t* GetShared() = 0;
 		virtual sharedEntity_t* GetSharedEntity() = 0;
+
+		// Getters and setters
+ 		// origin
+		virtual const Vector&	GetOrigin() const = 0;
+		virtual void			SetOrigin( const Vector& newOrigin ) = 0;
 
 		// Component interface
 

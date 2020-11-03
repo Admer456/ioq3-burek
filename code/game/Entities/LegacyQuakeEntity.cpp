@@ -24,12 +24,10 @@ KeyValueElement( #variable_map, offsetof(LegacyQuakeEntity, variable_code), &KVH
 // It ain't the prettiest right now, but it'll work until I get rid of gentity_t
 KeyValueElement LegacyQuakeEntity::keyValues[] =
 {	//| KV def type		| KV name	| KV code name		| Handler function	|
-	DefineKV(			classname,						CString )
 	DefineKV(			model,							CString )
 	DefineKV(			model2,							CString )
 	DefineKV(			speed,							Float )
 	DefineKV(			target,							CString )
-	DefineKV(			targetname,						CString )
 	DefineKV(			message,						CString )
 	DefineKV(			team,							CString )
 	DefineKV(			wait,							Float )
@@ -48,16 +46,12 @@ KeyValueElement LegacyQuakeEntity::keyValues[] =
 
 LegacyQuakeEntity::LegacyQuakeEntity()
 {
-	inuse					= true;
-	classname				= nullptr;
-
 	flags					= 0;
 	model					= nullptr;
 	model2					= nullptr;
 	
 	message					= nullptr;
 	target					= nullptr;
-	targetname				= nullptr;
 	team					= nullptr;
 	targetShaderName		= nullptr;
 	targetShaderNewName		= nullptr;
@@ -73,8 +67,6 @@ LegacyQuakeEntity::LegacyQuakeEntity()
 	teamchain				= nullptr;
 	teammaster				= nullptr;
 
-	watertype				= 0;
-	waterlevel				= 0;
 	noise_index				= -1;
 
 	wait					= 0.0f;

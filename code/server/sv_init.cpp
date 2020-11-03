@@ -221,6 +221,9 @@ static void SV_CreateBaseline( void ) {
 
 	for ( entnum = 1; entnum < sv.num_entities ; entnum++ ) {
 		svent = SV_GentityNum(entnum);
+		if ( nullptr == svent )
+			continue;
+
 		if (!svent->r.linked) {
 			continue;
 		}
