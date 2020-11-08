@@ -76,6 +76,10 @@ namespace Entities
 										// when moving.  items and corpses do not collide against
 										// players, for instance
 
+		int				eventTime{ 0 };	// events will be cleared EVENT_VALID_MSEC after set
+		bool			freeAfterEvent{ false };
+		bool			unlinkAfterEvent{ false };
+
 		byte			waterLevel{ 0 };
 		byte			waterType{ 0 };
 		
