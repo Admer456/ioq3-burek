@@ -189,6 +189,7 @@
     <ClInclude Include="..\..\code\game\Entities\BasePlayer.hpp" />
     <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerStart.hpp" />
     <ClInclude Include="..\..\code\game\Entities\KeyValueElement.hpp" />
     <ClInclude Include="..\..\code\game\Entities\LegacyQuakeEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Worldspawn.hpp" />
@@ -223,6 +224,7 @@
     <ClCompile Include="..\..\code\game\Entities\g_target.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_team.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_trigger.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerStart.cpp" />
     <ClCompile Include="..\..\code\game\Entities\KeyValueElement.cpp" />
     <ClCompile Include="..\..\code\game\Entities\LegacyQuakeEntity.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Worldspawn.cpp" />

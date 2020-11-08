@@ -28,6 +28,9 @@
     <Filter Include="Sources\Components">
       <UniqueIdentifier>{dc86e3d6-6da8-4424-8532-487393db7dba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Entities\Info">
+      <UniqueIdentifier>{a4cb22aa-c13c-4fe3-9260-a3ffdb60ccfc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -125,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\BasePlayer.hpp">
       <Filter>Sources\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerStart.hpp">
+      <Filter>Sources\Entities\Info</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\BasePlayer.cpp">
       <Filter>Sources\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerStart.cpp">
+      <Filter>Sources\Entities\Info</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
