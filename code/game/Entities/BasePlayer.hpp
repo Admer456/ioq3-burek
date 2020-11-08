@@ -16,6 +16,14 @@ namespace Entities
 		const Vector&	GetClientViewAngle() const;
 		void			SetClientViewAngle( const Vector& newAngle );
 
+		// Aka spawn a dead body
+		void			CopyToBodyQue();
+
+		void			AddEvent( int event, int eventParameter );
+
+		// Forcibly fire a weapon
+		void			FireWeapon();
+
 	protected:
 		gclient_s*		client{ nullptr };
 	};

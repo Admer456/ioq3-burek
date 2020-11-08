@@ -292,6 +292,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 		client->ps.persistant[i] = persistant[i];
 	}
 	client->ps.eventSequence = eventSequence;
+
 	// increment the spawncount so the client will detect the respawn
 	client->ps.persistant[PERS_SPAWN_COUNT]++;
 	client->ps.persistant[PERS_TEAM] = client->sess.sessionTeam;
@@ -406,7 +407,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 		// move players to intermission
 
 		// TODO: MoveClientToIntermission for IEntities
-		////MoveClientToIntermission( ent );
+		MoveClientToIntermission( player );
 	}
 	// run a client frame to drop exactly to the floor,
 	// initialize animations and other things
@@ -418,7 +419,8 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 
 	// run the presend to set anything else, follow spectators wait
 	// until all clients have been reconnected after map_restart
-	if ( player->GetClient()->sess.spectatorState != SPECTATOR_FOLLOW ) {
+	if ( player->GetClient()->sess.spectatorState != SPECTATOR_FOLLOW ) 
+	{
 		ClientEndFrame( player );
 	}
 
@@ -483,6 +485,7 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	{
 		return;
 	}
+
 	if ( msec > 200 ) 
 	{
 		msec = 200;
@@ -511,23 +514,24 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	// check for exiting intermission
 	//
 	// TODO: implement intermission think
-	//if ( level.intermissiontime ) 
-	//{
-	//	ClientIntermissionThink( client );
-	//	return;
-	//}
+	if ( level.intermissiontime ) 
+	{
+		ClientIntermissionThink( player );
+		return;
+	}
 
 	// spectators don't do much
 	// TODO: Implement SpectatorThink
-	//if ( client->sess.sessionTeam == TEAM_SPECTATOR ) 
-	//{
-	//	if ( client->sess.spectatorState == SPECTATOR_SCOREBOARD ) 
-	//{
-	//		return;
-	//	}
-	//	SpectatorThink( player, ucmd );
-	//	return;
-	//}
+	if ( client->sess.sessionTeam == TEAM_SPECTATOR ) 
+	{
+		if ( client->sess.spectatorState == SPECTATOR_SCOREBOARD ) 
+	{
+			return;
+		}
+
+		SpectatorThink( player );
+		return;
+	}
 
 	// check for inactivity timer, but never drop the local client of a non-dedicated server
 	if ( !ClientInactivityTimer( player ) ) 
@@ -710,22 +714,170 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 
 void GameWorld::ClientRespawn( Entities::BasePlayer* player )
 {
-
+	player->CopyToBodyQue();
+	SpawnClient( player );
 }
 
 void GameWorld::ClientTimerActions( Entities::BasePlayer* player, int msec )
 {
+	gclient_t* client;
 
+	client = player->GetClient();
+	client->timeResidual += msec;
+
+	while ( client->timeResidual >= 1000 ) {
+		client->timeResidual -= 1000;
+
+		// regenerate
+		if ( client->ps.powerups[PW_REGEN] ) {
+			if ( player->health < client->ps.stats[STAT_MAX_HEALTH] ) {
+				player->health += 15;
+				if ( player->health > client->ps.stats[STAT_MAX_HEALTH] * 1.1 ) {
+					player->health = client->ps.stats[STAT_MAX_HEALTH] * 1.1;
+				}
+				player->AddEvent( EV_POWERUP_REGEN, 0 );
+			}
+			else if ( player->health < client->ps.stats[STAT_MAX_HEALTH] * 2 ) {
+				player->health += 5;
+				if ( player->health > client->ps.stats[STAT_MAX_HEALTH] * 2 ) {
+					player->health = client->ps.stats[STAT_MAX_HEALTH] * 2;
+				}
+				player->AddEvent( EV_POWERUP_REGEN, 0 );
+			}
+		}
+		else {
+			// count down health when over max
+			if ( player->health > client->ps.stats[STAT_MAX_HEALTH] ) {
+				player->health--;
+			}
+		}
+
+		// count down armor when over max
+		if ( client->ps.stats[STAT_ARMOR] > client->ps.stats[STAT_MAX_HEALTH] ) {
+			client->ps.stats[STAT_ARMOR]--;
+		}
+	}
 }
 
 void GameWorld::ClientImpacts( Entities::BasePlayer* player, pmove_t* pm )
 {
+	int		i, j;
+	trace_t	trace;
+	Entities::IEntity* other;
 
+	memset( &trace, 0, sizeof( trace ) );
+
+	for ( i = 0; i < pm->numtouch; i++ ) 
+	{
+		for ( j = 0; j < i; j++ ) 
+		{
+			if ( pm->touchents[j] == pm->touchents[i] ) 
+			{
+				break;
+			}
+		}
+
+		if ( j != i ) 
+		{
+			continue;	// duplicated
+		}
+		
+		other = gEntities[pm->touchents[i]];
+
+		if ( (player->GetShared()->svFlags & SVF_BOT) )
+		{
+			player->Touch( other, &trace );
+		}
+
+		other->Touch( player, &trace );
+	}
 }
 
 void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence )
 {
+	int		i, j;
+	int		event;
+	gclient_t* client;
+	int		damage;
+	vec3_t	origin, angles;
+	//	qboolean	fired;
+	gitem_t* item;
+	gentity_t* drop;
 
+	client = player->GetClient();
+
+	if ( oldEventSequence < client->ps.eventSequence - MAX_PS_EVENTS ) {
+		oldEventSequence = client->ps.eventSequence - MAX_PS_EVENTS;
+	}
+	for ( i = oldEventSequence; i < client->ps.eventSequence; i++ ) {
+		event = client->ps.events[i & (MAX_PS_EVENTS - 1)];
+
+		switch ( event ) {
+		case EV_FALL_MEDIUM:
+		case EV_FALL_FAR:
+			if ( player->GetState()->eType != ET_PLAYER ) {
+				break;		// not in the player model
+			}
+			if ( g_dmflags.integer & DF_NO_FALLING ) {
+				break;
+			}
+			if ( event == EV_FALL_FAR ) {
+				damage = 10;
+			}
+			else {
+				damage = 5;
+			}
+			//player->pain_debounce_time = level.time + 200;	// no normal pain sound
+			player->TakeDamage( nullptr, nullptr, 0, damage );
+			break;
+
+		case EV_FIRE_WEAPON:
+			player->FireWeapon();
+			break;
+
+			// TODO: Handle this event
+		case EV_USE_ITEM1:		// teleporter
+			// drop flags in CTF
+			item = NULL;
+			j = 0;
+
+			if ( player->GetClient()->ps.powerups[PW_REDFLAG] ) {
+				item = BG_FindItemForPowerup( PW_REDFLAG );
+				j = PW_REDFLAG;
+			}
+			else if ( player->GetClient()->ps.powerups[PW_BLUEFLAG] ) {
+				item = BG_FindItemForPowerup( PW_BLUEFLAG );
+				j = PW_BLUEFLAG;
+			}
+			else if ( player->GetClient()->ps.powerups[PW_NEUTRALFLAG] ) {
+				item = BG_FindItemForPowerup( PW_NEUTRALFLAG );
+				j = PW_NEUTRALFLAG;
+			}
+
+			if ( item ) {
+				//drop = Drop_Item( player, item, 0 );
+				// decide how many seconds it has left
+				drop->count = (player->GetClient()->ps.powerups[j] - level.time) / 1000;
+				if ( drop->count < 1 ) {
+					drop->count = 1;
+				}
+
+				player->GetClient()->ps.powerups[j] = 0;
+			}
+
+			SelectSpawnPoint( player->GetClient()->ps.origin, origin, angles, qfalse );
+			//TeleportPlayer( player, origin, angles );
+			break;
+
+		case EV_USE_ITEM2:		// medkit
+			player->health = player->GetClient()->ps.stats[STAT_MAX_HEALTH] + 25;
+
+			break;
+
+		default:
+			break;
+		}
+	}
 }
 
 bool GameWorld::ClientInactivityTimer( Entities::BasePlayer* player )
@@ -738,21 +890,93 @@ void GameWorld::SendPendingPredictableEvents( Entities::BasePlayer* player )
 
 }
 
+void GameWorld::MoveClientToIntermission( Entities::BasePlayer* player )
+{
+
+}
+
+void GameWorld::ClientIntermissionThink( Entities::BasePlayer* player )
+{
+
+}
+
+void GameWorld::SpectatorThink( Entities::BasePlayer* player )
+{
+
+}
+
 unsigned int GameWorld::CheckGauntletAttack( Entities::BasePlayer* player )
 {
 	return 0;
 }
 
-
-
 void GameWorld::ClientEndFrame( const uint16_t& clientNum )
 {
-
+	Entities::BasePlayer* player = static_cast<Entities::BasePlayer*>(gEntities[clientNum]);
+	if ( player )
+	{
+		return ClientEndFrame( player );
+	}
 }
 
 void GameWorld::ClientEndFrame( Entities::BasePlayer* player )
 {
-	return ClientEndFrame( player->GetEntityIndex() );
+	int	i;
+
+	// TODO: Implement spectator thinking first, then SpectatorClientEndFrame
+	//if ( player->GetClient()->sess.sessionTeam == TEAM_SPECTATOR ) 
+	//{
+	//	SpectatorClientEndFrame( ent );
+	//	return;
+	//}
+
+	// turn off any expired powerups
+	for ( i = 0; i < MAX_POWERUPS; i++ ) {
+		if ( player->GetClient()->ps.powerups[i] < level.time )
+		{
+			player->GetClient()->ps.powerups[i] = 0;
+		}
+	}
+
+	//
+	// If the end of unit layout is displayed, don't give
+	// the player any normal movement attributes
+	//
+	if ( level.intermissiontime ) {
+		return;
+	}
+
+	// burn from lava, etc
+	//P_WorldEffects( player );
+
+	// apply all the damage taken this frame
+	//P_DamageFeedback( ent );
+
+	// add the EF_CONNECTION flag if we haven't gotten commands recently
+	if ( level.time - player->GetClient()->lastCmdTime > 1000 )
+	{
+		player->GetClient()->ps.eFlags |= EF_CONNECTION;
+	}
+	else {
+		player->GetClient()->ps.eFlags &= ~EF_CONNECTION;
+	}
+
+	player->GetClient()->ps.stats[STAT_HEALTH] = player->health;	// FIXME: get rid of ent->health...
+
+	//G_SetClientSound( ent );
+
+	// set the latest infor
+	if ( g_smoothClients.integer ) 
+	{
+		BG_PlayerStateToEntityStateExtraPolate( &player->GetClient()->ps, player->GetState(), player->GetClient()->ps.commandTime, qtrue );
+	}
+
+	else 
+	{
+		BG_PlayerStateToEntityState( &player->GetClient()->ps, player->GetState(), qtrue );
+	}
+
+	SendPendingPredictableEvents( player );
 }
 
 template<typename entityType>

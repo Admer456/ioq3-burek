@@ -13,7 +13,7 @@ namespace Entities
 
 	typedef void (IEntity::* thinkPointer     )( void );
 	typedef void (IEntity::* usePointer       )( IEntity* activator, IEntity* caller, float value );
-	typedef void (IEntity::* touchPointer     )( IEntity* other, void* trace );
+	typedef void (IEntity::* touchPointer     )( IEntity* other, trace_t* trace );
 	typedef void (IEntity::* blockedPointer   )( IEntity* other );
 	typedef void (IEntity::* takeDamagePointer)( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage );
 	typedef void (IEntity::* diePointer       )( IEntity* killer );
@@ -27,7 +27,7 @@ namespace Entities
 
 		virtual void				Think() = 0;
 		virtual void				Use( IEntity* activator, IEntity* caller, float value ) = 0;
-		virtual void				Touch( IEntity* other ) = 0;
+		virtual void				Touch( IEntity* other, trace_t* trace ) = 0;
 		virtual void				Blocked( IEntity* other ) = 0;
 		virtual void				TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) = 0;
 		virtual void				Die( IEntity* killer ) = 0;
