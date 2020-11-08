@@ -1,6 +1,6 @@
+#include "Maths/Vector.hpp"
 #include "g_local.hpp"
 #include "Entities/BaseEntity.hpp"
-#include "Maths/Vector.hpp"
 #include "GameWorld.hpp"
 #include "../qcommon/IEngineExports.h"
 #include "Game/IGameImports.h"
@@ -343,9 +343,9 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 
 	// the respawned flag will be cleared after the attack and jump keys come up
 	client->ps.pm_flags |= PMF_RESPAWNED;
-
-	trap_GetUsercmd( client - level.clients, &player->GetClient()->pers.cmd );
+	gameImports->GetUsercmd( client - level.clients, &player->GetClient()->pers.cmd );
 	player->SetClientViewAngle( spawn_angles );
+
 	// don't allow full run speed for a bit
 	client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
 	client->ps.pm_time = 100;
@@ -362,14 +362,16 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	{
 		if ( player->GetClient()->sess.sessionTeam != TEAM_SPECTATOR ) 
 		{
-			// TODO: Implement KillBox for IEntities
-			////G_KillBox( ent );
+			// Telefrag everything around self
+			player->KillBox();
 
 			// force the base weapon up
 			client->ps.weapon = WP_MACHINEGUN;
 			client->ps.weaponstate = WEAPON_READY;
+			
 			// fire the targets of the spawn point
-			//G_UseTargets( spawnPoint, ent );
+			spawnPoint->UseTargets( player );
+
 			// select the highest weapon number available, after any spawn given items have fired
 			client->ps.weapon = 1;
 
@@ -400,17 +402,271 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	player->GetClient()->pers.cmd.serverTime = level.time;
 
 	// TODO: ClientThink in GameWorld for IEntities
-	////ClientThink( ent - g_entities );
+	ClientThink( player->GetEntityIndex() );
 
 	// run the presend to set anything else, follow spectators wait
 	// until all clients have been reconnected after map_restart
 	if ( player->GetClient()->sess.spectatorState != SPECTATOR_FOLLOW ) {
-		// TODO: ClientEndFrame for IEntities
-		////ClientEndFrame( ent );
+		ClientEndFrame( player );
 	}
 
 	// clear entity state values
-	BG_PlayerStateToEntityState( &client->ps, player->GetState(), qtrue );
+	return BG_PlayerStateToEntityState( &client->ps, player->GetState(), qtrue );
+}
+
+void GameWorld::ClientThink( const uint16_t& clientNum )
+{
+	Entities::BasePlayer* player = static_cast<Entities::BasePlayer*>( gEntities[clientNum] );
+	if ( player )
+	{
+		return ClientThink( player );
+	}
+}
+
+void GameWorld::ClientThink( Entities::BasePlayer* player )
+{
+	gameImports->GetUsercmd( player->GetEntityIndex(), &player->GetClient()->pers.cmd );
+	player->GetClient()->lastCmdTime = level.time;
+
+	if ( !g_synchronousClients.integer )
+	{
+		ClientThinkReal( player );
+	}
+}
+
+void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
+{
+	gclient_t* client;
+	pmove_t		pm;
+	int			oldEventSequence;
+	int			msec;
+	usercmd_t* ucmd;
+
+	client = player->GetClient();
+
+	// don't think if the client is not yet connected (and thus not yet spawned in)
+	if ( client->pers.connected != CON_CONNECTED ) {
+		return;
+	}
+
+	// mark the time, so the connection sprite can be removed
+	ucmd = &client->pers.cmd;
+
+	// sanity check the command time to prevent speedup cheating
+	if ( ucmd->serverTime > level.time + 200 ) {
+		ucmd->serverTime = level.time + 200;
+		//		G_Printf("serverTime <<<<<\n" );
+	}
+	if ( ucmd->serverTime < level.time - 1000 ) {
+		ucmd->serverTime = level.time - 1000;
+		//		G_Printf("serverTime >>>>>\n" );
+	}
+
+	msec = ucmd->serverTime - client->ps.commandTime;
+	// following others may result in bad times, but we still want
+	// to check for follow toggles
+	if ( msec < 1 && client->sess.spectatorState != SPECTATOR_FOLLOW ) {
+		return;
+	}
+	if ( msec > 200 ) {
+		msec = 200;
+	}
+
+	if ( pmove_msec.integer < 8 ) {
+		trap_Cvar_Set( "pmove_msec", "8" );
+		trap_Cvar_Update( &pmove_msec );
+	}
+
+	else if ( pmove_msec.integer > 33 ) {
+		trap_Cvar_Set( "pmove_msec", "33" );
+		trap_Cvar_Update( &pmove_msec );
+	}
+
+	if ( pmove_fixed.integer || client->pers.pmoveFixed ) {
+		ucmd->serverTime = ((ucmd->serverTime + pmove_msec.integer - 1) / pmove_msec.integer) * pmove_msec.integer;
+		//if (ucmd->serverTime - client->ps.commandTime <= 0)
+		//	return;
+	}
+
+	//
+	// check for exiting intermission
+	//
+	// TODO: implement intermission think
+	//if ( level.intermissiontime ) {
+	//	ClientIntermissionThink( client );
+	//	return;
+	//}
+
+	// spectators don't do much
+	// TODO: Implement SpectatorThink
+	//if ( client->sess.sessionTeam == TEAM_SPECTATOR ) {
+	//	if ( client->sess.spectatorState == SPECTATOR_SCOREBOARD ) {
+	//		return;
+	//	}
+	//	SpectatorThink( player, ucmd );
+	//	return;
+	//}
+
+	// check for inactivity timer, but never drop the local client of a non-dedicated server
+	if ( !ClientInactivityTimer( player ) ) {
+		return;
+	}
+
+	// clear the rewards if time
+	if ( level.time > client->rewardTime ) {
+		client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE | EF_AWARD_EXCELLENT | EF_AWARD_GAUNTLET | EF_AWARD_ASSIST | EF_AWARD_DEFEND | EF_AWARD_CAP);
+	}
+
+	if ( client->noclip ) {
+		client->ps.pm_type = PM_NOCLIP;
+	}
+	else if ( client->ps.stats[STAT_HEALTH] <= 0 ) {
+		client->ps.pm_type = PM_DEAD;
+	}
+	else {
+		client->ps.pm_type = PM_NORMAL;
+	}
+
+	client->ps.gravity = g_gravity.value;
+
+	// set speed
+	client->ps.speed = g_speed.value;
+
+	if ( client->ps.powerups[PW_HASTE] ) {
+		client->ps.speed *= 1.3;
+	}
+
+	// Let go of the hook if we aren't firing
+	if ( client->ps.weapon == WP_GRAPPLING_HOOK &&
+		 client->hook && !(ucmd->buttons & BUTTON_ATTACK) ) {
+		Weapon_HookFree( client->hook );
+	}
+
+	// set up for pmove
+	oldEventSequence = client->ps.eventSequence;
+
+	memset( &pm, 0, sizeof( pm ) );
+
+	// check for the hit-scan gauntlet, don't let the action
+	// go through as an attack unless it actually hits something
+	if ( client->ps.weapon == WP_GAUNTLET && !(ucmd->buttons & BUTTON_TALK) &&
+		 (ucmd->buttons & BUTTON_ATTACK) && client->ps.weaponTime <= 0 ) {
+		pm.gauntletHit = CheckGauntletAttack( player );
+	}
+
+	if ( player->flags & FL_FORCE_GESTURE ) {
+		player->flags &= ~FL_FORCE_GESTURE;
+		player->GetClient()->pers.cmd.buttons |= BUTTON_GESTURE;
+	}
+
+	pm.ps = &client->ps;
+	pm.cmd = *ucmd;
+	if ( pm.ps->pm_type == PM_DEAD ) {
+		pm.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;
+	}
+	else if ( player->GetShared()->svFlags & SVF_BOT ) {
+		pm.tracemask = MASK_PLAYERSOLID | CONTENTS_BOTCLIP;
+	}
+	else {
+		pm.tracemask = MASK_PLAYERSOLID;
+	}
+	pm.trace = trap_Trace;
+	pm.pointcontents = trap_PointContents;
+	pm.debugLevel = g_debugMove.integer;
+	pm.noFootsteps = (qboolean)((g_dmflags.integer & DF_NO_FOOTSTEPS) > 0);
+
+	pm.pmove_fixed = pmove_fixed.integer | client->pers.pmoveFixed;
+	pm.pmove_msec = pmove_msec.integer;
+
+	VectorCopy( client->ps.origin, client->oldOrigin );
+
+	Pmove( &pm );
+
+	// save results of pmove
+	if ( player->GetClient()->ps.eventSequence != oldEventSequence ) {
+		player->eventTime = level.time;
+	}
+	if ( g_smoothClients.integer ) {
+		BG_PlayerStateToEntityStateExtraPolate( &player->GetClient()->ps, player->GetState(), player->GetClient()->ps.commandTime, qtrue );
+	}
+	else {
+		BG_PlayerStateToEntityState( &player->GetClient()->ps, player->GetState(), qtrue );
+	}
+
+	SendPendingPredictableEvents( player );
+
+	if ( !(player->GetClient()->ps.eFlags & EF_FIRING) ) {
+		client->fireHeld = qfalse;		// for grapple
+	}
+
+	// use the snapped origin for linking so it matches client predicted versions
+	VectorCopy( player->GetState()->pos.trBase, player->GetShared()->currentOrigin );
+
+	VectorCopy( pm.mins, player->GetShared()->mins );
+	VectorCopy( pm.maxs, player->GetShared()->maxs );
+
+	player->waterLevel = pm.waterlevel;
+	player->waterType = pm.watertype;
+
+	// execute client events
+	ClientEvents( player, oldEventSequence );
+
+	// link entity now, after any personal teleporters have been used
+	gameImports->LinkEntity( player );
+	if ( !player->GetClient()->noclip ) {
+		TouchTriggers( player );
+	}
+
+	// NOTE: now copy the exact origin over otherwise clients can be snapped into solid
+	VectorCopy( player->GetClient()->ps.origin, player->GetShared()->currentOrigin );
+
+	//test for solid areas in the AAS file
+	BotTestAAS( player->GetShared()->currentOrigin );
+
+	// touch other objects
+	ClientImpacts( player, &pm );
+
+	// save results of triggers and client events
+	if ( player->GetClient()->ps.eventSequence != oldEventSequence ) {
+		player->eventTime = level.time;
+	}
+
+	// swap and latch button actions
+	client->oldbuttons = client->buttons;
+	client->buttons = ucmd->buttons;
+	client->latched_buttons |= client->buttons & ~client->oldbuttons;
+
+	// check for respawning
+	if ( client->ps.stats[STAT_HEALTH] <= 0 ) {
+		// wait for the attack button to be pressed
+		if ( level.time > client->respawnTime ) {
+			// forcerespawn is to prevent users from waiting out powerups
+			if ( g_forcerespawn.integer > 0 &&
+				 (level.time - client->respawnTime) > g_forcerespawn.integer * 1000 ) {
+				ClientRespawn( player );
+				return;
+			}
+
+			// pressing attack or use is the normal respawn method
+			if ( ucmd->buttons & (BUTTON_ATTACK | BUTTON_USE_HOLDABLE) ) {
+				ClientRespawn( player );
+			}
+		}
+		return;
+	}
+
+	// perform once-a-second actions
+	ClientTimerActions( player, msec );
+}
+
+void GameWorld::ClientEndFrame( const uint16_t& clientNum )
+{
+
+}
+
+void GameWorld::ClientEndFrame( Entities::BasePlayer* player )
+{
+	return ClientEndFrame( player->GetEntityIndex() );
 }
 
 template<typename entityType>
@@ -427,6 +683,7 @@ entityType* GameWorld::FindSpawnPoint( Vector avoidPoint, bool isBot )
 
 	return nullptr;
 }
+
 
 void GameWorld::ParseKeyValues()
 {

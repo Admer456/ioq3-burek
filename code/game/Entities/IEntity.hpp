@@ -67,6 +67,19 @@ namespace Entities
 		virtual const Vector&	GetOrigin() const = 0;
 		virtual void			SetOrigin( const Vector& newOrigin ) = 0;
 
+		// Utilities
+		// Triggers all entities that match the "target" field
+		virtual void			UseTargets( IEntity* activator ) = 0;
+		
+		// Triggers all entities whose targetname matches the parameter
+		virtual void			UseTargets( IEntity* activator, const char* targetName ) = 0;
+		
+		// Kills everything around this entity's bbox
+		virtual void			KillBox() const = 0;
+
+		// Kills everything in size.xyz radius around this entity
+		virtual void			KillBox( const Vector& size ) const = 0;
+
 		// Component interface
 
 		// Use this if you're 100% sure you know a comp exists

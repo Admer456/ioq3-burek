@@ -39,15 +39,25 @@ namespace Entities
 	class BasePlayer;
 }
 
+// ============================
+// GameWorld
+// Manages whatever is concerned by the
+// game's world - player management,
+// entity spawning and other facilities
+// ============================
 class GameWorld final
 {
 	using KVMap = std::unordered_map<std::string, std::string>;
+public:
+	constexpr static size_t MaxEntities = MAX_GENTITIES;
 
 public:
 	~GameWorld();
 
 	// Deletes entities and stuff
 	void			Shutdown();
+
+	// ------ Entity spawning facilities ------
 
 	// Spawns worldspawn, goes on to do some more stuff
 	void			SpawnEntities();
@@ -66,12 +76,41 @@ public:
 	template<typename entityType>
 	entityType*		CreateEntity( const uint16_t& index );
 
+	// ------ Entity interaction ------
+	
+	// Sweep all entities this entity is touching
+	void			TouchTriggers( Entities::IEntity* ent );
+
+	// ------ Client & players methods ------
+
 	// Locate a client at a spawnpoint
 	void			SpawnClient( Entities::BasePlayer* player );
 
 	// Simple spawnpoint finder
 	template<typename entityType>
 	entityType*		FindSpawnPoint( Vector avoidPoint, bool isBot );
+
+	void			ClientThink( const uint16_t& clientNum );
+	void			ClientThink( Entities::BasePlayer* player );
+
+private: // Private client methods, some of which will get moved to a gamemode interface eventually
+	void			ClientThinkReal( Entities::BasePlayer* player );
+	void			ClientRespawn( Entities::BasePlayer* player );
+	void			ClientTimerActions( Entities::BasePlayer* player, int msec );
+	void			ClientImpacts( Entities::BasePlayer* player, pmove_t* pm );
+	void			ClientEvents( Entities::BasePlayer* player, int oldEventSequence );
+	bool			ClientInactivityTimer( Entities::BasePlayer* player );
+
+	void			SendPendingPredictableEvents( Entities::BasePlayer* player );
+
+	// TODO: Pls move this elsewhere, this is only for Q3 compatibility
+	unsigned int	CheckGauntletAttack( Entities::BasePlayer* player );
+
+public:
+	void			ClientEndFrame( const uint16_t& clientNum );
+	void			ClientEndFrame( Entities::BasePlayer* player );
+
+	// ------ Other ------
 
 	// Reads out keyvalues and populates the stuff
 	void			ParseKeyValues();
@@ -83,9 +122,6 @@ public:
 	// All the entity keyvalue pairs in the map
 	// Each KV library represents one entity
 	std::vector<KeyValueLibrary> keyValueLibraries;
-
-public:
-	constexpr static size_t MaxEntities = MAX_GENTITIES;
 };
 
 extern GameWorld* gameWorld;
