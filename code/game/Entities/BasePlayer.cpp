@@ -94,3 +94,96 @@ void BasePlayer::AddEvent( int event, int eventParameter )
 	
 	eventTime = level.time;
 }
+
+void BasePlayer::StopFollowing()
+{
+	client->ps.persistant[PERS_TEAM] = TEAM_SPECTATOR;
+	client->sess.sessionTeam = TEAM_SPECTATOR;
+	client->sess.spectatorState = SPECTATOR_FREE;
+	client->ps.pm_flags &= ~PMF_FOLLOW;
+	GetShared()->svFlags &= ~SVF_BOT;
+	client->ps.clientNum = GetEntityIndex();
+
+	SetClientViewAngle( client->ps.viewangles );
+
+	// don't use dead view angles
+	if ( client->ps.stats[STAT_HEALTH] <= 0 ) 
+	{
+		client->ps.stats[STAT_HEALTH] = 1;
+	}
+}
+
+void BasePlayer::FollowCycle( int dir )
+{
+	int		clientnum;
+	int		original;
+
+	// if they are playing a tournement game, count as a loss
+	if ( (g_gametype.integer == GT_TOURNAMENT)
+		 && client->sess.sessionTeam == TEAM_FREE ) 
+	{
+		client->sess.losses++;
+	}
+
+	// first set them to spectator
+	if ( client->sess.spectatorState == SPECTATOR_NOT ) 
+	{
+		SetTeam( "spectator" );
+	}
+
+	if ( dir != 1 && dir != -1 ) {
+		G_Error( "Cmd_FollowCycle_f: bad dir %i", dir );
+	}
+
+	// if dedicated follow client, just switch between the two auto clients
+	if ( client->sess.spectatorClient < 0 ) 
+	{
+		if ( client->sess.spectatorClient == -1 ) 
+		{
+			client->sess.spectatorClient = -2;
+		}
+
+		else if ( client->sess.spectatorClient == -2 ) 
+		{
+			client->sess.spectatorClient = -1;
+		}
+
+		return;
+	}
+
+	clientnum = client->sess.spectatorClient;
+	original = clientnum;
+
+	do 
+	{
+		clientnum += dir;
+		if ( clientnum >= level.maxclients ) 
+		{
+			clientnum = 0;
+		}
+
+		if ( clientnum < 0 ) 
+		{
+			clientnum = level.maxclients - 1;
+		}
+
+		// can only follow connected clients
+		if ( level.clients[clientnum].pers.connected != CON_CONNECTED ) 
+		{
+			continue;
+		}
+
+		// can't follow another spectator
+		if ( level.clients[clientnum].sess.sessionTeam == TEAM_SPECTATOR ) 
+		{
+			continue;
+		}
+
+		// this is good, we can use it
+		client->sess.spectatorClient = clientnum;
+		client->sess.spectatorState = SPECTATOR_FOLLOW;
+		return;
+	} while ( clientnum != original );
+
+	// leave it where it was
+}

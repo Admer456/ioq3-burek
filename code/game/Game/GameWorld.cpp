@@ -882,27 +882,179 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 
 bool GameWorld::ClientInactivityTimer( Entities::BasePlayer* player )
 {
-	return false;
+	gclient_t* client = player->GetClient();
+
+	if ( !g_inactivity.integer ) 
+	{
+		// give everyone some time, so if the operator sets g_inactivity during
+		// gameplay, everyone isn't kicked
+		client->inactivityTime = level.time + 60 * 1000;
+		client->inactivityWarning = false;
+	}
+	
+	else if ( client->pers.cmd.forwardmove ||
+			  client->pers.cmd.rightmove ||
+			  client->pers.cmd.upmove ||
+			  (client->pers.cmd.buttons & BUTTON_ATTACK) ) 
+	{
+		client->inactivityTime = level.time + g_inactivity.integer * 1000;
+		client->inactivityWarning = false;
+	}
+	
+	else if ( !client->pers.localClient ) 
+	{
+		if ( level.time > client->inactivityTime ) 
+		{
+			trap_DropClient( client - level.clients, "Dropped due to inactivity" );
+			return false;
+		}
+		
+		if ( level.time > client->inactivityTime - 10000 && !client->inactivityWarning ) 
+		{
+			client->inactivityWarning = true;
+			trap_SendServerCommand( client - level.clients, "cp \"Ten seconds until inactivity drop!\n\"" );
+		}
+	}
+
+	return true;
 }
 
 void GameWorld::SendPendingPredictableEvents( Entities::BasePlayer* player )
 {
+	playerState_t* ps = &player->GetClient()->ps;
+	Entities::IEntity* tempEnt = nullptr;
+	int event, seq;
+	int extEvent, number;
 
+	// if there are still events pending
+	if ( ps->entityEventSequence < ps->eventSequence ) {
+		// create a temporary entity for this event which is sent to everyone
+		// except the client who generated the event
+		seq = ps->entityEventSequence & (MAX_PS_EVENTS - 1);
+		event = ps->events[seq] | ((ps->entityEventSequence & 3) << 8);
+		// set external event to zero before calling BG_PlayerStateToEntityState
+		extEvent = ps->externalEvent;
+		ps->externalEvent = 0;
+		//// create temporary entity for event
+		//tempEnt = G_TempEntity( ps->origin, event );
+		//number = tempEnt->GetState()->number;
+		//BG_PlayerStateToEntityState( ps, tempEnt->GetState(), qtrue );
+		//tempEnt->GetState()->number = number;
+		//tempEnt->GetState()->eType = ET_EVENTS + event;
+		//tempEnt->GetState()->eFlags |= EF_PLAYER_EVENT;
+		//tempEnt->GetState()->otherEntityNum = ps->clientNum;
+		//// send to everyone except the client who generated the event
+		//tempEnt->GetShared()->svFlags |= SVF_NOTSINGLECLIENT;
+		//tempEnt->GetShared()->singleClient = ps->clientNum;
+		//// set back external event
+		//ps->externalEvent = extEvent;
+	}
 }
 
 void GameWorld::MoveClientToIntermission( Entities::BasePlayer* player )
 {
+	// take out of follow mode if needed
+	if ( player->GetClient()->sess.spectatorState == SPECTATOR_FOLLOW ) {
+		player->StopFollowing();
+	}
 
+	FindIntermissionPoint();
+	// move to the spot
+	VectorCopy( level.intermission_origin, player->GetState()->origin );
+	VectorCopy( level.intermission_origin, player->GetClient()->ps.origin );
+	VectorCopy( level.intermission_angle, player->GetClient()->ps.viewangles );
+	player->GetClient()->ps.pm_type = PM_INTERMISSION;
+
+	// clean up powerup info
+	memset( player->GetClient()->ps.powerups, 0, sizeof( player->GetClient()->ps.powerups ) );
+
+	player->GetClient()->ps.eFlags = 0;
+	player->GetState()->eFlags = 0;
+	player->GetState()->eType = ET_GENERAL;
+	player->GetState()->modelindex = 0;
+	player->GetState()->loopSound = 0;
+	player->GetState()->event = 0;
+	player->GetShared()->contents = 0;
 }
 
 void GameWorld::ClientIntermissionThink( Entities::BasePlayer* player )
 {
+	gclient_t* client = player->GetClient();
 
+	client->ps.eFlags &= ~EF_TALK;
+	client->ps.eFlags &= ~EF_FIRING;
+
+	// the level will exit when everyone wants to or after timeouts
+
+	// swap and latch button actions
+	client->oldbuttons = client->buttons;
+	client->buttons = client->pers.cmd.buttons;
+
+	if ( client->buttons & (BUTTON_ATTACK | BUTTON_USE_HOLDABLE) & (client->oldbuttons ^ client->buttons) ) 
+	{
+		// this used to be an ^1 but once a player says ready, it should stick
+		client->readyToExit = qtrue;
+	}
 }
 
 void GameWorld::SpectatorThink( Entities::BasePlayer* player )
 {
+	pmove_t	pm;
+	gclient_t* client;
+	usercmd_t* ucmd;
 
+	client = player->GetClient();
+	ucmd = &client->pers.cmd;
+
+	if ( client->sess.spectatorState != SPECTATOR_FOLLOW || !(client->ps.pm_flags & PMF_FOLLOW) ) 
+	{
+		if ( client->sess.spectatorState == SPECTATOR_FREE ) 
+		{
+			if ( client->noclip ) 
+			{
+				client->ps.pm_type = PM_NOCLIP;
+			}
+
+			else 
+			{
+				client->ps.pm_type = PM_SPECTATOR;
+			}
+		}
+
+		else 
+		{
+			client->ps.pm_type = PM_FREEZE;
+		}
+
+		client->ps.speed = 400;	// faster than normal
+
+		// set up for pmove
+		memset( &pm, 0, sizeof( pm ) );
+		pm.ps = &client->ps;
+		pm.cmd = *ucmd;
+		pm.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;	// spectators can fly through bodies
+		pm.trace = trap_Trace;
+		pm.pointcontents = trap_PointContents;
+
+		// perform a pmove
+		Pmove( &pm );
+		// save results of pmove
+		VectorCopy( client->ps.origin, player->GetState()->origin );
+
+		TouchTriggers( player );
+		gameImports->UnlinkEntity( player );
+	}
+
+	client->oldbuttons = client->buttons;
+	client->buttons = ucmd->buttons;
+
+	// attack button cycles through spectators
+	if ( (client->buttons & BUTTON_ATTACK) && !(client->oldbuttons & BUTTON_ATTACK) ) 
+	{
+		player->FollowCycle( 1 );
+
+		Cmd_FollowCycle_f( ent, 1 );
+	}
 }
 
 unsigned int GameWorld::CheckGauntletAttack( Entities::BasePlayer* player )
@@ -924,11 +1076,11 @@ void GameWorld::ClientEndFrame( Entities::BasePlayer* player )
 	int	i;
 
 	// TODO: Implement spectator thinking first, then SpectatorClientEndFrame
-	//if ( player->GetClient()->sess.sessionTeam == TEAM_SPECTATOR ) 
-	//{
-	//	SpectatorClientEndFrame( ent );
-	//	return;
-	//}
+	if ( player->GetClient()->sess.sessionTeam == TEAM_SPECTATOR ) 
+	{
+		//SpectatorClientEndFrame( player );
+		return;
+	}
 
 	// turn off any expired powerups
 	for ( i = 0; i < MAX_POWERUPS; i++ ) {
