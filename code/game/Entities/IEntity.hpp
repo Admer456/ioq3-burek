@@ -75,10 +75,10 @@ namespace Entities
 		virtual void			UseTargets( IEntity* activator, const char* targetName ) = 0;
 		
 		// Kills everything around this entity's bbox
-		virtual void			KillBox() const = 0;
+		virtual void			KillBox( bool onlyPlayers = false ) = 0;
 
 		// Kills everything in size.xyz radius around this entity
-		virtual void			KillBox( const Vector& size ) const = 0;
+		virtual void			KillBox( const Vector& size, bool onlyPlayers = false ) = 0;
 
 		// Component interface
 

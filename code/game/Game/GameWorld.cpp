@@ -236,6 +236,16 @@ entityType* GameWorld::CreateEntity( const uint16_t& index )
 	return static_cast<entityType*>( gEntities[index] );
 }
 
+void GameWorld::TouchTriggers( Entities::IEntity* ent )
+{
+
+}
+
+Entities::IEntity* GameWorld::FindByName( const char* entityName, Entities::IEntity* lastEntity )
+{
+
+}
+
 void GameWorld::SpawnClient( Entities::BasePlayer* player )
 {
 	int		index;
@@ -581,13 +591,15 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 
 	memset( &pm, 0, sizeof( pm ) );
 
-	// check for the hit-scan gauntlet, don't let the action
-	// go through as an attack unless it actually hits something
-	if ( client->ps.weapon == WP_GAUNTLET && !(ucmd->buttons & BUTTON_TALK) &&
-		 (ucmd->buttons & BUTTON_ATTACK) && client->ps.weaponTime <= 0 ) 
-	{
-		pm.gauntletHit = CheckGauntletAttack( player );
-	}
+	//// check for the hit-scan gauntlet, don't let the action
+	//// go through as an attack unless it actually hits something
+	
+	// gauntletHit will be handled elsewhere
+	//if ( client->ps.weapon == WP_GAUNTLET && !(ucmd->buttons & BUTTON_TALK) &&
+	//	 (ucmd->buttons & BUTTON_ATTACK) && client->ps.weaponTime <= 0 ) 
+	//{
+	//	pm.gauntletHit = CheckGauntletAttack( player );
+	//}
 
 	if ( player->flags & FL_FORCE_GESTURE ) 
 	{
@@ -806,27 +818,38 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 
 	client = player->GetClient();
 
-	if ( oldEventSequence < client->ps.eventSequence - MAX_PS_EVENTS ) {
+	if ( oldEventSequence < client->ps.eventSequence - MAX_PS_EVENTS ) 
+	{
 		oldEventSequence = client->ps.eventSequence - MAX_PS_EVENTS;
 	}
-	for ( i = oldEventSequence; i < client->ps.eventSequence; i++ ) {
+	
+	for ( i = oldEventSequence; i < client->ps.eventSequence; i++ ) 
+	{
 		event = client->ps.events[i & (MAX_PS_EVENTS - 1)];
 
 		switch ( event ) {
 		case EV_FALL_MEDIUM:
 		case EV_FALL_FAR:
-			if ( player->GetState()->eType != ET_PLAYER ) {
+			if ( player->GetState()->eType != ET_PLAYER ) 
+			{
 				break;		// not in the player model
 			}
-			if ( g_dmflags.integer & DF_NO_FALLING ) {
+			
+			if ( g_dmflags.integer & DF_NO_FALLING ) 
+			{
 				break;
 			}
-			if ( event == EV_FALL_FAR ) {
+			
+			if ( event == EV_FALL_FAR ) 
+			{
 				damage = 10;
 			}
-			else {
+			
+			else 
+			{
 				damage = 5;
 			}
+			
 			//player->pain_debounce_time = level.time + 200;	// no normal pain sound
 			player->TakeDamage( nullptr, nullptr, 0, damage );
 			break;
@@ -841,24 +864,31 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 			item = NULL;
 			j = 0;
 
-			if ( player->GetClient()->ps.powerups[PW_REDFLAG] ) {
+			if ( player->GetClient()->ps.powerups[PW_REDFLAG] ) 
+			{
 				item = BG_FindItemForPowerup( PW_REDFLAG );
 				j = PW_REDFLAG;
 			}
-			else if ( player->GetClient()->ps.powerups[PW_BLUEFLAG] ) {
+			
+			else if ( player->GetClient()->ps.powerups[PW_BLUEFLAG] ) 
+			{
 				item = BG_FindItemForPowerup( PW_BLUEFLAG );
 				j = PW_BLUEFLAG;
 			}
-			else if ( player->GetClient()->ps.powerups[PW_NEUTRALFLAG] ) {
+			
+			else if ( player->GetClient()->ps.powerups[PW_NEUTRALFLAG] ) 
+			{
 				item = BG_FindItemForPowerup( PW_NEUTRALFLAG );
 				j = PW_NEUTRALFLAG;
 			}
 
-			if ( item ) {
+			if ( item ) 
+			{
 				//drop = Drop_Item( player, item, 0 );
 				// decide how many seconds it has left
 				drop->count = (player->GetClient()->ps.powerups[j] - level.time) / 1000;
-				if ( drop->count < 1 ) {
+				if ( drop->count < 1 ) 
+				{
 					drop->count = 1;
 				}
 
@@ -871,7 +901,6 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 
 		case EV_USE_ITEM2:		// medkit
 			player->health = player->GetClient()->ps.stats[STAT_MAX_HEALTH] + 25;
-
 			break;
 
 		default:
@@ -1052,14 +1081,7 @@ void GameWorld::SpectatorThink( Entities::BasePlayer* player )
 	if ( (client->buttons & BUTTON_ATTACK) && !(client->oldbuttons & BUTTON_ATTACK) ) 
 	{
 		player->FollowCycle( 1 );
-
-		Cmd_FollowCycle_f( ent, 1 );
 	}
-}
-
-unsigned int GameWorld::CheckGauntletAttack( Entities::BasePlayer* player )
-{
-	return 0;
 }
 
 void GameWorld::ClientEndFrame( const uint16_t& clientNum )
@@ -1078,12 +1100,12 @@ void GameWorld::ClientEndFrame( Entities::BasePlayer* player )
 	// TODO: Implement spectator thinking first, then SpectatorClientEndFrame
 	if ( player->GetClient()->sess.sessionTeam == TEAM_SPECTATOR ) 
 	{
-		//SpectatorClientEndFrame( player );
-		return;
+		return SpectatorClientEndFrame( player );
 	}
 
 	// turn off any expired powerups
-	for ( i = 0; i < MAX_POWERUPS; i++ ) {
+	for ( i = 0; i < MAX_POWERUPS; i++ ) 
+	{
 		if ( player->GetClient()->ps.powerups[i] < level.time )
 		{
 			player->GetClient()->ps.powerups[i] = 0;
@@ -1094,7 +1116,8 @@ void GameWorld::ClientEndFrame( Entities::BasePlayer* player )
 	// If the end of unit layout is displayed, don't give
 	// the player any normal movement attributes
 	//
-	if ( level.intermissiontime ) {
+	if ( level.intermissiontime ) 
+	{
 		return;
 	}
 
@@ -1109,7 +1132,9 @@ void GameWorld::ClientEndFrame( Entities::BasePlayer* player )
 	{
 		player->GetClient()->ps.eFlags |= EF_CONNECTION;
 	}
-	else {
+	
+	else 
+	{
 		player->GetClient()->ps.eFlags &= ~EF_CONNECTION;
 	}
 
@@ -1129,6 +1154,64 @@ void GameWorld::ClientEndFrame( Entities::BasePlayer* player )
 	}
 
 	SendPendingPredictableEvents( player );
+}
+
+void GameWorld::SpectatorClientEndFrame( Entities::BasePlayer* player )
+{
+	gclient_t* cl;
+
+	// if we are doing a chase cam or a remote view, grab the latest info
+	if ( player->GetClient()->sess.spectatorState == SPECTATOR_FOLLOW ) 
+	{
+		int		clientNum, flags;
+
+		clientNum = player->GetClient()->sess.spectatorClient;
+
+		// team follow1 and team follow2 go to whatever clients are playing
+		if ( clientNum == -1 ) 
+		{
+			clientNum = level.follow1;
+		}
+		
+		else if ( clientNum == -2 ) 
+		{
+			clientNum = level.follow2;
+		}
+		
+		if ( clientNum >= 0 ) 
+		{
+			cl = &level.clients[clientNum];
+			if ( cl->pers.connected == CON_CONNECTED && cl->sess.sessionTeam != TEAM_SPECTATOR ) 
+			{
+				flags = (cl->ps.eFlags & ~(EF_VOTED | EF_TEAMVOTED)) | (player->GetClient()->ps.eFlags & (EF_VOTED | EF_TEAMVOTED));
+				player->GetClient()->ps = cl->ps;
+				player->GetClient()->ps.pm_flags |= PMF_FOLLOW;
+				player->GetClient()->ps.eFlags = flags;
+				return;
+			}
+		}
+
+		if ( player->GetClient()->ps.pm_flags & PMF_FOLLOW ) 
+		{
+			// drop them to free spectators unless they are dedicated camera followers
+			if ( player->GetClient()->sess.spectatorClient >= 0 ) 
+			{
+				player->GetClient()->sess.spectatorState = SPECTATOR_FREE;
+			}
+
+			ClientBegin( player->GetClient() - level.clients );
+		}
+	}
+
+	if ( player->GetClient()->sess.spectatorState == SPECTATOR_SCOREBOARD ) 
+	{
+		player->GetClient()->ps.pm_flags |= PMF_SCOREBOARD;
+	}
+	
+	else 
+	{
+		player->GetClient()->ps.pm_flags &= ~PMF_SCOREBOARD;
+	}
 }
 
 template<typename entityType>

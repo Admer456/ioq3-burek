@@ -1,10 +1,10 @@
+#include "Maths/Vector.hpp"
 #include "Game/g_local.hpp"
 #include "BaseEntity.hpp"
 #include "Entities/KeyValueElement.hpp"
 #include "Game/GameWorld.hpp"
 #include "../qcommon/IEngineExports.h"
 #include "Game/IGameImports.h"
-#include "Maths/Vector.hpp"
 #include "Components/IComponent.hpp"
 
 #include "Worldspawn.hpp"
@@ -21,4 +21,6 @@ void Worldspawn::Spawn()
 
 	bool enableBreath = spawnArgs->GetBool( "enableBreath", false );
 	gameImports->ConsoleVariable_Set( "g_enableBreath", va( "%d", (int)enableBreath ) );
+
+	Entities::BaseQuakeEntity* ent = new Entities::BaseQuakeEntity();
 }

@@ -64,6 +64,23 @@ namespace Entities
 			return &shared;
 		}
 
+		const Vector&	GetOrigin() const override;
+		void			SetOrigin( const Vector& newOrigin ) override;
+
+		// Utilities
+		// Triggers all entities that match the "target" field
+		void			UseTargets( IEntity* activator ) override;
+
+		// Triggers all entities whose targetname matches the parameter
+		void			UseTargets( IEntity* activator, const char* targetName ) override;
+
+		// Kills everything around this entity's bbox
+		void			KillBox( bool onlyPlayers = false ) override;
+
+		// Kills everything in size.xyz radius around this entity
+		void			KillBox( const Vector& size, bool onlyPlayers = false ) override;
+
+
 	public:
 		std::string		className;
 		std::string		targetName;

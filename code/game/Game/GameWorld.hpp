@@ -80,6 +80,9 @@ public:
 	
 	// Sweep all entities this entity is touching
 	void			TouchTriggers( Entities::IEntity* ent );
+	
+	// Entity lookup tools
+	Entities::IEntity* FindByName( const char* entityName, Entities::IEntity* lastEntity = nullptr );
 
 	// ------ Client & players methods ------
 
@@ -106,9 +109,7 @@ private: // Private client methods, some of which will get moved to a gamemode i
 	void			MoveClientToIntermission( Entities::BasePlayer* player );
 	void			ClientIntermissionThink( Entities::BasePlayer* player );
 	void			SpectatorThink( Entities::BasePlayer* player );
-
-	// TODO: Pls move this elsewhere, this is only for Q3 compatibility
-	unsigned int	CheckGauntletAttack( Entities::BasePlayer* player );
+	void			SpectatorClientEndFrame( Entities::BasePlayer* player );
 
 public:
 	void			ClientEndFrame( const uint16_t& clientNum );

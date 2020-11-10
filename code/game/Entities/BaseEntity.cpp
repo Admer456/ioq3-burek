@@ -2,6 +2,7 @@
 
 #include "Game/g_local.hpp"
 #include "BaseEntity.hpp"
+#include "BasePlayer.hpp"
 #include "Entities/KeyValueElement.hpp"
 #include "Game/GameWorld.hpp"
 #include "../qcommon/IEngineExports.h"
@@ -105,6 +106,98 @@ void BaseQuakeEntity::Think()
 	}
 
 	(this->*thinkFunction)();
+}
+
+const Vector& Entities::BaseQuakeEntity::GetOrigin() const
+{
+	return Vector( shared.s.origin[0], shared.s.origin[1], shared.s.origin[2] );
+}
+
+void Entities::BaseQuakeEntity::SetOrigin( const Vector& newOrigin )
+{
+	shared.s.origin[0] = newOrigin[0];
+	shared.s.origin[1] = newOrigin[1];
+	shared.s.origin[2] = newOrigin[2];
+}
+
+void Entities::BaseQuakeEntity::UseTargets( IEntity* activator )
+{
+	UseTargets( activator, "target" );
+}
+
+void Entities::BaseQuakeEntity::UseTargets( IEntity* activator, const char* targetName )
+{
+
+}
+
+void Entities::BaseQuakeEntity::KillBox( bool onlyPlayers = false )
+{
+	int	i, num;
+	int	touch[MAX_GENTITIES];
+	IEntity* hit;
+	Vector mins, maxs;
+
+	mins = GetOrigin();
+	maxs = mins;
+
+	mins += Vector( (float*)shared.r.mins );
+	maxs += Vector( (float*)shared.r.maxs );
+
+	gameImports->EntitiesInBox( mins, maxs, touch, GameWorld::MaxEntities );
+
+	for ( i = 0; i < num; i++ ) 
+	{
+		hit = gEntities[touch[i]];
+		
+		if ( nullptr == hit )
+			continue;
+
+		if ( onlyPlayers )
+		{
+			if ( nullptr == dynamic_cast<BasePlayer*>(hit) )
+			{
+				continue;
+			}
+		}
+
+		// nail it
+		hit->TakeDamage( this, this, DAMAGE_NO_PROTECTION, 100000 );
+	}
+}
+
+void Entities::BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers = false )
+{
+	int	i, num;
+	int	touch[MAX_GENTITIES];
+	IEntity* hit;
+	Vector mins, maxs;
+
+	mins = GetOrigin();
+	maxs = mins;
+
+	mins += size / 2.0f;
+	maxs += size / 2.0f;
+
+	gameImports->EntitiesInBox( mins, maxs, touch, GameWorld::MaxEntities );
+
+	for ( i = 0; i < num; i++ )
+	{
+		hit = gEntities[touch[i]];
+
+		if ( nullptr == hit )
+			continue;
+
+		if ( onlyPlayers )
+		{
+			if ( nullptr == dynamic_cast<BasePlayer*>(hit) )
+			{
+				continue;
+			}
+		}
+
+		// nail it
+		hit->TakeDamage( this, this, DAMAGE_NO_PROTECTION, 100000 );
+	}
 }
 
 void BaseEntity_Test::Spawn()
