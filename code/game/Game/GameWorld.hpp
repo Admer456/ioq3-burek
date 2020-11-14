@@ -48,6 +48,7 @@ namespace Entities
 class GameWorld final
 {
 	using KVMap = std::unordered_map<std::string, std::string>;
+
 public:
 	constexpr static size_t MaxEntities = MAX_GENTITIES;
 
@@ -82,7 +83,18 @@ public:
 	void			TouchTriggers( Entities::IEntity* ent );
 	
 	// Entity lookup tools
+
+	// Find an entity by its targetname
 	Entities::IEntity* FindByName( const char* entityName, Entities::IEntity* lastEntity = nullptr );
+
+	// Find an entity by its classname
+	Entities::IEntity* FindByClassname( const char* className, Entities::IEntity* lastEntity = nullptr );
+
+	// Find a random entity by its targetname
+	Entities::IEntity* FindByNameRandom( const char* entityName );
+
+	// Find a random entity by its classname
+	Entities::IEntity* FindByClassnameRandom( const char* className );
 
 	// ------ Client & players methods ------
 
@@ -106,6 +118,7 @@ private: // Private client methods, some of which will get moved to a gamemode i
 
 	void			SendPendingPredictableEvents( Entities::BasePlayer* player );
 
+	void			FindIntermissionPoint();
 	void			MoveClientToIntermission( Entities::BasePlayer* player );
 	void			ClientIntermissionThink( Entities::BasePlayer* player );
 	void			SpectatorThink( Entities::BasePlayer* player );

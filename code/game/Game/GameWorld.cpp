@@ -226,7 +226,11 @@ entityType* GameWorld::CreateEntity( const uint16_t& index )
 {
 	if ( nullptr != gEntities[index] )
 	{
+#ifdef _DEBUG
 		engine->Error( va( "Entity slot %d is taken, please consult your programmer\n", index ) );
+#else
+		engine->Print( va( "Entity slot %d is taken, please consult your programmer\n", index ) );
+#endif
 		return nullptr;
 	}
 
@@ -238,12 +242,116 @@ entityType* GameWorld::CreateEntity( const uint16_t& index )
 
 void GameWorld::TouchTriggers( Entities::IEntity* ent )
 {
+	int	i, num;
+	int	touch[MAX_GENTITIES];
+	Entities::IEntity* hit;
+	Entities::BasePlayer* player;
+	trace_t	trace;
+	Vector mins, maxs, origin;
+	static Vector range( 40, 40, 52 );
 
+	player = dynamic_cast<Entities::BasePlayer*>( ent );
+
+	if ( nullptr == player )
+	{
+		return;
+	}
+
+	// dead clients don't activate triggers!
+	if ( player->GetClient()->ps.stats[STAT_HEALTH] <= 0 ) 
+	{
+		return;
+	}
+
+	origin = player->GetClient()->ps.origin;
+
+	mins = origin - range;
+	maxs = origin + range;
+
+	num = gameImports->EntitiesInBox( mins, maxs, touch, MaxEntities );
+
+	// can't use ent->absmin, because that has a one unit pad
+	mins = origin + player->GetShared()->mins;
+	maxs = origin + player->GetShared()->maxs;
+
+	for ( i = 0; i < num; i++ ) 
+	{
+		hit = gEntities[touch[i]];
+
+		// If not a trigger_ entity, ignore
+		if ( !(hit->GetShared()->contents & CONTENTS_TRIGGER) ) 
+		{
+			continue;
+		}
+
+		// ignore most entities if a spectator
+		if ( player->GetClient()->sess.sessionTeam == TEAM_SPECTATOR ) 
+		{
+			if ( hit->GetState()->eType != ET_TELEPORT_TRIGGER //&&
+				 // this is ugly but adding a new ET_? type will
+				 // most likely cause network incompatibilities
+				 /*hit->touch != Touch_DoorTrigger*/ ) 
+			{
+				continue;
+			}
+		}
+
+		// use separate code for determining if an item is picked up
+		// so you don't have to actually contact its bounding box
+		if ( hit->GetState()->eType == ET_ITEM ) 
+		{
+			if ( !BG_PlayerTouchesItem( &player->GetClient()->ps, hit->GetState(), level.time ) ) 
+			{
+				continue;
+			}
+		}
+		else 
+		{
+			if ( !gameImports->EntityContact( mins, maxs, hit ) )
+			{
+				continue;
+			}
+		}
+
+		memset( &trace, 0, sizeof( trace ) );
+
+		hit->Touch( player, &trace );
+
+		if ( (ent->GetShared()->svFlags & SVF_BOT) ) 
+		{
+			ent->Touch( hit, &trace );
+		}
+	}
+
+	// if we didn't touch a jump pad this pmove frame
+	if ( player->GetClient()->ps.jumppad_frame != player->GetClient()->ps.pmove_framecount ) 
+	{
+		player->GetClient()->ps.jumppad_frame = 0;
+		player->GetClient()->ps.jumppad_ent = 0;
+	}
 }
 
 Entities::IEntity* GameWorld::FindByName( const char* entityName, Entities::IEntity* lastEntity )
 {
+	size_t index = 0;
 
+	if ( lastEntity )
+		index = lastEntity->GetEntityIndex();
+
+	for ( ; index < MaxEntities; index++ )
+	{
+		Entities::IEntity* ent = gEntities[index];
+		
+		if ( nullptr == ent )
+			continue;
+
+		if ( !strcmp( ent->GetName(), entityName ) )
+		{
+			return ent;
+		}
+	}
+
+	return nullptr;
 }
 
 void GameWorld::SpawnClient( Entities::BasePlayer* player )
@@ -309,7 +417,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 
 	client->airOutTime = level.time + 12000;
 
-	trap_GetUserinfo( index, userinfo, sizeof( userinfo ) );
+	gameImports->GetUserInfo( index, userinfo, sizeof( userinfo ) );
 
 	// set max health
 	client->pers.maxHealth = atoi( Info_ValueForKey( userinfo, "handicap" ) );
@@ -415,16 +523,14 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	else 
 	{
 		// move players to intermission
-
-		// TODO: MoveClientToIntermission for IEntities
 		MoveClientToIntermission( player );
 	}
+
 	// run a client frame to drop exactly to the floor,
 	// initialize animations and other things
 	client->ps.commandTime = level.time - 100;
 	player->GetClient()->pers.cmd.serverTime = level.time;
 
-	// TODO: ClientThink in GameWorld for IEntities
 	ClientThink( player->GetEntityIndex() );
 
 	// run the presend to set anything else, follow spectators wait
@@ -980,6 +1086,37 @@ void GameWorld::SendPendingPredictableEvents( Entities::BasePlayer* player )
 	}
 }
 
+void GameWorld::FindIntermissionPoint()
+{
+	Entities::IEntity* ent, *target;
+	vec3_t dir;
+
+	// find the intermission spot
+	ent = FindByClassname( "info_player_intermission", nullptr );
+
+	if ( !ent ) 
+	{	// the map creator forgot to put in an intermission point...
+		SelectSpawnPoint( vec3_origin, level.intermission_origin, level.intermission_angle, qfalse );
+	}
+	else 
+	{
+		VectorCopy( ent->GetState()->origin, level.intermission_origin );
+		VectorCopy( ent->GetState()->angles, level.intermission_angle );
+		
+		// if it has a target, look towards it
+		if ( ent->GetTarget() ) 
+		{
+			target = FindByNameRandom( ent->GetTarget() );
+			
+			if ( target ) 
+			{
+				VectorSubtract( target->GetState()->origin, level.intermission_origin, dir );
+				vectoangles( dir, level.intermission_angle );
+			}
+		}
+	}
+}
+
 void GameWorld::MoveClientToIntermission( Entities::BasePlayer* player )
 {
 	// take out of follow mode if needed
@@ -988,6 +1125,7 @@ void GameWorld::MoveClientToIntermission( Entities::BasePlayer* player )
 	}
 
 	FindIntermissionPoint();
+
 	// move to the spot
 	VectorCopy( level.intermission_origin, player->GetState()->origin );
 	VectorCopy( level.intermission_origin, player->GetClient()->ps.origin );
