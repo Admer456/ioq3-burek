@@ -58,27 +58,43 @@ namespace Entities
 		}
 
 		// entityState and entityShared are something all ents have in common
-		virtual entityState_t*	GetState() = 0;
-		virtual entityShared_t* GetShared() = 0;
-		virtual sharedEntity_t* GetSharedEntity() = 0;
+		virtual entityState_t*		GetState() = 0;
+		virtual entityShared_t*		GetShared() = 0;
+		virtual sharedEntity_t*		GetSharedEntity() = 0;
 
 		// Getters and setters
- 		// origin
-		virtual const Vector&	GetOrigin() const = 0;
-		virtual void			SetOrigin( const Vector& newOrigin ) = 0;
+ 		// name
+		virtual const char*			GetName() const = 0;
+		
+		// classname, for whatever reason
+		virtual const char*			GetClassname() const = 0;
+
+		// target
+		virtual const char*			GetTarget() const = 0;
+
+		// origin
+		virtual const Vector&		GetOrigin() const = 0;
+		virtual void				SetOrigin( const Vector& newOrigin ) = 0;
+
+		// angles
+		virtual const Vector&		GetAngles() const = 0;
+		virtual void				SetAngles( const Vector& newAngles ) = 0;
+
+		// spawnflags
+		// TODO: create a class to store bitfields in it
+		virtual const int&			GetSpawnflags() const = 0;
+		virtual void				SetSpawnflags( int flags ) = 0;
 
 		// Utilities
 		// Triggers all entities that match the "target" field
-		virtual void			UseTargets( IEntity* activator ) = 0;
-		
+		virtual void				UseTargets( IEntity* activator ) = 0;
 		// Triggers all entities whose targetname matches the parameter
-		virtual void			UseTargets( IEntity* activator, const char* targetName ) = 0;
+		virtual void				UseTargets( IEntity* activator, const char* targetName ) = 0;
 		
 		// Kills everything around this entity's bbox
-		virtual void			KillBox( bool onlyPlayers = false ) = 0;
-
+		virtual void				KillBox( bool onlyPlayers = false ) = 0;
 		// Kills everything in size.xyz radius around this entity
-		virtual void			KillBox( const Vector& size, bool onlyPlayers = false ) = 0;
+		virtual void				KillBox( const Vector& size, bool onlyPlayers = false ) = 0;
 
 		// Component interface
 
