@@ -47,6 +47,121 @@ void BasePlayer::SetClientViewAngle( const Vector& newAngle )
 	VectorCopy( shared.s.angles, client->ps.viewangles );
 }
 
+void BasePlayer::ClientCommand()
+{
+	char cmd[MAX_TOKEN_CHARS];
+
+	if ( !client || client->pers.connected != CON_CONNECTED ) 
+	{
+		if ( client && client->pers.localClient ) 
+		{
+			// Handle early team command sent by UI when starting a local
+			// team play game.
+			engine->ArgV( 0, cmd, sizeof( cmd ) );
+			
+			if ( Q_stricmp( cmd, "team" ) == 0 ) 
+			{
+				Command_Team();
+			}
+		}
+
+		return;		// not fully in game yet
+	}
+
+	engine->ArgV( 0, cmd, sizeof( cmd ) );
+
+	if ( Q_stricmp( cmd, "say" ) == 0 ) 
+	{
+		Command_Say( SAY_ALL, false );
+		return;
+	}
+
+	if ( Q_stricmp( cmd, "say_team" ) == 0 ) 
+	{
+		Command_Say( SAY_TEAM, false );
+		return;
+	}
+
+	if ( Q_stricmp( cmd, "tell" ) == 0 ) 
+	{
+		Command_Tell();
+		return;
+	}
+
+	if ( Q_stricmp( cmd, "score" ) == 0 ) 
+	{
+		Command_Score();
+		return;
+	}
+
+	// ignore all other commands when at intermission
+	if ( level.intermissiontime ) 
+	{
+		Command_Say( 0, true );
+		return;
+	}
+
+	if ( Q_stricmp( cmd, "give" ) == 0 )
+		Command_Give();
+
+	else if ( Q_stricmp( cmd, "god" ) == 0 )
+		Command_God();
+
+	else if ( Q_stricmp( cmd, "notarget" ) == 0 )
+		Command_Notarget();
+
+	else if ( Q_stricmp( cmd, "noclip" ) == 0 )
+		Command_Noclip();
+
+	else if ( Q_stricmp( cmd, "kill" ) == 0 )
+		Command_Kill();
+
+	else if ( Q_stricmp( cmd, "teamtask" ) == 0 )
+		Command_TeamTask();
+
+	else if ( Q_stricmp( cmd, "levelshot" ) == 0 )
+		Command_LevelShot();
+
+	else if ( Q_stricmp( cmd, "follow" ) == 0 )
+		Command_Follow();
+
+	else if ( Q_stricmp( cmd, "follownext" ) == 0 )
+		FollowCycle( 1 );
+	
+	else if ( Q_stricmp( cmd, "followprev" ) == 0 )
+		FollowCycle( -1 );
+	
+	else if ( Q_stricmp( cmd, "team" ) == 0 )
+		Command_Team();
+	
+	else if ( Q_stricmp( cmd, "where" ) == 0 )
+		Command_Where();
+	
+	else if ( Q_stricmp( cmd, "callvote" ) == 0 )
+		Command_CallVote();
+	
+	else if ( Q_stricmp( cmd, "vote" ) == 0 )
+		Command_Vote();
+	
+	else if ( Q_stricmp( cmd, "callteamvote" ) == 0 )
+		Command_CallTeamVote();
+	
+	else if ( Q_stricmp( cmd, "teamvote" ) == 0 )
+		Command_TeamVote();
+	
+	else if ( Q_stricmp( cmd, "gc" ) == 0 )
+		Command_GameCommand();
+	
+	else if ( Q_stricmp( cmd, "setviewpos" ) == 0 )
+		Command_SetViewpos();
+	
+	else if ( Q_stricmp( cmd, "stats" ) == 0 )
+		Command_Stats();
+	
+	else
+		gameImports->SendServerCommand( GetEntityIndex(), va( "print \"unknown cmd %s\n\"", cmd ) );
+}
+
 void BasePlayer::CopyToBodyQue()
 {
 	IEntity* body;

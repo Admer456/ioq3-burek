@@ -6,6 +6,8 @@
 #include "Game/GameExportImport.h"
 #include "Game/GameLocal.h"
 
+#include "../qcommon/IEngineExports.h"
+
 #include "Entities/IEntity.hpp"
 #include "Entities/BaseEntity.hpp"
 #include "Entities/BasePlayer.hpp"
@@ -139,7 +141,61 @@ const char* GameLocal::ClientConnect( int clientNum, bool firstTime, bool isBot 
 
 void GameLocal::ClientBegin( int clientNum )
 {
-	return ::ClientBegin( clientNum );
+	Entities::IEntity* ent;
+	Entities::BasePlayer* player;
+	gclient_t* client;
+	int			flags;
+
+	//ent = g_entities + clientNum;
+	ent = gEntities[clientNum];
+
+	client = level.clients + clientNum;
+
+	if ( nullptr != ent )
+	{
+		engine->Error( va( "Entity slot %d taken by another entity, yet it's reserved for clients!\n", clientNum ) );
+		return;
+	}
+
+	// Does this really need to be checked?
+	// Is this entity linked into the world?
+	if ( ent->GetShared()->linked ) { // Crash happins on dis line
+		gameImports->UnlinkEntity( ent );
+	}
+
+	ent = gameWorld->CreateEntity<Entities::BasePlayer>( clientNum );
+	player = static_cast<Entities::BasePlayer*>(ent);
+
+	player->GetShared()->ownerNum = ENTITYNUM_NONE;
+	player->SetClient( client );
+
+	client->pers.connected = CON_CONNECTED;
+	client->pers.enterTime = level.time;
+	client->pers.teamState.state = TEAM_BEGIN;
+
+	gameWorld->SpawnClient( player );
+
+	// save eflags around this, because changing teams will
+	// cause this to happen with a valid entity, and we
+	// want to make sure the teleport bit is set right
+	// so the viewpoint doesn't interpolate through the
+	// world to the new position
+	flags = client->ps.eFlags;
+	memset( &client->ps, 0, sizeof( client->ps ) );
+	client->ps.eFlags = flags;
+
+	// locate ent at a spawn point
+	gameWorld->SpawnClient( player );
+
+	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
+		if ( g_gametype.integer != GT_TOURNAMENT ) {
+			gameImports->SendServerCommand( -1, va( "print \"%s" S_COLOR_WHITE " entered the game\n\"", client->pers.netname ) );
+		}
+	}
+	G_LogPrintf( "ClientBegin: %i\n", clientNum );
+
+	// count current clients and rank for scoreboard
+	CalculateRanks();
 }
 
 void GameLocal::ClientUserInfoChanged( int clientNum )
@@ -154,12 +210,22 @@ void GameLocal::ClientDisconnect( int clientNum )
 
 void GameLocal::ClientCommand( int clientNum )
 {
-	return ::ClientCommand( clientNum );
+	Entities::IEntity* ent = gEntities[clientNum];
+
+	if ( nullptr == ent )
+		return;
+
+	Entities::BasePlayer* player = dynamic_cast<Entities::BasePlayer*>( ent );
+
+	if ( nullptr == player )
+		return;
+
+	return player->ClientCommand();
 }
 
 void GameLocal::ClientThink( int clientNum )
 {
-	return ::ClientThink( clientNum );
+	return gameWorld->ClientThink( clientNum );
 }
 
 void GameLocal::RunFrame( int levelTime )

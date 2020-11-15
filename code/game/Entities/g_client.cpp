@@ -965,10 +965,10 @@ void ClientBegin( int clientNum ) {
 	}
 
 	// Does this really need to be checked?
-	//// Is this entity linked into the world?
-	//if ( ent->GetShared()->linked ) { // Crash happins on dis loin
-	//	gameImports->UnlinkEntity( ent );
-	//}
+	// Is this entity linked into the world?
+	if ( ent->GetShared()->linked ) { // Crash happins on dis line
+		gameImports->UnlinkEntity( ent );
+	}
 
 	ent = gameWorld->CreateEntity<Entities::BasePlayer>( clientNum );
 	player = static_cast<Entities::BasePlayer*>( ent );
