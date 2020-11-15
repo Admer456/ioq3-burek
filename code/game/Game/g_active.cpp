@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "Game/g_local.hpp"
 
-
 /*
 ===============
 G_DamageFeedback
@@ -86,8 +85,6 @@ void P_DamageFeedback( gentity_t *player ) {
 	client->damage_armor = 0;
 	client->damage_knockback = 0;
 }
-
-
 
 /*
 =============
@@ -165,8 +162,6 @@ void P_WorldEffects( gentity_t *ent ) {
 	}
 }
 
-
-
 /*
 ===============
 G_SetClientSound
@@ -179,10 +174,6 @@ void G_SetClientSound( gentity_t *ent ) {
 		ent->client->ps.loopSound = 0;
 	}
 }
-
-
-
-//==============================================================
 
 /*
 ==============
@@ -352,8 +343,6 @@ void SpectatorThink( gentity_t *ent, usercmd_t *ucmd ) {
 		Cmd_FollowCycle_f( ent, 1 );
 	}
 }
-
-
 
 /*
 =================
@@ -831,7 +820,6 @@ void ClientThink( int clientNum ) {
 	}
 }
 
-
 void G_RunClient( gentity_t *ent ) {
 	if ( !(ent->r.svFlags & SVF_BOT) && !g_synchronousClients.integer ) {
 		return;
@@ -839,7 +827,6 @@ void G_RunClient( gentity_t *ent ) {
 	ent->client->pers.cmd.serverTime = level.time;
 	ClientThink_real( ent );
 }
-
 
 /*
 ==================
@@ -960,5 +947,3 @@ void ClientEndFrame( gentity_t *ent ) {
 //	i = trap_AAS_PointReachabilityAreaIndex( ent->client->ps.origin );
 //	ent->client->areabits[i >> 3] |= 1 << (i & 7);
 }
-
-

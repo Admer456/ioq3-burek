@@ -1367,7 +1367,6 @@ entityType* GameWorld::FindSpawnPoint( Vector avoidPoint, bool isBot )
 	return nullptr;
 }
 
-
 void GameWorld::ParseKeyValues()
 {
 
