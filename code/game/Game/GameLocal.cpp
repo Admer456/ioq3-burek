@@ -187,11 +187,14 @@ void GameLocal::ClientBegin( int clientNum )
 	// locate ent at a spawn point
 	gameWorld->SpawnClient( player );
 
-	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
-		if ( g_gametype.integer != GT_TOURNAMENT ) {
+	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) 
+	{
+		if ( g_gametype.integer != GT_TOURNAMENT ) 
+		{
 			gameImports->SendServerCommand( -1, va( "print \"%s" S_COLOR_WHITE " entered the game\n\"", client->pers.netname ) );
 		}
 	}
+
 	G_LogPrintf( "ClientBegin: %i\n", clientNum );
 
 	// count current clients and rank for scoreboard
