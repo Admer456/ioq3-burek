@@ -108,29 +108,93 @@ void BaseQuakeEntity::Think()
 	(this->*thinkFunction)();
 }
 
-const Vector& Entities::BaseQuakeEntity::GetOrigin() const
+const char* BaseQuakeEntity::GetName() const
+{
+	return targetName.c_str();
+}
+
+const char* BaseQuakeEntity::GetClassname() const
+{
+	return className.c_str();
+}
+
+const char* BaseQuakeEntity::GetTarget() const
+{
+	return target.c_str();
+}
+
+const Vector& BaseQuakeEntity::GetOrigin() const
 {
 	return Vector( shared.s.origin[0], shared.s.origin[1], shared.s.origin[2] );
 }
 
-void Entities::BaseQuakeEntity::SetOrigin( const Vector& newOrigin )
+void BaseQuakeEntity::SetOrigin( const Vector& newOrigin )
 {
 	shared.s.origin[0] = newOrigin[0];
 	shared.s.origin[1] = newOrigin[1];
 	shared.s.origin[2] = newOrigin[2];
 }
 
-void Entities::BaseQuakeEntity::UseTargets( IEntity* activator )
+const Vector& BaseQuakeEntity::GetAngles() const
+{
+	return Vector( shared.s.angles[0], shared.s.angles[1], shared.s.angles[2] );
+}
+
+void BaseQuakeEntity::SetAngles( const Vector& newAngles )
+{
+	shared.s.angles[0] = newAngles[0];
+	shared.s.angles[1] = newAngles[1];
+	shared.s.angles[2] = newAngles[2];
+}
+
+const Vector& BaseQuakeEntity::GetVelocity() const
+{
+	shared.s.pos.trDelta;
+}
+
+void BaseQuakeEntity::SetVelocity( const Vector& newVelocity )
+{
+
+}
+
+const Vector& BaseQuakeEntity::GetMins() const
+{
+	// TODO: insert return statement here
+}
+
+const Vector& BaseQuakeEntity::GetMaxs() const
+{
+	// TODO: insert return statement here
+}
+
+const Vector& BaseQuakeEntity::GetAverageOrigin() const
+{
+	const Vector& mins = GetMins();
+	const Vector& maxs = GetMaxs();
+	return (mins + maxs) / 2.0f;
+}
+
+const int& BaseQuakeEntity::GetSpawnflags() const
+{
+	return spawnFlags;
+}
+
+void BaseQuakeEntity::SetSpawnflags( int flags )
+{
+	spawnFlags = flags;
+}
+
+void BaseQuakeEntity::UseTargets( IEntity* activator )
 {
 	UseTargets( activator, "target" );
 }
 
-void Entities::BaseQuakeEntity::UseTargets( IEntity* activator, const char* targetName )
+void BaseQuakeEntity::UseTargets( IEntity* activator, const char* targetName )
 {
-
+	BaseQuakeEntity a;
 }
 
-void Entities::BaseQuakeEntity::KillBox( bool onlyPlayers = false )
+void BaseQuakeEntity::KillBox( bool onlyPlayers = false )
 {
 	int	i, num;
 	int	touch[MAX_GENTITIES];
@@ -165,7 +229,7 @@ void Entities::BaseQuakeEntity::KillBox( bool onlyPlayers = false )
 	}
 }
 
-void Entities::BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers = false )
+void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers = false )
 {
 	int	i, num;
 	int	touch[MAX_GENTITIES];

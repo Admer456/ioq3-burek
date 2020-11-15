@@ -64,8 +64,41 @@ namespace Entities
 			return &shared;
 		}
 
-		const Vector&	GetOrigin() const override;
-		void			SetOrigin( const Vector& newOrigin ) override;
+		// Getters and setters
+		// name
+		const char*		GetName() const;
+
+		// classname, for whatever reason
+		const char*		GetClassname() const;
+
+		// target
+		const char*		GetTarget() const;
+
+		// origin
+		const Vector&	GetOrigin() const;
+		void			SetOrigin( const Vector& newOrigin );
+
+		// angles
+		const Vector&	GetAngles() const;
+		void			SetAngles( const Vector& newAngles );
+
+		// velocity
+		const Vector&	GetVelocity() const;
+		void			SetVelocity( const Vector& newVelocity );
+
+		// mins
+		const Vector&	GetMins() const;
+
+		// maxs
+		const Vector&	GetMaxs() const;
+
+		// (mins + maxs)/2
+		const Vector&	GetAverageOrigin() const;
+
+		// spawnflags
+		// TODO: create a class to store bitfields in it
+		const int&		GetSpawnflags() const;
+		void			SetSpawnflags( int flags );
 
 		// Utilities
 		// Triggers all entities that match the "target" field
@@ -80,28 +113,44 @@ namespace Entities
 		// Kills everything in size.xyz radius around this entity
 		void			KillBox( const Vector& size, bool onlyPlayers = false ) override;
 
-
 	public:
 		std::string		className;
 		std::string		targetName;
 		std::string		target;
 
+		// Transform
+		Vector			origin{ Vector::Zero };
+		Vector			angles{ Vector::Zero };
+		Vector			velocity{ Vector::Zero };
+		Vector			angularVelocity{ Vector::Zero };
+
+		float			speed{ 0 };
+		Vector			movedir{ Vector::Zero };
+
+		// Damage
 		int				health{ 0 };
-
 		bool			takeDamage{ false };
-		int				clipMask{ 0 };	// brushes with this content value will be collided against
-										// when moving.  items and corpses do not collide against
-										// players, for instance
+		
+		// Movement
+		int				clipMask{ 0 };	// Brushes with this content value will be collided against when moving. 
+										// Items and corpses do not collide against players, for instance
+		float			physicsBounce{ 0 };	// 1.0 = continuous bounce, 0.0 = no bounce
+		bool			isPhysicsObject{ false };// if true, it can be pushed by movers and fall off edges
 
+		// Events
 		int				eventTime{ 0 };	// events will be cleared EVENT_VALID_MSEC after set
 		bool			freeAfterEvent{ false };
 		bool			unlinkAfterEvent{ false };
+		bool			neverFree{ false }; // if true, FreeEntity will only unlink
 
+		// Water
 		byte			waterLevel{ 0 };
 		byte			waterType{ 0 };
 		
+		// Thinking
 		float			nextThink{ 0 };
 
+		// Flags
 		int				flags{ 0 };				// FL_* variables
 		int				spawnFlags{ 0 };		// 64 bits of
 		int				spawnFlagsExtra{ 0 };	// spawnflags cuz' why not

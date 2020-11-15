@@ -80,6 +80,19 @@ namespace Entities
 		virtual const Vector&		GetAngles() const = 0;
 		virtual void				SetAngles( const Vector& newAngles ) = 0;
 
+		// velocity
+		virtual const Vector&		GetVelocity() const = 0;
+		virtual void				SetVelocity( const Vector& newVelocity ) = 0;
+
+		// mins
+		virtual const Vector&		GetMins() const = 0;
+
+		// maxs
+		virtual const Vector&		GetMaxs() const = 0;
+
+		// (mins + maxs)/2
+		virtual const Vector&		GetAverageOrigin() const = 0;
+
 		// spawnflags
 		// TODO: create a class to store bitfields in it
 		virtual const int&			GetSpawnflags() const = 0;
