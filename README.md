@@ -6,35 +6,28 @@ Specialised version of idTech 3 (precisely ioquake3) for standalone game develop
 
 ## Features 
 
-  * func_breakable entity, albeit with no gibs right now
   * Nothing really significant so far :p
 
-## Changes so far
-
-  * Can compile directly in Visual Studio thanks to jpcy/ioq3-premake-msvc
-  * Increased max entities from 1024 to 8192
-  * Increased max vertices on models
-  * Added IGame interface, replacing the system traps between the game and the engine
-  * Added an IEntity interface, from which all entities will inevitably inherit from
-  * Added very simple entity components which can be easily passed between the game, client & engine so far
-  * Client, game, UI DLLs and the engine EXE are compiled as C++ code (so will the renderer, soon)
-  * Added a keyvalue handling system for entities, while components can use `spawnArgs->GetXYZ( "keyvaluename", defaultValue );`
-  * Added a shared utility library called bLib (Burek library), which for now only contains a Vector class
-
 ## Plans
-  
+
+#### For programmers  
   * Rewrite game library in C++
   * Rewrite client library in C++
-  * Extend maximum visible entities to 1024
-  * Extend maximum weapons to 64
-  * Merge UI library into client library
-  * Convert engine code to C++
-  * Remove stringification of GLSL shaders, extend shader functionality
+  * Merge UI library with the client library
+
+#### For non-programmers
   * Terrain system
-  * Modifications to the map compiler
   * Entity events similar to Source I/O and CryEngine Sandbox Editor's events
-  * AI system for singleplayer NPCs
-  * C# script host with .NET Core, or more likely .NET 5 depending on when this feature will be added
+  * Proper singleplayer support, with saving and loading, an example SP NPC, level transitions...
+
+#### For both
+  * C# scripting, so you can add new entities, weapons, monsters and level scripts - without needing to write any C++ code
+  * Extend maximum visible entities from 256 to 1024
+  * Entity [components](https://i.imgur.com/EAP3rrj.png)
+
+## Downloads
+
+None at the moment. Check back some other time.
 
 ## How to build
 
