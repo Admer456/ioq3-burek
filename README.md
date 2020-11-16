@@ -27,7 +27,7 @@ Specialised version of idTech 3 (precisely ioquake3) for standalone game develop
 
 ## Downloads
 
-None at the moment. Check back some other time.
+None at the moment. This is under heavy and early development. Check back in late 2021 or 2022.
 
 ## How to build
 
