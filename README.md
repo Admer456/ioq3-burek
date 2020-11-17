@@ -34,11 +34,15 @@ None at the moment. This is under heavy and early development. Check back in lat
 Note: I haven't updated the makefiles for Linux, unfortunately. I am doing all development on Windows, but I will eventually get to it.  
   
 In order to build BUREKTech, clone or download the code, go to the `build` directory, then go to `vs2019`, and open `BurekTech.sln`.  
-It's as simple as building the entire solution. The compiled binaries will appear in the `bin` directory in the repo's folder, not in the `build` folder.  
+It's as simple as building the entire solution. The compiled binaries will appear in the `bin` directory in the repo's folder.  
+    
+CMake is planned to be used in the future.  
   
-I am planning to use CMake as the build system in the future.
+## Credits
 
-## ioquake3 README (some of which may not apply any more)
+jpcy's ioq3-premake-msvc - https://github.com/jpcy/ioq3-premake-msvc - used to generate the initial VS2019 solution  
+
+## Original ioquake3 README
                    ,---------------------------------------.
                    |   _                     _       ____  |
                    |  (_)___  __ _ _  _ __ _| |_____|__ /  |
