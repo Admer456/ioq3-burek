@@ -217,6 +217,7 @@
     <ClCompile Include="..\..\code\game\Components\SharedComponent.cpp" />
     <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp" />
     <ClCompile Include="..\..\code\game\Entities\BasePlayer.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\BasePlayerCommands.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_client.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_misc.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_mover.cpp" />

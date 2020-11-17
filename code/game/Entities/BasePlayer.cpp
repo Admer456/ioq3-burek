@@ -210,6 +210,16 @@ void BasePlayer::AddEvent( int event, int eventParameter )
 	eventTime = level.time;
 }
 
+void BasePlayer::FireWeapon()
+{
+
+}
+
+void BasePlayer::SetTeam( const char* teamName )
+{
+
+}
+
 void BasePlayer::StopFollowing()
 {
 	client->ps.persistant[PERS_TEAM] = TEAM_SPECTATOR;

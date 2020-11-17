@@ -71,11 +71,43 @@ public:
 
 	// Allocates an entity
 	template<typename entityType>
-	entityType*		CreateEntity();
+	entityType* CreateEntity()
+	{
+		for ( unsigned int i = MAX_CLIENTS; i < MaxEntities; i++ )
+		{
+			// Also check for g_entities so we don't get any conflicts
+			// on the client & server and whatnot
+			if ( gEntities[i] == nullptr && !g_entities[i].inuse )
+			{
+				gEntities[i] = new entityType();
+				gEntities[i]->SetEntityIndex( i );
+				return static_cast<entityType*>(gEntities[i]);
+			}
+		}
+
+		engine->Error( "Exceeded maximum number of entities\n" );
+		return nullptr;
+	}
 
 	// Allocates an entity at a specified index
 	template<typename entityType>
-	entityType*		CreateEntity( const uint16_t& index );
+	entityType* CreateEntity( const uint16_t& index )
+	{
+		if ( nullptr != gEntities[index] )
+		{
+#ifdef _DEBUG
+			engine->Error( va( "Entity slot %d is taken, please consult your programmer\n", index ) );
+#else
+			engine->Print( va( "Entity slot %d is taken, please consult your programmer\n", index ) );
+#endif
+			return nullptr;
+		}
+
+		gEntities[index] = new entityType();
+		gEntities[index]->SetEntityIndex( index );
+		gEntities[index]->GetState()->number = index;
+		return static_cast<entityType*>(gEntities[index]);
+	}
 
 	// ------ Entity interaction ------
 	

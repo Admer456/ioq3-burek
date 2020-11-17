@@ -22,6 +22,7 @@ public:
 
 	int					BotAI_StartFrame( int time ) override;
 
-	// GameLocal-specific methods
-	// None so far
+private: // GameLocal-specific methods
+	void				FindTeams();
+
 };

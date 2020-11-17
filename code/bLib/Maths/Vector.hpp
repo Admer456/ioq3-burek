@@ -24,6 +24,7 @@ public:
 
 	// vec3_t support
 	Vector( float* vec ) { x = vec[0]; y = vec[1]; z = vec[2]; }
+	Vector( const float* vec ) { x = vec[0]; y = vec[1]; z = vec[2]; }
 
 public: // Utilities
 	
@@ -107,7 +108,7 @@ public: // Utilities
 	}
 
 	// For compatibility with, you know, vec3_t
-	inline void CopyToArray( float* v )
+	inline void CopyToArray( float* v ) const
 	{
 		v[0] = x;
 		v[1] = y;
@@ -130,13 +131,13 @@ public: // Static methods
 public: // Operators
 
 	// Vector + Vector
-	inline const Vector& operator+ ( const Vector& operand ) const
+	inline Vector operator+ ( const Vector& operand ) const
 	{
 		return Vector( x + operand.x, y + operand.y, z + operand.z );
 	}
 
 	// Vector - Vector
-	inline const Vector& operator- ( const Vector& operand ) const
+	inline Vector operator- ( const Vector& operand ) const
 	{
 		return Vector( x - operand.x, y - operand.y, z - operand.z );
 	}

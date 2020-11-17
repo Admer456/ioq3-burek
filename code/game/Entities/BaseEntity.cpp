@@ -125,7 +125,7 @@ const char* BaseQuakeEntity::GetTarget() const
 
 const Vector& BaseQuakeEntity::GetOrigin() const
 {
-	return Vector( shared.s.origin[0], shared.s.origin[1], shared.s.origin[2] );
+	return Vector( shared.s.origin );
 }
 
 void BaseQuakeEntity::SetOrigin( const Vector& newOrigin )
@@ -142,29 +142,27 @@ const Vector& BaseQuakeEntity::GetAngles() const
 
 void BaseQuakeEntity::SetAngles( const Vector& newAngles )
 {
-	shared.s.angles[0] = newAngles[0];
-	shared.s.angles[1] = newAngles[1];
-	shared.s.angles[2] = newAngles[2];
+	newAngles.CopyToArray( shared.s.angles );
 }
 
 const Vector& BaseQuakeEntity::GetVelocity() const
 {
-	shared.s.pos.trDelta;
+	return shared.s.pos.trDelta;
 }
 
 void BaseQuakeEntity::SetVelocity( const Vector& newVelocity )
 {
-
+	newVelocity.CopyToArray( shared.s.pos.trDelta );
 }
 
 const Vector& BaseQuakeEntity::GetMins() const
 {
-	// TODO: insert return statement here
+	return shared.r.mins;
 }
 
 const Vector& BaseQuakeEntity::GetMaxs() const
 {
-	// TODO: insert return statement here
+	return shared.r.maxs;
 }
 
 const Vector& BaseQuakeEntity::GetAverageOrigin() const
@@ -191,23 +189,30 @@ void BaseQuakeEntity::UseTargets( IEntity* activator )
 
 void BaseQuakeEntity::UseTargets( IEntity* activator, const char* targetName )
 {
-	BaseQuakeEntity a;
+	IEntity* ent = gameWorld->FindByName( targetName );
+
+	while ( ent = gameWorld->FindByName( targetName, ent ) )
+	{
+		ent->Use( activator, this, 0 );
+	}
 }
 
-void BaseQuakeEntity::KillBox( bool onlyPlayers = false )
+void BaseQuakeEntity::KillBox( bool onlyPlayers )
 {
 	int	i, num;
-	int	touch[MAX_GENTITIES];
+	std::vector<int> touch;
 	IEntity* hit;
 	Vector mins, maxs;
 
+	touch.reserve( GameWorld::MaxEntities );
+	
 	mins = GetOrigin();
 	maxs = mins;
 
 	mins += Vector( (float*)shared.r.mins );
 	maxs += Vector( (float*)shared.r.maxs );
 
-	gameImports->EntitiesInBox( mins, maxs, touch, GameWorld::MaxEntities );
+	num = gameImports->EntitiesInBox( mins, maxs, touch.data(), GameWorld::MaxEntities );
 
 	for ( i = 0; i < num; i++ ) 
 	{
@@ -229,12 +234,14 @@ void BaseQuakeEntity::KillBox( bool onlyPlayers = false )
 	}
 }
 
-void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers = false )
+void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers )
 {
 	int	i, num;
-	int	touch[MAX_GENTITIES];
+	std::vector<int> touch;
 	IEntity* hit;
 	Vector mins, maxs;
+
+	touch.reserve( GameWorld::MaxEntities );
 
 	mins = GetOrigin();
 	maxs = mins;
@@ -242,7 +249,7 @@ void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers = false )
 	mins += size / 2.0f;
 	maxs += size / 2.0f;
 
-	gameImports->EntitiesInBox( mins, maxs, touch, GameWorld::MaxEntities );
+	num = gameImports->EntitiesInBox( mins, maxs, touch.data(), GameWorld::MaxEntities );
 
 	for ( i = 0; i < num; i++ )
 	{

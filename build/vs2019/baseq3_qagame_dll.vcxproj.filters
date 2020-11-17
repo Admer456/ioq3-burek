@@ -260,6 +260,9 @@
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerStart.cpp">
       <Filter>Sources\Entities\Info</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\BasePlayerCommands.cpp">
+      <Filter>Sources\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\code\game\Game\g_syscalls.asm">

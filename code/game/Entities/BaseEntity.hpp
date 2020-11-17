@@ -3,6 +3,8 @@
 class KeyValueElement;
 class KeyValueLibrary;
 
+#include <string>
+
 namespace Entities
 {
 	class IEntity;

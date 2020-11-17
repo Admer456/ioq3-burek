@@ -19,13 +19,14 @@ along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
+
+#include "Maths/Vector.hpp"
 #include "q_shared.hpp"
 #include "../game/Game/g_public.hpp"
 #include "qcommon.hpp"
 
 #include "../game/Entities/IEntity.hpp"
 #include "../game/Components/IComponent.hpp"
-#include "Maths/Vector.hpp"
 #include "../game/Components/SharedComponent.hpp"
 
 static huffman_t		msgHuff;

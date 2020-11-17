@@ -7,17 +7,22 @@
 #include "Game/GameLocal.h"
 
 #include "../qcommon/IEngineExports.h"
+#include "Game/GameWorld.hpp"
 
 #include "Entities/IEntity.hpp"
 #include "Entities/BaseEntity.hpp"
 #include "Entities/BasePlayer.hpp"
 
-#include "Game/GameWorld.hpp"
-
 extern void G_InitGame( int levelTime, int randomSeed, int restart );
 extern void G_ShutdownGame( int restart );
 extern void ClientUserinfoChanged( int clientNum );
 extern void G_RunFrame( int levelTime );
+
+extern void G_RegisterCvars( void );
+extern gclient_t g_clients[MAX_CLIENTS];
+
+extern vmCvar_t	g_logfile;
+extern vmCvar_t g_logfileSync;
 
 // This is pretty damn ugly, but it'll work for now
 // The engine has just begun to be C++-ified, so
@@ -32,7 +37,109 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 {
 	gameWorld = new GameWorld();
 
-	return ::G_InitGame( levelTime, randomSeed, restart );
+	int					i;
+
+	G_Printf( "------- Game Initialization -------\n" );
+	G_Printf( "gamename: %s\n", GAMEVERSION );
+	G_Printf( "gamedate: %s\n", PRODUCT_DATE );
+
+	srand( randomSeed );
+
+	G_RegisterCvars();
+
+	G_ProcessIPBans();
+
+	G_InitMemory();
+
+	// set some level globals
+	memset( &level, 0, sizeof( level ) );
+	level.time = levelTime;
+	level.startTime = levelTime;
+
+	level.snd_fry = G_SoundIndex( "sound/player/fry.wav" );	// FIXME standing in lava / slime
+
+	if ( g_gametype.integer != GT_SINGLE_PLAYER && g_logfile.string[0] ) {
+		if ( g_logfileSync.integer ) {
+			trap_FS_FOpenFile( g_logfile.string, &level.logFile, FS_APPEND_SYNC );
+		}
+		else {
+			trap_FS_FOpenFile( g_logfile.string, &level.logFile, FS_APPEND );
+		}
+		if ( !level.logFile ) {
+			G_Printf( "WARNING: Couldn't open logfile: %s\n", g_logfile.string );
+		}
+		else {
+			char	serverinfo[MAX_INFO_STRING];
+
+			trap_GetServerinfo( serverinfo, sizeof( serverinfo ) );
+
+			G_LogPrintf( "------------------------------------------------------------\n" );
+			G_LogPrintf( "InitGame: %s\n", serverinfo );
+		}
+	}
+	else {
+		G_Printf( "Not logging to disk.\n" );
+	}
+
+	G_InitWorldSession();
+
+	// initialize all entities for this game
+	memset( gEntities, 0, MAX_GENTITIES * sizeof( gEntities[0] ) );
+	memset( g_entities, 0, MAX_GENTITIES * sizeof( g_entities[0] ) );
+	level.gentities = g_entities;
+	level.entities = gEntities;
+
+	// initialize all clients for this game
+	level.maxclients = g_maxclients.integer;
+	memset( g_clients, 0, MAX_CLIENTS * sizeof( g_clients[0] ) );
+	level.clients = g_clients;
+
+	// always leave room for the max number of clients,
+	// even if they aren't all used, so numbers inside that
+	// range are NEVER anything but clients
+	level.num_entities = MAX_CLIENTS;
+
+	// let the server system know where the entites are
+	gameImports->LocateGameData(
+		reinterpret_cast<sharedEntity_t*>(level.gentities), level.num_entities, sizeof( gentity_t ),
+		level.entities, level.numEntities, sizeof( Entities::IEntity* ),
+		&level.clients[0].ps, sizeof( level.clients[0] ) );
+
+	// reserve some spots for dead player bodies
+	InitBodyQue();
+
+	ClearRegisteredItems();
+
+	// parse the key/value pairs and spawn gentities
+	G_SpawnEntitiesFromString();
+
+	// general initialization
+	FindTeams();
+
+	// TODO: Implement this stuff at some point
+	//// make sure we have flags for CTF, etc
+	//if ( g_gametype.integer >= GT_TEAM ) 
+	//{
+	//	G_CheckTeamItems();
+	//}
+
+	SaveRegisteredItems();
+
+	G_Printf( "-----------------------------------\n" );
+
+	if ( g_gametype.integer == GT_SINGLE_PLAYER || gameImports->ConsoleVariable_GetInteger( "com_buildScript" ) )
+	{
+		G_ModelIndex( SP_PODIUM_MODEL );
+	}
+
+	if ( gameImports->ConsoleVariable_GetInteger( "bot_enable" ) )
+	{	// TODO: Make bots work again, at some point
+		//BotAISetup( restart );
+		//BotAILoadMap( restart );
+		//G_InitBots( (qboolean)restart );
+	}
+
+	gameImports->SetConfigString( CS_INTERMISSION, "" );
 }
 
 void GameLocal::Shutdown( bool restart )
@@ -159,7 +266,8 @@ void GameLocal::ClientBegin( int clientNum )
 
 	// Does this really need to be checked?
 	// Is this entity linked into the world?
-	if ( ent->GetShared()->linked ) { // Crash happins on dis line
+	if ( ent->GetShared()->linked ) // Crash happins on dis line
+	{
 		gameImports->UnlinkEntity( ent );
 	}
 
@@ -244,4 +352,53 @@ bool GameLocal::ConsoleCommand( void )
 int GameLocal::BotAI_StartFrame( int time )
 {
 	return BotAIStartFrame( time );
+}
+
+void GameLocal::FindTeams()
+{
+	Entities::IEntity* e;
+	Entities::IEntity* e2;
+	
+	int		i, j;
+	int		c, c2;
+
+	c = 0;
+	c2 = 0;
+	for ( i = MAX_CLIENTS, e = gEntities[i]; i < level.num_entities; i++, e++ ) {
+		if ( nullptr == e )
+			continue;
+		//if ( !e->team )
+		//	continue;
+		//if ( e->GetFlags() & FL_TEAMSLAVE )
+		//	continue;
+		//e->teammaster = e;
+		c++;
+		c2++;
+		for ( j = i + 1, e2 = e + 1; j < level.num_entities; j++, e2++ )
+		{
+			if ( nullptr == e )
+				continue;
+			//if ( !e2->team )
+			//	continue;
+			//if ( e2->GetFlags() & FL_TEAMSLAVE )
+			//	continue;
+			//if ( !strcmp( e->team, e2->team ) )
+			{
+				c2++;
+				//e2->teamchain = e->teamchain;
+				//e->teamchain = e2;
+				//e2->teammaster = e;
+				//e2->GetFlags() |= FL_TEAMSLAVE;
+
+				// make sure that targets only point at the master
+				if ( e2->GetName() ) 
+				{
+					//e->targetname = e2->targetname;
+					//e2->targetname = NULL;
+				}
+			}
+		}
+	}
+
+	G_Printf( "%i teams with %i entities\n", c, c2 );
 }

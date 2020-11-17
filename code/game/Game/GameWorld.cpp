@@ -10,6 +10,7 @@
 #include "Entities/Info/InfoPlayerStart.hpp"
 
 #include <type_traits>
+#include <array>
 
 GameWorld* gameWorld;
 
@@ -202,53 +203,17 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 	ent->Spawn();
 }
 
-template<typename entityType>
-entityType* GameWorld::CreateEntity()
-{
-	for ( unsigned int i = MAX_CLIENTS; i < MaxEntities; i++ )
-	{
-		// Also check for g_entities so we don't get any conflicts
-		// on the client & server and whatnot
-		if ( gEntities[i] == nullptr && !g_entities[i].inuse )
-		{
-			gEntities[i] = new entityType();
-			gEntities[i]->SetEntityIndex( i );
-			return static_cast<entityType*>( gEntities[i] );
-		}
-	}
-
-	engine->Error( "Exceeded maximum number of entities\n" );
-	return nullptr;
-}
-
-template<typename entityType>
-entityType* GameWorld::CreateEntity( const uint16_t& index )
-{
-	if ( nullptr != gEntities[index] )
-	{
-#ifdef _DEBUG
-		engine->Error( va( "Entity slot %d is taken, please consult your programmer\n", index ) );
-#else
-		engine->Print( va( "Entity slot %d is taken, please consult your programmer\n", index ) );
-#endif
-		return nullptr;
-	}
-
-	gEntities[index] = new entityType();
-	gEntities[index]->SetEntityIndex( index );
-	gEntities[index]->GetState()->number = index;
-	return static_cast<entityType*>( gEntities[index] );
-}
-
 void GameWorld::TouchTriggers( Entities::IEntity* ent )
 {
 	int	i, num;
-	int	touch[MAX_GENTITIES];
+	std::vector<int> touch;
 	Entities::IEntity* hit;
 	Entities::BasePlayer* player;
 	trace_t	trace;
 	Vector mins, maxs, origin;
 	static Vector range( 40, 40, 52 );
+
+	touch.reserve( GameWorld::MaxEntities );
 
 	player = dynamic_cast<Entities::BasePlayer*>( ent );
 
@@ -268,7 +233,7 @@ void GameWorld::TouchTriggers( Entities::IEntity* ent )
 	mins = origin - range;
 	maxs = origin + range;
 
-	num = gameImports->EntitiesInBox( mins, maxs, touch, MaxEntities );
+	num = gameImports->EntitiesInBox( mins, maxs, touch.data(), MaxEntities );
 
 	// can't use ent->absmin, because that has a one unit pad
 	mins = origin + player->GetShared()->mins;
@@ -354,6 +319,77 @@ Entities::IEntity* GameWorld::FindByName( const char* entityName, Entities::IEnt
 	return nullptr;
 }
 
+Entities::IEntity* GameWorld::FindByClassname( const char* className, Entities::IEntity* lastEntity )
+{
+	size_t index = 0;
+
+	if ( lastEntity )
+		index = lastEntity->GetEntityIndex();
+
+	for ( ; index < MaxEntities; index++ )
+	{
+		Entities::IEntity* ent = gEntities[index];
+
+		if ( nullptr == ent )
+			continue;
+
+		if ( !strcmp( ent->GetClassname(), className ) )
+		{
+			return ent;
+		}
+	}
+
+	return nullptr;
+}
+
+Entities::IEntity* GameWorld::FindByNameRandom( const char* entityName )
+{
+	static int seed = 0x92;
+
+	std::vector<Entities::IEntity*> ents;
+	ents.reserve( 8U );
+
+	for ( size_t index = 0; index < MaxEntities; index++ )
+	{
+		Entities::IEntity* ent = gEntities[index];
+
+		if ( nullptr == ent )
+			continue;
+
+		if ( !strcmp( ent->GetName(), entityName ) )
+		{
+			ents.push_back( ent );
+		}
+	}
+
+	size_t index = Q_rand( &seed ) % ents.size();
+	return gEntities[ents[index]->GetEntityIndex()];
+}
+
+Entities::IEntity* GameWorld::FindByClassnameRandom( const char* className )
+{
+	static int seed = 0x92;
+
+	std::vector<Entities::IEntity*> ents;
+	ents.reserve( 8U );
+
+	for ( size_t index = 0; index < MaxEntities; index++ )
+	{
+		Entities::IEntity* ent = gEntities[index];
+
+		if ( nullptr == ent )
+			continue;
+
+		if ( !strcmp( ent->GetClassname(), className ) )
+		{
+			ents.push_back( ent );
+		}
+	}
+
+	size_t index = Q_rand( &seed ) % ents.size();
+	return gEntities[ents[index]->GetEntityIndex()]; // am a little paranoid about returning ents[index], err...
+}
+
 void GameWorld::SpawnClient( Entities::BasePlayer* player )
 {
 	int		index;
@@ -364,7 +400,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	clientSession_t		savedSess;
 	int		persistant[MAX_PERSISTANT];
 	Entities::IEntity* spawnPoint;
-	Entities::IEntity* tent;
+	//Entities::IEntity* tent;
 	int		flags;
 	int		savedPing;
 	int		accuracy_hits, accuracy_shots;
@@ -920,7 +956,7 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 	vec3_t	origin, angles;
 	//	qboolean	fired;
 	gitem_t* item;
-	gentity_t* drop;
+	//gentity_t* drop;
 
 	client = player->GetClient();
 
@@ -988,7 +1024,8 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 				j = PW_NEUTRALFLAG;
 			}
 
-			if ( item ) 
+			// TODO: Implement Drop_Item
+			/*if ( item ) 
 			{
 				//drop = Drop_Item( player, item, 0 );
 				// decide how many seconds it has left
@@ -999,7 +1036,7 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 				}
 
 				player->GetClient()->ps.powerups[j] = 0;
-			}
+			}*/
 
 			SelectSpawnPoint( player->GetClient()->ps.origin, origin, angles, qfalse );
 			//TeleportPlayer( player, origin, angles );
@@ -1058,8 +1095,10 @@ void GameWorld::SendPendingPredictableEvents( Entities::BasePlayer* player )
 {
 	playerState_t* ps = &player->GetClient()->ps;
 	Entities::IEntity* tempEnt = nullptr;
-	int event, seq;
-	int extEvent, number;
+	int event;
+	int seq;
+	int extEvent;
+	//int number;
 
 	// if there are still events pending
 	if ( ps->entityEventSequence < ps->eventSequence ) {
