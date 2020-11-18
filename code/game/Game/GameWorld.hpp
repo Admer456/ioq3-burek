@@ -163,7 +163,9 @@ public:
 	// ------ Other ------
 
 	// Reads out keyvalues and populates the stuff
-	void			ParseKeyValues();
+	bool			ParseKeyValues();
+
+	char*			AddKeyvalueToken( const char* string );
 
 	// After parsing, the game world will give each 
 	// entity its respective list of keyvalue pairs

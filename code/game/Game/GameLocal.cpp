@@ -37,8 +37,6 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 {
 	gameWorld = new GameWorld();
 
-	int					i;
-
 	G_Printf( "------- Game Initialization -------\n" );
 	G_Printf( "gamename: %s\n", GAMEVERSION );
 	G_Printf( "gamedate: %s\n", PRODUCT_DATE );
@@ -58,18 +56,26 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 
 	level.snd_fry = G_SoundIndex( "sound/player/fry.wav" );	// FIXME standing in lava / slime
 
-	if ( g_gametype.integer != GT_SINGLE_PLAYER && g_logfile.string[0] ) {
-		if ( g_logfileSync.integer ) {
+	if ( g_gametype.integer != GT_SINGLE_PLAYER && g_logfile.string[0] ) 
+	{
+		if ( g_logfileSync.integer ) 
+		{
 			trap_FS_FOpenFile( g_logfile.string, &level.logFile, FS_APPEND_SYNC );
 		}
-		else {
+		
+		else 
+		{
 			trap_FS_FOpenFile( g_logfile.string, &level.logFile, FS_APPEND );
 		}
-		if ( !level.logFile ) {
+		
+		if ( !level.logFile ) 
+		{
 			G_Printf( "WARNING: Couldn't open logfile: %s\n", g_logfile.string );
 		}
-		else {
-			char	serverinfo[MAX_INFO_STRING];
+	
+		else 
+		{
+			char serverinfo[MAX_INFO_STRING];
 
 			trap_GetServerinfo( serverinfo, sizeof( serverinfo ) );
 
@@ -77,7 +83,9 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 			G_LogPrintf( "InitGame: %s\n", serverinfo );
 		}
 	}
-	else {
+	
+	else 
+	{
 		G_Printf( "Not logging to disk.\n" );
 	}
 
@@ -85,8 +93,7 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 
 	// initialize all entities for this game
 	memset( gEntities, 0, MAX_GENTITIES * sizeof( gEntities[0] ) );
-	memset( g_entities, 0, MAX_GENTITIES * sizeof( g_entities[0] ) );
-	level.gentities = g_entities;
+	level.gentities = nullptr;
 	level.entities = gEntities;
 
 	// initialize all clients for this game
@@ -106,11 +113,12 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 		&level.clients[0].ps, sizeof( level.clients[0] ) );
 
 	// reserve some spots for dead player bodies
-	InitBodyQue();
+	//InitBodyQue();
 
 	ClearRegisteredItems();
 
 	// parse the key/value pairs and spawn gentities
+	gameWorld->SpawnEntities();
 	G_SpawnEntitiesFromString();
 
 	// general initialization

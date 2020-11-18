@@ -125,7 +125,18 @@ void GameWorld::Shutdown()
 
 void GameWorld::SpawnEntities()
 {
+	level.spawning = true;
+	level.numSpawnVars = 0;
+
+	if ( !ParseKeyValues() )
+		engine->Error( "GameWorld::SpawnEntities: no entities" );
+
 	SpawnWorldspawn();
+
+	while ( ParseKeyValues() )
+	{
+		// Do nothing, just load stuff into keyValueLibraries
+	}
 
 	// For every keyvalue pair library in the map
 	for ( auto& lib : keyValueLibraries )
@@ -145,6 +156,8 @@ void GameWorld::SpawnEntities()
 			SpawnEntity( lib );
 		}
 	}
+
+	level.spawning = false;
 }
 
 void GameWorld::SpawnWorldspawn()
@@ -166,6 +179,7 @@ void GameWorld::SpawnWorldspawn()
 
 	auto ent = CreateEntity<Worldspawn>( ENTITYNUM_WORLD );
 	ent->GetShared()->ownerNum = ENTITYNUM_NONE;
+	ent->className = "nothing";
 	ent->spawnArgs = worldLib;
 
 	ent->KeyValue();
@@ -173,6 +187,7 @@ void GameWorld::SpawnWorldspawn()
 
 	auto nothingEnt = CreateEntity<BaseQuakeEntity>( ENTITYNUM_NONE );
 	nothingEnt->GetShared()->ownerNum = ENTITYNUM_NONE;
+	nothingEnt->className = "nothing";
 	nothingEnt->spawnArgs = nullptr;
 }
 
@@ -1406,9 +1421,88 @@ entityType* GameWorld::FindSpawnPoint( Vector avoidPoint, bool isBot )
 	return nullptr;
 }
 
-void GameWorld::ParseKeyValues()
+bool GameWorld::ParseKeyValues()
 {
+	char keyname[MAX_TOKEN_CHARS];
+	char com_token[MAX_TOKEN_CHARS];
 
+	level.numSpawnVars = 0;
+	level.numSpawnVarChars = 0;
+
+	// Parse the opening brace
+	if ( !engine->GetEntityToken( com_token, sizeof( com_token ) ) ) 
+	{
+		// End of spawn string
+		return false;
+	}
+	
+	if ( com_token[0] != '{' ) 
+	{
+		G_Error( "GameWorld::ParseKeyValues: found %s when expecting {", com_token );
+	}
+
+	KeyValueLibrary kvLibrary;
+
+	// Go through all the key / value pairs
+	while ( true ) 
+	{
+		// Parse key
+		if ( !engine->GetEntityToken( keyname, sizeof( keyname ) ) ) 
+		{
+			engine->Error( "GameWorld::ParseKeyValues: EOF without closing brace" );
+		}
+
+		if ( keyname[0] == '}' ) 
+		{
+			break;
+		}
+
+		// Parse value	
+		if ( !engine->GetEntityToken( com_token, sizeof( com_token ) ) ) 
+		{
+			engine->Error( "GameWorld::ParseKeyValues: EOF without closing brace" );
+		}
+
+		if ( com_token[0] == '}' ) 
+		{
+			engine->Error( "GameWorld::ParseKeyValues: closing brace without data" );
+		}
+
+		if ( level.numSpawnVars == MAX_SPAWN_VARS ) 
+		{
+			engine->Error( "GameWorld::ParseKeyValues: MAX_SPAWN_VARS" );
+		}
+
+		char* key = level.spawnVars[level.numSpawnVars][0] = AddKeyvalueToken( keyname );
+		char* value = level.spawnVars[level.numSpawnVars][1] = AddKeyvalueToken( com_token );
+
+		kvLibrary.AddKeyValue( key, value );
+
+		level.numSpawnVars++;
+	}
+
+	keyValueLibraries.push_back( kvLibrary );
+	return true;
+}
+
+char* GameWorld::AddKeyvalueToken( const char* string )
+{
+	int l;
+	char* dest;
+
+	l = strlen( string );
+
+	if ( level.numSpawnVarChars + l + 1 > MAX_SPAWN_VARS_CHARS ) 
+	{
+		engine->Error( "G_AddSpawnVarToken: MAX_SPAWN_VARS_CHARS" );
+	}
+
+	dest = level.spawnVarChars + level.numSpawnVarChars;
+	memcpy( dest, string, l + 1 );
+
+	level.numSpawnVarChars += l + 1;
+
+	return dest;
 }
 
 void GameWorld::AssignKeyValuesToEntities()

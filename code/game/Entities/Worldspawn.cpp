@@ -22,5 +22,8 @@ void Worldspawn::Spawn()
 	bool enableBreath = spawnArgs->GetBool( "enableBreath", false );
 	gameImports->ConsoleVariable_Set( "g_enableBreath", va( "%d", (int)enableBreath ) );
 
-	Entities::BaseQuakeEntity* ent = new Entities::BaseQuakeEntity();
+	className = "worldspawn";
+
+	Entities::BaseQuakeEntity* ent = gameWorld->CreateEntity<BaseQuakeEntity>( ENTITYNUM_NONE );
+	ent->className = "nothing";
 }
