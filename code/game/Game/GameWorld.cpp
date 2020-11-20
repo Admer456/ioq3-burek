@@ -179,7 +179,7 @@ void GameWorld::SpawnWorldspawn()
 
 	auto ent = CreateEntity<Worldspawn>( ENTITYNUM_WORLD );
 	ent->GetShared()->ownerNum = ENTITYNUM_NONE;
-	ent->className = "nothing";
+	ent->className = "worldspawn";
 	ent->spawnArgs = worldLib;
 
 	ent->KeyValue();
@@ -595,6 +595,40 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	return BG_PlayerStateToEntityState( &client->ps, player->GetState(), qtrue );
 }
 
+void GameWorld::ClientRespawn( Entities::BasePlayer* player )
+{
+	player->CopyToBodyQue();
+	SpawnClient( player );
+}
+
+void GameWorld::MoveClientToIntermission( Entities::BasePlayer* player )
+{
+	// take out of follow mode if needed
+	if ( player->GetClient()->sess.spectatorState == SPECTATOR_FOLLOW )
+	{
+		player->StopFollowing();
+	}
+
+	FindIntermissionPoint();
+
+	// move to the spot
+	VectorCopy( level.intermission_origin, player->GetState()->origin );
+	VectorCopy( level.intermission_origin, player->GetClient()->ps.origin );
+	VectorCopy( level.intermission_angle, player->GetClient()->ps.viewangles );
+	player->GetClient()->ps.pm_type = PM_INTERMISSION;
+
+	// clean up powerup info
+	memset( player->GetClient()->ps.powerups, 0, sizeof( player->GetClient()->ps.powerups ) );
+
+	player->GetClient()->ps.eFlags = 0;
+	player->GetState()->eFlags = 0;
+	player->GetState()->eType = ET_GENERAL;
+	player->GetState()->modelindex = 0;
+	player->GetState()->loopSound = 0;
+	player->GetState()->event = 0;
+	player->GetShared()->contents = 0;
+}
+
 void GameWorld::ClientThink( const uint16_t& clientNum )
 {
 	Entities::BasePlayer* player = static_cast<Entities::BasePlayer*>( gEntities[clientNum] );
@@ -881,12 +915,6 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	ClientTimerActions( player, msec );
 }
 
-void GameWorld::ClientRespawn( Entities::BasePlayer* player )
-{
-	player->CopyToBodyQue();
-	SpawnClient( player );
-}
-
 void GameWorld::ClientTimerActions( Entities::BasePlayer* player, int msec )
 {
 	gclient_t* client;
@@ -1169,33 +1197,6 @@ void GameWorld::FindIntermissionPoint()
 			}
 		}
 	}
-}
-
-void GameWorld::MoveClientToIntermission( Entities::BasePlayer* player )
-{
-	// take out of follow mode if needed
-	if ( player->GetClient()->sess.spectatorState == SPECTATOR_FOLLOW ) {
-		player->StopFollowing();
-	}
-
-	FindIntermissionPoint();
-
-	// move to the spot
-	VectorCopy( level.intermission_origin, player->GetState()->origin );
-	VectorCopy( level.intermission_origin, player->GetClient()->ps.origin );
-	VectorCopy( level.intermission_angle, player->GetClient()->ps.viewangles );
-	player->GetClient()->ps.pm_type = PM_INTERMISSION;
-
-	// clean up powerup info
-	memset( player->GetClient()->ps.powerups, 0, sizeof( player->GetClient()->ps.powerups ) );
-
-	player->GetClient()->ps.eFlags = 0;
-	player->GetState()->eFlags = 0;
-	player->GetState()->eType = ET_GENERAL;
-	player->GetState()->modelindex = 0;
-	player->GetState()->loopSound = 0;
-	player->GetState()->event = 0;
-	player->GetShared()->contents = 0;
 }
 
 void GameWorld::ClientIntermissionThink( Entities::BasePlayer* player )

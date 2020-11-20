@@ -24,5 +24,30 @@ public:
 
 private: // GameLocal-specific methods
 	void				FindTeams();
+	void				ClientCleanName( const char* in, char* out, int outSize );
+	
+	void				InitSessionData( gclient_t* client, char* userInfo );
+	void				ReadSessionData( gclient_t* client );
+	void				WriteClientSessionData( gclient_t* client );
+	void				WriteSessionData();
+
+	void				UpdateCVars();
+	void				CheckCVars();
+
+	void				BroadcastTeamChange( gclient_t* client, int oldTeam );
+	void				CalculateRanks();
+	void				RemoveTournamentLoser();
+
+	void				CheckExitRules();
+	void				BeginIntermission();
+	void				CheckIntermissionExit();
+	void				AdjustTournamentScores();
+	void				UpdateTournamentInfo();
+	void				SendScoreboardMessageToAll();
+	void				DeathmatchScoreboardMessage( Entities::IEntity* ent );
+
+	bool				ScoreIsTied();
+	void				LogExit( const char* string );
+	void				ExitLevel();
 
 };

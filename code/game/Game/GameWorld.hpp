@@ -132,6 +132,8 @@ public:
 
 	// Locate a client at a spawnpoint
 	void			SpawnClient( Entities::BasePlayer* player );
+	void			ClientRespawn( Entities::BasePlayer* player );
+	void			MoveClientToIntermission( Entities::BasePlayer* player );
 
 	// Simple spawnpoint finder
 	template<typename entityType>
@@ -142,7 +144,6 @@ public:
 
 private: // Private client methods, some of which will get moved to a gamemode interface eventually
 	void			ClientThinkReal( Entities::BasePlayer* player );
-	void			ClientRespawn( Entities::BasePlayer* player );
 	void			ClientTimerActions( Entities::BasePlayer* player, int msec );
 	void			ClientImpacts( Entities::BasePlayer* player, pmove_t* pm );
 	void			ClientEvents( Entities::BasePlayer* player, int oldEventSequence );
@@ -151,7 +152,6 @@ private: // Private client methods, some of which will get moved to a gamemode i
 	void			SendPendingPredictableEvents( Entities::BasePlayer* player );
 
 	void			FindIntermissionPoint();
-	void			MoveClientToIntermission( Entities::BasePlayer* player );
 	void			ClientIntermissionThink( Entities::BasePlayer* player );
 	void			SpectatorThink( Entities::BasePlayer* player );
 	void			SpectatorClientEndFrame( Entities::BasePlayer* player );
