@@ -32,6 +32,7 @@ None at the moment. This is under heavy and early development. Check back in lat
 ## How to build
 
 Note: I haven't updated the makefiles for Linux, unfortunately. I am doing all development on Windows, but I will eventually get to it.  
+Note 2: While it may build successfully, it will likely not run successfully. A lot of code still has to be ported to the new entity system.  
   
 In order to build BUREKTech, clone or download the code, go to the `build` directory, then go to `vs2019`, and open `BurekTech.sln`.  
 It's as simple as building the entire solution. The compiled binaries will appear in the `bin` directory in the repo's folder.  
