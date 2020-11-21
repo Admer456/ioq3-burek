@@ -1,4 +1,4 @@
-# BurekTech3
+# BUREKTech
 
 ![BurekTech 'logo'](https://i.imgur.com/uhxkRl8.png)
 
