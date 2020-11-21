@@ -2,7 +2,7 @@
 
 ![BurekTech 'logo'](https://i.imgur.com/uhxkRl8.png)
 
-Specialised version of idTech 3 (precisely ioquake3) for standalone game development.  
+Specialised version of idTech 3 (precisely [ioquake3](https://github.com/ioquake/ioq3)) for standalone game development.  
 
 ## Features 
 
