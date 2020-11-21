@@ -758,8 +758,8 @@ void GameLocal::RunFrame( int levelTime )
 		gameWorld->ClientEndFrame( player );
 	}
 
-	// See if it is time to do a tournement restart
-	::CheckTournament();
+	//// See if it is time to do a tournement restart
+	//::CheckTournament();
 
 	// See if it is time to end the level
 	CheckExitRules();
@@ -767,12 +767,12 @@ void GameLocal::RunFrame( int levelTime )
 	// Update to team status?
 	::CheckTeamStatus();
 
-	// Cancel vote if timed out
-	::CheckVote();
+	//// Cancel vote if timed out
+	//::CheckVote();
 
-	// Check team votes
-	::CheckTeamVote( TEAM_RED );
-	::CheckTeamVote( TEAM_BLUE );
+	//// Check team votes
+	//::CheckTeamVote( TEAM_RED );
+	//::CheckTeamVote( TEAM_BLUE );
 
 	// For tracking changes
 	CheckCVars();
