@@ -93,8 +93,23 @@ void BaseQuakeEntity::KeyValue()
 	PostKeyValue();
 }
 
+void BaseQuakeEntity::Remove()
+{
+	flags |= FL_REMOVE_ME;
+}
+
 void BaseQuakeEntity::Think()
 {
+	if ( CheckAndClearEvents() )
+		return;
+
+	// Temp ents don't think
+	if ( freeAfterEvent )
+		return;
+
+	if ( !shared.r.linked && neverFree )
+		return;
+
 	if ( nullptr == thinkFunction )
 	{
 		return;
@@ -177,9 +192,19 @@ const int& BaseQuakeEntity::GetSpawnflags() const
 	return spawnFlags;
 }
 
-void BaseQuakeEntity::SetSpawnflags( int flags )
+void BaseQuakeEntity::SetSpawnflags( int newFlags )
 {
-	spawnFlags = flags;
+	spawnFlags = newFlags;
+}
+
+const int& BaseQuakeEntity::GetFlags() const
+{
+	return flags;
+}
+
+void BaseQuakeEntity::SetFlags( int newFlags )
+{
+	flags = newFlags;
 }
 
 void BaseQuakeEntity::UseTargets( IEntity* activator )
@@ -269,6 +294,31 @@ void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers )
 		// nail it
 		hit->TakeDamage( this, this, DAMAGE_NO_PROTECTION, 100000 );
 	}
+}
+
+bool BaseQuakeEntity::CheckAndClearEvents()
+{
+	if ( level.time - eventTime > EVENT_VALID_MSEC )
+	{
+		if ( shared.s.event )
+		{
+			shared.s.event &= EV_EVENT_BITS;
+		}
+
+		if ( freeAfterEvent )
+		{
+			Remove();
+			return true;
+		}
+
+		else if ( unlinkAfterEvent )
+		{
+			unlinkAfterEvent = false;
+			gameImports->UnlinkEntity( this );
+		}
+	}
+
+	return false;
 }
 
 void BaseEntity_Test::Spawn()

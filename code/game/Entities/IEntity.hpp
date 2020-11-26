@@ -32,6 +32,8 @@ namespace Entities
 		virtual void				TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) = 0;
 		virtual void				Die( IEntity* killer ) = 0;
 		
+		virtual void				Remove() = 0; // Mark for removal
+
 		// All entities have an entity index
 		virtual unsigned int		GetEntityIndex() const = 0;
 		virtual void				SetEntityIndex( const size_t& index ) = 0;
@@ -96,7 +98,11 @@ namespace Entities
 		// spawnflags
 		// TODO: create a class to store bitfields in it
 		virtual const int&			GetSpawnflags() const = 0;
-		virtual void				SetSpawnflags( int flags ) = 0;
+		virtual void				SetSpawnflags( int newFlags ) = 0;
+
+		// flags
+		virtual const int&			GetFlags() const = 0;
+		virtual void				SetFlags( int newFlags ) = 0;
 
 		// Utilities
 		// Triggers all entities that match the "target" field

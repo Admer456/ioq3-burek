@@ -28,6 +28,8 @@ namespace Entities
 		virtual void	TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) override { return; }
 		virtual void	Die( IEntity* killer ) override { return; }
 
+		virtual void	Remove() override;
+
 		// All entities have an entity index
 		unsigned int	GetEntityIndex() const
 		{
@@ -68,39 +70,43 @@ namespace Entities
 
 		// Getters and setters
 		// name
-		const char*		GetName() const;
+		const char*		GetName() const override;
 
 		// classname, for whatever reason
-		const char*		GetClassname() const;
+		const char*		GetClassname() const override;
 
 		// target
-		const char*		GetTarget() const;
+		const char*		GetTarget() const override;
 
 		// origin
-		const Vector&	GetOrigin() const;
-		void			SetOrigin( const Vector& newOrigin );
+		const Vector&	GetOrigin() const override;
+		void			SetOrigin( const Vector& newOrigin ) override;
 
 		// angles
-		const Vector&	GetAngles() const;
-		void			SetAngles( const Vector& newAngles );
+		const Vector&	GetAngles() const override;
+		void			SetAngles( const Vector& newAngles ) override;
 
 		// velocity
-		const Vector&	GetVelocity() const;
-		void			SetVelocity( const Vector& newVelocity );
+		const Vector&	GetVelocity() const override;
+		void			SetVelocity( const Vector& newVelocity ) override;
 
 		// mins
-		const Vector&	GetMins() const;
+		const Vector&	GetMins() const override;
 
 		// maxs
-		const Vector&	GetMaxs() const;
+		const Vector&	GetMaxs() const override;
 
 		// (mins + maxs)/2
-		const Vector&	GetAverageOrigin() const;
+		const Vector&	GetAverageOrigin() const override;
 
 		// spawnflags
 		// TODO: create a class to store bitfields in it
-		const int&		GetSpawnflags() const;
-		void			SetSpawnflags( int flags );
+		const int&		GetSpawnflags() const override;
+		void			SetSpawnflags( int newFlags ) override;
+
+		// flags
+		const int&		GetFlags() const override;
+		void			SetFlags( int newFlags ) override;
 
 		// Utilities
 		// Triggers all entities that match the "target" field
@@ -157,6 +163,9 @@ namespace Entities
 		int				spawnFlags{ 0 };		// 64 bits of
 		int				spawnFlagsExtra{ 0 };	// spawnflags cuz' why not
 	
+	protected:
+		virtual bool	CheckAndClearEvents();
+
 	protected:
 		unsigned int	entityIndex{ EntityIndexNotSet };
 

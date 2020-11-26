@@ -13,6 +13,10 @@ using namespace Entities;
 
 void Worldspawn::Spawn()
 {
+	gameImports->SetConfigString( CS_GAME_VERSION, GAME_VERSION );
+
+	gameImports->SetConfigString( CS_LEVEL_START_TIME, va( "%i", level.startTime ) );
+
 	float gravity = spawnArgs->GetFloat( "gravity", 800 );
 	gameImports->ConsoleVariable_Set( "g_gravity", va( "%f", gravity ) );
 

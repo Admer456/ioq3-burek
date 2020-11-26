@@ -643,8 +643,7 @@ void GameLocal::ClientThink( int clientNum )
 
 void GameLocal::RunFrame( int levelTime )
 {
-	int			i;
-	gentity_t* ent;
+	int	i;
 
 	// if we are waiting for the level to restart, do nothing
 	if ( level.restarted ) 
@@ -659,85 +658,15 @@ void GameLocal::RunFrame( int levelTime )
 	// get any cvar changes
 	UpdateCVars();
 
-	// go through all allocated objects
-	ent = &g_entities[0];
-	for ( i = 0; i < level.num_entities; i++, ent++ ) 
-	{
-		if ( !ent->inuse ) 
-		{
-			continue;
-		}
-
-		// clear events that are too old
-		if ( level.time - ent->eventTime > EVENT_VALID_MSEC ) 
-		{
-			if ( ent->s.event ) 
-			{
-				ent->s.event = 0;	// &= EV_EVENT_BITS;
-				if ( ent->client ) 
-				{
-					ent->client->ps.externalEvent = 0;
-					// predicted events should never be set to zero
-					//ent->client->ps.events[0] = 0;
-					//ent->client->ps.events[1] = 0;
-				}
-			}
-			if ( ent->freeAfterEvent ) 
-			{
-				// tempEntities or dropped items completely go away after their event
-				G_FreeEntity( ent );
-				continue;
-			}
-			else if ( ent->unlinkAfterEvent ) 
-			{
-				// items that will respawn will hide themselves after their pickup event
-				ent->unlinkAfterEvent = qfalse;
-				trap_UnlinkEntity( ent );
-			}
-		}
-
-		// temporary entities don't think
-		if ( ent->freeAfterEvent ) 
-		{
-			continue;
-		}
-
-		if ( !ent->r.linked && ent->neverFree ) 
-		{
-			continue;
-		}
-
-		if ( ent->s.eType == ET_MISSILE ) 
-		{
-			G_RunMissile( ent );
-			continue;
-		}
-
-		if ( ent->s.eType == ET_ITEM || ent->physicsObject ) 
-		{
-			G_RunItem( ent );
-			continue;
-		}
-
-		if ( ent->s.eType == ET_MOVER ) 
-		{
-			G_RunMover( ent );
-			continue;
-		}
-
-		if ( i < MAX_CLIENTS ) 
-		{
-			G_RunClient( ent );
-			continue;
-		}
-
-		G_RunThink( ent );
-	}
-
 	for ( auto ent : gEntities )
 	{
 		if ( nullptr == ent )
 			continue;
+
+		if ( ent->GetFlags() & FL_REMOVE_ME )
+		{
+			//gameWorld->FreeEntity( ent );
+		}
 
 		if ( ent->GetEntityIndex() < MAX_CLIENTS )
 		{
@@ -764,8 +693,8 @@ void GameLocal::RunFrame( int levelTime )
 	// See if it is time to end the level
 	CheckExitRules();
 
-	// Update to team status?
-	::CheckTeamStatus();
+	//// Update to team status?
+	//::CheckTeamStatus();
 
 	//// Cancel vote if timed out
 	//::CheckVote();
