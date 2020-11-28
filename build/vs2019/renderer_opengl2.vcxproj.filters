@@ -239,126 +239,6 @@
     <ClCompile Include="..\..\code\jpeg-8c\jutils.c">
       <Filter>jpeg-8c</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\code\renderercommon\tr_font.c">
-      <Filter>renderercommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderercommon\tr_image_bmp.c">
-      <Filter>renderercommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderercommon\tr_image_jpg.c">
-      <Filter>renderercommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderercommon\tr_image_pcx.c">
-      <Filter>renderercommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderercommon\tr_image_png.c">
-      <Filter>renderercommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderercommon\tr_image_tga.c">
-      <Filter>renderercommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderercommon\tr_noise.c">
-      <Filter>renderercommon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_animation.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_backend.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_bsp.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_cmds.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_curve.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_dsa.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_extensions.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_extramath.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_fbo.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_flares.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_glsl.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_image.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_image_dds.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_init.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_light.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_main.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_marks.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_mesh.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_model.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_model_iqm.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_postprocess.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_scene.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_shade.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_shade_calc.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_shader.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_shadows.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_sky.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_subs.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_surface.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_vbo.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\renderergl2\tr_world.c">
-      <Filter>renderergl2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\sdl\sdl_gamma.c">
-      <Filter>sdl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\sdl\sdl_glimp.c">
-      <Filter>sdl</Filter>
-    </ClCompile>
     <ClCompile Include="dynamic\renderergl2\bokeh_fp.c">
       <Filter>dynamic</Filter>
     </ClCompile>
@@ -451,6 +331,126 @@
     </ClCompile>
     <ClCompile Include="..\..\code\qcommon\q_shared.cpp">
       <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderercommon\tr_font.cpp">
+      <Filter>renderercommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderercommon\tr_image_bmp.cpp">
+      <Filter>renderercommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderercommon\tr_image_jpg.cpp">
+      <Filter>renderercommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderercommon\tr_image_pcx.cpp">
+      <Filter>renderercommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderercommon\tr_image_png.cpp">
+      <Filter>renderercommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderercommon\tr_image_tga.cpp">
+      <Filter>renderercommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderercommon\tr_noise.cpp">
+      <Filter>renderercommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_animation.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_backend.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_bsp.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_cmds.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_curve.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_dsa.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_extensions.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_extramath.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_fbo.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_flares.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_image.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_image_dds.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_init.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_light.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_main.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_marks.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_mesh.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_model.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_model_iqm.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_postprocess.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_scene.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_shade.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_shade_calc.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_shader.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_shadows.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_sky.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_subs.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_surface.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_vbo.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_world.cpp">
+      <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\sdl\sdl_gamma.cpp">
+      <Filter>sdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\sdl\sdl_glimp.cpp">
+      <Filter>sdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderergl2\tr_glsl.cpp">
+      <Filter>renderergl2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
