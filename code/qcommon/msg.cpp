@@ -805,7 +805,7 @@ netField_t	entityStateFields[] =
 // Not all members from SharedComponent will be delta'ed
 // Right now, we're trying to maintain compatibility with the old entity system
 // until we go deep enough to get rid of it
-netField_t sharedComponentFields[] =
+/*netField_t sharedComponentFields[] =
 {
 	{ CompNetFieldExplicit( "pos.trTime", trPos.trTime ), 32 },
 	{ CompNetFieldExplicit( "pos.trBase[0]", trPos.trBase[0] ), 0 },
@@ -858,7 +858,7 @@ netField_t sharedComponentFields[] =
 	{ CompNetField( angles2[2] ), 0 },
 	{ CompNetField( constantLight ), 32 },
 	{ CompNetField( frame ), 16 }
-};
+};*/
 
 // if (int)f == f and (int)f + ( 1<<(FLOAT_INT_BITS-1) ) < ( 1 << FLOAT_INT_BITS )
 // the float will be sent with FLOAT_INT_BITS, otherwise all 32 bits will be sent
@@ -1110,6 +1110,7 @@ void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to,
 	}
 }
 
+/*
 void MSG_ReadDeltaEntity( msg_t* msg, Components::SharedComponent* from, Components::SharedComponent* to, int number )
 {
 	int			i, lc;
@@ -1270,7 +1271,7 @@ void MSG_ReadDeltaEntity( msg_t* msg, Components::SharedComponent* from, Compone
 		}
 		Com_Printf( " (%i bits)\n", endBit - startBit );
 	}
-}
+}*/
 
 /*
 ============================================================================

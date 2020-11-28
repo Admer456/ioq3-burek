@@ -355,11 +355,11 @@ void GameLocal::ClientBegin( int clientNum )
 
 	client = level.clients + clientNum;
 
-	if ( nullptr != ent )
-	{
-		engine->Error( va( "Entity slot %d taken by another entity, yet it's reserved for clients!\n", clientNum ) );
-		return;
-	}
+	//if ( nullptr != ent )
+	//{
+	//	engine->Error( va( "Entity slot %d taken by another entity, yet it's reserved for clients!\n", clientNum ) );
+	//	return;
+	//}
 
 	// Does this really need to be checked?
 	// Is this entity linked into the world?
@@ -368,7 +368,7 @@ void GameLocal::ClientBegin( int clientNum )
 		gameImports->UnlinkEntity( ent );
 	}
 
-	ent = gameWorld->CreateEntity<Entities::BasePlayer>( clientNum );
+	//ent = gameWorld->CreateEntity<Entities::BasePlayer>( clientNum );
 	player = static_cast<Entities::BasePlayer*>(ent);
 
 	player->GetShared()->ownerNum = ENTITYNUM_NONE;

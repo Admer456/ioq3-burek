@@ -5,7 +5,7 @@ namespace Components
 	class IComponent;
 
 	// Represents entityShared_t and entityState_t
-	class SharedComponent : public IComponent
+	/*class SharedComponent : public IComponent // Not ready yet - entityState and entityShared are still used
 	{
 	public:
 		enum trajectoryType
@@ -97,5 +97,5 @@ namespace Components
 		// ent->r.ownerNum == passEntityNum	(don't interact with your own missiles)
 		// entity[ent->r.ownerNum].r.ownerNum == passEntityNum	(don't interact with other missiles from owner)
 		int				ownerNumber{ 0 };
-	};
+	};*/
 }

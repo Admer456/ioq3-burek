@@ -256,7 +256,7 @@ void GameWorld::TouchTriggers( Entities::IEntity* ent )
 
 	for ( i = 0; i < num; i++ ) 
 	{
-		hit = gEntities[touch[i]];
+		hit = gEntities[touch.data()[i]];
 
 		// If not a trigger_ entity, ignore
 		if ( !(hit->GetShared()->contents & CONTENTS_TRIGGER) ) 
@@ -428,8 +428,15 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	// Find a spawn point
 	spawnPoint = FindSpawnPoint<Entities::InfoPlayerStart>( client->ps.origin, false );
 
-	VectorCopy( spawnPoint->GetShared()->currentOrigin, player->GetShared()->currentOrigin );
-	
+	if ( spawnPoint )
+	{
+		VectorCopy( spawnPoint->GetShared()->currentOrigin, player->GetShared()->currentOrigin );
+	}
+	else // In case there's no spawnpoint, spawn at 0,0,0
+	{
+		Vector::Zero.CopyToArray( player->GetShared()->currentOrigin );
+	}
+
 	// Toggle the teleport bit so the client doesn't lerp
 	flags = client->ps.eFlags & (EF_TELEPORT_BIT | EF_VOTED | EF_TEAMVOTED);
 	flags ^= EF_TELEPORT_BIT;
@@ -547,7 +554,8 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 			client->ps.weaponstate = WEAPON_READY;
 			
 			// fire the targets of the spawn point
-			spawnPoint->UseTargets( player );
+			if ( spawnPoint)
+				spawnPoint->UseTargets( player );
 
 			// select the highest weapon number available, after any spawn given items have fired
 			client->ps.weapon = 1;

@@ -30,10 +30,12 @@ namespace Entities
 	class IEntity;
 }
 
+/*
 namespace Components
 {
 	class SharedComponent;
 }
+*/
 
 //Ignore __attribute__ on non-gcc platforms
 #ifndef __GNUC__
