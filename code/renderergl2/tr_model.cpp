@@ -230,7 +230,7 @@ model_t *R_AllocModel( void ) {
 		return NULL;
 	}
 
-	mod = ri.Hunk_Alloc( sizeof( *tr.models[tr.numModels] ), h_low );
+	mod = static_cast<model_t*>( ri.Hunk_Alloc( sizeof( *tr.models[tr.numModels] ), h_low ) );
 	mod->index = tr.numModels;
 	tr.models[tr.numModels] = mod;
 	tr.numModels++;
@@ -408,7 +408,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 	mod->type = MOD_MESH;
 	size = LittleLong(md3Model->ofsEnd);
 	mod->dataSize += size;
-	mdvModel = mod->mdv[lod] = ri.Hunk_Alloc(sizeof(mdvModel_t), h_low);
+	mdvModel = mod->mdv[lod] = static_cast<mdvModel_t*>( ri.Hunk_Alloc(sizeof(mdvModel_t), h_low) );
 
 //  Com_Memcpy(mod->md3[lod], buffer, LittleLong(md3Model->ofsEnd));
 
@@ -430,7 +430,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 
 	// swap all the frames
 	mdvModel->numFrames = md3Model->numFrames;
-	mdvModel->frames = frame = ri.Hunk_Alloc(sizeof(*frame) * md3Model->numFrames, h_low);
+	mdvModel->frames = frame = static_cast<mdvFrame_t*>( ri.Hunk_Alloc(sizeof(*frame) * md3Model->numFrames, h_low) );
 
 	md3Frame = (md3Frame_t *) ((byte *) md3Model + md3Model->ofsFrames);
 	for(i = 0; i < md3Model->numFrames; i++, frame++, md3Frame++)
@@ -446,7 +446,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 
 	// swap all the tags
 	mdvModel->numTags = md3Model->numTags;
-	mdvModel->tags = tag = ri.Hunk_Alloc(sizeof(*tag) * (md3Model->numTags * md3Model->numFrames), h_low);
+	mdvModel->tags = tag = static_cast<mdvTag_t*>( ri.Hunk_Alloc(sizeof(*tag) * (md3Model->numTags * md3Model->numFrames), h_low) );
 
 	md3Tag = (md3Tag_t *) ((byte *) md3Model + md3Model->ofsTags);
 	for(i = 0; i < md3Model->numTags * md3Model->numFrames; i++, tag++, md3Tag++)
@@ -461,7 +461,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 	}
 
 
-	mdvModel->tagNames = tagName = ri.Hunk_Alloc(sizeof(*tagName) * (md3Model->numTags), h_low);
+	mdvModel->tagNames = tagName = static_cast<mdvTagName_t*>( ri.Hunk_Alloc(sizeof(*tagName) * (md3Model->numTags), h_low) );
 
 	md3Tag = (md3Tag_t *) ((byte *) md3Model + md3Model->ofsTags);
 	for(i = 0; i < md3Model->numTags; i++, tagName++, md3Tag++)
@@ -471,7 +471,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 
 	// swap all the surfaces
 	mdvModel->numSurfaces = md3Model->numSurfaces;
-	mdvModel->surfaces = surf = ri.Hunk_Alloc(sizeof(*surf) * md3Model->numSurfaces, h_low);
+	mdvModel->surfaces = surf = static_cast<mdvSurface_t*>( ri.Hunk_Alloc(sizeof(*surf) * md3Model->numSurfaces, h_low) );
 
 	md3Surf = (md3Surface_t *) ((byte *) md3Model + md3Model->ofsSurfaces);
 	for(i = 0; i < md3Model->numSurfaces; i++)
@@ -525,7 +525,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 
 		// register the shaders
 		surf->numShaderIndexes = md3Surf->numShaders;
-		surf->shaderIndexes = shaderIndex = ri.Hunk_Alloc(sizeof(*shaderIndex) * md3Surf->numShaders, h_low);
+		surf->shaderIndexes = shaderIndex = static_cast<int*> (ri.Hunk_Alloc(sizeof(*shaderIndex) * md3Surf->numShaders, h_low) );
 
 		md3Shader = (md3Shader_t *) ((byte *) md3Surf + md3Surf->ofsShaders);
 		for(j = 0; j < md3Surf->numShaders; j++, shaderIndex++, md3Shader++)
@@ -545,7 +545,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 
 		// swap all the triangles
 		surf->numIndexes = md3Surf->numTriangles * 3;
-		surf->indexes = tri = ri.Hunk_Alloc(sizeof(*tri) * 3 * md3Surf->numTriangles, h_low);
+		surf->indexes = tri = static_cast<glIndex_t*>( ri.Hunk_Alloc(sizeof(*tri) * 3 * md3Surf->numTriangles, h_low) );
 
 		md3Tri = (md3Triangle_t *) ((byte *) md3Surf + md3Surf->ofsTriangles);
 		for(j = 0; j < md3Surf->numTriangles; j++, tri += 3, md3Tri++)
@@ -557,7 +557,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 
 		// swap all the XyzNormals
 		surf->numVerts = md3Surf->numVerts;
-		surf->verts = v = ri.Hunk_Alloc(sizeof(*v) * (md3Surf->numVerts * md3Surf->numFrames), h_low);
+		surf->verts = v = static_cast<mdvVertex_t*>( ri.Hunk_Alloc(sizeof(*v) * (md3Surf->numVerts * md3Surf->numFrames), h_low) );
 
 		md3xyz = (md3XyzNormal_t *) ((byte *) md3Surf + md3Surf->ofsXyzNormals);
 		for(j = 0; j < md3Surf->numVerts * md3Surf->numFrames; j++, md3xyz++, v++)
@@ -589,7 +589,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 		}
 
 		// swap all the ST
-		surf->st = st = ri.Hunk_Alloc(sizeof(*st) * md3Surf->numVerts, h_low);
+		surf->st = st = static_cast<mdvSt_t*>( ri.Hunk_Alloc(sizeof(*st) * md3Surf->numVerts, h_low) );
 
 		md3st = (md3St_t *) ((byte *) md3Surf + md3Surf->ofsSt);
 		for(j = 0; j < md3Surf->numVerts; j++, md3st++, st++)
@@ -600,8 +600,8 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 
 		// calc tangent spaces
 		{
-			vec3_t *sdirs = ri.Malloc(sizeof(*sdirs) * surf->numVerts * mdvModel->numFrames);
-			vec3_t *tdirs = ri.Malloc(sizeof(*tdirs) * surf->numVerts * mdvModel->numFrames);
+			vec3_t *sdirs = static_cast<vec3_t*>( ri.Malloc(sizeof(*sdirs) * surf->numVerts * mdvModel->numFrames) );
+			vec3_t *tdirs = static_cast<vec3_t*>( ri.Malloc(sizeof(*tdirs) * surf->numVerts * mdvModel->numFrames) );
 
 			for(j = 0, v = surf->verts; j < (surf->numVerts * mdvModel->numFrames); j++, v++)
 			{
@@ -668,7 +668,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 		srfVaoMdvMesh_t *vaoSurf;
 
 		mdvModel->numVaoSurfaces = mdvModel->numSurfaces;
-		mdvModel->vaoSurfaces = ri.Hunk_Alloc(sizeof(*mdvModel->vaoSurfaces) * mdvModel->numSurfaces, h_low);
+		mdvModel->vaoSurfaces = static_cast<srfVaoMdvMesh_t*>( ri.Hunk_Alloc(sizeof(*mdvModel->vaoSurfaces) * mdvModel->numSurfaces, h_low) );
 
 		vaoSurf = mdvModel->vaoSurfaces;
 		surf = mdvModel->surfaces;
@@ -707,7 +707,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 			}
 
 
-			data = ri.Malloc(dataSize);
+			data = static_cast<uint8_t*>( ri.Malloc(dataSize) );
 			dataOfs = 0;
 
 			if (mdvModel->numFrames > 1)
@@ -877,7 +877,7 @@ static qboolean R_LoadMDR( model_t *mod, void *buffer, int filesize, const char 
 	}
 
 	mod->dataSize += size;
-	mod->modelData = mdr = ri.Hunk_Alloc( size, h_low );
+	mod->modelData = mdr = static_cast<mdrHeader_t*>( ri.Hunk_Alloc( size, h_low ) );
 
 	// Copy all the values over from the file and fix endian issues in the process, if necessary.
 	
@@ -1328,7 +1328,7 @@ int R_LerpTag( orientation_t *tag, qhandle_t handle, int startFrame, int endFram
 			end = R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, &end_space);
 		}
 		else if( model->type == MOD_IQM ) {
-			return R_IQMLerpTag( tag, model->modelData,
+			return R_IQMLerpTag( tag, static_cast<iqmData_t*>( model->modelData ),
 					startFrame, endFrame,
 					frac, tagName );
 		} else {
@@ -1403,7 +1403,7 @@ void R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs ) {
 	} else if(model->type == MOD_IQM) {
 		iqmData_t *iqmData;
 		
-		iqmData = model->modelData;
+		iqmData = static_cast<iqmData_t*>( model->modelData );
 
 		if(iqmData->bounds)
 		{

@@ -446,7 +446,7 @@ void R_LoadDDS ( const char *filename, byte **pic, int *width, int *height, GLen
 		}
 	}
 
-	*pic = ri.Malloc(len);
+	*pic = static_cast<byte*>( ri.Malloc(len) );
 	Com_Memcpy(*pic, data, len);
 
 	ri.FS_FreeFile(buffer.v);
@@ -463,7 +463,7 @@ void R_SaveDDS(const char *filename, byte *pic, int width, int height, int depth
 
 	picSize = width * height * depth * 4;
 	size = 4 + sizeof(*ddsHeader) + picSize;
-	data = ri.Malloc(size);
+	data = static_cast<byte*>( ri.Malloc(size) );
 
 	data[0] = 'D';
 	data[1] = 'D';

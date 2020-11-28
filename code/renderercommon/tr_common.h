@@ -34,17 +34,17 @@ typedef enum
 	IMGTYPE_DELUXE, // normals are swizzled, deluxe are not
 } imgType_t;
 
-typedef enum
+enum imgFlags_t 
 {
-	IMGFLAG_NONE           = 0x0000,
-	IMGFLAG_MIPMAP         = 0x0001,
-	IMGFLAG_PICMIP         = 0x0002,
-	IMGFLAG_CUBEMAP        = 0x0004,
+	IMGFLAG_NONE = 0x0000,
+	IMGFLAG_MIPMAP = 0x0001,
+	IMGFLAG_PICMIP = 0x0002,
+	IMGFLAG_CUBEMAP = 0x0004,
 	IMGFLAG_NO_COMPRESSION = 0x0010,
-	IMGFLAG_NOLIGHTSCALE   = 0x0020,
-	IMGFLAG_CLAMPTOEDGE    = 0x0040,
-	IMGFLAG_GENNORMALMAP   = 0x0080,
-} imgFlags_t;
+	IMGFLAG_NOLIGHTSCALE = 0x0020,
+	IMGFLAG_CLAMPTOEDGE = 0x0040,
+	IMGFLAG_GENNORMALMAP = 0x0080,
+};
 
 typedef struct image_s {
 	char		imgName[MAX_QPATH];		// game path, including extension
@@ -58,7 +58,7 @@ typedef struct image_s {
 	int			TMU;				// only needed for voodoo2
 
 	imgType_t   type;
-	imgFlags_t  flags;
+	int  flags;
 
 	struct image_s*	next;
 } image_t;
@@ -120,8 +120,8 @@ qboolean	R_GetModeInfo( int *width, int *height, float *windowAspect, int mode )
 float R_NoiseGet4f( float x, float y, float z, double t );
 void  R_NoiseInit( void );
 
-image_t     *R_FindImageFile( const char *name, imgType_t type, imgFlags_t flags );
-image_t *R_CreateImage( const char *name, byte *pic, int width, int height, imgType_t type, imgFlags_t flags, int internalFormat );
+image_t     *R_FindImageFile( const char *name, imgType_t type, int flags );
+image_t *R_CreateImage( const char *name, byte *pic, int width, int height, imgType_t type, int flags, int internalFormat );
 
 void R_IssuePendingRenderCommands( void );
 qhandle_t		 RE_RegisterShaderLightMap( const char *name, int lightmapIndex );

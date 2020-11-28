@@ -375,18 +375,18 @@ void R_CreateSurfaceGridMesh(srfBspSurface_t *grid, int width, int height,
 	Com_Memset(grid, 0, sizeof(*grid));
 
 #ifdef PATCH_STITCHING
-	grid->widthLodError = /*ri.Hunk_Alloc*/ ri.Malloc( width * 4 );
+	grid->widthLodError = /*ri.Hunk_Alloc*/ static_cast<float*>( ri.Malloc( width * 4 ) );
 	Com_Memcpy( grid->widthLodError, errorTable[0], width * 4 );
 
-	grid->heightLodError = /*ri.Hunk_Alloc*/ ri.Malloc( height * 4 );
+	grid->heightLodError = /*ri.Hunk_Alloc*/ static_cast<float*>( ri.Malloc( height * 4 ) );
 	Com_Memcpy( grid->heightLodError, errorTable[1], height * 4 );
 
 	grid->numIndexes = numIndexes;
-	grid->indexes = ri.Malloc(grid->numIndexes * sizeof(glIndex_t));
+	grid->indexes = static_cast<glIndex_t*>( ri.Malloc(grid->numIndexes * sizeof(glIndex_t)) );
 	Com_Memcpy(grid->indexes, indexes, numIndexes * sizeof(glIndex_t));
 
 	grid->numVerts = (width * height);
-	grid->verts = ri.Malloc(grid->numVerts * sizeof(srfVert_t));
+	grid->verts = static_cast<srfVert_t*>( ri.Malloc(grid->numVerts * sizeof(srfVert_t)) );
 #else
 	grid->widthLodError = ri.Hunk_Alloc( width * 4 );
 	Com_Memcpy( grid->widthLodError, errorTable[0], width * 4 );

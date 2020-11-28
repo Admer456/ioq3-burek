@@ -967,7 +967,7 @@ qboolean R_LoadIQM( model_t *mod, void *buffer, int filesize, const char *mod_na
 		srfIQModel_t *surf;
 
 		iqmData->numVaoSurfaces = iqmData->num_surfaces;
-		iqmData->vaoSurfaces = ri.Hunk_Alloc(sizeof(*iqmData->vaoSurfaces) * iqmData->numVaoSurfaces, h_low);
+		iqmData->vaoSurfaces = static_cast<srfVaoIQModel_t*>( ri.Hunk_Alloc(sizeof(*iqmData->vaoSurfaces) * iqmData->numVaoSurfaces, h_low) );
 
 		vaoSurf = iqmData->vaoSurfaces;
 		surf = iqmData->surfaces;
@@ -1004,7 +1004,7 @@ qboolean R_LoadIQM( model_t *mod, void *buffer, int filesize, const char *mod_na
 
 			dataSize = surf->num_vertexes * stride;
 
-			data = ri.Malloc(dataSize);
+			data = static_cast<uint8_t*>( ri.Malloc(dataSize) );
 			dataOfs = 0;
 
 			for ( j = 0; j < surf->num_vertexes; j++ )
@@ -1234,7 +1234,7 @@ void R_AddIQMSurfaces( trRefEntity_t *ent ) {
 	shader_t		*shader;
 	skin_t			*skin;
 
-	data = tr.currentModel->modelData;
+	data = static_cast<iqmData_t*>( tr.currentModel->modelData );
 	surface = data->surfaces;
 
 	// don't add third_person objects if not in a portal
@@ -1320,7 +1320,7 @@ void R_AddIQMSurfaces( trRefEntity_t *ent ) {
 			&& fogNum == 0
 			&& !(ent->e.renderfx & ( RF_NOSHADOW | RF_DEPTHHACK ) ) 
 			&& shader->sort == SS_OPAQUE ) {
-			R_AddDrawSurf( drawSurf, tr.shadowShader, 0, 0, 0, 0 );
+			R_AddDrawSurf( static_cast<surfaceType_t*>(drawSurf), tr.shadowShader, 0, 0, 0, 0 );
 		}
 
 		// projection shadows work fine with personal models
@@ -1328,11 +1328,11 @@ void R_AddIQMSurfaces( trRefEntity_t *ent ) {
 			&& fogNum == 0
 			&& (ent->e.renderfx & RF_SHADOW_PLANE )
 			&& shader->sort == SS_OPAQUE ) {
-			R_AddDrawSurf( drawSurf, tr.projectionShadowShader, 0, 0, 0, 0 );
+			R_AddDrawSurf( static_cast<surfaceType_t*>( drawSurf ), tr.projectionShadowShader, 0, 0, 0, 0 );
 		}
 
 		if( !personalModel ) {
-			R_AddDrawSurf( drawSurf, shader, fogNum, 0, 0, cubemapIndex );
+			R_AddDrawSurf( static_cast<surfaceType_t*>(drawSurf), shader, fogNum, 0, 0, cubemapIndex );
 		}
 
 		surface++;

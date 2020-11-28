@@ -1130,7 +1130,7 @@ const void	*RB_DrawSurfs( const void *data ) {
 
 		if (r_drawSun->integer)
 		{
-			RB_DrawSun(0.1, tr.sunShader);
+			RB_DrawSun(0.1f, tr.sunShader);
 		}
 
 		if (glRefConfig.framebufferObject && r_drawSunRays->integer)
@@ -1147,7 +1147,7 @@ const void	*RB_DrawSurfs( const void *data ) {
 				qglBeginQuery(GL_SAMPLES_PASSED, tr.sunFlareQuery[tr.sunFlareQueryIndex]);
 			}
 
-			RB_DrawSun(0.3, tr.sunFlareShader);
+			RB_DrawSun(0.3f, tr.sunFlareShader);
 
 			if (glRefConfig.occlusionQuery)
 			{
@@ -1273,7 +1273,7 @@ RB_ColorMask
 */
 const void *RB_ColorMask(const void *data)
 {
-	const colorMaskCommand_t *cmd = data;
+	const colorMaskCommand_t *cmd = static_cast<const colorMaskCommand_t*>( data );
 
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
@@ -1301,7 +1301,7 @@ RB_ClearDepth
 */
 const void *RB_ClearDepth(const void *data)
 {
-	const clearDepthCommand_t *cmd = data;
+	const clearDepthCommand_t *cmd = static_cast<const clearDepthCommand_t*>(data);
 	
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
@@ -1365,7 +1365,7 @@ const void	*RB_SwapBuffers( const void *data ) {
 		long sum = 0;
 		unsigned char *stencilReadback;
 
-		stencilReadback = ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight );
+		stencilReadback = static_cast<unsigned char*>( ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight ) );
 		qglReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, stencilReadback );
 
 		for ( i = 0; i < glConfig.vidWidth * glConfig.vidHeight; i++ ) {
@@ -1415,7 +1415,7 @@ RB_CapShadowMap
 */
 const void *RB_CapShadowMap(const void *data)
 {
-	const capShadowmapCommand_t *cmd = data;
+	const capShadowmapCommand_t *cmd = static_cast<const capShadowmapCommand_t*>( data );
 
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
@@ -1451,7 +1451,7 @@ RB_PostProcess
 */
 const void *RB_PostProcess(const void *data)
 {
-	const postProcessCommand_t *cmd = data;
+	const postProcessCommand_t *cmd = static_cast<const postProcessCommand_t*>(data);
 	FBO_t *srcFbo;
 	ivec4_t srcBox, dstBox;
 	qboolean autoExposure;
@@ -1671,7 +1671,7 @@ RB_ExportCubemaps
 */
 const void *RB_ExportCubemaps(const void *data)
 {
-	const exportCubemapsCommand_t *cmd = data;
+	const exportCubemapsCommand_t *cmd = static_cast<const exportCubemapsCommand_t*>( data );
 
 	// finish any 2D drawing if needed
 	if (tess.numIndexes)
@@ -1688,7 +1688,7 @@ const void *RB_ExportCubemaps(const void *data)
 	{
 		FBO_t *oldFbo = glState.currentFBO;
 		int sideSize = r_cubemapSize->integer * r_cubemapSize->integer * 4;
-		byte *cubemapPixels = ri.Malloc(sideSize * 6);
+		byte *cubemapPixels = static_cast<byte*>( ri.Malloc(sideSize * 6) );
 		int i, j;
 
 		FBO_Bind(tr.renderCubeFbo);

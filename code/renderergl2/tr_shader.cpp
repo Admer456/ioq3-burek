@@ -665,7 +665,7 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 			else
 			{
 				imgType_t type = IMGTYPE_COLORALPHA;
-				imgFlags_t flags = IMGFLAG_NONE;
+				int flags = IMGFLAG_NONE;
 
 				if (!shader.noMipMaps)
 					flags |= IMGFLAG_MIPMAP;
@@ -702,7 +702,7 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 		else if ( !Q_stricmp( token, "clampmap" ) )
 		{
 			imgType_t type = IMGTYPE_COLORALPHA;
-			imgFlags_t flags = IMGFLAG_CLAMPTOEDGE;
+			int flags = IMGFLAG_CLAMPTOEDGE;
 
 			token = COM_ParseExt( text, qfalse );
 			if ( !token[0] )
@@ -764,7 +764,7 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 				}
 				num = stage->bundle[0].numImageAnimations;
 				if ( num < MAX_IMAGE_ANIMATIONS ) {
-					imgFlags_t flags = IMGFLAG_NONE;
+					int flags = IMGFLAG_NONE;
 
 					if (!shader.noMipMaps)
 						flags |= IMGFLAG_MIPMAP;
@@ -1457,7 +1457,7 @@ static void ParseDeform( char **text ) {
 		if ( n < 0 || n > 7 ) {
 			n = 0;
 		}
-		ds->deformation = DEFORM_TEXT0 + n;
+		ds->deformation = static_cast<deform_t>(DEFORM_TEXT0 + n);
 		return;
 	}
 
@@ -1569,7 +1569,7 @@ static void ParseSkyParms( char **text ) {
 	static char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
 	char		pathname[MAX_QPATH];
 	int			i;
-	imgFlags_t imgFlags = IMGFLAG_MIPMAP | IMGFLAG_PICMIP;
+	int			imgFlags = IMGFLAG_MIPMAP | IMGFLAG_PICMIP;
 
 	// outerbox
 	token = COM_ParseExt( text, qfalse );
@@ -2256,7 +2256,7 @@ static void CollapseStagesToLightall(shaderStage_t *diffuse,
 		{
 			char normalName[MAX_QPATH];
 			image_t *normalImg;
-			imgFlags_t normalFlags = (diffuseImg->flags & ~IMGFLAG_GENNORMALMAP) | IMGFLAG_NOLIGHTSCALE;
+			int normalFlags = (diffuseImg->flags & ~IMGFLAG_GENNORMALMAP) | IMGFLAG_NOLIGHTSCALE;
 
 			// try a normalheight image first
 			COM_StripExtension(diffuseImg->imgName, normalName, MAX_QPATH);
@@ -2302,7 +2302,7 @@ static void CollapseStagesToLightall(shaderStage_t *diffuse,
 		{
 			char specularName[MAX_QPATH];
 			image_t *specularImg;
-			imgFlags_t specularFlags = (diffuseImg->flags & ~IMGFLAG_GENNORMALMAP) | IMGFLAG_NOLIGHTSCALE;
+			int specularFlags = (diffuseImg->flags & ~IMGFLAG_GENNORMALMAP) | IMGFLAG_NOLIGHTSCALE;
 
 			COM_StripExtension(diffuseImg->imgName, specularName, MAX_QPATH);
 			Q_strcat(specularName, MAX_QPATH, "_s");
@@ -2760,7 +2760,7 @@ static shader_t *GeneratePermanentShader( void ) {
 		return tr.defaultShader;
 	}
 
-	newShader = ri.Hunk_Alloc( sizeof( shader_t ), h_low );
+	newShader = static_cast<shader_t*>( ri.Hunk_Alloc( sizeof( shader_t ), h_low ) );
 
 	*newShader = shader;
 
@@ -2782,12 +2782,12 @@ static shader_t *GeneratePermanentShader( void ) {
 		if ( !stages[i].active ) {
 			break;
 		}
-		newShader->stages[i] = ri.Hunk_Alloc( sizeof( stages[i] ), h_low );
+		newShader->stages[i] = static_cast<shaderStage_t*>( ri.Hunk_Alloc( sizeof( stages[i] ), h_low ) );
 		*newShader->stages[i] = stages[i];
 
 		for ( b = 0 ; b < NUM_TEXTURE_BUNDLES ; b++ ) {
 			size = newShader->stages[i]->bundle[b].numTexMods * sizeof( texModInfo_t );
-			newShader->stages[i]->bundle[b].texMods = ri.Hunk_Alloc( size, h_low );
+			newShader->stages[i]->bundle[b].texMods = static_cast<texModInfo_t*>( ri.Hunk_Alloc( size, h_low ) );
 			Com_Memcpy( newShader->stages[i]->bundle[b].texMods, stages[i].bundle[b].texMods, size );
 		}
 	}
@@ -3309,7 +3309,7 @@ shader_t *R_FindShader( const char *name, int lightmapIndex, qboolean mipRawImag
 	// look for a single supported image file
 	//
 	{
-		imgFlags_t flags;
+		int flags;
 
 		flags = IMGFLAG_NONE;
 
@@ -3752,7 +3752,7 @@ static void ScanAndLoadShaderFiles( void )
 	}
 
 	// build single large buffer
-	s_shaderText = ri.Hunk_Alloc( sum + numShaderFiles*2, h_low );
+	s_shaderText = static_cast<char*>( ri.Hunk_Alloc( sum + numShaderFiles*2, h_low ) );
 	s_shaderText[ 0 ] = '\0';
 	textEnd = s_shaderText;
  
@@ -3792,7 +3792,7 @@ static void ScanAndLoadShaderFiles( void )
 
 	size += MAX_SHADERTEXT_HASH;
 
-	hashMem = ri.Hunk_Alloc( size * sizeof(char *), h_low );
+	hashMem = static_cast<char*>( ri.Hunk_Alloc( size * sizeof(char *), h_low ) );
 
 	for (i = 0; i < MAX_SHADERTEXT_HASH; i++) {
 		shaderTextHashTable[i] = (char **) hashMem;

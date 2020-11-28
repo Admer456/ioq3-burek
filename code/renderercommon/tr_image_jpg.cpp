@@ -203,7 +203,7 @@ void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *heigh
   memcount = pixelcount * 4;
   row_stride = cinfo.output_width * cinfo.output_components;
 
-  out = ri.Malloc(memcount);
+  out = static_cast<byte*>( ri.Malloc(memcount) );
 
   *width = cinfo.output_width;
   *height = cinfo.output_height;
@@ -467,7 +467,7 @@ void RE_SaveJPG(char * filename, int quality, int image_width, int image_height,
   size_t bufSize;
 
   bufSize = image_width * image_height * 3;
-  out = ri.Hunk_AllocateTempMemory(bufSize);
+  out = static_cast<byte*>( ri.Hunk_AllocateTempMemory(bufSize) );
 
   bufSize = RE_SaveJPGToBuffer(out, bufSize, quality, image_width, image_height, image_buffer, padding);
   ri.FS_WriteFile(filename, out, bufSize);

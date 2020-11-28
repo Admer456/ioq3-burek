@@ -169,7 +169,7 @@ static void GLimp_DetectAvailableModes(void)
 		return;
 	}
 
-	modes = SDL_calloc( (size_t)numSDLModes, sizeof( SDL_Rect ) );
+	modes = static_cast<SDL_Rect*>( SDL_calloc( (size_t)numSDLModes, sizeof( SDL_Rect ) ) );
 	if ( !modes )
 	{
 		ri.Error( ERR_FATAL, "Out of memory" );
@@ -754,7 +754,7 @@ GLimp_StartDriverAndSetMode
 */
 static qboolean GLimp_StartDriverAndSetMode(int mode, qboolean fullscreen, qboolean noborder, qboolean gl3Core)
 {
-	rserr_t err;
+	int err;
 
 	if (!SDL_WasInit(SDL_INIT_VIDEO))
 	{
@@ -885,9 +885,9 @@ static void GLimp_InitExtensions( qboolean fixedFunction )
 		{
 			if ( r_ext_multitexture->value )
 			{
-				qglMultiTexCoord2fARB = SDL_GL_GetProcAddress( "glMultiTexCoord2fARB" );
-				qglActiveTextureARB = SDL_GL_GetProcAddress( "glActiveTextureARB" );
-				qglClientActiveTextureARB = SDL_GL_GetProcAddress( "glClientActiveTextureARB" );
+				qglMultiTexCoord2fARB = static_cast<void(APIENTRY*)( GLenum target, GLfloat s, GLfloat t )>( SDL_GL_GetProcAddress( "glMultiTexCoord2fARB" ) );
+				qglActiveTextureARB = static_cast<void(APIENTRY*)( GLenum texture )>( SDL_GL_GetProcAddress( "glActiveTextureARB" ) );
+				qglClientActiveTextureARB = static_cast<void(APIENTRY*)( GLenum texture )>( SDL_GL_GetProcAddress( "glClientActiveTextureARB" ) );
 
 				if ( qglActiveTextureARB )
 				{

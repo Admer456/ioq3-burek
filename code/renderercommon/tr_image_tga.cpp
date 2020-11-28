@@ -126,7 +126,7 @@ void R_LoadTGA ( const char *name, byte **pic, int *width, int *height)
 	}
 
 
-	targa_rgba = ri.Malloc (numPixels);
+	targa_rgba = static_cast<byte*>( ri.Malloc (numPixels) );
 
 	if (targa_header.id_length != 0)
 	{

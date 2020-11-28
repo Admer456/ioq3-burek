@@ -24,34 +24,37 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "tr_dsa.h"
 
-extern const char *fallbackShader_bokeh_vp;
-extern const char *fallbackShader_bokeh_fp;
-extern const char *fallbackShader_calclevels4x_vp;
-extern const char *fallbackShader_calclevels4x_fp;
-extern const char *fallbackShader_depthblur_vp;
-extern const char *fallbackShader_depthblur_fp;
-extern const char *fallbackShader_dlight_vp;
-extern const char *fallbackShader_dlight_fp;
-extern const char *fallbackShader_down4x_vp;
-extern const char *fallbackShader_down4x_fp;
-extern const char *fallbackShader_fogpass_vp;
-extern const char *fallbackShader_fogpass_fp;
-extern const char *fallbackShader_generic_vp;
-extern const char *fallbackShader_generic_fp;
-extern const char *fallbackShader_lightall_vp;
-extern const char *fallbackShader_lightall_fp;
-extern const char *fallbackShader_pshadow_vp;
-extern const char *fallbackShader_pshadow_fp;
-extern const char *fallbackShader_shadowfill_vp;
-extern const char *fallbackShader_shadowfill_fp;
-extern const char *fallbackShader_shadowmask_vp;
-extern const char *fallbackShader_shadowmask_fp;
-extern const char *fallbackShader_ssao_vp;
-extern const char *fallbackShader_ssao_fp;
-extern const char *fallbackShader_texturecolor_vp;
-extern const char *fallbackShader_texturecolor_fp;
-extern const char *fallbackShader_tonemap_vp;
-extern const char *fallbackShader_tonemap_fp;
+extern "C"
+{
+	extern const char* fallbackShader_bokeh_vp;
+	extern const char* fallbackShader_bokeh_fp;
+	extern const char* fallbackShader_calclevels4x_vp;
+	extern const char* fallbackShader_calclevels4x_fp;
+	extern const char* fallbackShader_depthblur_vp;
+	extern const char* fallbackShader_depthblur_fp;
+	extern const char* fallbackShader_dlight_vp;
+	extern const char* fallbackShader_dlight_fp;
+	extern const char* fallbackShader_down4x_vp;
+	extern const char* fallbackShader_down4x_fp;
+	extern const char* fallbackShader_fogpass_vp;
+	extern const char* fallbackShader_fogpass_fp;
+	extern const char* fallbackShader_generic_vp;
+	extern const char* fallbackShader_generic_fp;
+	extern const char* fallbackShader_lightall_vp;
+	extern const char* fallbackShader_lightall_fp;
+	extern const char* fallbackShader_pshadow_vp;
+	extern const char* fallbackShader_pshadow_fp;
+	extern const char* fallbackShader_shadowfill_vp;
+	extern const char* fallbackShader_shadowfill_fp;
+	extern const char* fallbackShader_shadowmask_vp;
+	extern const char* fallbackShader_shadowmask_fp;
+	extern const char* fallbackShader_ssao_vp;
+	extern const char* fallbackShader_ssao_fp;
+	extern const char* fallbackShader_texturecolor_vp;
+	extern const char* fallbackShader_texturecolor_fp;
+	extern const char* fallbackShader_tonemap_vp;
+	extern const char* fallbackShader_tonemap_fp;
+}
 
 typedef struct uniformInfo_s
 {
@@ -195,7 +198,7 @@ static void GLSL_PrintLog(GLuint programOrShader, glslPrintLog_t type, qboolean 
 	if (maxLength < 1023)
 		msg = msgPart;
 	else
-		msg = ri.Malloc(maxLength);
+		msg = static_cast<char*>( ri.Malloc(maxLength) );
 
 	switch (type)
 	{
@@ -676,7 +679,7 @@ void GLSL_InitUniforms(shaderProgram_t *program)
 		}
 	}
 
-	program->uniformBuffer = ri.Malloc(size);
+	program->uniformBuffer = static_cast<char*>( ri.Malloc(size) );
 }
 
 void GLSL_FinishGPUShader(shaderProgram_t *program)
