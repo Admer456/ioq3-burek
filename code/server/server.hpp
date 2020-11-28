@@ -89,8 +89,8 @@ typedef struct {
 	char			*entityParsePoint;	// used during game VM init
 
 	// the game virtual machine will update these on init and changes
-	sharedEntity_t	*gentities;
-	int				gentitySize;
+	//sharedEntity_t	*gentities;
+	//int				gentitySize;
 	int				num_entities;		// current number, <= MAX_GENTITIES
 
 	Entities::IEntity** entities;

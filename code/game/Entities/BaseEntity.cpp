@@ -24,6 +24,8 @@ KeyValueElement BaseQuakeEntity::keyValues[] =
 
 void BaseQuakeEntity::Spawn()
 {
+	shared.s.number = GetEntityIndex();
+
 	const char* model = spawnArgs->GetCString( "model", nullptr );
 
 	engine->Print( va( "Spawned a BaseQuakeEntity at %i\n", GetEntityIndex() ) );

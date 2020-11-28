@@ -197,7 +197,7 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 
 	// let the server system know where the entites are
 	gameImports->LocateGameData(
-		reinterpret_cast<sharedEntity_t*>(level.gentities), level.num_entities, sizeof( gentity_t ),
+		/*reinterpret_cast<sharedEntity_t*>(level.gentities)*/ nullptr, level.num_entities, /*sizeof( gentity_t )*/ 0,
 		level.entities, level.numEntities, sizeof( Entities::IEntity* ),
 		&level.clients[0].ps, sizeof( level.clients[0] ) );
 
@@ -305,14 +305,14 @@ const char* GameLocal::ClientConnect( int clientNum, bool firstTime, bool isBot 
 	}
 
 	// Admer: Bots aren't supported a.t.m.
-	/*if ( isBot ) 
+	if ( isBot ) 
 	{
 		ent->GetShared()->svFlags |= SVF_BOT;
-		if ( !G_BotConnect( clientNum, (qboolean)!firstTime ) ) 
-		{
+		//if ( !G_BotConnect( clientNum, (qboolean)!firstTime ) ) 
+		//{
 			return "BotConnectfailed";
-		}
-	}*/
+		//}
+	}
 
 	// read or initialize the session data
 	if ( firstTime || level.newSession ) 
@@ -353,7 +353,7 @@ void GameLocal::ClientBegin( int clientNum )
 	//ent = g_entities + clientNum;
 	ent = gEntities[clientNum];
 
-	client = level.clients + clientNum;
+	client = &level.clients[clientNum];
 
 	//if ( nullptr != ent )
 	//{
@@ -378,7 +378,7 @@ void GameLocal::ClientBegin( int clientNum )
 	client->pers.enterTime = level.time;
 	client->pers.teamState.state = TEAM_BEGIN;
 
-	gameWorld->SpawnClient( player );
+	//gameWorld->SpawnClient( player );
 
 	// save eflags around this, because changing teams will
 	// cause this to happen with a valid entity, and we
@@ -638,12 +638,16 @@ void GameLocal::ClientCommand( int clientNum )
 
 void GameLocal::ClientThink( int clientNum )
 {
+	engine->Print( va("GameLocal::ClientThink on client %i\n", clientNum) );
+
 	return gameWorld->ClientThink( clientNum );
 }
 
 void GameLocal::RunFrame( int levelTime )
 {
 	int	i;
+
+	engine->Print( va( "GameLocal::RunFrame at %f\n", (float)(levelTime/1000.f) ) );
 
 	// if we are waiting for the level to restart, do nothing
 	if ( level.restarted ) 
@@ -670,7 +674,8 @@ void GameLocal::RunFrame( int levelTime )
 
 		if ( ent->GetEntityIndex() < MAX_CLIENTS )
 		{
-			gameWorld->ClientThink( static_cast<Entities::BasePlayer*>( ent ) );
+			gameWorld->RunClient( static_cast<Entities::BasePlayer*>( ent ) );
+			continue;
 		}
 
 		ent->Think();

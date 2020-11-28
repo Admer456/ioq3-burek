@@ -590,7 +590,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	client->ps.commandTime = level.time - 100;
 	player->GetClient()->pers.cmd.serverTime = level.time;
 
-	ClientThink( player->GetEntityIndex() );
+	ClientThink( player );
 
 	// run the presend to set anything else, follow spectators wait
 	// until all clients have been reconnected after map_restart
@@ -653,6 +653,15 @@ void GameWorld::ClientThink( Entities::BasePlayer* player )
 
 	if ( !g_synchronousClients.integer )
 	{
+		ClientThinkReal( player );
+	}
+}
+
+void GameWorld::RunClient( Entities::BasePlayer* player )
+{
+	if ( g_synchronousClients.integer )
+	{
+		player->GetClient()->pers.cmd.serverTime = level.time;
 		ClientThinkReal( player );
 	}
 }
@@ -722,7 +731,6 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	//
 	// check for exiting intermission
 	//
-	// TODO: implement intermission think
 	if ( level.intermissiontime ) 
 	{
 		ClientIntermissionThink( player );
@@ -730,11 +738,10 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	}
 
 	// spectators don't do much
-	// TODO: Implement SpectatorThink
 	if ( client->sess.sessionTeam == TEAM_SPECTATOR ) 
 	{
 		if ( client->sess.spectatorState == SPECTATOR_SCOREBOARD ) 
-	{
+		{
 			return;
 		}
 
@@ -809,6 +816,11 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	pm.ps = &client->ps;
 	pm.cmd = *ucmd;
 
+	if ( ucmd->forwardmove )
+	{
+		engine->Print( va("Movin' forward %i\n", (int)ucmd->forwardmove) );
+	}
+
 	if ( pm.ps->pm_type == PM_DEAD ) 
 	{
 		pm.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;
@@ -853,7 +865,7 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 
 	if ( !(player->GetClient()->ps.eFlags & EF_FIRING) ) 
 	{
-		client->fireHeld = qfalse;		// for grapple
+		client->fireHeld = qfalse; // for grapple
 	}
 
 	// use the snapped origin for linking so it matches client predicted versions
@@ -1145,7 +1157,7 @@ bool GameWorld::ClientInactivityTimer( Entities::BasePlayer* player )
 void GameWorld::SendPendingPredictableEvents( Entities::BasePlayer* player )
 {
 	playerState_t* ps = &player->GetClient()->ps;
-	Entities::IEntity* tempEnt = nullptr;
+	//Entities::IEntity* tempEnt = nullptr;
 	int event;
 	int seq;
 	int extEvent;
@@ -1171,8 +1183,8 @@ void GameWorld::SendPendingPredictableEvents( Entities::BasePlayer* player )
 		//// send to everyone except the client who generated the event
 		//tempEnt->GetShared()->svFlags |= SVF_NOTSINGLECLIENT;
 		//tempEnt->GetShared()->singleClient = ps->clientNum;
-		//// set back external event
-		//ps->externalEvent = extEvent;
+		// set back external event
+		ps->externalEvent = extEvent;
 	}
 }
 

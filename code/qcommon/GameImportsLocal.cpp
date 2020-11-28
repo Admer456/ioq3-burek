@@ -86,8 +86,8 @@ void GameImportsLocal::LocateGameData(
 	Entities::IEntity** iEnts,	int numEntities,	int sizeOfEntity, 
 	playerState_t*		client,	int sizeOfClient )
 {
-	sv.gentities = gEnts;
-	sv.gentitySize = sizeofGEntity;
+	//sv.gentities = gEnts;
+	//sv.gentitySize = sizeofGEntity;
 	sv.num_entities = numGEntities;
 
 	sv.entities = iEnts;

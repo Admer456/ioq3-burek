@@ -139,8 +139,12 @@ public:
 	template<typename entityType>
 	entityType*		FindSpawnPoint( Vector avoidPoint, bool isBot );
 
+	// Runs if g_synchronousClients is 0
 	void			ClientThink( const uint16_t& clientNum );
 	void			ClientThink( Entities::BasePlayer* player );
+
+	// Runs if g_synchronousClients is 1
+	void			RunClient( Entities::BasePlayer* player );
 
 private: // Private client methods, some of which will get moved to a gamemode interface eventually
 	void			ClientThinkReal( Entities::BasePlayer* player );
