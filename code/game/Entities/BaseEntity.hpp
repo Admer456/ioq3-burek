@@ -22,8 +22,8 @@ namespace Entities
 		virtual void	KeyValue() override;
 
 		virtual void	Think() override;
-		virtual void	Use( IEntity* activator, IEntity* caller, float value ) override { return; }
-		virtual void	Touch( IEntity* other, trace_t* trace ) override { return; }
+		virtual void	Use( IEntity* activator, IEntity* caller, float value ) override;
+		virtual void	Touch( IEntity* other, trace_t* trace ) override;
 		virtual void	Blocked( IEntity* other ) override { return; }
 		virtual void	TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) override { return; }
 		virtual void	Die( IEntity* killer ) override { return; }

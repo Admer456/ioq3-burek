@@ -15,7 +15,7 @@ using namespace Components;
 
 KeyValueElement BaseQuakeEntity::keyValues[] =
 {
-	//KeyValueElement( "origin",	0,												KVHandlers::Vector ),
+	//KeyValueElement( "origin",	offsetof( BaseQuakeEntity, shared.s.origin ),	KVHandlers::Vector ),
 	//KeyValueElement( "angles",	0,												KVHandlers::Vector ),
 	KeyValueElement( "spawnflags",	offsetof( BaseQuakeEntity, spawnFlags ),		KVHandlers::Int ),
 	KeyValueElement( "spawnflags2", offsetof( BaseQuakeEntity, spawnFlagsExtra ),	KVHandlers::Int ),
@@ -27,8 +27,15 @@ void BaseQuakeEntity::Spawn()
 	shared.s.number = GetEntityIndex();
 
 	const char* model = spawnArgs->GetCString( "model", nullptr );
+	Vector keyOrigin = spawnArgs->GetVector( "origin", Vector::Zero );
+	Vector keyAngles = spawnArgs->GetVector( "angles", Vector::Zero );
 
 	engine->Print( va( "Spawned a BaseQuakeEntity at %i\n", GetEntityIndex() ) );
+
+	keyOrigin.CopyToArray( shared.s.origin );
+	keyAngles.CopyToArray( shared.s.angles );
+
+	shared.s.eType = ET_MOVER;
 
 	if ( !model )
 	{
@@ -50,6 +57,15 @@ void BaseQuakeEntity::Spawn()
 			engine->Print( "This is not a brush model, not yet supported\n" );
 		}
 	}
+
+	shared.r.svFlags = SVF_USE_CURRENT_ORIGIN;
+	gameImports->LinkEntity( this );
+	shared.s.pos.trType = TR_STATIONARY;
+
+	engine->Print( va( "Spawned a BaseQuakeEntity at pos %3.2f %3.2f %3.2f\n", keyOrigin.x, keyOrigin.y, keyOrigin.z ) );
+
+	VectorCopy( shared.s.origin, shared.s.pos.trBase );
+	VectorCopy( shared.s.origin, shared.r.currentOrigin );
 }
 
 void BaseQuakeEntity::PreKeyValue()
@@ -116,8 +132,20 @@ void BaseQuakeEntity::Think()
 	{
 		return;
 	}
-
+		
 	(this->*thinkFunction)();
+}
+
+void BaseQuakeEntity::Use( IEntity* activator, IEntity* caller, float value )
+{
+	if ( useFunction )
+		(this->*useFunction)( activator, caller, value );
+}
+
+void BaseQuakeEntity::Touch( IEntity* other, trace_t* trace )
+{
+	if ( touchFunction )
+		(this->*touchFunction)( other );
 }
 
 const char* BaseQuakeEntity::GetName() const
