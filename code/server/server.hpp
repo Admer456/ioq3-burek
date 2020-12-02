@@ -419,7 +419,7 @@ void SV_SendClientSnapshot( client_t *client );
 //
 // sv_game.c
 //
-int	SV_NumForGentity( sharedEntity_t *ent );
+//int	SV_NumForGentity( sharedEntity_t *ent );
 sharedEntity_t *SV_GentityNum( int num );
 playerState_t *SV_GameClientNum( int num );
 svEntity_t	*SV_SvEntityForGentity( sharedEntity_t *gEnt );
