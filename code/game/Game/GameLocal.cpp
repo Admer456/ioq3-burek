@@ -638,16 +638,12 @@ void GameLocal::ClientCommand( int clientNum )
 
 void GameLocal::ClientThink( int clientNum )
 {
-	engine->Print( va("GameLocal::ClientThink on client %i\n", clientNum) );
-
 	return gameWorld->ClientThink( clientNum );
 }
 
 void GameLocal::RunFrame( int levelTime )
 {
 	int	i;
-
-	engine->Print( va( "GameLocal::RunFrame at %f\n", (float)(levelTime/1000.f) ) );
 
 	// if we are waiting for the level to restart, do nothing
 	if ( level.restarted ) 
