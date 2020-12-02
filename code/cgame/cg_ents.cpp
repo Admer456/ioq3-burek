@@ -182,7 +182,13 @@ static void CG_General( centity_t *cent ) {
 	VectorCopy( cent->lerpOrigin, ent.origin);
 	VectorCopy( cent->lerpOrigin, ent.oldorigin);
 
-	ent.hModel = cgs.gameModels[s1->modelindex];
+	// get the model, either as a bmodel or a modelindex
+	if ( s1->solid == SOLID_BMODEL ) {
+		ent.hModel = cgs.inlineDrawModel[s1->modelindex];
+	}
+	else {
+		ent.hModel = cgs.gameModels[s1->modelindex];
+	}
 
 	// player model
 	if (s1->number == cg.snap->ps.clientNum) {
@@ -194,6 +200,13 @@ static void CG_General( centity_t *cent ) {
 
 	// add to refresh list
 	trap_R_AddRefEntityToScene (&ent);
+
+	// add the secondary model
+	if ( s1->modelindex2 ) {
+		ent.skinNum = 0;
+		ent.hModel = cgs.gameModels[s1->modelindex2];
+		trap_R_AddRefEntityToScene( &ent );
+	}
 }
 
 /*
@@ -575,7 +588,6 @@ static void CG_Mover( centity_t *cent ) {
 		ent.hModel = cgs.gameModels[s1->modelindex2];
 		trap_R_AddRefEntityToScene(&ent);
 	}
-
 }
 
 /*
