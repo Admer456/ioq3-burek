@@ -141,11 +141,11 @@ void GameImportsLocal::SetBrushModel( IEntity* ent, const char* name )
 	auto sharedComp = ent->GetSharedEntity();
 
 	if ( !name ) {
-		Com_Error( ERR_DROP, "SV_SetBrushModel: NULL" );
+		Com_Error( ERR_DROP, "GameImportsLocal::SetBrushModel: NULL" );
 	}
 
 	if ( name[0] != '*' ) {
-		Com_Error( ERR_DROP, "SV_SetBrushModel: %s isn't a brush model", name );
+		Com_Error( ERR_DROP, "GameImportsLocal::SetBrushModel: %s isn't a brush model", name );
 	}
 
 	sharedComp->s.modelindex = atoi( name + 1 );
