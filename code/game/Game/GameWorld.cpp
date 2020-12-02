@@ -198,6 +198,8 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 	// Until we make an entity factory, we'll only spawn BaseQuakeEntity
 	auto ent = CreateEntity<BaseQuakeEntity>();
 
+	memset( ent->GetSharedEntity(), 0, sizeof( sharedEntity_t ) );
+
 	if ( nullptr == ent )
 	{
 		engine->Error( "Tried to spawn a non-existing entity!\n" );
@@ -211,6 +213,8 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 		reinterpret_cast<sharedEntity_t*>(level.gentities), level.num_entities, sizeof( gentity_t ),
 		level.entities, level.numEntities, sizeof( IEntity* ),
 		&level.clients[0].ps, sizeof( level.clients[0] ) );
+
+	ent->GetShared()->ownerNum = ENTITYNUM_NONE;
 
 	ent->spawnArgs = &map;
 
@@ -785,12 +789,12 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 		client->ps.speed *= 1.3;
 	}
 
-	// Let go of the hook if we aren't firing
-	if ( client->ps.weapon == WP_GRAPPLING_HOOK &&
-		 client->hook && !(ucmd->buttons & BUTTON_ATTACK) ) 
-	{
-		Weapon_HookFree( client->hook );
-	}
+	//// Let go of the hook if we aren't firing
+	//if ( client->ps.weapon == WP_GRAPPLING_HOOK &&
+	//	 client->hook && !(ucmd->buttons & BUTTON_ATTACK) ) 
+	//{
+	//	Weapon_HookFree( client->hook );
+	//}
 
 	// set up for pmove
 	oldEventSequence = client->ps.eventSequence;
@@ -815,11 +819,6 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 
 	pm.ps = &client->ps;
 	pm.cmd = *ucmd;
-
-	if ( ucmd->forwardmove )
-	{
-		engine->Print( va("Movin' forward %i\n", (int)ucmd->forwardmove) );
-	}
 
 	if ( pm.ps->pm_type == PM_DEAD ) 
 	{
@@ -891,8 +890,8 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	// NOTE: now copy the exact origin over otherwise clients can be snapped into solid
 	VectorCopy( player->GetClient()->ps.origin, player->GetShared()->currentOrigin );
 
-	//test for solid areas in the AAS file
-	BotTestAAS( player->GetShared()->currentOrigin );
+	////test for solid areas in the AAS file
+	//BotTestAAS( player->GetShared()->currentOrigin );
 
 	// touch other objects
 	ClientImpacts( player, &pm );
