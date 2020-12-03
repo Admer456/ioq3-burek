@@ -236,7 +236,7 @@ static void ComputeTexMods( shaderStage_t *pStage, int bundleNum, float *outMatr
 
 		case TMOD_ROTATE:
 			RB_CalcRotateTexMatrix( bundle->texMods[tm].rotateSpeed,
-									matrix );
+									matrix, bundle->texMods[tm].useSmoothRotation );
 			break;
 
 		default:

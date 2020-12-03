@@ -335,6 +335,7 @@ typedef struct {
 	// + = clockwise
 	// - = counterclockwise
 	float			rotateSpeed;
+	float			useSmoothRotation; // if true, use the standard sinf and cosf stuff, else use the sinTable
 
 } texModInfo_t;
 
@@ -2308,7 +2309,7 @@ void	RB_CalcFogTexCoords( float *dstTexCoords );
 
 void	RB_CalcScaleTexMatrix( const float scale[2], float *matrix );
 void	RB_CalcScrollTexMatrix( const float scrollSpeed[2], float *matrix );
-void	RB_CalcRotateTexMatrix( float degsPerSecond, float *matrix );
+void	RB_CalcRotateTexMatrix( float degsPerSecond, float *matrix, bool smooth = false );
 void RB_CalcTurbulentFactors( const waveForm_t *wf, float *amplitude, float *now );
 void	RB_CalcTransformTexMatrix( const texModInfo_t *tmi, float *matrix  );
 void	RB_CalcStretchTexMatrix( const waveForm_t *wf, float *matrix );

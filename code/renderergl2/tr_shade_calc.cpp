@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // tr_shade_calc.c
 
 #include "tr_local.h"
-
+#include <math.h>
 
 #define	WAVEVALUE( table, base, amplitude, phase, freq )  ((base) + table[ ( (int64_t) ( ( (phase) + tess.shaderTime * (freq) ) * FUNCTABLE_SIZE ) ) & FUNCTABLE_MASK ] * (amplitude))
 
@@ -800,7 +800,7 @@ void RB_CalcTransformTexMatrix( const texModInfo_t *tmi, float *matrix  )
 /*
 ** RB_CalcRotateTexMatrix
 */
-void RB_CalcRotateTexMatrix( float degsPerSecond, float *matrix )
+void RB_CalcRotateTexMatrix( float degsPerSecond, float *matrix, bool smooth )
 {
 	double timeScale = tess.shaderTime;
 	double degs;
@@ -810,8 +810,17 @@ void RB_CalcRotateTexMatrix( float degsPerSecond, float *matrix )
 	degs = -degsPerSecond * timeScale;
 	index = degs * ( FUNCTABLE_SIZE / 360.0f );
 
-	sinValue = tr.sinTable[ index & FUNCTABLE_MASK ];
-	cosValue = tr.sinTable[ ( index + FUNCTABLE_SIZE / 4 ) & FUNCTABLE_MASK ];
+	// Should solve https://github.com/Admer456/ioq3-burek/issues/21 -Admer
+	if ( smooth )
+	{
+		sinValue = sinf( degs * (M_PI / 180.f) );
+		cosValue = cosf( degs * (M_PI / 180.f) );
+	}
+	else
+	{
+		sinValue = tr.sinTable[ index & FUNCTABLE_MASK ];
+		cosValue = tr.sinTable[ ( index + FUNCTABLE_SIZE / 4 ) & FUNCTABLE_MASK ];
+	}
 
 	matrix[0] = cosValue; matrix[2] = -sinValue; matrix[4] = 0.5 - 0.5 * cosValue + 0.5 * sinValue;
 	matrix[1] = sinValue; matrix[3] = cosValue;  matrix[5] = 0.5 - 0.5 * sinValue - 0.5 * cosValue;

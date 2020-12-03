@@ -577,6 +577,20 @@ static void ParseTexMod( char *_text, shaderStage_t *stage )
 			return;
 		}
 		tmi->rotateSpeed = atof( token );
+		tmi->useSmoothRotation = false;
+
+		// Should solve https://github.com/Admer456/ioq3-burek/issues/21 -Admer
+		token = COM_ParseExt( text, false );
+		if ( token[0] != 0 )
+		{
+			if ( !Q_stricmp( token, "smooth" ) )
+				tmi->useSmoothRotation = true;
+			else if ( !Q_stricmp( token, "fast" ) )
+				tmi->useSmoothRotation = false;
+			else
+				ri.Printf( PRINT_WARNING, "WARNING: unknown tcMod rotate parameter '%s' in shader '%s'\n(valid options are: 'smooth', 'fast')\n", token, shader.name );
+		}
+
 		tmi->type = TMOD_ROTATE;
 	}
 	//
