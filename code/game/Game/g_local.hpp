@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "g_public.hpp"
 #include "Maths/Vector.hpp"
 #include "Entities/IEntity.hpp"
+#include "Entities/EntityClassInfo.hpp"
 
 //==================================================================
 

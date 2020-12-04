@@ -14,6 +14,8 @@ namespace Entities
 	class BaseQuakeEntity : public IEntity
 	{
 	public:
+		DeclareEntityClass();
+
 		virtual void	Spawn() override;
 		virtual void	Precache() override { return; }
 		
@@ -120,6 +122,10 @@ namespace Entities
 
 		// Kills everything in size.xyz radius around this entity
 		void			KillBox( const Vector& size, bool onlyPlayers = false ) override;
+
+		// Class comparison
+		bool			IsClass( const EntityClassInfo& eci ) override final;
+		bool			IsSubclassOf( const EntityClassInfo& eci ) override final;
 
 	public:
 		std::string		className;

@@ -7,6 +7,7 @@ namespace Entities
 
 	class InfoPlayerStart : public BaseQuakeEntity
 	{
-
+	public:
+		DeclareEntityClass();
 	};
 }

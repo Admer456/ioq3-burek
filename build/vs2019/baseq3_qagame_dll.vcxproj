@@ -145,6 +145,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,6 +163,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\code\game\;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -187,6 +189,7 @@
     <ClInclude Include="..\..\code\game\Components\SharedComponent.hpp" />
     <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\BasePlayer.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\EntityClassInfo.hpp" />
     <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerStart.hpp" />
@@ -218,6 +221,7 @@
     <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp" />
     <ClCompile Include="..\..\code\game\Entities\BasePlayer.cpp" />
     <ClCompile Include="..\..\code\game\Entities\BasePlayerCommands.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\EntityClassInfo.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_client.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_misc.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_mover.cpp" />

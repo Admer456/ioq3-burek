@@ -132,6 +132,9 @@
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerStart.hpp">
       <Filter>Sources\Entities\Info</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\EntityClassInfo.hpp">
+      <Filter>Sources\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -261,6 +264,9 @@
       <Filter>Sources\Entities\Info</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\BasePlayerCommands.cpp">
+      <Filter>Sources\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\EntityClassInfo.cpp">
       <Filter>Sources\Entities</Filter>
     </ClCompile>
   </ItemGroup>

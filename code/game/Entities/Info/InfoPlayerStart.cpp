@@ -9,4 +9,6 @@
 
 #include "InfoPlayerStart.hpp"
 
+using namespace Entities;
 
+DefineEntityClass( "info_player_start", InfoPlayerStart, BaseQuakeEntity );

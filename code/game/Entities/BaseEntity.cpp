@@ -13,6 +13,8 @@
 using namespace Entities;
 using namespace Components;
 
+DefineEntityClass( "func_nothing", BaseQuakeEntity, IEntity );
+
 KeyValueElement BaseQuakeEntity::keyValues[] =
 {
 	//KeyValueElement( "origin",	offsetof( BaseQuakeEntity, shared.s.origin ),	KVHandlers::Vector ),
@@ -319,6 +321,16 @@ void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers )
 		// nail it
 		hit->TakeDamage( this, this, DAMAGE_NO_PROTECTION, 100000 );
 	}
+}
+
+bool BaseQuakeEntity::IsClass( const EntityClassInfo& eci )
+{
+	return GetClassInfo()->IsClass( eci );
+}
+
+bool BaseQuakeEntity::IsSubclassOf( const EntityClassInfo& eci )
+{
+	return GetClassInfo()->IsSubclassOf( eci );
 }
 
 bool BaseQuakeEntity::CheckAndClearEvents()

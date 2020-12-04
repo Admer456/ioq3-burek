@@ -148,13 +148,8 @@ void GameWorld::SpawnEntities()
 		if ( className == "worldspawn" )
 			continue;
 
-		// In this very early phase of my entity system,
-		// we'll only spawn instances of func_nothing
-		if ( className == "func_nothing" )
-		{
-			// Spawn the entity from these keyvalues
-			SpawnEntity( lib );
-		}
+		// Spawn the entity from these keyvalues
+		SpawnEntity( lib );
 	}
 
 	level.spawning = false;
@@ -194,9 +189,19 @@ void GameWorld::SpawnWorldspawn()
 void GameWorld::SpawnEntity( KeyValueLibrary& map )
 {
 	using namespace Entities;
+	
+	// Look up class information by the map classname,
+	// to get a function pointer to the entity's allocator function
+	const char* className = map.GetMap()["classname"].c_str();
+	EntityClassInfo* eci = EntityClassInfo::GetInfoByMapName( className );
 
-	// Until we make an entity factory, we'll only spawn BaseQuakeEntity
-	auto ent = CreateEntity<BaseQuakeEntity>();
+	if ( nullptr == eci )
+	{
+		engine->Print( va( "WARNING: Cannot find entity class %s\n", className ) );
+		return;
+	}
+
+	BaseQuakeEntity* ent = static_cast<BaseQuakeEntity*>( eci->AllocateInstance() );
 
 	memset( ent->GetSharedEntity(), 0, sizeof( sharedEntity_t ) );
 
