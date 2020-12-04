@@ -335,7 +335,7 @@ typedef struct {
 	// + = clockwise
 	// - = counterclockwise
 	float			rotateSpeed;
-	float			useSmoothRotation; // if true, use the standard sinf and cosf stuff, else use the sinTable
+	bool			useSmoothRotation; // if true, use the standard sinf and cosf stuff, else use the sinTable
 
 } texModInfo_t;
 
