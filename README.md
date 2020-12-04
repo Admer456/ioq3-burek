@@ -39,6 +39,10 @@ It's as simple as building the entire solution. The compiled binaries will appea
     
 CMake is planned to be used in the future.  
   
+## Screenshots
+
+Screenshots are in the gallery [here](GALLERY.md).
+
 ## Credits
 
 jpcy's ioq3-premake-msvc - https://github.com/jpcy/ioq3-premake-msvc - used to generate the initial VS2019 solution  
