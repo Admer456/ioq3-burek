@@ -165,21 +165,19 @@ const char* BaseQuakeEntity::GetTarget() const
 	return target.c_str();
 }
 
-const Vector& BaseQuakeEntity::GetOrigin() const
+Vector BaseQuakeEntity::GetOrigin() const
 {
 	return Vector( shared.s.origin );
 }
 
 void BaseQuakeEntity::SetOrigin( const Vector& newOrigin )
 {
-	shared.s.origin[0] = newOrigin[0];
-	shared.s.origin[1] = newOrigin[1];
-	shared.s.origin[2] = newOrigin[2];
+	newOrigin.CopyToArray( shared.s.origin );
 }
 
-const Vector& BaseQuakeEntity::GetAngles() const
+Vector BaseQuakeEntity::GetAngles() const
 {
-	return Vector( shared.s.angles[0], shared.s.angles[1], shared.s.angles[2] );
+	return Vector( shared.s.angles );
 }
 
 void BaseQuakeEntity::SetAngles( const Vector& newAngles )
@@ -187,7 +185,7 @@ void BaseQuakeEntity::SetAngles( const Vector& newAngles )
 	newAngles.CopyToArray( shared.s.angles );
 }
 
-const Vector& BaseQuakeEntity::GetVelocity() const
+Vector BaseQuakeEntity::GetVelocity() const
 {
 	return shared.s.pos.trDelta;
 }
@@ -197,17 +195,17 @@ void BaseQuakeEntity::SetVelocity( const Vector& newVelocity )
 	newVelocity.CopyToArray( shared.s.pos.trDelta );
 }
 
-const Vector& BaseQuakeEntity::GetMins() const
+Vector BaseQuakeEntity::GetMins() const
 {
 	return shared.r.mins;
 }
 
-const Vector& BaseQuakeEntity::GetMaxs() const
+Vector BaseQuakeEntity::GetMaxs() const
 {
 	return shared.r.maxs;
 }
 
-const Vector& BaseQuakeEntity::GetAverageOrigin() const
+Vector BaseQuakeEntity::GetAverageOrigin() const
 {
 	const Vector& mins = GetMins();
 	const Vector& maxs = GetMaxs();

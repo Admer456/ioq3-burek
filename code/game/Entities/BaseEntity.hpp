@@ -81,25 +81,25 @@ namespace Entities
 		const char*		GetTarget() const override;
 
 		// origin
-		const Vector&	GetOrigin() const override;
+		Vector			GetOrigin() const override;
 		void			SetOrigin( const Vector& newOrigin ) override;
 
 		// angles
-		const Vector&	GetAngles() const override;
+		Vector			GetAngles() const override;
 		void			SetAngles( const Vector& newAngles ) override;
 
 		// velocity
-		const Vector&	GetVelocity() const override;
+		Vector			GetVelocity() const override;
 		void			SetVelocity( const Vector& newVelocity ) override;
 
 		// mins
-		const Vector&	GetMins() const override;
+		Vector			GetMins() const override;
 
 		// maxs
-		const Vector&	GetMaxs() const override;
+		Vector			GetMaxs() const override;
 
 		// (mins + maxs)/2
-		const Vector&	GetAverageOrigin() const override;
+		Vector			GetAverageOrigin() const override;
 
 		// spawnflags
 		// TODO: create a class to store bitfields in it
