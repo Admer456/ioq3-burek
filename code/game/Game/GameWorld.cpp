@@ -104,6 +104,105 @@ Vector KeyValueLibrary::GetVector( const char* keyName, Vector defaultValue )
 	}
 }
 
+SpawnRegistry::SpawnRegistry()
+{
+	map.clear();
+}
+
+void SpawnRegistry::Add( Entities::IEntity* ent, bool isDynamic )
+{
+	EntityClassInfo* eci = ent->GetClassInfo();
+	Vector origin = ent->GetOrigin();
+	size_t id = isDynamic ? ent->GetEntityIndex() : ENTITYNUM_NONE;
+	
+	SpawnInfo spawnInfo{ id, ent->GetSpawnflags(), origin };
+	
+	map[eci->className].push_back( spawnInfo );
+}
+
+SpawnRegistry::SpawnInfo SpawnRegistry::GetRandomFurthest( const EntityClassInfo& eci, const Vector& avoidPoint, bool isBot )
+{
+	SpawnInfo* spot{ nullptr };
+	vec3_t delta;
+	float dist;
+	float list_dist[GameWorld::MaxSpawnPoints];
+	SpawnInfo* list_spot[GameWorld::MaxSpawnPoints];
+	int	numSpots, rnd, i, j;
+
+	numSpots = 0;
+
+	std::vector<SpawnInfo> siv = map[eci.className];
+
+	for ( SpawnInfo& si : siv )
+	{
+		spot = &si;
+
+		// if ( SpotWouldTelefrag( si ) )
+		// continue;
+
+		if ( si.spawnPointFlags & FL_NO_BOTS && isBot ||
+			 si.spawnPointFlags & FL_NO_HUMANS && !isBot )
+		{
+			// spot is not for this human/bot player
+			continue;
+		}
+
+		VectorSubtract( si.spawnPointPosition, avoidPoint, delta );
+		dist = VectorLength( delta );
+
+		for ( i = 0; i < numSpots; i++ )
+		{
+			if ( dist > list_dist[i] )
+			{
+				if ( numSpots >= GameWorld::MaxSpawnPoints )
+					numSpots = GameWorld::MaxSpawnPoints - 1;
+
+				for ( j = numSpots; j > i; j-- )
+				{
+					list_dist[j] = list_dist[j - 1];
+					list_spot[j] = list_spot[j - 1];
+				}
+
+				list_dist[i] = dist;
+				list_spot[i] = spot;
+
+				numSpots++;
+				break;
+			}
+		}
+
+		if ( i >= numSpots && numSpots < GameWorld::MaxSpawnPoints )
+		{
+			list_dist[numSpots] = dist;
+			list_spot[numSpots] = spot;
+			numSpots++;
+		}
+	}
+
+	if ( !numSpots )
+	{
+		spot = &siv.at(0);
+
+		if ( !spot )
+			engine->Print( "WARNING: Couldn't find a spawn point\n" );
+
+		return *spot;
+	}
+
+	else
+	{
+		// select a random spot from the spawn points furthest away
+		rnd = random() * (numSpots / 2);
+
+		return *list_spot[rnd];
+	}
+}
+
+GameWorld::GameWorld()
+{
+	keyValueLibraries.clear();
+}
+
 GameWorld::~GameWorld()
 {
 	Shutdown();
@@ -195,9 +294,9 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 	const char* className = map.GetMap()["classname"].c_str();
 	EntityClassInfo* eci = EntityClassInfo::GetInfoByMapName( className );
 
-	if ( nullptr == eci )
+	if ( nullptr == eci || nullptr == eci->AllocateInstance )
 	{
-		engine->Print( va( "WARNING: Cannot find entity class %s\n", className ) );
+		engine->Print( va( "WARNING: Cannot find spawner for entity class %s\n", className ) );
 		return;
 	}
 
@@ -225,6 +324,16 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 
 	ent->KeyValue();
 	ent->Spawn();
+}
+
+void GameWorld::FreeEntity( Entities::IEntity* ent )
+{
+	if ( ent )
+	{
+		gEntities[ent->GetEntityIndex()] = nullptr;
+		delete ent;
+		ent = nullptr;
+	}
 }
 
 void GameWorld::TouchTriggers( Entities::IEntity* ent )
@@ -423,7 +532,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	clientPersistant_t	saved;
 	clientSession_t		savedSess;
 	int		persistant[MAX_PERSISTANT];
-	Entities::IEntity* spawnPoint;
+	SpawnRegistry::SpawnInfo info;
 	//Entities::IEntity* tent;
 	int		flags;
 	int		savedPing;
@@ -435,16 +544,9 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	client = player->GetClient();
 
 	// Find a spawn point
-	spawnPoint = FindSpawnPoint<Entities::InfoPlayerStart>( client->ps.origin, false );
+	info = FindSpawnPoint<Entities::InfoPlayerStart>( client->ps.origin, false );
 
-	if ( spawnPoint )
-	{
-		VectorCopy( spawnPoint->GetShared()->currentOrigin, player->GetShared()->currentOrigin );
-	}
-	else // In case there's no spawnpoint, spawn at 0,0,0
-	{
-		Vector::Zero.CopyToArray( player->GetShared()->currentOrigin );
-	}
+	info.spawnPointPosition.CopyToArray( player->GetShared()->currentOrigin );
 
 	// Toggle the teleport bit so the client doesn't lerp
 	flags = client->ps.eFlags & (EF_TELEPORT_BIT | EF_VOTED | EF_TEAMVOTED);
@@ -563,8 +665,8 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 			client->ps.weaponstate = WEAPON_READY;
 			
 			// fire the targets of the spawn point
-			if ( spawnPoint)
-				spawnPoint->UseTargets( player );
+			if ( info.entityId != ENTITYNUM_NONE && gEntities[info.entityId] )
+				gEntities[info.entityId]->UseTargets( player );
 
 			// select the highest weapon number available, after any spawn given items have fired
 			client->ps.weapon = 1;
@@ -1431,19 +1533,9 @@ void GameWorld::SpectatorClientEndFrame( Entities::BasePlayer* player )
 	}
 }
 
-template<typename entityType>
-entityType* GameWorld::FindSpawnPoint( Vector avoidPoint, bool isBot )
+SpawnRegistry* GameWorld::GetSpawnRegistry()
 {
-	for ( Entities::IEntity* ent : gEntities )
-	{
-		entityType* spawn = dynamic_cast<entityType*>( ent );
-		if ( nullptr != spawn )
-		{
-			return spawn;
-		}
-	}
-
-	return nullptr;
+	return &spawnRegistry;
 }
 
 bool GameWorld::ParseKeyValues()

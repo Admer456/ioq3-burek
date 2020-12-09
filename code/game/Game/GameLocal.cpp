@@ -665,7 +665,8 @@ void GameLocal::RunFrame( int levelTime )
 
 		if ( ent->GetFlags() & FL_REMOVE_ME )
 		{
-			//gameWorld->FreeEntity( ent );
+			gameWorld->FreeEntity( ent );
+			continue;
 		}
 
 		if ( ent->GetEntityIndex() < MAX_CLIENTS )
@@ -1343,7 +1344,7 @@ void GameLocal::BeginIntermission()
 
 	if ( level.intermissiontime ) 
 	{
-		return;		// already active
+		return; // already active
 	}
 
 	// if in tournement mode, change the wins / losses

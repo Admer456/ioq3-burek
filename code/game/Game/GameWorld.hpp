@@ -40,6 +40,39 @@ namespace Entities
 }
 
 // ============================
+// SpawnRegistry
+// Keeps records of spawn point locations
+// in the map, also supports dynamically
+// moving spawnpoints.
+//
+// The idea is to clean up some server entity 
+// slots, so info_player_start,
+// info_player_deathmatch etc. don't take them up
+// ============================
+class SpawnRegistry final
+{
+public:
+	struct SpawnInfo
+	{
+		size_t entityId{ENTITYNUM_NONE};
+		uint32_t spawnPointFlags{ 0 };
+		Vector spawnPointPosition{ Vector::Zero };
+	};
+
+	// For each classname, there's an array of SpawnInfos
+	using SpawnMap = std::unordered_map<const char*, std::vector<SpawnInfo>>;
+
+	SpawnRegistry();
+	~SpawnRegistry() = default;
+
+	void			Add( Entities::IEntity* ent, bool isDynamic = false );
+	SpawnInfo		GetRandomFurthest( const EntityClassInfo& eci, const Vector& avoidPoint, bool isBot = false );
+
+private:
+	SpawnMap		map;
+};
+
+// ============================
 // GameWorld
 // Manages whatever is concerned by the
 // game's world - player management,
@@ -51,8 +84,10 @@ class GameWorld final
 
 public:
 	constexpr static size_t MaxEntities = MAX_GENTITIES;
+	constexpr static size_t MaxSpawnPoints = 128;
 
 public:
+	GameWorld();
 	~GameWorld();
 
 	// Deletes entities and stuff
@@ -109,6 +144,9 @@ public:
 		return static_cast<entityType*>(gEntities[index]);
 	}
 
+	// Deletes an entity from memory
+	void			FreeEntity( Entities::IEntity* ent );
+
 	// ------ Entity interaction ------
 	
 	// Sweep all entities this entity is touching
@@ -135,9 +173,15 @@ public:
 	void			ClientRespawn( Entities::BasePlayer* player );
 	void			MoveClientToIntermission( Entities::BasePlayer* player );
 
+	// Spawnpoint registry
+	SpawnRegistry*	GetSpawnRegistry();
+
 	// Simple spawnpoint finder
 	template<typename entityType>
-	entityType*		FindSpawnPoint( Vector avoidPoint, bool isBot );
+	SpawnRegistry::SpawnInfo FindSpawnPoint( Vector avoidPoint, bool isBot )
+	{
+		return spawnRegistry.GetRandomFurthest( entityType::ClassInfo, avoidPoint, isBot );
+	}
 
 	// Runs if g_synchronousClients is 0
 	void			ClientThink( const uint16_t& clientNum );
@@ -178,6 +222,9 @@ public:
 	// All the entity keyvalue pairs in the map
 	// Each KV library represents one entity
 	std::vector<KeyValueLibrary> keyValueLibraries;
+
+private:
+	SpawnRegistry	spawnRegistry;
 };
 
 extern GameWorld* gameWorld;

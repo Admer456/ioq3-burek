@@ -72,7 +72,7 @@ public:
 
 		while ( current )
 		{
-			if ( current->mapClass == name )
+			if ( !strcmp( current->mapClass, name ) )
 				return current;
 
 			current = current->prev;
@@ -89,7 +89,7 @@ public:
 
 		while ( current )
 		{
-			if ( current->className == name )
+			if ( !strcmp( current->className, name ) )
 				return current;
 
 			current = current->prev;
@@ -104,9 +104,9 @@ public:
 	StaticCounter classInfoID;
 	EntityClassInfo* super;
 
-	std::string mapClass;
-	std::string className;
-	std::string superName;
+	const char* mapClass;
+	const char* className;
+	const char* superName;
 };
 
 #define DeclareEntityClass()					\

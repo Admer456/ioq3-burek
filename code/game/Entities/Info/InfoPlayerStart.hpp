@@ -9,5 +9,7 @@ namespace Entities
 	{
 	public:
 		DeclareEntityClass();
+
+		void Spawn() override;
 	};
 }

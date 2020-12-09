@@ -12,3 +12,16 @@
 using namespace Entities;
 
 DefineEntityClass( "info_player_start", InfoPlayerStart, BaseQuakeEntity );
+
+void InfoPlayerStart::Spawn()
+{
+	// Get origin vector and jam it into entityState
+	Vector origin = spawnArgs->GetVector( "origin", Vector::Zero );
+	SetOrigin( origin );
+
+	// Add this spawnpoint's location to the registry
+	gameWorld->GetSpawnRegistry()->Add( this );
+
+	// Don't waste any entity slots
+	Remove();
+}
