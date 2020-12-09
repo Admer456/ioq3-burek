@@ -60,7 +60,7 @@ public:
 	};
 
 	// For each classname, there's an array of SpawnInfos
-	using SpawnMap = std::unordered_map<const char*, std::vector<SpawnInfo>>;
+	using SpawnMap = std::unordered_map<EntityClassInfo*, std::vector<SpawnInfo>>;
 
 	SpawnRegistry();
 	~SpawnRegistry() = default;

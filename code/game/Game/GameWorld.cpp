@@ -117,7 +117,7 @@ void SpawnRegistry::Add( Entities::IEntity* ent, bool isDynamic )
 	
 	SpawnInfo spawnInfo{ id, ent->GetSpawnflags(), origin };
 	
-	map[eci->className].push_back( spawnInfo );
+	map[eci].push_back( spawnInfo );
 }
 
 SpawnRegistry::SpawnInfo SpawnRegistry::GetRandomFurthest( const EntityClassInfo& eci, const Vector& avoidPoint, bool isBot )
@@ -131,7 +131,7 @@ SpawnRegistry::SpawnInfo SpawnRegistry::GetRandomFurthest( const EntityClassInfo
 
 	numSpots = 0;
 
-	std::vector<SpawnInfo> siv = map[eci.className];
+	std::vector<SpawnInfo> siv = map[const_cast<EntityClassInfo*>(&eci)];
 
 	for ( SpawnInfo& si : siv )
 	{
