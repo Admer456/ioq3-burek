@@ -326,6 +326,24 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 	ent->Spawn();
 }
 
+Entities::IEntity* GameWorld::CreateTempEntity( const Vector& origin, int event )
+{
+	Entities::BaseQuakeEntity* ent = CreateEntity<Entities::BaseQuakeEntity>();
+	Vector snapped = origin;
+	
+	ent->GetState()->eType = ET_EVENTS + event;
+
+	//ent->className = "tempEntity";
+	ent->eventTime = level.time;
+	ent->freeAfterEvent = true;
+	Macro_SnapVector( snapped ); // save network bandwidth
+	ent->SetOrigin( snapped );
+
+	gameImports->LinkEntity( ent );
+
+	return ent;
+}
+
 void GameWorld::FreeEntity( Entities::IEntity* ent )
 {
 	if ( ent )
@@ -533,7 +551,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	clientSession_t		savedSess;
 	int		persistant[MAX_PERSISTANT];
 	SpawnRegistry::SpawnInfo info;
-	//Entities::IEntity* tent;
+	Entities::IEntity* tent;
 	int		flags;
 	int		savedPing;
 	int		accuracy_hits, accuracy_shots;
@@ -683,10 +701,10 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 			// positively link the client, even if the command times are weird
 			VectorCopy( player->GetClient()->ps.origin, player->GetShared()->currentOrigin );
 
-			//tent = G_TempEntity( ent->client->ps.origin, EV_PLAYER_TELEPORT_IN );
-			//tent->s.clientNum = ent->s.clientNum;
-			//
-			//trap_LinkEntity( ent );
+			tent = CreateTempEntity( player->GetClient()->ps.origin, EV_PLAYER_TELEPORT_IN );
+			tent->GetState()->clientNum = player->GetState()->clientNum;
+			
+			gameImports->LinkEntity( player );
 		}
 	}
 
@@ -1263,11 +1281,11 @@ bool GameWorld::ClientInactivityTimer( Entities::BasePlayer* player )
 void GameWorld::SendPendingPredictableEvents( Entities::BasePlayer* player )
 {
 	playerState_t* ps = &player->GetClient()->ps;
-	//Entities::IEntity* tempEnt = nullptr;
+	Entities::IEntity* tempEnt = nullptr;
 	int event;
 	int seq;
 	int extEvent;
-	//int number;
+	int number;
 
 	// if there are still events pending
 	if ( ps->entityEventSequence < ps->eventSequence ) {
@@ -1278,17 +1296,17 @@ void GameWorld::SendPendingPredictableEvents( Entities::BasePlayer* player )
 		// set external event to zero before calling BG_PlayerStateToEntityState
 		extEvent = ps->externalEvent;
 		ps->externalEvent = 0;
-		//// create temporary entity for event
-		//tempEnt = G_TempEntity( ps->origin, event );
-		//number = tempEnt->GetState()->number;
-		//BG_PlayerStateToEntityState( ps, tempEnt->GetState(), qtrue );
-		//tempEnt->GetState()->number = number;
-		//tempEnt->GetState()->eType = ET_EVENTS + event;
-		//tempEnt->GetState()->eFlags |= EF_PLAYER_EVENT;
-		//tempEnt->GetState()->otherEntityNum = ps->clientNum;
-		//// send to everyone except the client who generated the event
-		//tempEnt->GetShared()->svFlags |= SVF_NOTSINGLECLIENT;
-		//tempEnt->GetShared()->singleClient = ps->clientNum;
+		// create temporary entity for event
+		tempEnt = CreateTempEntity( ps->origin, event );
+		number = tempEnt->GetEntityIndex();
+		BG_PlayerStateToEntityState( ps, tempEnt->GetState(), qtrue );
+		tempEnt->GetState()->number = number;
+		tempEnt->GetState()->eType = ET_EVENTS + event;
+		tempEnt->GetState()->eFlags |= EF_PLAYER_EVENT;
+		tempEnt->GetState()->otherEntityNum = ps->clientNum;
+		// send to everyone except the client who generated the event
+		tempEnt->GetShared()->svFlags |= SVF_NOTSINGLECLIENT;
+		tempEnt->GetShared()->singleClient = ps->clientNum;
 		// set back external event
 		ps->externalEvent = extEvent;
 	}

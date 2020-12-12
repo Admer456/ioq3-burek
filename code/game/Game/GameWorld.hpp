@@ -143,6 +143,9 @@ public:
 		gEntities[index]->GetState()->number = index;
 		return static_cast<entityType*>(gEntities[index]);
 	}
+	
+	// Allocates a temporary entity, for events
+	Entities::IEntity* CreateTempEntity( const Vector& origin, int event );
 
 	// Deletes an entity from memory
 	void			FreeEntity( Entities::IEntity* ent );

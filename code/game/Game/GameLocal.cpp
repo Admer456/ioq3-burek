@@ -658,15 +658,53 @@ void GameLocal::RunFrame( int levelTime )
 	// get any cvar changes
 	UpdateCVars();
 
+	Entities::BaseQuakeEntity* gent = nullptr;
 	for ( auto ent : gEntities )
 	{
 		if ( nullptr == ent )
 			continue;
 
+		gent = static_cast<Entities::BaseQuakeEntity*>(ent);
+
 		if ( ent->GetFlags() & FL_REMOVE_ME )
 		{
 			gameWorld->FreeEntity( ent );
 			continue;
+		}
+
+		// clear events that are too old
+		if ( level.time - gent->eventTime > EVENT_VALID_MSEC ) 
+		{
+			if ( ent->GetState()->event ) 
+			{
+				ent->GetState()->event = 0;	// &= EV_EVENT_BITS;
+				if ( ent->IsClass( Entities::BasePlayer::ClassInfo ) ) 
+				{
+					Entities::BasePlayer* player = dynamic_cast<Entities::BasePlayer*>(ent);
+					if ( !player )
+					{
+						engine->Print( "!p\n" );
+					}
+
+					static_cast<Entities::BasePlayer*>(ent)->GetClient()->ps.externalEvent = 0;
+					// predicted events should never be set to zero
+					//ent->client->ps.events[0] = 0;
+					//ent->client->ps.events[1] = 0;
+				}
+			}
+			if ( gent->freeAfterEvent ) 
+			{
+				// tempEntities or dropped items completely go away after their event
+				gameWorld->FreeEntity( ent );
+				continue;
+			}
+			
+			else if ( gent->unlinkAfterEvent ) 
+			{
+				// items that will respawn will hide themselves after their pickup event
+				gent->unlinkAfterEvent = qfalse;
+				gameImports->UnlinkEntity( ent );
+			}
 		}
 
 		if ( ent->GetEntityIndex() < MAX_CLIENTS )
