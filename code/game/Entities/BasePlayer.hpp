@@ -7,6 +7,8 @@ namespace Entities
 	class BasePlayer : public BaseQuakeEntity
 	{
 	public:
+		DeclareEntityClass();
+
 		void			Spawn() override;
 
 	public: // "Properties"

@@ -10,6 +10,8 @@
 
 using namespace Entities;
 
+DefineEntityClass_NoMapSpawn( BasePlayer, BaseQuakeEntity );
+
 void BasePlayer::Spawn()
 {
 	// Do nothing

@@ -117,6 +117,14 @@ virtual EntityClassInfo* GetClassInfo()			\
 }												\
 static EntityClassInfo ClassInfo;
 
+#define DefineEntityClass_NoMapSpawn( className, superName ) \
+Entities::IEntity* className::AllocateInstance()	\
+{													\
+	return gameWorld->CreateEntity<className>();	\
+}													\
+EntityClassInfo className::ClassInfo = EntityClassInfo( #className "_dyn", #className, #superName, nullptr );
+
+
 #define DefineEntityClass( mapClass, className, superName ) \
 Entities::IEntity* className::AllocateInstance()			\
 {															\
