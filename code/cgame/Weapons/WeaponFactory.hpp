@@ -25,7 +25,10 @@ public:
 		this->allocator = allocator;
 
 		prev = head;
-		prev->next = this;
+		
+		if ( prev )
+			prev->next = this;
+		
 		head = this;
 	}
 
