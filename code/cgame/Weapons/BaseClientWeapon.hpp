@@ -11,15 +11,23 @@ namespace ClientEntities
 			const char* name;
 		};
 
-		virtual void WeaponFrame();
+		refEntity_t		GetRenderModel() { return renderEntity; }
+		virtual WeaponInfo GetWeaponInfo() = 0;
 
-		virtual void OnPrimaryFire();
-		virtual void OnSecondaryFire();
-		virtual void OnTertiaryFire();
+		virtual void	Init();
 
-		virtual void OnReload();
+		virtual void	WeaponFrame();
 
-		virtual void OnDraw();
-		virtual void OnHolster();
+		virtual void	OnPrimaryFire() {}
+		virtual void	OnSecondaryFire() {}
+		virtual void	OnTertiaryFire() {}
+
+		virtual void	OnReload() {}
+
+		virtual void	OnDraw() {}
+		virtual void	OnHolster() {}
+
+	protected:
+		refEntity_t		renderEntity;
 	};
 }

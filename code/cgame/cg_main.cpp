@@ -83,6 +83,7 @@ cg_t				cg;
 cgs_t				cgs;
 centity_t			cg_entities[MAX_GENTITIES];
 weaponInfo_t		cg_weapons[MAX_WEAPONS];
+ClientEntities::BaseClientWeapon* gClientWeapons[MAX_WEAPONS];
 itemInfo_t			cg_items[MAX_ITEMS];
 
 

@@ -5,4 +5,14 @@
 
 using namespace ClientEntities;
 
+void BaseClientWeapon::Init()
+{
+	WeaponInfo wi = GetWeaponInfo();
 
+	renderEntity.hModel = trap_R_RegisterModel( wi.viewModel );
+}
+
+void BaseClientWeapon::WeaponFrame()
+{
+
+}
