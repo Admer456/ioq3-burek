@@ -3,6 +3,7 @@
 #include "../qcommon/IEngineExports.h"
 #include "Game/IGameImports.h"
 #include "BaseEntity.hpp"
+
 #include "TestModel.hpp"
 
 using namespace Entities;
