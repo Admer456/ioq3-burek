@@ -131,3 +131,10 @@ Entities::IEntity* className::AllocateInstance()			\
 	return gameWorld->CreateEntity<className>();			\
 }															\
 EntityClassInfo className::ClassInfo = EntityClassInfo( mapClass, #className, #superName, &className::AllocateInstance );
+
+#define DefineAbstractEntityClass( className, superName ) \
+Entities::IEntity* className::AllocateInstance()			\
+{															\
+	return nullptr;											\
+}															\
+EntityClassInfo className::ClassInfo = EntityClassInfo( #className "_abs", #className, #superName, nullptr );
