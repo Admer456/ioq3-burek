@@ -105,6 +105,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -133,6 +134,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;_WIN64;__WIN64__;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -158,6 +160,7 @@
       <AdditionalIncludeDirectories>..\..\code\zlib;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -182,6 +185,7 @@
       <AdditionalIncludeDirectories>..\..\code\zlib;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;_WIN64;__WIN64__;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>

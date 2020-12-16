@@ -37,7 +37,7 @@ void BaseQuakeEntity::Spawn()
 	keyOrigin.CopyToArray( shared.s.origin );
 	keyAngles.CopyToArray( shared.s.angles );
 
-	shared.s.eType = ET_MOVER;
+	shared.s.eType = ET_GENERAL;
 
 	if ( !model )
 	{
@@ -54,10 +54,10 @@ void BaseQuakeEntity::Spawn()
 			gameImports->SetBrushModel( this, model );
 		}
 
-		else
-		{
-			engine->Print( "This is not a brush model, not yet supported\n" );
-		}
+		//else
+		//{
+		//	engine->Print( "This is not a brush model, not yet supported\n" );
+		//}
 	}
 
 	shared.r.svFlags = SVF_USE_CURRENT_ORIGIN;
