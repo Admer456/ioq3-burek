@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="cgame">
-      <UniqueIdentifier>{22A0380F-8EB4-60C0-5736-0420C3095DF1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="qcommon">
       <UniqueIdentifier>{7F6839ED-EB47-B888-F45F-435F60BE1EEA}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shared">
       <UniqueIdentifier>{9F35977C-8B6C-980D-3459-7E10206F140F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{22A0380F-8EB4-60C0-5736-0420C3095DF1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Weapons">
+      <UniqueIdentifier>{9a3285cc-ca17-48cf-95d4-ceef9a723237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shared\Weapons">
+      <UniqueIdentifier>{0467c8ec-ceff-4e9c-b3fd-7338928610f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -19,10 +25,10 @@
       <Filter>Shared</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\cg_local.hpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\cg_public.hpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp">
       <Filter>qcommon</Filter>
@@ -31,16 +37,28 @@
       <Filter>qcommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\IClientGame.h">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\IClientGameImports.h">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\qcommon\IEngineExports.h">
       <Filter>qcommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\ClientExportImport.h">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Weapons\BaseClientWeapon.hpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Weapons\WeaponFactory.hpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Test.hpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\shared\Weapons\WeaponIDs.hpp">
+      <Filter>Shared\Weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -54,70 +72,79 @@
       <Filter>Shared</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_consolecmds.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_draw.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_drawtools.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_effects.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_ents.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_event.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_info.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_localents.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_main.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_marks.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_particles.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_players.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_playerstate.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_predict.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_scoreboard.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_servercmds.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_snapshot.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_syscalls.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_view.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\cg_weapons.cpp">
-      <Filter>cgame</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\qcommon\q_math.cpp">
       <Filter>qcommon</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\qcommon\q_shared.cpp">
       <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Weapons\BaseClientWeapon.cpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Weapons\WeaponFactory.cpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Test.cpp">
+      <Filter>Sources\Weapons</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
