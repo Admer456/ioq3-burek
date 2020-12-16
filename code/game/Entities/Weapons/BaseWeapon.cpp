@@ -9,17 +9,7 @@
 
 using namespace Entities;
 
-DefineEntityClass( "weapon_test", BaseWeapon, BaseQuakeEntity );
-
-Entities::BaseWeapon::WeaponInfo BaseWeapon::GetWeaponInfo()
-{
-	WeaponInfo info;
-
-	info.worldModel = "models/weapons/w_test.iqm";
-	info.viewModel = "models/weapons/v_test.iqm";
-
-	return info;
-}
+DefineAbstractEntityClass( BaseWeapon, BaseQuakeEntity );
 
 void BaseWeapon::Spawn()
 {
@@ -45,7 +35,6 @@ void BaseWeapon::WeaponTouch( IEntity* other, trace_t* trace )
 	// Only players can pick up weapons by touching them
 	if ( !other->IsClass( BasePlayer::ClassInfo ) )
 		return;
-
 
 	GetState()->modelindex = 0;
 	SetTouch( nullptr );

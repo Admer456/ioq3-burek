@@ -2,6 +2,15 @@
 
 namespace Entities
 {
+	enum WeaponFlags : uint16_t
+	{
+		WFNone,
+		WFReload,
+		WFHolster,
+		WFDraw,
+		WFAkimbo
+	};
+
 	class BasePlayer;
 
 	class BaseWeapon : public BaseQuakeEntity
@@ -10,9 +19,9 @@ namespace Entities
 		struct WeaponInfo
 		{
 			const char* worldModel;
-			const char* viewModel;
 		};
-		virtual WeaponInfo GetWeaponInfo();
+		virtual WeaponInfo GetWeaponInfo() = 0;
+		virtual uint16_t GetWeaponFlags() = 0;
 
 		DeclareEntityClass();
 
@@ -21,14 +30,14 @@ namespace Entities
 
 		BasePlayer* GetPlayer();
 
-		virtual void PrimaryFire();
-		virtual void SecondaryFire();
-		virtual void TertiaryFire();
+		virtual void PrimaryFire() {}
+		virtual void SecondaryFire() {}
+		virtual void TertiaryFire() {}
 
-		virtual void Reload();
+		virtual void Reload() {}
 
-		virtual void Draw();
-		virtual void Holster();
+		virtual void Draw() {}
+		virtual void Holster() {}
 
 	protected:
 		BasePlayer* player;
