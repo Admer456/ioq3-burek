@@ -147,6 +147,9 @@
     <ClInclude Include="..\..\code\shared\Weapons\WeaponIDs.hpp">
       <Filter>Shared\Weapons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Test.hpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -285,6 +288,9 @@
       <Filter>Sources\Entities</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Weapons\BaseWeapon.cpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Test.cpp">
       <Filter>Sources\Weapons</Filter>
     </ClCompile>
   </ItemGroup>
