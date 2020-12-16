@@ -147,7 +147,7 @@ void BaseQuakeEntity::Use( IEntity* activator, IEntity* caller, float value )
 void BaseQuakeEntity::Touch( IEntity* other, trace_t* trace )
 {
 	if ( touchFunction )
-		(this->*touchFunction)( other );
+		(this->*touchFunction)( other, trace );
 }
 
 const char* BaseQuakeEntity::GetName() const

@@ -58,7 +58,8 @@ namespace Entities
 		template<typename function>
 		inline void					SetTouch( function f )
 		{
-			touchFunction = static_cast<void (IEntity::*)(IEntity* other)>(f);
+
+			touchFunction = static_cast<void (IEntity::*)(IEntity* other, trace_t* trace)>(f);
 		}
 
 		// entityState and entityShared are something all ents have in common
@@ -174,7 +175,7 @@ namespace Entities
 	protected: // Callbacks
 		void						(IEntity::* thinkFunction)( void );
 		void						(IEntity::* useFunction)( IEntity* activator, IEntity* caller, float value );
-		void						(IEntity::* touchFunction)( IEntity* other );
+		void						(IEntity::* touchFunction)( IEntity* other, trace_t* trace );
 		void						(IEntity::* blockedFunction)( IEntity* other );
 		void						(IEntity::* takeDamageFunction)( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage );
 		void						(IEntity::* dieFunction)( IEntity* killer );
