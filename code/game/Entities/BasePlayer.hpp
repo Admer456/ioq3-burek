@@ -20,8 +20,10 @@ namespace Entities
 		void			SetClientViewAngle( const Vector& newAngle );
 
 	public: // Weapons
+		void			AddWeapon( BaseWeapon* weapon );
 		BaseWeapon*		GetCurrentWeapon();
 		bool			HasAnyWeapon();
+		bool			HasWeapon( int weaponID );
 		void			SendWeaponEvent( uint32_t weaponEvent );
 
 	protected:

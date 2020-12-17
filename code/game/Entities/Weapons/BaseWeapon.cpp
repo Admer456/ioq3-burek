@@ -41,7 +41,7 @@ void BaseWeapon::WeaponTouch( IEntity* other, trace_t* trace )
 	gameImports->UnlinkEntity( this );
 
 	player = static_cast<BasePlayer*>( other );
-	//player->AddWeapon( this );
+	player->AddWeapon( this );
 }
 
 BasePlayer* BaseWeapon::GetPlayer()

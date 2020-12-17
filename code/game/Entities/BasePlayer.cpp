@@ -51,6 +51,14 @@ void BasePlayer::SetClientViewAngle( const Vector& newAngle )
 	VectorCopy( shared.s.angles, client->ps.viewangles );
 }
 
+void BasePlayer::AddWeapon( BaseWeapon* weapon )
+{
+	if ( !HasWeapon( weapon->GetWeaponInfo().weaponID ) )
+	{
+		weapons[weapon->GetWeaponInfo().weaponID] = weapon;
+	}
+}
+
 BaseWeapon* BasePlayer::GetCurrentWeapon()
 {
 	return currentWeapon;
@@ -65,6 +73,11 @@ bool BasePlayer::HasAnyWeapon()
 	}
 
 	return false;
+}
+
+bool BasePlayer::HasWeapon( int weaponID )
+{
+	return weapons[weaponID] != nullptr;
 }
 
 void BasePlayer::SendWeaponEvent( uint32_t weaponEvent )
