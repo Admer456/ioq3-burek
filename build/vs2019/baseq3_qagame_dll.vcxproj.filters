@@ -22,9 +22,6 @@
     <Filter Include="Shared">
       <UniqueIdentifier>{71fe53f1-9986-40fe-a875-9f943178e614}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Weapons">
-      <UniqueIdentifier>{7a8ee1af-1b7d-4ce0-b4b3-19105a1c2d06}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sources\Components">
       <UniqueIdentifier>{dc86e3d6-6da8-4424-8532-487393db7dba}</UniqueIdentifier>
     </Filter>
@@ -33,6 +30,9 @@
     </Filter>
     <Filter Include="Shared\Weapons">
       <UniqueIdentifier>{951ef776-e95c-41a9-9c7c-e5ad43ee18dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Entities\Weapons">
+      <UniqueIdentifier>{7a8ee1af-1b7d-4ce0-b4b3-19105a1c2d06}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -142,13 +142,13 @@
       <Filter>Sources\Entities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\Weapons\BaseWeapon.hpp">
-      <Filter>Sources\Weapons</Filter>
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\shared\Weapons\WeaponIDs.hpp">
       <Filter>Shared\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Test.hpp">
-      <Filter>Sources\Weapons</Filter>
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -237,13 +237,13 @@
       <Filter>Sources\Game</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Weapons\g_items.cpp">
-      <Filter>Sources\Weapons</Filter>
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Weapons\g_missile.cpp">
-      <Filter>Sources\Weapons</Filter>
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Weapons\g_weapon.cpp">
-      <Filter>Sources\Weapons</Filter>
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp">
       <Filter>Sources\Entities</Filter>
@@ -288,10 +288,10 @@
       <Filter>Sources\Entities</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Weapons\BaseWeapon.cpp">
-      <Filter>Sources\Weapons</Filter>
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Test.cpp">
-      <Filter>Sources\Weapons</Filter>
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
