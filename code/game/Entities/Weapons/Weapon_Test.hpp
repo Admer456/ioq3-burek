@@ -10,6 +10,6 @@ namespace Entities
 		WeaponInfo	GetWeaponInfo() override;
 		uint16_t	GetWeaponFlags() { return WFNone; }
 
-		void		PrimaryFire() override;
+		void		PrimaryAttack() override;
 	};
 }

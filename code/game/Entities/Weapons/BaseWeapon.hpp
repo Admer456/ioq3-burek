@@ -11,6 +11,16 @@ namespace Entities
 		WFAkimbo
 	};
 
+	enum WeaponEvent : uint16_t
+	{
+		WE_DoPrimaryAttack,
+		WE_DoSecondaryAttack,
+		WE_DoTertiaryAttack,
+		WE_DoReload,
+		WE_DoDraw,
+		WE_DoHolster,
+	};
+
 	class BasePlayer;
 
 	class BaseWeapon : public BaseQuakeEntity
@@ -25,21 +35,21 @@ namespace Entities
 
 		DeclareEntityClass();
 
-		void		Spawn() override;
-		void		WeaponTouch( IEntity* other, trace_t* trace );
+		void			Spawn() override;
+		void			WeaponTouch( IEntity* other, trace_t* trace );
 
-		BasePlayer* GetPlayer();
+		BasePlayer*		GetPlayer();
 
-		virtual void PrimaryFire() {}
-		virtual void SecondaryFire() {}
-		virtual void TertiaryFire() {}
+		virtual void	PrimaryAttack() {}
+		virtual void	SecondaryAttack() {}
+		virtual void	TertiaryAttack() {}
 
-		virtual void Reload() {}
+		virtual void	Reload() {}
 
-		virtual void Draw() {}
-		virtual void Holster() {}
+		virtual void	Draw() {}
+		virtual void	Holster() {}
 
 	protected:
-		BasePlayer* player;
+		BasePlayer*		player;
 	};
 }
