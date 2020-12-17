@@ -4,6 +4,7 @@ namespace Entities
 {
 	class IEntity;
 	class BaseQuakeEntity;
+	class BaseWeapon;
 	class BasePlayer : public BaseQuakeEntity
 	{
 	public:
@@ -17,6 +18,15 @@ namespace Entities
 
 		const Vector&	GetClientViewAngle() const;
 		void			SetClientViewAngle( const Vector& newAngle );
+
+	public: // Weapons
+		BaseWeapon*		GetCurrentWeapon();
+		bool			HasAnyWeapon();
+		void			SendWeaponEvent( uint32_t weaponEvent );
+
+	protected:
+		BaseWeapon*		currentWeapon{ nullptr }; // the currently selected weapon
+		BaseWeapon*		weapons[MAX_WEAPONS]; // weapon inventory
 
 	public: // Misc
 		void			ClientCommand();
