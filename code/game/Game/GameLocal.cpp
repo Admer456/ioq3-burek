@@ -681,10 +681,6 @@ void GameLocal::RunFrame( int levelTime )
 				if ( ent->IsClass( Entities::BasePlayer::ClassInfo ) ) 
 				{
 					Entities::BasePlayer* player = dynamic_cast<Entities::BasePlayer*>(ent);
-					if ( !player )
-					{
-						engine->Print( "!p\n" );
-					}
 
 					static_cast<Entities::BasePlayer*>(ent)->GetClient()->ps.externalEvent = 0;
 					// predicted events should never be set to zero
