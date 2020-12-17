@@ -6,6 +6,8 @@
 #include "Game/IGameImports.h"
 #include "Maths/Vector.hpp"
 
+#include "Weapons/BaseWeapon.hpp"
+
 #include "BasePlayer.hpp"
 
 using namespace Entities;
@@ -47,6 +49,38 @@ void BasePlayer::SetClientViewAngle( const Vector& newAngle )
 
 	VectorCopy( newAngle, shared.s.angles );
 	VectorCopy( shared.s.angles, client->ps.viewangles );
+}
+
+BaseWeapon* BasePlayer::GetCurrentWeapon()
+{
+	return currentWeapon;
+}
+
+bool BasePlayer::HasAnyWeapon()
+{
+	for ( BaseWeapon* weapon : weapons )
+	{
+		if ( weapon )
+			return true;
+	}
+
+	return false;
+}
+
+void BasePlayer::SendWeaponEvent( uint32_t weaponEvent )
+{
+	if ( nullptr == currentWeapon )
+		return;
+
+	switch ( weaponEvent )
+	{
+	case WE_DoDraw:				return currentWeapon->Draw();
+	case WE_DoHolster:			return currentWeapon->Holster();
+	case WE_DoPrimaryAttack:	return currentWeapon->PrimaryAttack();
+	case WE_DoSecondaryAttack:	return currentWeapon->SecondaryAttack();
+	case WE_DoTertiaryAttack:	return currentWeapon->TertiaryAttack();
+	case WE_DoReload:			return currentWeapon->Reload();
+	}
 }
 
 void BasePlayer::ClientCommand()
