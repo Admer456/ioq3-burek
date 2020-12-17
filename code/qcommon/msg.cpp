@@ -1276,7 +1276,7 @@ void MSG_ReadDeltaEntity( msg_t* msg, Components::SharedComponent* from, Compone
 /*
 ============================================================================
 
-plyer_state_t communication
+player_state_t communication
 
 ============================================================================
 */
