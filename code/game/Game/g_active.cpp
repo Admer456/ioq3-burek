@@ -339,7 +339,7 @@ void SpectatorThink( gentity_t *ent, usercmd_t *ucmd ) {
 	client->buttons = ucmd->buttons;
 
 	// attack button cycles through spectators
-	if ( ( client->buttons & BUTTON_ATTACK ) && ! ( client->oldbuttons & BUTTON_ATTACK ) ) {
+	if ( ( client->buttons & Button_Attack ) && ! ( client->oldbuttons & Button_Attack ) ) {
 		Cmd_FollowCycle_f( ent, 1 );
 	}
 }
@@ -360,7 +360,7 @@ qboolean ClientInactivityTimer( gclient_t *client ) {
 	} else if ( client->pers.cmd.forwardmove || 
 		client->pers.cmd.rightmove || 
 		client->pers.cmd.upmove ||
-		(client->pers.cmd.buttons & BUTTON_ATTACK) ) {
+		(client->pers.cmd.buttons & Button_Attack) ) {
 		client->inactivityTime = level.time + g_inactivity.integer * 1000;
 		client->inactivityWarning = qfalse;
 	} else if ( !client->pers.localClient ) {
@@ -435,7 +435,7 @@ void ClientIntermissionThink( gclient_t *client ) {
 	// swap and latch button actions
 	client->oldbuttons = client->buttons;
 	client->buttons = client->pers.cmd.buttons;
-	if ( client->buttons & ( BUTTON_ATTACK | BUTTON_USE_HOLDABLE ) & ( client->oldbuttons ^ client->buttons ) ) {
+	if ( client->buttons & ( Button_Attack | Button_UseHoldable ) & ( client->oldbuttons ^ client->buttons ) ) {
 		// this used to be an ^1 but once a player says ready, it should stick
 		client->readyToExit = qtrue;
 	}
@@ -678,7 +678,7 @@ void ClientThink_real( gentity_t *ent ) {
 
 	// Let go of the hook if we aren't firing
 	if ( client->ps.weapon == WP_GRAPPLING_HOOK &&
-		client->hook && !( ucmd->buttons & BUTTON_ATTACK ) ) {
+		client->hook && !( ucmd->buttons & Button_Attack ) ) {
 		Weapon_HookFree(client->hook);
 	}
 
@@ -689,14 +689,14 @@ void ClientThink_real( gentity_t *ent ) {
 
 	// check for the hit-scan gauntlet, don't let the action
 	// go through as an attack unless it actually hits something
-	if ( client->ps.weapon == WP_GAUNTLET && !( ucmd->buttons & BUTTON_TALK ) &&
-		( ucmd->buttons & BUTTON_ATTACK ) && client->ps.weaponTime <= 0 ) {
+	if ( client->ps.weapon == WP_GAUNTLET && !( ucmd->buttons & Button_Talk ) &&
+		( ucmd->buttons & Button_Attack ) && client->ps.weaponTime <= 0 ) {
 		pm.gauntletHit = CheckGauntletAttack( ent );
 	}
 
 	if ( ent->flags & FL_FORCE_GESTURE ) {
 		ent->flags &= ~FL_FORCE_GESTURE;
-		ent->client->pers.cmd.buttons |= BUTTON_GESTURE;
+		ent->client->pers.cmd.buttons |= Button_Gesture;
 	}
 
 	pm.ps = &client->ps;
@@ -787,7 +787,7 @@ void ClientThink_real( gentity_t *ent ) {
 			}
 		
 			// pressing attack or use is the normal respawn method
-			if ( ucmd->buttons & ( BUTTON_ATTACK | BUTTON_USE_HOLDABLE ) ) {
+			if ( ucmd->buttons & ( Button_Attack | Button_UseHoldable ) ) {
 				ClientRespawn( ent );
 			}
 		}

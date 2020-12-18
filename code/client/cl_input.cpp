@@ -325,9 +325,9 @@ void CL_KeyMove( usercmd_t *cmd ) {
 	//
 	if ( in_speed.active ^ cl_run->integer ) {
 		movespeed = 127;
-		cmd->buttons &= ~BUTTON_WALKING;
+		cmd->buttons &= ~Button_Walking;
 	} else {
-		cmd->buttons |= BUTTON_WALKING;
+		cmd->buttons |= Button_Walking;
 		movespeed = 64;
 	}
 
@@ -399,7 +399,7 @@ void CL_JoystickMove( usercmd_t *cmd ) {
 	float up      = j_up->value      * cl.joystickAxis[j_up_axis->integer];
 
 	if ( !(in_speed.active ^ cl_run->integer) ) {
-		cmd->buttons |= BUTTON_WALKING;
+		cmd->buttons |= Button_Walking;
 	}
 
 	if ( in_speed.active ) {
@@ -538,13 +538,13 @@ void CL_CmdButtons( usercmd_t *cmd ) {
 	}
 
 	if ( Key_GetCatcher( ) ) {
-		cmd->buttons |= BUTTON_TALK;
+		cmd->buttons |= Button_Talk;
 	}
 
 	// allow the game to know if any key at all is
 	// currently pressed, even if it isn't bound to anything
 	if ( anykeydown && Key_GetCatcher( ) == 0 ) {
-		cmd->buttons |= BUTTON_ANY;
+		cmd->buttons |= Button_Any;
 	}
 }
 

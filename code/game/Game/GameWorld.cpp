@@ -917,7 +917,7 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 
 	//// Let go of the hook if we aren't firing
 	//if ( client->ps.weapon == WP_GRAPPLING_HOOK &&
-	//	 client->hook && !(ucmd->buttons & BUTTON_ATTACK) ) 
+	//	 client->hook && !(ucmd->buttons & Button_Attack) ) 
 	//{
 	//	Weapon_HookFree( client->hook );
 	//}
@@ -931,8 +931,8 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	//// go through as an attack unless it actually hits something
 	
 	// gauntletHit will be handled elsewhere
-	//if ( client->ps.weapon == WP_GAUNTLET && !(ucmd->buttons & BUTTON_TALK) &&
-	//	 (ucmd->buttons & BUTTON_ATTACK) && client->ps.weaponTime <= 0 ) 
+	//if ( client->ps.weapon == WP_GAUNTLET && !(ucmd->buttons & Button_Talk) &&
+	//	 (ucmd->buttons & Button_Attack) && client->ps.weaponTime <= 0 ) 
 	//{
 	//	pm.gauntletHit = CheckGauntletAttack( player );
 	//}
@@ -940,7 +940,7 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	if ( player->flags & FL_FORCE_GESTURE ) 
 	{
 		player->flags &= ~FL_FORCE_GESTURE;
-		player->GetClient()->pers.cmd.buttons |= BUTTON_GESTURE;
+		player->GetClient()->pers.cmd.buttons |= Button_Gesture;
 	}
 
 	pm.ps = &client->ps;
@@ -1268,7 +1268,7 @@ bool GameWorld::ClientInactivityTimer( Entities::BasePlayer* player )
 	else if ( client->pers.cmd.forwardmove ||
 			  client->pers.cmd.rightmove ||
 			  client->pers.cmd.upmove ||
-			  (client->pers.cmd.buttons & BUTTON_ATTACK) ) 
+			  (client->pers.cmd.buttons & Button_Attack) ) 
 	{
 		client->inactivityTime = level.time + g_inactivity.integer * 1000;
 		client->inactivityWarning = false;

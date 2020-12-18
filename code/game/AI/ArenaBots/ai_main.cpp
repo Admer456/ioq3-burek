@@ -836,18 +836,18 @@ void BotInputToUserCommand(bot_input_t *bi, usercmd_t *ucmd, int delta_angles[3]
 		bi->actionflags &= ~ACTION_DELAYEDJUMP;
 	}
 	//set the buttons
-	if (bi->actionflags & ACTION_RESPAWN) ucmd->buttons = BUTTON_ATTACK;
-	if (bi->actionflags & ACTION_ATTACK) ucmd->buttons |= BUTTON_ATTACK;
-	if (bi->actionflags & ACTION_TALK) ucmd->buttons |= BUTTON_TALK;
-	if (bi->actionflags & ACTION_GESTURE) ucmd->buttons |= BUTTON_GESTURE;
-	if (bi->actionflags & ACTION_USE) ucmd->buttons |= BUTTON_USE_HOLDABLE;
-	if (bi->actionflags & ACTION_WALK) ucmd->buttons |= BUTTON_WALKING;
-	if (bi->actionflags & ACTION_AFFIRMATIVE) ucmd->buttons |= BUTTON_AFFIRMATIVE;
-	if (bi->actionflags & ACTION_NEGATIVE) ucmd->buttons |= BUTTON_NEGATIVE;
-	if (bi->actionflags & ACTION_GETFLAG) ucmd->buttons |= BUTTON_GETFLAG;
-	if (bi->actionflags & ACTION_GUARDBASE) ucmd->buttons |= BUTTON_GUARDBASE;
-	if (bi->actionflags & ACTION_PATROL) ucmd->buttons |= BUTTON_PATROL;
-	if (bi->actionflags & ACTION_FOLLOWME) ucmd->buttons |= BUTTON_FOLLOWME;
+	if (bi->actionflags & ACTION_RESPAWN) ucmd->buttons = Button_Attack;
+	if (bi->actionflags & ACTION_ATTACK) ucmd->buttons |= Button_Attack;
+	if (bi->actionflags & ACTION_TALK) ucmd->buttons |= Button_Talk;
+	if (bi->actionflags & ACTION_GESTURE) ucmd->buttons |= Button_Gesture;
+	if (bi->actionflags & ACTION_USE) ucmd->buttons |= Button_UseHoldable;
+	if (bi->actionflags & ACTION_WALK) ucmd->buttons |= Button_Walking;
+	if (bi->actionflags & ACTION_AFFIRMATIVE) ucmd->buttons |= Button_Affirmative;
+	if (bi->actionflags & ACTION_NEGATIVE) ucmd->buttons |= Button_Negative;
+	if (bi->actionflags & ACTION_GETFLAG) ucmd->buttons |= Button_GetFlag;
+	if (bi->actionflags & ACTION_GUARDBASE) ucmd->buttons |= Button_GuardBase;
+	if (bi->actionflags & ACTION_PATROL) ucmd->buttons |= Button_Patrol;
+	if (bi->actionflags & ACTION_FOLLOWME) ucmd->buttons |= Button_FollowMe;
 	//
 	ucmd->weapon = bi->weapon;
 	//set the view angles
@@ -932,7 +932,7 @@ void BotUpdateInput(bot_state_t *bs, int time, int elapsed_time) {
 	trap_EA_GetInput(bs->client, (float) time / 1000, &bi);
 	//respawn hack
 	if (bi.actionflags & ACTION_RESPAWN) {
-		if (bs->lastucmd.buttons & BUTTON_ATTACK) bi.actionflags &= ~(ACTION_RESPAWN|ACTION_ATTACK);
+		if (bs->lastucmd.buttons & Button_Attack) bi.actionflags &= ~(ACTION_RESPAWN|ACTION_ATTACK);
 	}
 	//convert the bot input to a usercmd
 	BotInputToUserCommand(&bi, &bs->lastucmd, bs->cur_ps.delta_angles, time);

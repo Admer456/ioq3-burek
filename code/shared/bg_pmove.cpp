@@ -1353,7 +1353,7 @@ static void PM_Footsteps( void ) {
 		// ducked characters never play footsteps
 	/*
 	} else 	if ( pm->ps->pm_flags & PMF_BACKWARDS_RUN ) {
-		if ( !( pm->cmd.buttons & BUTTON_WALKING ) ) {
+		if ( !( pm->cmd.buttons & Button_Walking ) ) {
 			bobmove = 0.4;	// faster speeds bob faster
 			footstep = qtrue;
 		} else {
@@ -1362,7 +1362,7 @@ static void PM_Footsteps( void ) {
 		PM_ContinueLegsAnim( LEGS_BACK );
 	*/
 	} else {
-		if ( !( pm->cmd.buttons & BUTTON_WALKING ) ) {
+		if ( !( pm->cmd.buttons & Button_Walking ) ) {
 			bobmove = 0.4f;	// faster speeds bob faster
 			if ( pm->ps->pm_flags & PMF_BACKWARDS_RUN ) {
 				PM_ContinueLegsAnim( LEGS_BACK );
@@ -1538,7 +1538,7 @@ static void PM_Weapon( void ) {
 	}
 
 	// check for item using
-	if ( pm->cmd.buttons & BUTTON_USE_HOLDABLE ) {
+	if ( pm->cmd.buttons & Button_UseHoldable ) {
 		if ( ! ( pm->ps->pm_flags & PMF_USE_ITEM_HELD ) ) {
 			if ( bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag == HI_MEDKIT
 				&& pm->ps->stats[STAT_HEALTH] >= (pm->ps->stats[STAT_MAX_HEALTH] + 25) ) {
@@ -1625,7 +1625,7 @@ static void PM_Weapon( void ) {
 	//}
 
 	//// check for fire
-	//if ( ! (pm->cmd.buttons & BUTTON_ATTACK) ) {
+	//if ( ! (pm->cmd.buttons & Button_Attack) ) {
 	//	pm->ps->weaponTime = 0;
 	//	pm->ps->weaponstate = WEAPON_READY;
 	//	return;
@@ -1709,7 +1709,7 @@ PM_Animate
 */
 
 static void PM_Animate( void ) {
-	if ( pm->cmd.buttons & BUTTON_GESTURE ) {
+	if ( pm->cmd.buttons & Button_Gesture ) {
 		if ( pm->ps->torsoTimer == 0 ) {
 			PM_StartTorsoAnim( TORSO_GESTURE );
 			pm->ps->torsoTimer = TIMER_GESTURE;
@@ -1818,11 +1818,11 @@ void PmoveSingle (pmove_t *pmove) {
 	// make sure walking button is clear if they are running, to avoid
 	// proxy no-footsteps cheats
 	if ( abs( pm->cmd.forwardmove ) > 64 || abs( pm->cmd.rightmove ) > 64 ) {
-		pm->cmd.buttons &= ~BUTTON_WALKING;
+		pm->cmd.buttons &= ~Button_Walking;
 	}
 
 	// set the talk balloon flag
-	if ( pm->cmd.buttons & BUTTON_TALK ) {
+	if ( pm->cmd.buttons & Button_Talk ) {
 		pm->ps->eFlags |= EF_TALK;
 	} else {
 		pm->ps->eFlags &= ~EF_TALK;
@@ -1830,7 +1830,7 @@ void PmoveSingle (pmove_t *pmove) {
 
 	// set the firing flag for continuous beam weapons
 	if ( !(pm->ps->pm_flags & PMF_RESPAWNED) && pm->ps->pm_type != PM_INTERMISSION && pm->ps->pm_type != PM_NOCLIP
-		&& ( pm->cmd.buttons & BUTTON_ATTACK ) && pm->ps->ammo[ pm->ps->weapon ] ) {
+		&& ( pm->cmd.buttons & Button_Attack ) && pm->ps->ammo[ pm->ps->weapon ] ) {
 		pm->ps->eFlags |= EF_FIRING;
 	} else {
 		pm->ps->eFlags &= ~EF_FIRING;
@@ -1838,17 +1838,17 @@ void PmoveSingle (pmove_t *pmove) {
 
 	// clear the respawned flag if attack and use are cleared
 	if ( pm->ps->stats[STAT_HEALTH] > 0 && 
-		!( pm->cmd.buttons & (BUTTON_ATTACK | BUTTON_USE_HOLDABLE) ) ) {
+		!( pm->cmd.buttons & (Button_Attack | Button_UseHoldable) ) ) {
 		pm->ps->pm_flags &= ~PMF_RESPAWNED;
 	}
 
 	// if talk button is down, dissallow all other input
 	// this is to prevent any possible intercept proxy from
 	// adding fake talk balloons
-	if ( pmove->cmd.buttons & BUTTON_TALK ) {
+	if ( pmove->cmd.buttons & Button_Talk ) {
 		// keep the talk button set tho for when the cmd.serverTime > 66 msec
 		// and the same cmd is used multiple times in Pmove
-		pmove->cmd.buttons = BUTTON_TALK;
+		pmove->cmd.buttons = Button_Talk;
 		pmove->cmd.forwardmove = 0;
 		pmove->cmd.rightmove = 0;
 		pmove->cmd.upmove = 0;
