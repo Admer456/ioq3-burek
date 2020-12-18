@@ -244,7 +244,7 @@ static void CG_Item( centity_t *cent ) {
 	int				msec;
 	float			frac;
 	float			scale;
-	weaponInfo_t	*wi;
+	//weaponInfo_t	*wi;
 
 	es = &cent->currentState;
 	if ( es->modelindex >= bg_numItems ) {
@@ -286,27 +286,27 @@ static void CG_Item( centity_t *cent ) {
 		AxisCopy( cg.autoAxis, ent.axis );
 	}
 
-	wi = NULL;
-	// the weapons have their origin where they attatch to player
-	// models, so we need to offset them or they will rotate
-	// eccentricly
-	if ( item->giType == IT_WEAPON ) {
-		wi = &cg_weapons[item->giTag];
-		cent->lerpOrigin[0] -= 
-			wi->weaponMidpoint[0] * ent.axis[0][0] +
-			wi->weaponMidpoint[1] * ent.axis[1][0] +
-			wi->weaponMidpoint[2] * ent.axis[2][0];
-		cent->lerpOrigin[1] -= 
-			wi->weaponMidpoint[0] * ent.axis[0][1] +
-			wi->weaponMidpoint[1] * ent.axis[1][1] +
-			wi->weaponMidpoint[2] * ent.axis[2][1];
-		cent->lerpOrigin[2] -= 
-			wi->weaponMidpoint[0] * ent.axis[0][2] +
-			wi->weaponMidpoint[1] * ent.axis[1][2] +
-			wi->weaponMidpoint[2] * ent.axis[2][2];
-
-		cent->lerpOrigin[2] += 8;	// an extra height boost
-	}
+	//wi = NULL;
+	//// the weapons have their origin where they attatch to player
+	//// models, so we need to offset them or they will rotate
+	//// eccentricly
+	//if ( item->giType == IT_WEAPON ) {
+	//	wi = &cg_weapons[item->giTag];
+	//	cent->lerpOrigin[0] -= 
+	//		wi->weaponMidpoint[0] * ent.axis[0][0] +
+	//		wi->weaponMidpoint[1] * ent.axis[1][0] +
+	//		wi->weaponMidpoint[2] * ent.axis[2][0];
+	//	cent->lerpOrigin[1] -= 
+	//		wi->weaponMidpoint[0] * ent.axis[0][1] +
+	//		wi->weaponMidpoint[1] * ent.axis[1][1] +
+	//		wi->weaponMidpoint[2] * ent.axis[2][1];
+	//	cent->lerpOrigin[2] -= 
+	//		wi->weaponMidpoint[0] * ent.axis[0][2] +
+	//		wi->weaponMidpoint[1] * ent.axis[1][2] +
+	//		wi->weaponMidpoint[2] * ent.axis[2][2];
+	//
+	//	cent->lerpOrigin[2] += 8;	// an extra height boost
+	//}
 	
 	if( item->giType == IT_WEAPON && item->giTag == WP_RAILGUN ) {
 		clientInfo_t *ci = &cgs.clientinfo[cg.snap->ps.clientNum];
@@ -350,29 +350,29 @@ static void CG_Item( centity_t *cent ) {
 	// add to refresh list
 	trap_R_AddRefEntityToScene(&ent);
 
-	if ( item->giType == IT_WEAPON && wi && wi->barrelModel ) {
-		refEntity_t	barrel;
-		vec3_t		angles;
-
-		memset( &barrel, 0, sizeof( barrel ) );
-
-		barrel.hModel = wi->barrelModel;
-
-		VectorCopy( ent.lightingOrigin, barrel.lightingOrigin );
-		barrel.shadowPlane = ent.shadowPlane;
-		barrel.renderfx = ent.renderfx;
-
-		angles[YAW] = 0;
-		angles[PITCH] = 0;
-		angles[ROLL] = 0;
-		AnglesToAxis( angles, barrel.axis );
-
-		CG_PositionRotatedEntityOnTag( &barrel, &ent, wi->weaponModel, "tag_barrel" );
-
-		barrel.nonNormalizedAxes = ent.nonNormalizedAxes;
-
-		trap_R_AddRefEntityToScene( &barrel );
-	}
+	//if ( item->giType == IT_WEAPON && wi && wi->barrelModel ) {
+	//	refEntity_t	barrel;
+	//	vec3_t		angles;
+	//
+	//	memset( &barrel, 0, sizeof( barrel ) );
+	//
+	//	barrel.hModel = wi->barrelModel;
+	//
+	//	VectorCopy( ent.lightingOrigin, barrel.lightingOrigin );
+	//	barrel.shadowPlane = ent.shadowPlane;
+	//	barrel.renderfx = ent.renderfx;
+	//
+	//	angles[YAW] = 0;
+	//	angles[PITCH] = 0;
+	//	angles[ROLL] = 0;
+	//	AnglesToAxis( angles, barrel.axis );
+	//
+	//	CG_PositionRotatedEntityOnTag( &barrel, &ent, wi->weaponModel, "tag_barrel" );
+	//
+	//	barrel.nonNormalizedAxes = ent.nonNormalizedAxes;
+	//
+	//	trap_R_AddRefEntityToScene( &barrel );
+	//}
 
 	// accompanying rings / spheres for powerups
 	if ( !cg_simpleItems.integer ) 
@@ -415,23 +415,25 @@ CG_Missile
 static void CG_Missile( centity_t *cent ) {
 	refEntity_t			ent;
 	entityState_t		*s1;
-	const weaponInfo_t		*weapon;
+	//const weaponInfo_t		*weapon;
 //	int	col;
+
+	return; // TODO: implement the weapon system from the clientside
 
 	s1 = &cent->currentState;
 	if ( s1->weapon >= WP_NUM_WEAPONS ) {
 		s1->weapon = 0;
 	}
-	weapon = &cg_weapons[s1->weapon];
+	//weapon = &cg_weapons[s1->weapon];
 
 	// calculate the axis
 	VectorCopy( s1->angles, cent->lerpAngles);
 
-	// add trails
-	if ( weapon->missileTrailFunc ) 
-	{
-		weapon->missileTrailFunc( cent, weapon );
-	}
+	//// add trails
+	//if ( weapon->missileTrailFunc ) 
+	//{
+	//	weapon->missileTrailFunc( cent, weapon );
+	//}
 /*
 	if ( cent->currentState.modelindex == TEAM_RED ) {
 		col = 1;
@@ -449,20 +451,20 @@ static void CG_Missile( centity_t *cent ) {
 			weapon->missileDlightColor[col][0], weapon->missileDlightColor[col][1], weapon->missileDlightColor[col][2] );
 	}
 */
-	// add dynamic light
-	if ( weapon->missileDlight ) {
-		trap_R_AddLightToScene(cent->lerpOrigin, weapon->missileDlight, 
-			weapon->missileDlightColor[0], weapon->missileDlightColor[1], weapon->missileDlightColor[2] );
-	}
+	//// add dynamic light
+	//if ( weapon->missileDlight ) {
+	//	trap_R_AddLightToScene(cent->lerpOrigin, weapon->missileDlight, 
+	//		weapon->missileDlightColor[0], weapon->missileDlightColor[1], weapon->missileDlightColor[2] );
+	//}
 
-	// add missile sound
-	if ( weapon->missileSound ) {
-		vec3_t	velocity;
-
-		BG_EvaluateTrajectoryDelta( &cent->currentState.pos, cg.time, velocity );
-
-		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, velocity, weapon->missileSound );
-	}
+	//// add missile sound
+	//if ( weapon->missileSound ) {
+	//	vec3_t	velocity;
+	//
+	//	BG_EvaluateTrajectoryDelta( &cent->currentState.pos, cg.time, velocity );
+	//
+	//	trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, velocity, weapon->missileSound );
+	//}
 
 	// create the render entity
 	memset (&ent, 0, sizeof(ent));
@@ -480,8 +482,8 @@ static void CG_Missile( centity_t *cent ) {
 
 	// flicker between two skins
 	ent.skinNum = cg.clientFrame & 1;
-	ent.hModel = weapon->missileModel;
-	ent.renderfx = weapon->missileRenderfx | RF_NOSHADOW;
+	//ent.hModel = weapon->missileModel;
+	//ent.renderfx = weapon->missileRenderfx | RF_NOSHADOW;
 
 	// convert direction of travel into axis
 	if ( VectorNormalize2( s1->pos.trDelta, ent.axis[0] ) == 0 ) {
@@ -512,6 +514,8 @@ static void CG_Grapple( centity_t *cent ) {
 	refEntity_t			ent;
 	entityState_t		*s1;
 	const weaponInfo_t		*weapon;
+
+	return; // TODO: implement client weapon system
 
 	s1 = &cent->currentState;
 	if ( s1->weapon >= WP_NUM_WEAPONS ) {

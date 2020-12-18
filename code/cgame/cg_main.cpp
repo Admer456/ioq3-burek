@@ -82,7 +82,7 @@ extern "C"
 cg_t				cg;
 cgs_t				cgs;
 centity_t			cg_entities[MAX_GENTITIES];
-weaponInfo_t		cg_weapons[MAX_WEAPONS];
+weaponInfo_t		cg_weapons[MAX_WEAPONS]; // DEPRECATED, to be removed very soon
 ClientEntities::BaseClientWeapon* gClientWeapons[MAX_WEAPONS];
 itemInfo_t			cg_items[MAX_ITEMS];
 
@@ -775,6 +775,7 @@ static void CG_RegisterGraphics( void ) {
 
 	memset( cg_items, 0, sizeof( cg_items ) );
 	memset( cg_weapons, 0, sizeof( cg_weapons ) );
+	memset( gClientWeapons, 0, sizeof( gClientWeapons ) );
 
 	// only register the items that the server says we need
 	Q_strncpyz(items, CG_ConfigString(CS_ITEMS), sizeof(items));
@@ -938,6 +939,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	memset( &cg, 0, sizeof( cg ) );
 	memset( cg_entities, 0, sizeof(cg_entities) );
 	memset( cg_weapons, 0, sizeof(cg_weapons) );
+	memset( gClientWeapons, 0, sizeof( gClientWeapons ) );
 	memset( cg_items, 0, sizeof(cg_items) );
 
 	cg.clientNum = clientNum;

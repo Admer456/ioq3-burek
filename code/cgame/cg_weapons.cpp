@@ -506,6 +506,8 @@ void CG_RegisterWeapon( int weaponNum ) {
 	vec3_t			mins, maxs;
 	int				i;
 
+	return; // TODO: implement client weapon system
+
 	weaponInfo = &cg_weapons[weaponNum];
 
 	if ( weaponNum == 0 ) {
@@ -1054,14 +1056,14 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	refEntity_t	flash;
 	vec3_t		angles;
 	weapon_t	weaponNum;
-	weaponInfo_t	*weapon;
+	//weaponInfo_t	*weapon;
 	centity_t	*nonPredictedCent;
 	orientation_t	lerped;
 
 	weaponNum = (weapon_t)cent->currentState.weapon;
 
 	CG_RegisterWeapon( weaponNum );
-	weapon = &cg_weapons[weaponNum];
+	//weapon = &cg_weapons[weaponNum];
 
 	// add the weapon
 	memset( &gun, 0, sizeof( gun ) );
@@ -1084,22 +1086,23 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		}
 	}
 
-	gun.hModel = weapon->weaponModel;
+	gun.hModel = 0;
+	//gun.hModel = weapon->weaponModel;
 	if (!gun.hModel) {
 		return;
 	}
 
-	if ( !ps ) {
-		// add weapon ready sound
-		cent->pe.lightningFiring = qfalse;
-		if ( ( cent->currentState.eFlags & EF_FIRING ) && weapon->firingSound ) {
-			// lightning gun and guantlet make a different sound when fire is held down
-			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, weapon->firingSound );
-			cent->pe.lightningFiring = qtrue;
-		} else if ( weapon->readySound ) {
-			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, weapon->readySound );
-		}
-	}
+	//if ( !ps ) {
+	//	// add weapon ready sound
+	//	cent->pe.lightningFiring = qfalse;
+	//	if ( ( cent->currentState.eFlags & EF_FIRING ) && weapon->firingSound ) {
+	//		// lightning gun and guantlet make a different sound when fire is held down
+	//		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, weapon->firingSound );
+	//		cent->pe.lightningFiring = qtrue;
+	//	} else if ( weapon->readySound ) {
+	//		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, weapon->readySound );
+	//	}
+	//}
 
 	trap_R_LerpTag(&lerped, parent->hModel, parent->oldframe, parent->frame,
 		1.0 - parent->backlerp, "tag_weapon");
@@ -1120,23 +1123,23 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 	CG_AddWeaponWithPowerups( &gun, cent->currentState.powerups );
 
-	// add the spinning barrel
-	if ( weapon->barrelModel ) {
-		memset( &barrel, 0, sizeof( barrel ) );
-		VectorCopy( parent->lightingOrigin, barrel.lightingOrigin );
-		barrel.shadowPlane = parent->shadowPlane;
-		barrel.renderfx = parent->renderfx;
-
-		barrel.hModel = weapon->barrelModel;
-		angles[YAW] = 0;
-		angles[PITCH] = 0;
-		angles[ROLL] = CG_MachinegunSpinAngle( cent );
-		AnglesToAxis( angles, barrel.axis );
-
-		CG_PositionRotatedEntityOnTag( &barrel, &gun, weapon->weaponModel, "tag_barrel" );
-
-		CG_AddWeaponWithPowerups( &barrel, cent->currentState.powerups );
-	}
+	//// add the spinning barrel
+	//if ( weapon->barrelModel ) {
+	//	memset( &barrel, 0, sizeof( barrel ) );
+	//	VectorCopy( parent->lightingOrigin, barrel.lightingOrigin );
+	//	barrel.shadowPlane = parent->shadowPlane;
+	//	barrel.renderfx = parent->renderfx;
+	//
+	//	barrel.hModel = weapon->barrelModel;
+	//	angles[YAW] = 0;
+	//	angles[PITCH] = 0;
+	//	angles[ROLL] = CG_MachinegunSpinAngle( cent );
+	//	AnglesToAxis( angles, barrel.axis );
+	//
+	//	CG_PositionRotatedEntityOnTag( &barrel, &gun, weapon->weaponModel, "tag_barrel" );
+	//
+	//	CG_AddWeaponWithPowerups( &barrel, cent->currentState.powerups );
+	//}
 
 	// make sure we aren't looking at cg.predictedPlayerEntity for LG
 	nonPredictedCent = &cg_entities[cent->currentState.number];
@@ -1165,7 +1168,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	flash.shadowPlane = parent->shadowPlane;
 	flash.renderfx = parent->renderfx;
 
-	flash.hModel = weapon->flashModel;
+	flash.hModel = 0;//weapon->flashModel;
 	if (!flash.hModel) {
 		return;
 	}
@@ -1184,7 +1187,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		flash.shaderRGBA[2] = 255 * ci->color1[2];
 	}
 
-	CG_PositionRotatedEntityOnTag( &flash, &gun, weapon->weaponModel, "tag_flash");
+	//CG_PositionRotatedEntityOnTag( &flash, &gun, weapon->weaponModel, "tag_flash");
 	trap_R_AddRefEntityToScene( &flash );
 
 	if ( ps || cg.renderingThirdPerson ||
@@ -1192,10 +1195,10 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		// add lightning bolt
 		CG_LightningBolt( nonPredictedCent, flash.origin );
 
-		if ( weapon->flashDlightColor[0] || weapon->flashDlightColor[1] || weapon->flashDlightColor[2] ) {
-			trap_R_AddLightToScene( flash.origin, 300 + (rand()&31), weapon->flashDlightColor[0],
-				weapon->flashDlightColor[1], weapon->flashDlightColor[2] );
-		}
+		//if ( weapon->flashDlightColor[0] || weapon->flashDlightColor[1] || weapon->flashDlightColor[2] ) {
+		//	trap_R_AddLightToScene( flash.origin, 300 + (rand()&31), weapon->flashDlightColor[0],
+		//		weapon->flashDlightColor[1], weapon->flashDlightColor[2] );
+		//}
 	}
 }
 
@@ -1343,8 +1346,8 @@ void CG_DrawWeaponSelect( void ) {
 
 		CG_RegisterWeapon( i );
 
-		// draw weapon icon
-		CG_DrawPic( x, y, 32, 32, cg_weapons[i].weaponIcon );
+		//// draw weapon icon
+		//CG_DrawPic( x, y, 32, 32, cg_weapons[i].weaponIcon );
 
 		// draw selection marker
 		if ( i == cg.weaponSelect ) {
@@ -1359,15 +1362,15 @@ void CG_DrawWeaponSelect( void ) {
 		x += 40;
 	}
 
-	// draw the selected name
-	if ( cg_weapons[ cg.weaponSelect ].item ) {
-		name = cg_weapons[ cg.weaponSelect ].item->pickup_name;
-		if ( name ) {
-			w = CG_DrawStrlen( name ) * BIGCHAR_WIDTH;
-			x = ( SCREEN_WIDTH - w ) / 2;
-			CG_DrawBigStringColor(x, y - 22, name, color);
-		}
-	}
+	//// draw the selected name
+	//if ( cg_weapons[ cg.weaponSelect ].item ) {
+	//	name = cg_weapons[ cg.weaponSelect ].item->pickup_name;
+	//	if ( name ) {
+	//		w = CG_DrawStrlen( name ) * BIGCHAR_WIDTH;
+	//		x = ( SCREEN_WIDTH - w ) / 2;
+	//		CG_DrawBigStringColor(x, y - 22, name, color);
+	//	}
+	//}
 
 	trap_R_SetColor( NULL );
 }
@@ -1531,7 +1534,7 @@ Caused by an EV_FIRE_WEAPON event
 void CG_FireWeapon( centity_t *cent ) {
 	entityState_t *ent;
 	int				c;
-	weaponInfo_t	*weap;
+	//weaponInfo_t	*weap;
 
 	ent = &cent->currentState;
 	if ( ent->weapon == WP_NONE ) {
@@ -1541,7 +1544,7 @@ void CG_FireWeapon( centity_t *cent ) {
 		CG_Error( "CG_FireWeapon: ent->weapon >= WP_NUM_WEAPONS" );
 		return;
 	}
-	weap = &cg_weapons[ ent->weapon ];
+	//weap = &cg_weapons[ ent->weapon ];
 
 	// mark the entity as muzzle flashing, so when it is added it will
 	// append the flash to the weapon model
@@ -1563,24 +1566,24 @@ void CG_FireWeapon( centity_t *cent ) {
 		trap_S_StartSound (NULL, cent->currentState.number, CHAN_ITEM, cgs.media.quadSound );
 	}
 
-	// play a sound
-	for ( c = 0 ; c < 4 ; c++ ) {
-		if ( !weap->flashSound[c] ) {
-			break;
-		}
-	}
-	if ( c > 0 ) {
-		c = rand() % c;
-		if ( weap->flashSound[c] )
-		{
-			trap_S_StartSound( NULL, ent->number, CHAN_WEAPON, weap->flashSound[c] );
-		}
-	}
+	//// play a sound
+	//for ( c = 0 ; c < 4 ; c++ ) {
+	//	if ( !weap->flashSound[c] ) {
+	//		break;
+	//	}
+	//}
+	//if ( c > 0 ) {
+	//	c = rand() % c;
+	//	if ( weap->flashSound[c] )
+	//	{
+	//		trap_S_StartSound( NULL, ent->number, CHAN_WEAPON, weap->flashSound[c] );
+	//	}
+	//}
 
-	// do brass ejection
-	if ( weap->ejectBrassFunc && cg_brassTime.integer > 0 ) {
-		weap->ejectBrassFunc( cent );
-	}
+	//// do brass ejection
+	//if ( weap->ejectBrassFunc && cg_brassTime.integer > 0 ) {
+	//	weap->ejectBrassFunc( cent );
+	//}
 }
 
 

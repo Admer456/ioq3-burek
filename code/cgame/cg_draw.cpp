@@ -376,15 +376,15 @@ static void CG_DrawStatusBar( void ) {
 
 	VectorClear( angles );
 
-	// draw any 3D icons first, so the changes back to 2D are minimized
-	if ( cent->currentState.weapon && cg_weapons[ cent->currentState.weapon ].ammoModel ) {
-		origin[0] = 70;
-		origin[1] = 0;
-		origin[2] = 0;
-		angles[YAW] = 90 + 20 * sin( cg.time / 1000.0 );
-		CG_Draw3DModel( CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432, ICON_SIZE, ICON_SIZE,
-					   cg_weapons[ cent->currentState.weapon ].ammoModel, 0, origin, angles );
-	}
+	//// draw any 3D icons first, so the changes back to 2D are minimized
+	//if ( cent->currentState.weapon && cg_weapons[ cent->currentState.weapon ].ammoModel ) {
+	//	origin[0] = 70;
+	//	origin[1] = 0;
+	//	origin[2] = 0;
+	//	angles[YAW] = 90 + 20 * sin( cg.time / 1000.0 );
+	//	CG_Draw3DModel( CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432, ICON_SIZE, ICON_SIZE,
+	//				   cg_weapons[ cent->currentState.weapon ].ammoModel, 0, origin, angles );
+	//}
 
 	CG_DrawStatusBarHead( 185 + CHAR_WIDTH*3 + TEXT_ICON_SPACE );
 
@@ -430,10 +430,10 @@ static void CG_DrawStatusBar( void ) {
 			if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
 				qhandle_t	icon;
 
-				icon = cg_weapons[ cg.predictedPlayerState.weapon ].ammoIcon;
-				if ( icon ) {
-					CG_DrawPic( CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432, ICON_SIZE, ICON_SIZE, icon );
-				}
+				//icon = cg_weapons[ cg.predictedPlayerState.weapon ].ammoIcon;
+				//if ( icon ) {
+				//	CG_DrawPic( CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432, ICON_SIZE, ICON_SIZE, icon );
+				//}
 			}
 		}
 	}
@@ -760,13 +760,13 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 			// draw weapon icon
 			xx += TINYCHAR_WIDTH * 3;
 
-			if ( cg_weapons[ci->curWeapon].weaponIcon ) {
-				CG_DrawPic( xx, y, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 
-					cg_weapons[ci->curWeapon].weaponIcon );
-			} else {
-				CG_DrawPic( xx, y, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 
-					cgs.media.deferShader );
-			}
+			//if ( cg_weapons[ci->curWeapon].weaponIcon ) {
+			//	CG_DrawPic( xx, y, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 
+			//		cg_weapons[ci->curWeapon].weaponIcon );
+			//} else {
+			//	CG_DrawPic( xx, y, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 
+			//		cgs.media.deferShader );
+			//}
 
 			// Draw powerup icons
 			if (right) {
