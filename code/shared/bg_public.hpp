@@ -373,7 +373,16 @@ typedef enum {
 
 	EV_NOAMMO,
 	EV_CHANGE_WEAPON,
-	EV_FIRE_WEAPON,
+	EV_FIRE_WEAPON, // deprecated
+	EV_WEAPON_PRIMARY,
+	EV_WEAPON_SECONDARY,
+	EV_WEAPON_TERTIARY,
+	EV_WEAPON_RELOAD,
+	EV_WEAPON_HOLSTER,
+	EV_WEAPON_DRAW,
+
+	EV_PLAYERUSE,	// interact with usable objects
+	EV_USEITEM,		// use the currently selected item
 
 	EV_USE_ITEM0,
 	EV_USE_ITEM1,

@@ -8,6 +8,7 @@
 #include "Entities/BasePlayer.hpp"
 
 #include "Entities/Info/InfoPlayerStart.hpp"
+#include "Entities/Weapons/BaseWeapon.hpp"
 
 #include <type_traits>
 #include <array>
@@ -1032,6 +1033,10 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	client->buttons = ucmd->buttons;
 	client->latched_buttons |= client->buttons & ~client->oldbuttons;
 
+	client->oldInteractionButtons = client->interactionButtons;
+	client->interactionButtons = ucmd->interactionButtons;
+	client->latchedInteractionButtons |= client->interactionButtons & ~client->oldInteractionButtons;
+
 	// check for respawning
 	if ( client->ps.stats[STAT_HEALTH] <= 0 ) 
 	{
@@ -1047,7 +1052,7 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 			}
 
 			// pressing attack or use is the normal respawn method
-			if ( ucmd->buttons & (BUTTON_ATTACK | BUTTON_USE_HOLDABLE) ) 
+			if ( ucmd->interactionButtons & (Interaction_PrimaryAttack | Interaction_Use | Interaction_UseItem) ) 
 			{
 				ClientRespawn( player );
 			}
@@ -1136,6 +1141,8 @@ void GameWorld::ClientImpacts( Entities::BasePlayer* player, pmove_t* pm )
 
 void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence )
 {
+	using WeaponEvent = Entities::WeaponEvent;
+
 	int		i, j;
 	int		event;
 	gclient_t* client;
@@ -1186,6 +1193,13 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 		case EV_FIRE_WEAPON:
 			player->FireWeapon();
 			break;
+
+		case EV_WEAPON_PRIMARY:		player->SendWeaponEvent( WeaponEvent::WE_DoPrimaryAttack ); break;
+		case EV_WEAPON_SECONDARY:	player->SendWeaponEvent( WeaponEvent::WE_DoSecondaryAttack ); break;
+		case EV_WEAPON_TERTIARY:	player->SendWeaponEvent( WeaponEvent::WE_DoTertiaryAttack ); break;
+		case EV_WEAPON_RELOAD:		player->SendWeaponEvent( WeaponEvent::WE_DoReload ); break;
+		case EV_WEAPON_HOLSTER:		player->SendWeaponEvent( WeaponEvent::WE_DoHolster ); break;
+		case EV_WEAPON_DRAW:		player->SendWeaponEvent( WeaponEvent::WE_DoDraw ); break;
 
 			// TODO: Handle this event
 		case EV_USE_ITEM1:		// teleporter
@@ -1356,7 +1370,10 @@ void GameWorld::ClientIntermissionThink( Entities::BasePlayer* player )
 	client->oldbuttons = client->buttons;
 	client->buttons = client->pers.cmd.buttons;
 
-	if ( client->buttons & (BUTTON_ATTACK | BUTTON_USE_HOLDABLE) & (client->oldbuttons ^ client->buttons) ) 
+	client->oldInteractionButtons = client->interactionButtons;
+	client->interactionButtons = client->pers.cmd.interactionButtons;
+
+	if ( client->interactionButtons & (Interaction_PrimaryAttack | Interaction_Use) & (client->oldInteractionButtons ^ client->interactionButtons) )
 	{
 		// this used to be an ^1 but once a player says ready, it should stick
 		client->readyToExit = qtrue;
@@ -1414,8 +1431,11 @@ void GameWorld::SpectatorThink( Entities::BasePlayer* player )
 	client->oldbuttons = client->buttons;
 	client->buttons = ucmd->buttons;
 
+	client->oldInteractionButtons = client->interactionButtons;
+	client->interactionButtons = ucmd->interactionButtons;
+
 	// attack button cycles through spectators
-	if ( (client->buttons & BUTTON_ATTACK) && !(client->oldbuttons & BUTTON_ATTACK) ) 
+	if ( (client->interactionButtons & Interaction_PrimaryAttack) && !(client->oldInteractionButtons & Interaction_PrimaryAttack) ) 
 	{
 		player->FollowCycle( 1 );
 	}

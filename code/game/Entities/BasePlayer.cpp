@@ -261,7 +261,7 @@ void BasePlayer::AddEvent( int event, int eventParameter )
 
 void BasePlayer::FireWeapon()
 {
-
+	SendWeaponEvent( WE_DoPrimaryAttack );
 }
 
 void BasePlayer::SetTeam( const char* teamName )

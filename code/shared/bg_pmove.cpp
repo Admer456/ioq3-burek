@@ -1554,117 +1554,152 @@ static void PM_Weapon( void ) {
 		pm->ps->pm_flags &= ~PMF_USE_ITEM_HELD;
 	}
 
-
-	// make weapon function
-	if ( pm->ps->weaponTime > 0 ) {
-		pm->ps->weaponTime -= pml.msec;
+	if ( pm->cmd.interactionButtons & Interaction_PrimaryAttack )
+	{
+		PM_AddEvent( EV_WEAPON_PRIMARY );
+		return;
 	}
+
+	if ( pm->cmd.interactionButtons & Interaction_SecondaryAttack )
+	{
+		PM_AddEvent( EV_WEAPON_SECONDARY );
+		return;
+	}
+
+	if ( pm->cmd.interactionButtons & Interaction_TertiaryAttack )
+	{
+		PM_AddEvent( EV_WEAPON_TERTIARY );
+		return;
+	}
+
+	if ( pm->cmd.interactionButtons & Interaction_Reload )
+	{
+		PM_AddEvent( EV_WEAPON_RELOAD );
+		return;
+	}
+
+	if ( pm->cmd.interactionButtons & Interaction_Use )
+	{
+		PM_AddEvent( EV_PLAYERUSE );
+		return;
+	}
+
+	if ( pm->cmd.interactionButtons & Interaction_UseItem )
+	{
+		PM_AddEvent( EV_USEITEM );
+		return;
+	}
+
+	//// make weapon function
+	//if ( pm->ps->weaponTime > 0 ) {
+	//	pm->ps->weaponTime -= pml.msec;
+	//}
 
 	// check for weapon change
 	// can't change if weapon is firing, but can change
 	// again if lowering or raising
-	if ( pm->ps->weaponTime <= 0 || pm->ps->weaponstate != WEAPON_FIRING ) {
-		if ( pm->ps->weapon != pm->cmd.weapon ) {
-			PM_BeginWeaponChange( pm->cmd.weapon );
-		}
-	}
+	//if ( pm->ps->weaponTime <= 0 || pm->ps->weaponstate != WEAPON_FIRING ) {
+	//	if ( pm->ps->weapon != pm->cmd.weapon ) {
+	//		PM_BeginWeaponChange( pm->cmd.weapon );
+	//	}
+	//}
 
-	if ( pm->ps->weaponTime > 0 ) {
-		return;
-	}
+	//if ( pm->ps->weaponTime > 0 ) {
+	//	return;
+	//}
 
 	// change weapon if time
-	if ( pm->ps->weaponstate == WEAPON_DROPPING ) {
-		PM_FinishWeaponChange();
-		return;
-	}
+	//if ( pm->ps->weaponstate == WEAPON_DROPPING ) {
+	//	PM_FinishWeaponChange();
+	//	return;
+	//}
 
-	if ( pm->ps->weaponstate == WEAPON_RAISING ) {
-		pm->ps->weaponstate = WEAPON_READY;
-		if ( pm->ps->weapon == WP_GAUNTLET ) {
-			PM_StartTorsoAnim( TORSO_STAND2 );
-		} else {
-			PM_StartTorsoAnim( TORSO_STAND );
-		}
-		return;
-	}
+	//if ( pm->ps->weaponstate == WEAPON_RAISING ) {
+	//	pm->ps->weaponstate = WEAPON_READY;
+	//	if ( pm->ps->weapon == WP_GAUNTLET ) {
+	//		PM_StartTorsoAnim( TORSO_STAND2 );
+	//	} else {
+	//		PM_StartTorsoAnim( TORSO_STAND );
+	//	}
+	//	return;
+	//}
 
-	// check for fire
-	if ( ! (pm->cmd.buttons & BUTTON_ATTACK) ) {
-		pm->ps->weaponTime = 0;
-		pm->ps->weaponstate = WEAPON_READY;
-		return;
-	}
+	//// check for fire
+	//if ( ! (pm->cmd.buttons & BUTTON_ATTACK) ) {
+	//	pm->ps->weaponTime = 0;
+	//	pm->ps->weaponstate = WEAPON_READY;
+	//	return;
+	//}
 
-	// start the animation even if out of ammo
-	if ( pm->ps->weapon == WP_GAUNTLET ) {
-		// the guantlet only "fires" when it actually hits something
-		if ( !pm->gauntletHit ) {
-			pm->ps->weaponTime = 0;
-			pm->ps->weaponstate = WEAPON_READY;
-			return;
-		}
-		PM_StartTorsoAnim( TORSO_ATTACK2 );
-	} else {
-		PM_StartTorsoAnim( TORSO_ATTACK );
-	}
+	//// start the animation even if out of ammo
+	//if ( pm->ps->weapon == WP_GAUNTLET ) {
+	//	// the guantlet only "fires" when it actually hits something
+	//	if ( !pm->gauntletHit ) {
+	//		pm->ps->weaponTime = 0;
+	//		pm->ps->weaponstate = WEAPON_READY;
+	//		return;
+	//	}
+	//	PM_StartTorsoAnim( TORSO_ATTACK2 );
+	//} else {
+	//	PM_StartTorsoAnim( TORSO_ATTACK );
+	//}
 
-	pm->ps->weaponstate = WEAPON_FIRING;
+	//pm->ps->weaponstate = WEAPON_FIRING;
 
-	// check for out of ammo
-	if ( ! pm->ps->ammo[ pm->ps->weapon ] ) {
-		PM_AddEvent( EV_NOAMMO );
-		pm->ps->weaponTime += 500;
-		return;
-	}
+	//// check for out of ammo
+	//if ( ! pm->ps->ammo[ pm->ps->weapon ] ) {
+	//	PM_AddEvent( EV_NOAMMO );
+	//	pm->ps->weaponTime += 500;
+	//	return;
+	//}
 
-	// take an ammo away if not infinite
-	if ( pm->ps->ammo[ pm->ps->weapon ] != -1 ) {
-		pm->ps->ammo[ pm->ps->weapon ]--;
-	}
+	//// take an ammo away if not infinite
+	//if ( pm->ps->ammo[ pm->ps->weapon ] != -1 ) {
+	//	pm->ps->ammo[ pm->ps->weapon ]--;
+	//}
 
-	// fire weapon
-	PM_AddEvent( EV_FIRE_WEAPON );
+	//// fire weapon
+	//PM_AddEvent( EV_FIRE_WEAPON );
 
-	switch( pm->ps->weapon ) {
-	default:
-	case WP_GAUNTLET:
-		addTime = 400;
-		break;
-	case WP_LIGHTNING:
-		addTime = 50;
-		break;
-	case WP_SHOTGUN:
-		addTime = 1000;
-		break;
-	case WP_MACHINEGUN:
-		addTime = 100;
-		break;
-	case WP_GRENADE_LAUNCHER:
-		addTime = 800;
-		break;
-	case WP_ROCKET_LAUNCHER:
-		addTime = 800;
-		break;
-	case WP_PLASMAGUN:
-		addTime = 100;
-		break;
-	case WP_RAILGUN:
-		addTime = 1500;
-		break;
-	case WP_BFG:
-		addTime = 200;
-		break;
-	case WP_GRAPPLING_HOOK:
-		addTime = 400;
-		break;
-	}
+	//switch( pm->ps->weapon ) {
+	//default:
+	//case WP_GAUNTLET:
+	//	addTime = 400;
+	//	break;
+	//case WP_LIGHTNING:
+	//	addTime = 50;
+	//	break;
+	//case WP_SHOTGUN:
+	//	addTime = 1000;
+	//	break;
+	//case WP_MACHINEGUN:
+	//	addTime = 100;
+	//	break;
+	//case WP_GRENADE_LAUNCHER:
+	//	addTime = 800;
+	//	break;
+	//case WP_ROCKET_LAUNCHER:
+	//	addTime = 800;
+	//	break;
+	//case WP_PLASMAGUN:
+	//	addTime = 100;
+	//	break;
+	//case WP_RAILGUN:
+	//	addTime = 1500;
+	//	break;
+	//case WP_BFG:
+	//	addTime = 200;
+	//	break;
+	//case WP_GRAPPLING_HOOK:
+	//	addTime = 400;
+	//	break;
+	//}
 
-	if ( pm->ps->powerups[PW_HASTE] ) {
-		addTime /= 1.3;
-	}
+	//if ( pm->ps->powerups[PW_HASTE] ) {
+	//	addTime /= 1.3;
+	//}
 
-	pm->ps->weaponTime += addTime;
+	//pm->ps->weaponTime += addTime;
 }
 
 /*
