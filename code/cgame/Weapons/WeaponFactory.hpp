@@ -38,6 +38,16 @@ public:
 		return allocator();
 	}
 
+	const char* GetName()
+	{
+		return name;
+	}
+
+	unsigned int GetID()
+	{
+		return id;
+	}
+
 	// Linked list stuff
 	static WeaponFactory* head;
 	WeaponFactory* next{ nullptr };
