@@ -5,11 +5,11 @@
 
 using namespace ClientEntities;
 
-void BaseClientWeapon::Init()
+void BaseClientWeapon::Precache()
 {
 	WeaponInfo wi = GetWeaponInfo();
 
-	//renderEntity.hModel = trap_R_RegisterModel( wi.viewModel );
+	renderEntity.hModel = trap_R_RegisterModel( wi.viewModel );
 }
 
 void BaseClientWeapon::WeaponFrame()

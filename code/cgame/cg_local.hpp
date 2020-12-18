@@ -1216,7 +1216,6 @@ void CG_NextWeapon_f( void );
 void CG_PrevWeapon_f( void );
 void CG_Weapon_f( void );
 
-void CG_RegisterWeapon( ClientEntities::BaseClientWeapon* weapon );
 void CG_RegisterItemVisuals( int itemNum );
 
 void CG_FireWeapon( centity_t *cent );

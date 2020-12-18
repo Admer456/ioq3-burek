@@ -14,8 +14,12 @@ namespace ClientEntities
 		};
 
 		virtual WeaponInfo GetWeaponInfo() = 0;
+		virtual refEntity_t& GetRenderEntity()
+		{
+			return renderEntity;
+		}
 
-		virtual void	Init();
+		virtual void	Precache();
 
 		virtual void	WeaponFrame();
 
@@ -27,5 +31,8 @@ namespace ClientEntities
 
 		virtual void	OnDraw() {}
 		virtual void	OnHolster() {}
+
+	protected:
+		refEntity_t		renderEntity;
 	};
 }

@@ -491,13 +491,6 @@ static void CG_GrenadeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	CG_RocketTrail( ent, wi );
 }
 
-void CG_RegisterWeapon( ClientEntities::BaseClientWeapon* weapon )
-{
-	ClientEntities::BaseClientWeapon::WeaponInfo info = weapon->GetWeaponInfo();
-	
-	info.viewModelHandle = trap_R_RegisterModel( info.viewModel );
-}
-
 /*
 =================
 CG_RegisterItemVisuals
@@ -873,29 +866,31 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	refEntity_t	barrel;
 	refEntity_t	flash;
 	vec3_t		angles;
-	weapon_t	weaponNum;
 	ClientEntities::BaseClientWeapon* weapon;
 	centity_t	*nonPredictedCent;
 	orientation_t	lerped;
 
-	weaponNum = (weapon_t)cent->currentState.weapon;
-	weapon = gWeapons[weaponNum];
+	weapon = gWeapons[cent->currentState.weapon];
 
 	if ( nullptr == weapon )
+	{
+		CG_Printf( "CG_AddPlayerWeapon: weapon %i does not exist\n", cent->currentState.weapon );
 		return;
+	}
 
 	// add the weapon
-	memset( &gun, 0, sizeof( gun ) );
+	gun = weapon->GetRenderEntity();
+
 	VectorCopy( parent->lightingOrigin, gun.lightingOrigin );
 	gun.shadowPlane = parent->shadowPlane;
 	gun.renderfx = parent->renderfx;
 
-	gun.hModel = weapon->GetWeaponInfo().viewModelHandle;
 	if (!gun.hModel) 
 	{
 		return;
 	}
 
+	// Interpolate tag position between the last and current frame
 	trap_R_LerpTag(&lerped, parent->hModel, parent->oldframe, parent->frame,
 		1.0 - parent->backlerp, "tag_weapon");
 	
@@ -911,7 +906,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 	VectorMA(gun.origin, lerped.origin[2], parent->axis[2], gun.origin);
 
-	MatrixMultiply(lerped.axis, ((refEntity_t *)parent)->axis, gun.axis);
+	MatrixMultiply(lerped.axis, parent->axis, gun.axis);
 	gun.backlerp = parent->backlerp;
 
 	//trap_R_AddRefEntityToScene( &gun );
@@ -1275,25 +1270,6 @@ void CG_FireWeapon( centity_t *cent ) {
 	if ( cent->currentState.powerups & ( 1 << PW_QUAD ) ) {
 		trap_S_StartSound (NULL, cent->currentState.number, CHAN_ITEM, cgs.media.quadSound );
 	}
-
-	//// play a sound
-	//for ( c = 0 ; c < 4 ; c++ ) {
-	//	if ( !weap->flashSound[c] ) {
-	//		break;
-	//	}
-	//}
-	//if ( c > 0 ) {
-	//	c = rand() % c;
-	//	if ( weap->flashSound[c] )
-	//	{
-	//		trap_S_StartSound( NULL, ent->number, CHAN_WEAPON, weap->flashSound[c] );
-	//	}
-	//}
-
-	//// do brass ejection
-	//if ( weap->ejectBrassFunc && cg_brassTime.integer > 0 ) {
-	//	weap->ejectBrassFunc( cent );
-	//}
 }
 
 

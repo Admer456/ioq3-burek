@@ -782,10 +782,10 @@ static void CG_RegisterGraphics( void )
 	{
 		// Allocate this weapon and put it in the weapon list
 		ClientEntities::BaseClientWeapon* weapon = weaponFactory->CreateWeapon();
-		gWeapons[ weaponFactory->GetID() ] = weapon;
+		gWeapons[weaponFactory->GetID()] = weapon;
 
 		// Precache weapon
-		CG_RegisterWeapon( weapon );
+		weapon->Precache();
 
 		CG_Printf( "Registered gun '%s', viewmodel '%s'", weapon->GetWeaponInfo().name, weapon->GetWeaponInfo().viewModel );
 
