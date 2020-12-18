@@ -1313,7 +1313,8 @@ enum ButtonBits
 	BUTTON_GETFLAG = 1 << 7,
 	BUTTON_GUARDBASE = 1 << 8,
 	BUTTON_PATROL = 1 << 9,
-	BUTTON_FOLLOWME = 1 << 10
+	BUTTON_FOLLOWME = 1 << 10,
+	BUTTON_ANY = 1 << 11
 };
 
 enum InteractionBits
