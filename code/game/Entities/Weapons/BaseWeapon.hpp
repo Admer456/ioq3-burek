@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../shared/Weapons/WeaponIDs.hpp"
+
 namespace Entities
 {
 	enum WeaponFlags : uint16_t
@@ -29,6 +31,7 @@ namespace Entities
 		struct WeaponInfo
 		{
 			const char* worldModel;
+			int weaponID;
 		};
 		virtual WeaponInfo GetWeaponInfo() = 0;
 		virtual uint16_t GetWeaponFlags() = 0;

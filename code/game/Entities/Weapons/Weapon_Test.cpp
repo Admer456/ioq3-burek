@@ -17,6 +17,7 @@ Weapon_Test::WeaponInfo Weapon_Test::GetWeaponInfo()
 	WeaponInfo wi;
 
 	wi.worldModel = "models/weapons/w_test.iqm";
+	wi.weaponID = WeaponID_Test;
 
 	return wi;
 }
