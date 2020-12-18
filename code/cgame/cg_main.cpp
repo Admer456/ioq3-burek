@@ -82,8 +82,7 @@ extern "C"
 cg_t				cg;
 cgs_t				cgs;
 centity_t			cg_entities[MAX_GENTITIES];
-weaponInfo_t		cg_weapons[MAX_WEAPONS]; // DEPRECATED, to be removed very soon
-ClientEntities::BaseClientWeapon* gClientWeapons[MAX_WEAPONS];
+ClientEntities::BaseClientWeapon* gWeapons[MAX_WEAPONS];
 itemInfo_t			cg_items[MAX_ITEMS];
 
 
@@ -642,10 +641,11 @@ CG_RegisterGraphics
 This function may execute for a couple of minutes with a slow disk.
 =================
 */
-static void CG_RegisterGraphics( void ) {
+static void CG_RegisterGraphics( void )
+{
 	int			i;
-	char		items[MAX_ITEMS+1];
-	static char		*sb_nums[11] = {
+	char		items[MAX_ITEMS + 1];
+	static char* sb_nums[11] = {
 		"gfx/2d/numbers/zero_32b",
 		"gfx/2d/numbers/one_32b",
 		"gfx/2d/numbers/two_32b",
@@ -670,7 +670,7 @@ static void CG_RegisterGraphics( void ) {
 	// precache status bar pics
 	CG_LoadingString( "game media" );
 
-	for ( i=0 ; i<11 ; i++) {
+	for ( i = 0; i < 11; i++ ) {
 		cgs.media.numberShaders[i] = trap_R_RegisterShader( sb_nums[i] );
 	}
 
@@ -694,7 +694,7 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.shotgunSmokePuffShader = trap_R_RegisterShader( "shotgunSmokePuff" );
 	cgs.media.plasmaBallShader = trap_R_RegisterShader( "sprites/plasma1" );
 	cgs.media.bloodTrailShader = trap_R_RegisterShader( "bloodTrail" );
-	cgs.media.lagometerShader = trap_R_RegisterShader("lagometer" );
+	cgs.media.lagometerShader = trap_R_RegisterShader( "lagometer" );
 	cgs.media.connectionShader = trap_R_RegisterShader( "disconnected" );
 
 	cgs.media.waterBubbleShader = trap_R_RegisterShader( "waterBubble" );
@@ -702,21 +702,21 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.tracerShader = trap_R_RegisterShader( "gfx/misc/tracer" );
 	cgs.media.selectShader = trap_R_RegisterShader( "gfx/2d/select" );
 
-	for ( i = 0 ; i < NUM_CROSSHAIRS ; i++ ) {
-		cgs.media.crosshairShader[i] = trap_R_RegisterShader( va("gfx/2d/crosshair%c", 'a'+i) );
+	for ( i = 0; i < NUM_CROSSHAIRS; i++ ) {
+		cgs.media.crosshairShader[i] = trap_R_RegisterShader( va( "gfx/2d/crosshair%c", 'a' + i ) );
 	}
 
 	cgs.media.backTileShader = trap_R_RegisterShader( "gfx/2d/backtile" );
 	cgs.media.noammoShader = trap_R_RegisterShader( "icons/noammo" );
 
 	// powerup shaders
-	cgs.media.quadShader = trap_R_RegisterShader("powerups/quad" );
-	cgs.media.quadWeaponShader = trap_R_RegisterShader("powerups/quadWeapon" );
-	cgs.media.battleSuitShader = trap_R_RegisterShader("powerups/battleSuit" );
-	cgs.media.battleWeaponShader = trap_R_RegisterShader("powerups/battleWeapon" );
-	cgs.media.invisShader = trap_R_RegisterShader("powerups/invisibility" );
-	cgs.media.regenShader = trap_R_RegisterShader("powerups/regen" );
-	cgs.media.hastePuffShader = trap_R_RegisterShader("hasteSmokePuff" );
+	cgs.media.quadShader = trap_R_RegisterShader( "powerups/quad" );
+	cgs.media.quadWeaponShader = trap_R_RegisterShader( "powerups/quadWeapon" );
+	cgs.media.battleSuitShader = trap_R_RegisterShader( "powerups/battleSuit" );
+	cgs.media.battleWeaponShader = trap_R_RegisterShader( "powerups/battleWeapon" );
+	cgs.media.invisShader = trap_R_RegisterShader( "powerups/invisibility" );
+	cgs.media.regenShader = trap_R_RegisterShader( "powerups/regen" );
+	cgs.media.hastePuffShader = trap_R_RegisterShader( "hasteSmokePuff" );
 
 	if ( cgs.gametype == GT_CTF || cg_buildScript.integer ) {
 		cgs.media.redFlagModel = trap_R_RegisterModel( "models/flags/r_flag.md3" );
@@ -732,12 +732,12 @@ static void CG_RegisterGraphics( void ) {
 
 	if ( cgs.gametype >= GT_TEAM || cg_buildScript.integer ) {
 		cgs.media.friendShader = trap_R_RegisterShader( "sprites/foe" );
-		cgs.media.redQuadShader = trap_R_RegisterShader("powerups/blueflag" );
+		cgs.media.redQuadShader = trap_R_RegisterShader( "powerups/blueflag" );
 		cgs.media.teamStatusBar = trap_R_RegisterShader( "gfx/2d/colorbar.tga" );
 	}
 
 	cgs.media.armorModel = trap_R_RegisterModel( "models/powerups/armor/armor_yel.md3" );
-	cgs.media.armorIcon  = trap_R_RegisterShaderNoMip( "icons/iconr_yellow" );
+	cgs.media.armorIcon = trap_R_RegisterShaderNoMip( "icons/iconr_yellow" );
 
 	cgs.media.machinegunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/m_shell.md3" );
 	cgs.media.shotgunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/s_shell.md3" );
@@ -759,9 +759,9 @@ static void CG_RegisterGraphics( void ) {
 
 	cgs.media.bloodExplosionShader = trap_R_RegisterShader( "bloodExplosion" );
 
-	cgs.media.bulletFlashModel = trap_R_RegisterModel("models/weaphits/bullet.md3");
-	cgs.media.ringFlashModel = trap_R_RegisterModel("models/weaphits/ring02.md3");
-	cgs.media.dishFlashModel = trap_R_RegisterModel("models/weaphits/boom01.md3");
+	cgs.media.bulletFlashModel = trap_R_RegisterModel( "models/weaphits/bullet.md3" );
+	cgs.media.ringFlashModel = trap_R_RegisterModel( "models/weaphits/ring02.md3" );
+	cgs.media.dishFlashModel = trap_R_RegisterModel( "models/weaphits/boom01.md3" );
 
 	cgs.media.teleportEffectModel = trap_R_RegisterModel( "models/misc/telep.md3" );
 	cgs.media.teleportEffectShader = trap_R_RegisterShader( "teleportEffect" );
@@ -774,8 +774,23 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.medalCapture = trap_R_RegisterShaderNoMip( "medal_capture" );
 
 	memset( cg_items, 0, sizeof( cg_items ) );
-	memset( cg_weapons, 0, sizeof( cg_weapons ) );
-	memset( gClientWeapons, 0, sizeof( gClientWeapons ) );
+	memset( gWeapons, 0, sizeof( gWeapons ) );
+
+	// Precache weapon models, sounds etc.
+	WeaponFactory* weaponFactory = WeaponFactory::head;
+	while ( weaponFactory )
+	{
+		// Allocate this weapon and put it in the weapon list
+		ClientEntities::BaseClientWeapon* weapon = weaponFactory->CreateWeapon();
+		gWeapons[ weaponFactory->GetID() ] = weapon;
+
+		// Precache weapon
+		CG_RegisterWeapon( weapon );
+
+		CG_Printf( "Registered gun '%s', viewmodel '%s'", weapon->GetWeaponInfo().name, weapon->GetWeaponInfo().viewModel );
+
+		weaponFactory = weaponFactory->next;
+	}
 
 	// only register the items that the server says we need
 	Q_strncpyz(items, CG_ConfigString(CS_ITEMS), sizeof(items));
@@ -938,8 +953,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	memset( &cgs, 0, sizeof( cgs ) );
 	memset( &cg, 0, sizeof( cg ) );
 	memset( cg_entities, 0, sizeof(cg_entities) );
-	memset( cg_weapons, 0, sizeof(cg_weapons) );
-	memset( gClientWeapons, 0, sizeof( gClientWeapons ) );
+	memset( gWeapons, 0, sizeof( gWeapons ) );
 	memset( cg_items, 0, sizeof(cg_items) );
 
 	cg.clientNum = clientNum;

@@ -8,10 +8,11 @@ namespace ClientEntities
 		struct WeaponInfo
 		{
 			const char* viewModel;
+			qhandle_t viewModelHandle;
+
 			const char* name;
 		};
 
-		refEntity_t		GetRenderModel() { return renderEntity; }
 		virtual WeaponInfo GetWeaponInfo() = 0;
 
 		virtual void	Init();
@@ -26,8 +27,5 @@ namespace ClientEntities
 
 		virtual void	OnDraw() {}
 		virtual void	OnHolster() {}
-
-	protected:
-		refEntity_t		renderEntity;
 	};
 }

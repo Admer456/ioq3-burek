@@ -958,8 +958,7 @@ typedef struct {
 extern	cgs_t			cgs;
 extern	cg_t			cg;
 extern	centity_t		cg_entities[MAX_GENTITIES];
-extern	weaponInfo_t	cg_weapons[MAX_WEAPONS];
-extern	ClientEntities::BaseClientWeapon* clientWeapons[MAX_WEAPONS];
+extern	ClientEntities::BaseClientWeapon* gWeapons[MAX_WEAPONS];
 extern	itemInfo_t		cg_items[MAX_ITEMS];
 extern	markPoly_t		cg_markPolys[MAX_MARK_POLYS];
 
@@ -1217,7 +1216,7 @@ void CG_NextWeapon_f( void );
 void CG_PrevWeapon_f( void );
 void CG_Weapon_f( void );
 
-void CG_RegisterWeapon( int weaponNum );
+void CG_RegisterWeapon( ClientEntities::BaseClientWeapon* weapon );
 void CG_RegisterItemVisuals( int itemNum );
 
 void CG_FireWeapon( centity_t *cent );

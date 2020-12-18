@@ -513,7 +513,7 @@ This is called when the grapple is sitting up against the wall
 static void CG_Grapple( centity_t *cent ) {
 	refEntity_t			ent;
 	entityState_t		*s1;
-	const weaponInfo_t		*weapon;
+	//const weaponInfo_t		*weapon;
 
 	return; // TODO: implement client weapon system
 
@@ -521,7 +521,7 @@ static void CG_Grapple( centity_t *cent ) {
 	if ( s1->weapon >= WP_NUM_WEAPONS ) {
 		s1->weapon = 0;
 	}
-	weapon = &cg_weapons[s1->weapon];
+	//weapon = &cg_weapons[s1->weapon];
 
 	// calculate the axis
 	VectorCopy( s1->angles, cent->lerpAngles);
@@ -533,8 +533,8 @@ static void CG_Grapple( centity_t *cent ) {
 	}
 #endif
 
-	// Will draw cable if needed
-	CG_GrappleTrail ( cent, weapon );
+	//// Will draw cable if needed
+	//CG_GrappleTrail ( cent, weapon );
 
 	// create the render entity
 	memset (&ent, 0, sizeof(ent));
@@ -543,8 +543,8 @@ static void CG_Grapple( centity_t *cent ) {
 
 	// flicker between two skins
 	ent.skinNum = cg.clientFrame & 1;
-	ent.hModel = weapon->missileModel;
-	ent.renderfx = weapon->missileRenderfx | RF_NOSHADOW;
+	ent.hModel = 0;//weapon->missileModel;
+	ent.renderfx = 0;//weapon->missileRenderfx | RF_NOSHADOW;
 
 	// convert direction of travel into axis
 	if ( VectorNormalize2( s1->pos.trDelta, ent.axis[0] ) == 0 ) {
