@@ -269,6 +269,10 @@ struct gclient_s {
 	int			oldbuttons;
 	int			latched_buttons;
 
+	short		interactionButtons;
+	short		oldInteractionButtons;
+	short		latchedInteractionButtons;
+
 	vec3_t		oldOrigin;
 
 	// sum up damage over an entire frame, so
