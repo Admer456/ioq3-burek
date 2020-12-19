@@ -182,12 +182,14 @@
   <ItemGroup>
     <ClInclude Include="..\..\code\cgame\cg_local.hpp" />
     <ClInclude Include="..\..\code\cgame\cg_public.hpp" />
+    <ClInclude Include="..\..\code\cgame\Client.hpp" />
     <ClInclude Include="..\..\code\cgame\ClientExportImport.h" />
     <ClInclude Include="..\..\code\cgame\IClientGame.h" />
     <ClInclude Include="..\..\code\cgame\IClientGameImports.h" />
     <ClInclude Include="..\..\code\cgame\Weapons\BaseClientWeapon.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\WeaponFactory.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Test.hpp" />
+    <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Test2.hpp" />
     <ClInclude Include="..\..\code\qcommon\IEngineExports.h" />
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
     <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp" />
@@ -216,9 +218,11 @@
     <ClCompile Include="..\..\code\cgame\cg_syscalls.cpp" />
     <ClCompile Include="..\..\code\cgame\cg_view.cpp" />
     <ClCompile Include="..\..\code\cgame\cg_weapons.cpp" />
+    <ClCompile Include="..\..\code\cgame\Client.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\BaseClientWeapon.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\WeaponFactory.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Test.cpp" />
+    <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Test2.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_shared.cpp" />
     <ClCompile Include="..\..\code\shared\bg_misc.cpp" />

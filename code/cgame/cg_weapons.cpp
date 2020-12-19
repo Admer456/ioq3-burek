@@ -874,7 +874,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 	if ( nullptr == weapon )
 	{
-		CG_Printf( "CG_AddPlayerWeapon: weapon %i does not exist\n", cent->currentState.weapon );
+		//CG_Printf( "CG_AddPlayerWeapon: weapon %i does not exist\n", cent->currentState.weapon );
 		return;
 	}
 
@@ -885,7 +885,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	gun.shadowPlane = parent->shadowPlane;
 	gun.renderfx = parent->renderfx;
 
-	if (!gun.hModel) 
+	if ( !gun.hModel ) 
 	{
 		return;
 	}
@@ -909,8 +909,8 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	MatrixMultiply(lerped.axis, parent->axis, gun.axis);
 	gun.backlerp = parent->backlerp;
 
-	//trap_R_AddRefEntityToScene( &gun );
-	CG_AddWeaponWithPowerups( &gun, cent->currentState.powerups );
+	trap_R_AddRefEntityToScene( &gun );
+	//CG_AddWeaponWithPowerups( &gun, cent->currentState.powerups );
 
 	// make sure we aren't looking at cg.predictedPlayerEntity for LG
 	nonPredictedCent = &cg_entities[cent->currentState.number];
@@ -931,7 +931,8 @@ CG_AddViewWeapon
 Add the weapon, and flash for the player's view
 ==============
 */
-void CG_AddViewWeapon( playerState_t *ps ) {
+void CG_AddViewWeapon( playerState_t *ps ) 
+{
 	refEntity_t	hand;
 	centity_t	*cent;
 	clientInfo_t	*ci;
@@ -939,17 +940,20 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	vec3_t		angles;
 	//weaponInfo_t	*weapon;
 
-	if ( ps->persistant[PERS_TEAM] == TEAM_SPECTATOR ) {
+	if ( ps->persistant[PERS_TEAM] == TEAM_SPECTATOR ) 
+	{
 		return;
 	}
 
-	if ( ps->pm_type == PM_INTERMISSION ) {
+	if ( ps->pm_type == PM_INTERMISSION ) 
+	{
 		return;
 	}
 
 	// no gun if in third person view or a camera is active
 	//if ( cg.renderingThirdPerson || cg.cameraMode) {
-	if ( cg.renderingThirdPerson ) {
+	if ( cg.renderingThirdPerson ) 
+	{
 		return;
 	}
 
@@ -961,9 +965,12 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 
 
 	// drop gun lower at higher fov
-	if ( cg_fov.integer > 90 ) {
+	if ( cg_fov.integer > 90 ) 
+	{
 		fovOffset = -0.08f * ( cg_fov.integer - 90 );
-	} else {
+	} 
+	else 
+	{
 		fovOffset = 0;
 	}
 
@@ -980,11 +987,14 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	AnglesToAxis( angles, hand.axis );
 
 	// map torso animations to weapon animations
-	if ( cg_gun_frame.integer ) {
+	if ( cg_gun_frame.integer ) 
+	{
 		// development tool
 		hand.frame = hand.oldframe = cg_gun_frame.integer;
 		hand.backlerp = 0;
-	} else {
+	} 
+	else 
+	{
 		// get clientinfo for animation map
 		ci = &cgs.clientinfo[ cent->currentState.clientNum ];
 		hand.frame = CG_MapTorsoToWeaponFrame( ci, cent->pe.torso.frame );
@@ -993,7 +1003,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	}
 
 	hand.hModel = 0;//weapon->handsModel;
-	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_MINLIGHT;
+	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON; //| RF_MINLIGHT;
 
 	// add everything onto the hand
 	CG_AddPlayerWeapon( &hand, ps, &cg.predictedPlayerEntity, ps->persistant[PERS_TEAM] );

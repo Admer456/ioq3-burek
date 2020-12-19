@@ -225,6 +225,9 @@
     <ClInclude Include="..\..\code\game\Entities\IEntity.hpp">
       <Filter>Game\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\client\ButtonFunction.hpp">
+      <Filter>client</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\botlib\be_aas_bspq3.cpp">
@@ -508,6 +511,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\qcommon\GameImportsLocal.cpp">
       <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\client\ButtonFunction.cpp">
+      <Filter>client</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -462,13 +462,16 @@ also called by CG_CheckPlayerstateEvents
 ==============
 */
 #define	DEBUGNAME(x) if(cg_debugEvents.integer){CG_Printf(x"\n");}
-void CG_EntityEvent( centity_t *cent, vec3_t position ) {
-	entityState_t	*es;
+void CG_EntityEvent( centity_t* cent, vec3_t position )
+{
+	entityState_t* es;
 	int				event;
 	vec3_t			dir;
-	const char		*s;
+	const char* s;
 	int				clientNum;
-	clientInfo_t	*ci;
+	clientInfo_t* ci;
+
+	ClientEntities::BaseClientWeapon* weapon{ nullptr };
 
 	es = &cent->currentState;
 	event = es->event & ~EV_EVENT_BITS;
@@ -488,7 +491,13 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	}
 	ci = &cgs.clientinfo[ clientNum ];
 
-	switch ( event ) {
+	if ( clientNum == cg.snap->ps.clientNum )
+	{
+		weapon = GetClient()->GetCurrentWeapon();
+	}
+
+	switch ( event ) 
+	{
 	//
 	// movement generated events
 	//
@@ -700,7 +709,8 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_NOAMMO:
 		DEBUGNAME("EV_NOAMMO");
 //		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.noAmmoSound );
-		if ( es->number == cg.snap->ps.clientNum ) {
+		if ( es->number == cg.snap->ps.clientNum ) 
+		{
 			CG_OutOfAmmoChange();
 		}
 		break;
@@ -709,10 +719,38 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.selectSound );
 		break;
 	case EV_FIRE_WEAPON:
-		DEBUGNAME("EV_FIRE_WEAPON");
-		CG_FireWeapon( cent );
+		//DEBUGNAME("EV_FIRE_WEAPON");
+		//CG_FireWeapon( cent );
 		break;
 
+	case EV_WEAPON_PRIMARY:
+		if ( weapon ) weapon->OnPrimaryFire();
+		break;
+	
+	case EV_WEAPON_SECONDARY:
+		if ( weapon ) weapon->OnSecondaryFire();
+		break;
+
+	case EV_WEAPON_TERTIARY:
+		if ( weapon ) weapon->OnTertiaryFire();
+		break;
+
+	case EV_WEAPON_DRAW:
+		if ( weapon ) weapon->OnDraw();
+		break;
+
+	case EV_WEAPON_HOLSTER:
+		if ( weapon ) weapon->OnHolster();
+		break;
+
+	case EV_WEAPON_RELOAD:
+		if ( weapon ) weapon->OnReload();
+		break;
+
+	case EV_PLAYERUSE:
+		// Do nothing, I guess lol
+		break;
+	
 	case EV_USE_ITEM0:
 		DEBUGNAME("EV_USE_ITEM0");
 		CG_UseItem( cent );

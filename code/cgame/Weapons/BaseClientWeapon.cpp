@@ -14,5 +14,9 @@ void BaseClientWeapon::Precache()
 
 void BaseClientWeapon::WeaponFrame()
 {
+	renderEntity.oldframe = renderEntity.frame;
+	renderEntity.frame++;
 
+	if ( renderEntity.frame > 200 )
+		renderEntity.frame = 0;
 }

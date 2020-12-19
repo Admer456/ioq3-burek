@@ -53,9 +53,12 @@ void BasePlayer::SetClientViewAngle( const Vector& newAngle )
 
 void BasePlayer::AddWeapon( BaseWeapon* weapon )
 {
-	if ( !HasWeapon( weapon->GetWeaponInfo().weaponID ) )
+	int weaponID = weapon->GetWeaponInfo().weaponID;
+
+	if ( !HasWeapon( weaponID ) )
 	{
-		weapons[weapon->GetWeaponInfo().weaponID] = weapon;
+		weapons[weaponID] = weapon;
+		client->ps.stats[STAT_WEAPONS] |= (1 << weaponID);
 	}
 }
 

@@ -789,7 +789,7 @@ static void CG_RegisterGraphics( void )
 
 		CG_Printf( "Registered gun '%s', viewmodel '%s'", weapon->GetWeaponInfo().name, weapon->GetWeaponInfo().viewModel );
 
-		weaponFactory = weaponFactory->next;
+		weaponFactory = weaponFactory->prev;
 	}
 
 	// only register the items that the server says we need

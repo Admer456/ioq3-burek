@@ -60,6 +60,12 @@
     <ClInclude Include="..\..\code\shared\Weapons\WeaponIDs.hpp">
       <Filter>Shared\Weapons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Test2.hpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Client.hpp">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -145,6 +151,12 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Test.cpp">
       <Filter>Sources\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Test2.cpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Client.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

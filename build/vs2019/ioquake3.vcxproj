@@ -237,6 +237,7 @@
     <ClInclude Include="..\..\code\botlib\l_script.hpp" />
     <ClInclude Include="..\..\code\botlib\l_struct.hpp" />
     <ClInclude Include="..\..\code\botlib\l_utils.hpp" />
+    <ClInclude Include="..\..\code\client\ButtonFunction.hpp" />
     <ClInclude Include="..\..\code\client\cl_curl.hpp" />
     <ClInclude Include="..\..\code\client\client.hpp" />
     <ClInclude Include="..\..\code\client\keycodes.hpp" />
@@ -297,6 +298,7 @@
     <ClCompile Include="..\..\code\botlib\l_precomp.cpp" />
     <ClCompile Include="..\..\code\botlib\l_script.cpp" />
     <ClCompile Include="..\..\code\botlib\l_struct.cpp" />
+    <ClCompile Include="..\..\code\client\ButtonFunction.cpp" />
     <ClCompile Include="..\..\code\client\cl_avi.cpp" />
     <ClCompile Include="..\..\code\client\cl_cgame.cpp" />
     <ClCompile Include="..\..\code\client\cl_cin.cpp" />

@@ -633,22 +633,6 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 
 	client->ps.clientNum = index;
 
-	client->ps.stats[STAT_WEAPONS] = (1 << WP_MACHINEGUN);
-
-	if ( g_gametype.integer == GT_TEAM ) 
-	{
-		client->ps.ammo[WP_MACHINEGUN] = 50;
-	}
-
-	else 
-	{
-		client->ps.ammo[WP_MACHINEGUN] = 100;
-	}
-
-	client->ps.stats[STAT_WEAPONS] |= (1 << WP_GAUNTLET);
-	client->ps.ammo[WP_GAUNTLET] = -1;
-	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
-
 	// health will count down towards max_health
 	player->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + 25;
 
@@ -680,24 +664,12 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 			player->KillBox();
 
 			// force the base weapon up
-			client->ps.weapon = WP_MACHINEGUN;
+			client->ps.weapon = WeaponID_None;
 			client->ps.weaponstate = WEAPON_READY;
 			
 			// fire the targets of the spawn point
 			if ( info.entityId != ENTITYNUM_NONE && gEntities[info.entityId] )
 				gEntities[info.entityId]->UseTargets( player );
-
-			// select the highest weapon number available, after any spawn given items have fired
-			client->ps.weapon = 1;
-
-			for ( i = WP_NUM_WEAPONS - 1; i > 0; i-- ) 
-			{
-				if ( client->ps.stats[STAT_WEAPONS] & (1 << i) ) 
-				{
-					client->ps.weapon = i;
-					break;
-				}
-			}
 
 			// positively link the client, even if the command times are weird
 			VectorCopy( player->GetClient()->ps.origin, player->GetShared()->currentOrigin );

@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // cl.input.c  -- builds an intended movement command to send to the server
 
 #include "client.hpp"
+#include "ButtonFunction.hpp"
 
 unsigned	frame_msec;
 int			old_com_frameTime;
@@ -56,7 +57,8 @@ kbutton_t	in_up, in_down;
 kbutton_t	in_voiprecord;
 #endif
 
-kbutton_t	in_buttons[16];
+kbutton_t	in_buttons[32];
+kbutton_t	in_interactionButtons[16];
 
 
 qboolean	in_mlooking;
@@ -234,38 +236,20 @@ void IN_VoipRecordUp(void)
 }
 #endif
 
-void IN_Button0Down(void) {IN_KeyDown(&in_buttons[0]);}
-void IN_Button0Up(void) {IN_KeyUp(&in_buttons[0]);}
-void IN_Button1Down(void) {IN_KeyDown(&in_buttons[1]);}
-void IN_Button1Up(void) {IN_KeyUp(&in_buttons[1]);}
-void IN_Button2Down(void) {IN_KeyDown(&in_buttons[2]);}
-void IN_Button2Up(void) {IN_KeyUp(&in_buttons[2]);}
-void IN_Button3Down(void) {IN_KeyDown(&in_buttons[3]);}
-void IN_Button3Up(void) {IN_KeyUp(&in_buttons[3]);}
-void IN_Button4Down(void) {IN_KeyDown(&in_buttons[4]);}
-void IN_Button4Up(void) {IN_KeyUp(&in_buttons[4]);}
-void IN_Button5Down(void) {IN_KeyDown(&in_buttons[5]);}
-void IN_Button5Up(void) {IN_KeyUp(&in_buttons[5]);}
-void IN_Button6Down(void) {IN_KeyDown(&in_buttons[6]);}
-void IN_Button6Up(void) {IN_KeyUp(&in_buttons[6]);}
-void IN_Button7Down(void) {IN_KeyDown(&in_buttons[7]);}
-void IN_Button7Up(void) {IN_KeyUp(&in_buttons[7]);}
-void IN_Button8Down(void) {IN_KeyDown(&in_buttons[8]);}
-void IN_Button8Up(void) {IN_KeyUp(&in_buttons[8]);}
-void IN_Button9Down(void) {IN_KeyDown(&in_buttons[9]);}
-void IN_Button9Up(void) {IN_KeyUp(&in_buttons[9]);}
-void IN_Button10Down(void) {IN_KeyDown(&in_buttons[10]);}
-void IN_Button10Up(void) {IN_KeyUp(&in_buttons[10]);}
-void IN_Button11Down(void) {IN_KeyDown(&in_buttons[11]);}
-void IN_Button11Up(void) {IN_KeyUp(&in_buttons[11]);}
-void IN_Button12Down(void) {IN_KeyDown(&in_buttons[12]);}
-void IN_Button12Up(void) {IN_KeyUp(&in_buttons[12]);}
-void IN_Button13Down(void) {IN_KeyDown(&in_buttons[13]);}
-void IN_Button13Up(void) {IN_KeyUp(&in_buttons[13]);}
-void IN_Button14Down(void) {IN_KeyDown(&in_buttons[14]);}
-void IN_Button14Up(void) {IN_KeyUp(&in_buttons[14]);}
-void IN_Button15Down(void) {IN_KeyDown(&in_buttons[15]);}
-void IN_Button15Up(void) {IN_KeyUp(&in_buttons[15]);}
+BaseButtonFunction buttonFunctions[] =
+{
+	ButtonFunction<Button_Attack, in_buttons>( "attack" ),
+};
+
+BaseButtonFunction interactionButtonFunctions[] =
+{
+	ButtonFunction<Interaction_PrimaryAttack, in_interactionButtons>( "attack1" ),
+	ButtonFunction<Interaction_SecondaryAttack, in_interactionButtons>( "attack2" ),
+	ButtonFunction<Interaction_TertiaryAttack, in_interactionButtons>( "attack3" ),
+	ButtonFunction<Interaction_Reload, in_interactionButtons>( "reload" ),
+	ButtonFunction<Interaction_Use, in_interactionButtons>( "use" ),
+	ButtonFunction<Interaction_UseItem, in_interactionButtons>( "useitem" ),
+};
 
 void IN_CenterView (void) {
 	cl.viewangles[PITCH] = -SHORT2ANGLE(cl.snap.ps.delta_angles[PITCH]);
@@ -522,7 +506,8 @@ void CL_MouseMove(usercmd_t *cmd)
 CL_CmdButtons
 ==============
 */
-void CL_CmdButtons( usercmd_t *cmd ) {
+void CL_CmdButtons( usercmd_t *cmd ) 
+{
 	int		i;
 
 	//
@@ -530,11 +515,24 @@ void CL_CmdButtons( usercmd_t *cmd ) {
 	// send a button bit even if the key was pressed and released in
 	// less than a frame
 	//	
-	for (i = 0 ; i < 15 ; i++) {
-		if ( in_buttons[i].active || in_buttons[i].wasPressed ) {
+	for ( i = 0; i < (sizeof( in_buttons ) / sizeof( kbutton_t )); i++ )
+	{
+		if ( in_buttons[i].active || in_buttons[i].wasPressed ) 
+		{
 			cmd->buttons |= 1 << i;
 		}
+
 		in_buttons[i].wasPressed = qfalse;
+	}
+
+	for ( int i = 0; i < (sizeof( in_interactionButtons ) / sizeof( kbutton_t )); i++ )
+	{
+		if ( in_interactionButtons[i].active || in_interactionButtons[i].wasPressed )
+		{
+			cmd->interactionButtons |= 1 << i;
+		}
+
+		in_interactionButtons[i].wasPressed = false;
 	}
 
 	if ( Key_GetCatcher( ) ) {
@@ -934,6 +932,16 @@ CL_InitInput
 void CL_InitInput( void ) {
 	Cmd_AddCommand ("centerview",IN_CenterView);
 
+	for ( auto bf : buttonFunctions )
+	{
+		bf.Register();
+	}
+
+	for ( auto bf : interactionButtonFunctions )
+	{
+		bf.Register();
+	}
+
 	Cmd_AddCommand ("+moveup",IN_UpDown);
 	Cmd_AddCommand ("-moveup",IN_UpUp);
 	Cmd_AddCommand ("+movedown",IN_DownDown);
@@ -958,38 +966,6 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand ("-moveright", IN_MoverightUp);
 	Cmd_AddCommand ("+speed", IN_SpeedDown);
 	Cmd_AddCommand ("-speed", IN_SpeedUp);
-	Cmd_AddCommand ("+attack", IN_Button0Down);
-	Cmd_AddCommand ("-attack", IN_Button0Up);
-	Cmd_AddCommand ("+button0", IN_Button0Down);
-	Cmd_AddCommand ("-button0", IN_Button0Up);
-	Cmd_AddCommand ("+button1", IN_Button1Down);
-	Cmd_AddCommand ("-button1", IN_Button1Up);
-	Cmd_AddCommand ("+button2", IN_Button2Down);
-	Cmd_AddCommand ("-button2", IN_Button2Up);
-	Cmd_AddCommand ("+button3", IN_Button3Down);
-	Cmd_AddCommand ("-button3", IN_Button3Up);
-	Cmd_AddCommand ("+button4", IN_Button4Down);
-	Cmd_AddCommand ("-button4", IN_Button4Up);
-	Cmd_AddCommand ("+button5", IN_Button5Down);
-	Cmd_AddCommand ("-button5", IN_Button5Up);
-	Cmd_AddCommand ("+button6", IN_Button6Down);
-	Cmd_AddCommand ("-button6", IN_Button6Up);
-	Cmd_AddCommand ("+button7", IN_Button7Down);
-	Cmd_AddCommand ("-button7", IN_Button7Up);
-	Cmd_AddCommand ("+button8", IN_Button8Down);
-	Cmd_AddCommand ("-button8", IN_Button8Up);
-	Cmd_AddCommand ("+button9", IN_Button9Down);
-	Cmd_AddCommand ("-button9", IN_Button9Up);
-	Cmd_AddCommand ("+button10", IN_Button10Down);
-	Cmd_AddCommand ("-button10", IN_Button10Up);
-	Cmd_AddCommand ("+button11", IN_Button11Down);
-	Cmd_AddCommand ("-button11", IN_Button11Up);
-	Cmd_AddCommand ("+button12", IN_Button12Down);
-	Cmd_AddCommand ("-button12", IN_Button12Up);
-	Cmd_AddCommand ("+button13", IN_Button13Down);
-	Cmd_AddCommand ("-button13", IN_Button13Up);
-	Cmd_AddCommand ("+button14", IN_Button14Down);
-	Cmd_AddCommand ("-button14", IN_Button14Up);
 	Cmd_AddCommand ("+mlook", IN_MLookDown);
 	Cmd_AddCommand ("-mlook", IN_MLookUp);
 
@@ -1010,6 +986,16 @@ CL_ShutdownInput
 void CL_ShutdownInput(void)
 {
 	Cmd_RemoveCommand("centerview");
+
+	for ( auto bf : buttonFunctions )
+	{
+		bf.Unregister();
+	}
+
+	for ( auto bf : interactionButtonFunctions )
+	{
+		bf.Unregister();
+	}
 
 	Cmd_RemoveCommand("+moveup");
 	Cmd_RemoveCommand("-moveup");
@@ -1035,38 +1021,6 @@ void CL_ShutdownInput(void)
 	Cmd_RemoveCommand("-moveright");
 	Cmd_RemoveCommand("+speed");
 	Cmd_RemoveCommand("-speed");
-	Cmd_RemoveCommand("+attack");
-	Cmd_RemoveCommand("-attack");
-	Cmd_RemoveCommand("+button0");
-	Cmd_RemoveCommand("-button0");
-	Cmd_RemoveCommand("+button1");
-	Cmd_RemoveCommand("-button1");
-	Cmd_RemoveCommand("+button2");
-	Cmd_RemoveCommand("-button2");
-	Cmd_RemoveCommand("+button3");
-	Cmd_RemoveCommand("-button3");
-	Cmd_RemoveCommand("+button4");
-	Cmd_RemoveCommand("-button4");
-	Cmd_RemoveCommand("+button5");
-	Cmd_RemoveCommand("-button5");
-	Cmd_RemoveCommand("+button6");
-	Cmd_RemoveCommand("-button6");
-	Cmd_RemoveCommand("+button7");
-	Cmd_RemoveCommand("-button7");
-	Cmd_RemoveCommand("+button8");
-	Cmd_RemoveCommand("-button8");
-	Cmd_RemoveCommand("+button9");
-	Cmd_RemoveCommand("-button9");
-	Cmd_RemoveCommand("+button10");
-	Cmd_RemoveCommand("-button10");
-	Cmd_RemoveCommand("+button11");
-	Cmd_RemoveCommand("-button11");
-	Cmd_RemoveCommand("+button12");
-	Cmd_RemoveCommand("-button12");
-	Cmd_RemoveCommand("+button13");
-	Cmd_RemoveCommand("-button13");
-	Cmd_RemoveCommand("+button14");
-	Cmd_RemoveCommand("-button14");
 	Cmd_RemoveCommand("+mlook");
 	Cmd_RemoveCommand("-mlook");
 

@@ -1298,7 +1298,7 @@ enum ButtonBits
 	Button_FollowMe = 1 << 10,
 
 	// any key whatsoever
-	Button_Any = 1 << 11			
+	Button_Any = 1 << 31			
 };
 
 enum InteractionBits

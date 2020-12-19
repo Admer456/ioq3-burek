@@ -819,6 +819,10 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		CG_AddParticles ();
 		CG_AddLocalEntities();
 	}
+
+	if ( GetClient()->GetCurrentWeapon() ) 
+		GetClient()->GetCurrentWeapon()->WeaponFrame();
+	
 	CG_AddViewWeapon( &cg.predictedPlayerState );
 
 	// add buffered sounds

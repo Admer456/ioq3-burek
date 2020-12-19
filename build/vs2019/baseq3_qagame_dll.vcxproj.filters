@@ -150,6 +150,9 @@
     <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Test.hpp">
       <Filter>Sources\Entities\Weapons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Test2.hpp">
+      <Filter>Sources\Entities\Weapons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -291,6 +294,9 @@
       <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Test.cpp">
+      <Filter>Sources\Entities\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Test2.cpp">
       <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
   </ItemGroup>

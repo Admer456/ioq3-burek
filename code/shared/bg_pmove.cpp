@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/q_shared.hpp"
 #include "bg_public.hpp"
 #include "bg_local.hpp"
+#include "Weapons/WeaponIDs.hpp"
 
 pmove_t		*pm;
 pml_t		pml;
@@ -1450,10 +1451,8 @@ PM_BeginWeaponChange
 ===============
 */
 static void PM_BeginWeaponChange( int weapon ) {
-	if ( weapon <= WP_NONE || weapon >= WP_NUM_WEAPONS ) {
-		return;
-	}
 
+	// If we don't have this weapon
 	if ( !( pm->ps->stats[STAT_WEAPONS] & ( 1 << weapon ) ) ) {
 		return;
 	}
@@ -1464,7 +1463,7 @@ static void PM_BeginWeaponChange( int weapon ) {
 
 	PM_AddEvent( EV_CHANGE_WEAPON );
 	pm->ps->weaponstate = WEAPON_DROPPING;
-	pm->ps->weaponTime += 200;
+	pm->ps->weaponTime += 100;
 	PM_StartTorsoAnim( TORSO_DROP );
 }
 
@@ -1474,21 +1473,22 @@ static void PM_BeginWeaponChange( int weapon ) {
 PM_FinishWeaponChange
 ===============
 */
-static void PM_FinishWeaponChange( void ) {
+static void PM_FinishWeaponChange( void ) 
+{
 	int		weapon;
 
 	weapon = pm->cmd.weapon;
-	if ( weapon < WP_NONE || weapon >= WP_NUM_WEAPONS ) {
-		weapon = WP_NONE;
+
+	if ( !( pm->ps->stats[STAT_WEAPONS] & ( 1 << weapon ) ) ) 
+	{
+		weapon = WeaponID_None;
 	}
 
-	if ( !( pm->ps->stats[STAT_WEAPONS] & ( 1 << weapon ) ) ) {
-		weapon = WP_NONE;
-	}
+	Com_Printf( "FinishWeaponChange: Weapon id %i\n", weapon );
 
 	pm->ps->weapon = weapon;
 	pm->ps->weaponstate = WEAPON_RAISING;
-	pm->ps->weaponTime += 250;
+	pm->ps->weaponTime += 100;
 	PM_StartTorsoAnim( TORSO_RAISE );
 }
 
@@ -1518,9 +1518,8 @@ PM_Weapon
 Generates weapon events and modifes the weapon counter
 ==============
 */
-static void PM_Weapon( void ) {
-	int		addTime;
-
+static void PM_Weapon( void ) 
+{
 	// don't allow attack until all buttons are up
 	if ( pm->ps->pm_flags & PMF_RESPAWNED ) {
 		return;
@@ -1533,7 +1532,7 @@ static void PM_Weapon( void ) {
 
 	// check for dead player
 	if ( pm->ps->stats[STAT_HEALTH] <= 0 ) {
-		pm->ps->weapon = WP_NONE;
+		pm->ps->weapon = WeaponID_None;
 		return;
 	}
 
@@ -1554,46 +1553,81 @@ static void PM_Weapon( void ) {
 		pm->ps->pm_flags &= ~PMF_USE_ITEM_HELD;
 	}
 
-	if ( pm->cmd.interactionButtons & Interaction_PrimaryAttack )
+	// make weapon function
+	if ( pm->ps->weaponTime > 0 ) 
 	{
-		PM_AddEvent( EV_WEAPON_PRIMARY );
+		pm->ps->weaponTime -= pml.msec;
+	}
+
+	if ( pm->ps->weaponTime <= 0 && 
+		 pm->ps->weapon != pm->cmd.weapon && 
+		 pm->ps->weaponstate != WEAPON_DROPPING )
+	{
+		PM_BeginWeaponChange( pm->cmd.weapon );
 		return;
 	}
 
-	if ( pm->cmd.interactionButtons & Interaction_SecondaryAttack )
+	// Wait until weaponTime is below 0
+	if ( pm->ps->weaponTime > 0 ) 
 	{
-		PM_AddEvent( EV_WEAPON_SECONDARY );
 		return;
 	}
 
-	if ( pm->cmd.interactionButtons & Interaction_TertiaryAttack )
+	// Make sure the weapon is ready when it's time
+	if ( pm->ps->weaponstate == WEAPON_RAISING ) 
 	{
-		PM_AddEvent( EV_WEAPON_TERTIARY );
+		pm->ps->weaponstate = WEAPON_READY;	
+		PM_StartTorsoAnim( TORSO_STAND );
 		return;
 	}
 
-	if ( pm->cmd.interactionButtons & Interaction_Reload )
+	// Change weapon if time
+	if ( pm->ps->weaponstate == WEAPON_DROPPING ) 
 	{
-		PM_AddEvent( EV_WEAPON_RELOAD );
+		PM_FinishWeaponChange();
 		return;
 	}
 
-	if ( pm->cmd.interactionButtons & Interaction_Use )
+	if ( pm->ps->weaponstate == WEAPON_READY )
 	{
-		PM_AddEvent( EV_PLAYERUSE );
-		return;
-	}
+		// TODO: Implement weapon decls so we can have 
+		// different firing times for each weapon
+		if ( pm->cmd.interactionButtons & Interaction_PrimaryAttack )
+		{
+			PM_AddEvent( EV_WEAPON_PRIMARY );
+			return;
+		}
 
-	if ( pm->cmd.interactionButtons & Interaction_UseItem )
-	{
-		PM_AddEvent( EV_USEITEM );
-		return;
-	}
+		if ( pm->cmd.interactionButtons & Interaction_SecondaryAttack )
+		{
+			PM_AddEvent( EV_WEAPON_SECONDARY );
+			return;
+		}
 
-	//// make weapon function
-	//if ( pm->ps->weaponTime > 0 ) {
-	//	pm->ps->weaponTime -= pml.msec;
-	//}
+		if ( pm->cmd.interactionButtons & Interaction_TertiaryAttack )
+		{
+			PM_AddEvent( EV_WEAPON_TERTIARY );
+			return;
+		}
+
+		if ( pm->cmd.interactionButtons & Interaction_Reload )
+		{
+			PM_AddEvent( EV_WEAPON_RELOAD );
+			return;
+		}
+
+		if ( pm->cmd.interactionButtons & Interaction_Use )
+		{
+			PM_AddEvent( EV_PLAYERUSE );
+			return;
+		}
+
+		if ( pm->cmd.interactionButtons & Interaction_UseItem )
+		{
+			PM_AddEvent( EV_USEITEM );
+			return;
+		}
+	}
 
 	// check for weapon change
 	// can't change if weapon is firing, but can change
@@ -1605,12 +1639,6 @@ static void PM_Weapon( void ) {
 	//}
 
 	//if ( pm->ps->weaponTime > 0 ) {
-	//	return;
-	//}
-
-	// change weapon if time
-	//if ( pm->ps->weaponstate == WEAPON_DROPPING ) {
-	//	PM_FinishWeaponChange();
 	//	return;
 	//}
 
