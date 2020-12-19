@@ -66,6 +66,9 @@
     <ClInclude Include="..\..\code\cgame\Client.hpp">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\cgame\RenderEntity.hpp">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -156,6 +159,9 @@
       <Filter>Sources\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\Client.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\RenderEntity.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

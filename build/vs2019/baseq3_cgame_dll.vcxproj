@@ -186,6 +186,7 @@
     <ClInclude Include="..\..\code\cgame\ClientExportImport.h" />
     <ClInclude Include="..\..\code\cgame\IClientGame.h" />
     <ClInclude Include="..\..\code\cgame\IClientGameImports.h" />
+    <ClInclude Include="..\..\code\cgame\RenderEntity.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\BaseClientWeapon.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\WeaponFactory.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Test.hpp" />
@@ -219,6 +220,7 @@
     <ClCompile Include="..\..\code\cgame\cg_view.cpp" />
     <ClCompile Include="..\..\code\cgame\cg_weapons.cpp" />
     <ClCompile Include="..\..\code\cgame\Client.cpp" />
+    <ClCompile Include="..\..\code\cgame\RenderEntity.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\BaseClientWeapon.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\WeaponFactory.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Test.cpp" />
