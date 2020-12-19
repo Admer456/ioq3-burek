@@ -758,7 +758,8 @@ CG_DrawActiveFrame
 Generates and draws a game scene and status information at the given time.
 =================
 */
-void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demoPlayback ) {
+void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demoPlayback ) 
+{
 	int		inwater;
 
 	cg.time = serverTime;
@@ -769,7 +770,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	// if we are only updating the screen as a loading
 	// pacifier, don't even try to read snapshots
-	if ( cg.infoScreenText[0] != 0 ) {
+	if ( cg.infoScreenText[0] != 0 ) 
+	{
 		CG_DrawInformation();
 		return;
 	}
@@ -786,7 +788,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	// if we haven't received any snapshots yet, all
 	// we can draw is the information screen
-	if ( !cg.snap || ( cg.snap->snapFlags & SNAPFLAG_NOT_ACTIVE ) ) {
+	if ( !cg.snap || ( cg.snap->snapFlags & SNAPFLAG_NOT_ACTIVE ) ) 
+	{
 		CG_DrawInformation();
 		return;
 	}
@@ -808,16 +811,19 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	inwater = CG_CalcViewValues();
 
 	// first person blend blobs, done after AnglesToAxis
-	if ( !cg.renderingThirdPerson ) {
+	if ( !cg.renderingThirdPerson ) 
+	{
 		CG_DamageBlendBlob();
 	}
 
 	// build the render lists
-	if ( !cg.hyperspace ) {
+	if ( !cg.hyperspace ) 
+	{
 		CG_AddPacketEntities();			// adter calcViewValues, so predicted player state is correct
 		CG_AddMarks();
-		CG_AddParticles ();
+		CG_AddParticles();
 		CG_AddLocalEntities();
+		//CG_AddVegetation();
 	}
 
 	if ( GetClient()->GetCurrentWeapon() ) 
@@ -829,9 +835,11 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	CG_PlayBufferedSounds();
 
 	// finish up the rest of the refdef
-	if ( cg.testModelEntity.hModel ) {
+	if ( cg.testModelEntity.hModel ) 
+	{
 		CG_AddTestModel();
 	}
+
 	cg.refdef.time = cg.time;
 	memcpy( cg.refdef.areamask, cg.snap->areamask, sizeof( cg.refdef.areamask ) );
 
@@ -842,26 +850,34 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	trap_S_Respatialize( cg.snap->ps.clientNum, cg.refdef.vieworg, cg.refdef.viewaxis, inwater );
 
 	// make sure the lagometerSample and frame timing isn't done twice when in stereo
-	if ( stereoView != STEREO_RIGHT ) {
+	if ( stereoView != STEREO_RIGHT ) 
+	{
 		cg.frametime = cg.time - cg.oldTime;
-		if ( cg.frametime < 0 ) {
+		if ( cg.frametime < 0 ) 
+		{
 			cg.frametime = 0;
 		}
 		cg.oldTime = cg.time;
 		CG_AddLagometerFrameInfo();
 	}
-	if (cg_timescale.value != cg_timescaleFadeEnd.value) {
-		if (cg_timescale.value < cg_timescaleFadeEnd.value) {
+
+	if (cg_timescale.value != cg_timescaleFadeEnd.value) 
+	{
+		if (cg_timescale.value < cg_timescaleFadeEnd.value) 
+		{
 			cg_timescale.value += cg_timescaleFadeSpeed.value * ((float)cg.frametime) / 1000;
 			if (cg_timescale.value > cg_timescaleFadeEnd.value)
 				cg_timescale.value = cg_timescaleFadeEnd.value;
 		}
-		else {
+		else 
+		{
 			cg_timescale.value -= cg_timescaleFadeSpeed.value * ((float)cg.frametime) / 1000;
 			if (cg_timescale.value < cg_timescaleFadeEnd.value)
 				cg_timescale.value = cg_timescaleFadeEnd.value;
 		}
-		if (cg_timescaleFadeSpeed.value) {
+
+		if (cg_timescaleFadeSpeed.value) 
+		{
 			trap_Cvar_Set("timescale", va("%f", cg_timescale.value));
 		}
 	}
@@ -869,7 +885,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	// actually issue the rendering calls
 	CG_DrawActive( stereoView );
 
-	if ( cg_stats.integer ) {
+	if ( cg_stats.integer ) 
+	{
 		CG_Printf( "cg.clientFrame:%i\n", cg.clientFrame );
 	}
 
