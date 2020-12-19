@@ -1328,22 +1328,35 @@ typedef struct usercmd_s {
 // if entityState->solid == SOLID_BMODEL, modelindex is an inline model number
 #define	SOLID_BMODEL	0xffffff
 
-typedef enum {
+enum AnimationFlags
+{
+	AnimFlag_None = 0,
+
+	// Force loop
+	AnimFlag_Loop = 1 << 0, 
+
+	// Don't increment entityState::frame, animation is no longer controlled by framerate; useful for sprites
+	AnimFlag_Manual = 1 << 1,
+};
+
+enum trType_t
+{
 	TR_STATIONARY,
 	TR_INTERPOLATE,				// non-parametric, but interpolate between snapshots
 	TR_LINEAR,
 	TR_LINEAR_STOP,
 	TR_SINE,					// value = base + sin( time / duration ) * delta
 	TR_GRAVITY
-} trType_t;
+};
 
-typedef struct {
+struct trajectory_t
+{
 	trType_t	trType;
 	int		trTime;
 	int		trDuration;			// if non 0, trTime + trDuration = stop time
 	vec3_t	trBase;
 	vec3_t	trDelta;			// velocity, etc
-} trajectory_t;
+};
 
 // entityState_t is the information conveyed from the server
 // in an update message about entities that the client will
@@ -1380,7 +1393,11 @@ typedef struct entityState_s {
 	int		modelindex;
 	int		modelindex2;
 	int		clientNum;		// 0 to (MAX_CLIENTS - 1), for players and corpses
-	int		frame;
+	int		frame;			// -1 = use automatic frame managing, else handle animation manually
+
+	float	framerate;		// framerate of the animation
+	byte	animation;		// ID of the animation to play
+	byte	animationFlags; // AnimationFlags enum
 
 	int		solid;			// for client side prediction, trap_linkentity sets this properly
 
