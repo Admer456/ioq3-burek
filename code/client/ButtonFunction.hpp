@@ -54,3 +54,25 @@ public:
 		IN_KeyDown( &targetButtonArray[buttonIndex] );
 	}
 };
+
+template<kbutton_t* targetButton>
+class SingleButtonFunction : public BaseButtonFunction
+{
+public:
+	SingleButtonFunction( const char* commandName )
+		: BaseButtonFunction( commandName )
+	{
+		keyUp = KeyUp;
+		keyDown = KeyDown;
+	}
+
+	static void KeyUp()
+	{
+		IN_KeyUp( targetButton );
+	}
+
+	static void KeyDown()
+	{
+		IN_KeyDown( targetButton );
+	}
+};
