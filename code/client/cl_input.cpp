@@ -236,21 +236,6 @@ void IN_VoipRecordUp(void)
 }
 #endif
 
-BaseButtonFunction buttonFunctions[] =
-{
-	ButtonFunction<Button_Attack, in_buttons>( "attack" ),
-};
-
-BaseButtonFunction interactionButtonFunctions[] =
-{
-	ButtonFunction<Interaction_PrimaryAttack, in_interactionButtons>( "attack1" ),
-	ButtonFunction<Interaction_SecondaryAttack, in_interactionButtons>( "attack2" ),
-	ButtonFunction<Interaction_TertiaryAttack, in_interactionButtons>( "attack3" ),
-	ButtonFunction<Interaction_Reload, in_interactionButtons>( "reload" ),
-	ButtonFunction<Interaction_Use, in_interactionButtons>( "use" ),
-	ButtonFunction<Interaction_UseItem, in_interactionButtons>( "useitem" ),
-};
-
 void IN_CenterView (void) {
 	cl.viewangles[PITCH] = -SHORT2ANGLE(cl.snap.ps.delta_angles[PITCH]);
 }
@@ -924,12 +909,48 @@ void CL_SendCmd( void ) {
 	CL_WritePacket();
 }
 
+BaseButtonFunction buttonFunctions[] =
+{
+	// movement buttons
+	SingleButtonFunction<&in_forward>( "forward" ),
+	SingleButtonFunction<&in_back>( "back" ),
+	SingleButtonFunction<&in_speed>( "speed" ),
+	SingleButtonFunction<&in_moveleft>( "moveleft" ),
+	SingleButtonFunction<&in_moveright>( "moveright" ),
+
+	// jumping and crouching
+	SingleButtonFunction<&in_up>( "moveup" ),
+	SingleButtonFunction<&in_down>( "movedown" ),
+
+	// turning
+	SingleButtonFunction<&in_left>( "left" ),
+	SingleButtonFunction<&in_right>( "right" ),
+
+	// misc
+	SingleButtonFunction<&in_strafe>( "strafe" ),
+	SingleButtonFunction<&in_lookup>( "lookup" ),
+	SingleButtonFunction<&in_lookdown>( "lookdown" ),
+
+	// generic buttons
+	ButtonFunction<Button_Attack, in_buttons>( "attack" ), // Deprecated command, don't use
+	ButtonFunction<Button_Talk, in_buttons>( "talk" ),
+
+	// interaction buttons
+	ButtonFunction<Interaction_PrimaryAttack, in_interactionButtons>( "attack1" ),
+	ButtonFunction<Interaction_SecondaryAttack, in_interactionButtons>( "attack2" ),
+	ButtonFunction<Interaction_TertiaryAttack, in_interactionButtons>( "attack3" ),
+	ButtonFunction<Interaction_Reload, in_interactionButtons>( "reload" ),
+	ButtonFunction<Interaction_Use, in_interactionButtons>( "use" ),
+	ButtonFunction<Interaction_UseItem, in_interactionButtons>( "useitem" ),
+};
+
 /*
 ============
 CL_InitInput
 ============
 */
-void CL_InitInput( void ) {
+void CL_InitInput( void ) 
+{
 	Cmd_AddCommand ("centerview",IN_CenterView);
 
 	for ( auto bf : buttonFunctions )
@@ -937,35 +958,6 @@ void CL_InitInput( void ) {
 		bf.Register();
 	}
 
-	for ( auto bf : interactionButtonFunctions )
-	{
-		bf.Register();
-	}
-
-	Cmd_AddCommand ("+moveup",IN_UpDown);
-	Cmd_AddCommand ("-moveup",IN_UpUp);
-	Cmd_AddCommand ("+movedown",IN_DownDown);
-	Cmd_AddCommand ("-movedown",IN_DownUp);
-	Cmd_AddCommand ("+left",IN_LeftDown);
-	Cmd_AddCommand ("-left",IN_LeftUp);
-	Cmd_AddCommand ("+right",IN_RightDown);
-	Cmd_AddCommand ("-right",IN_RightUp);
-	Cmd_AddCommand ("+forward",IN_ForwardDown);
-	Cmd_AddCommand ("-forward",IN_ForwardUp);
-	Cmd_AddCommand ("+back",IN_BackDown);
-	Cmd_AddCommand ("-back",IN_BackUp);
-	Cmd_AddCommand ("+lookup", IN_LookupDown);
-	Cmd_AddCommand ("-lookup", IN_LookupUp);
-	Cmd_AddCommand ("+lookdown", IN_LookdownDown);
-	Cmd_AddCommand ("-lookdown", IN_LookdownUp);
-	Cmd_AddCommand ("+strafe", IN_StrafeDown);
-	Cmd_AddCommand ("-strafe", IN_StrafeUp);
-	Cmd_AddCommand ("+moveleft", IN_MoveleftDown);
-	Cmd_AddCommand ("-moveleft", IN_MoveleftUp);
-	Cmd_AddCommand ("+moveright", IN_MoverightDown);
-	Cmd_AddCommand ("-moveright", IN_MoverightUp);
-	Cmd_AddCommand ("+speed", IN_SpeedDown);
-	Cmd_AddCommand ("-speed", IN_SpeedUp);
 	Cmd_AddCommand ("+mlook", IN_MLookDown);
 	Cmd_AddCommand ("-mlook", IN_MLookUp);
 
@@ -992,35 +984,6 @@ void CL_ShutdownInput(void)
 		bf.Unregister();
 	}
 
-	for ( auto bf : interactionButtonFunctions )
-	{
-		bf.Unregister();
-	}
-
-	Cmd_RemoveCommand("+moveup");
-	Cmd_RemoveCommand("-moveup");
-	Cmd_RemoveCommand("+movedown");
-	Cmd_RemoveCommand("-movedown");
-	Cmd_RemoveCommand("+left");
-	Cmd_RemoveCommand("-left");
-	Cmd_RemoveCommand("+right");
-	Cmd_RemoveCommand("-right");
-	Cmd_RemoveCommand("+forward");
-	Cmd_RemoveCommand("-forward");
-	Cmd_RemoveCommand("+back");
-	Cmd_RemoveCommand("-back");
-	Cmd_RemoveCommand("+lookup");
-	Cmd_RemoveCommand("-lookup");
-	Cmd_RemoveCommand("+lookdown");
-	Cmd_RemoveCommand("-lookdown");
-	Cmd_RemoveCommand("+strafe");
-	Cmd_RemoveCommand("-strafe");
-	Cmd_RemoveCommand("+moveleft");
-	Cmd_RemoveCommand("-moveleft");
-	Cmd_RemoveCommand("+moveright");
-	Cmd_RemoveCommand("-moveright");
-	Cmd_RemoveCommand("+speed");
-	Cmd_RemoveCommand("-speed");
 	Cmd_RemoveCommand("+mlook");
 	Cmd_RemoveCommand("-mlook");
 
