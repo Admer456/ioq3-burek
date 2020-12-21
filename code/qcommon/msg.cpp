@@ -740,11 +740,211 @@ void MSG_ReportChangeVectors_f( void ) {
 	}
 }
 
-typedef struct {
-	char	*name;
-	uint32_t offset;
-	int		bits;		// 0 = float
-} netField_t;
+// if (int)f == f and (int)f + ( 1<<(FLOAT_INT_BITS-1) ) < ( 1 << FLOAT_INT_BITS )
+// the float will be sent with FLOAT_INT_BITS, otherwise all 32 bits will be sent
+#define	FLOAT_INT_BITS	13
+#define	FLOAT_INT_BIAS	(1<<(FLOAT_INT_BITS-1))
+
+enum NetFieldType
+{
+	NF_Byte, // 8 bits
+	NF_Short,// 16 bits
+	NF_Long, // 32 bits
+};
+
+class netField_t
+{
+public:
+	char*		name;
+	uint32_t	offset;
+	int			bits; // 0 = float
+	int			fieldType{ NF_Long };
+
+	// ===================
+	// BuildChangeVector
+	// ===================
+	void BuildChangeVector( entityState_t* from, entityState_t* to, int& lc, int i )
+	{
+		switch ( fieldType )
+		{
+		case NF_Long: return BuildChangeVector_impl<int>( from, to, lc, i );
+		case NF_Short: return BuildChangeVector_impl<short>( from, to, lc, i );
+		case NF_Byte: return BuildChangeVector_impl<byte>( from, to, lc, i );
+		}
+	}
+	
+	template<typename T>
+	void BuildChangeVector_impl( entityState_t* from, entityState_t* to, int& lc, int i )
+	{
+		T* fromF = (T*)((byte*)from + offset);
+		T* toF = (T*)((byte*)to + offset);
+
+		if ( *fromF != *toF )
+		{
+			lc = i + 1;
+		}
+	}
+
+	// ===================
+	// WriteDeltaEntity
+	// ===================
+	void WriteDeltaEntity( msg_t* msg, entityState_t* from, entityState_t* to )
+	{
+		switch ( fieldType )
+		{
+		case NF_Long: return WriteDeltaEntity_impl<int>( msg, from, to );
+		case NF_Short: return WriteDeltaEntity_impl<short>( msg, from, to );
+		case NF_Byte: return WriteDeltaEntity_impl<byte>( msg, from, to );
+		}
+	}
+
+	template<typename T>
+	void WriteDeltaEntity_impl( msg_t* msg, entityState_t* from, entityState_t* to )
+	{
+		T* fromF = (T*)((byte*)from + offset);
+		T* toF = (T*)((byte*)to + offset);
+
+		float fullFloat;
+		int trunc;
+
+		if ( *fromF == *toF )
+		{
+			MSG_WriteBits( msg, 0, 1 );	// no change
+			return;
+		}
+
+		MSG_WriteBits( msg, 1, 1 );	// changed
+
+		if ( bits == 0 )
+		{
+			// float
+			fullFloat = *(float*)toF;
+			trunc = (int)fullFloat;
+
+			if ( fullFloat == 0.0f ) {
+				MSG_WriteBits( msg, 0, 1 );
+				oldsize += FLOAT_INT_BITS;
+			}
+			else {
+				MSG_WriteBits( msg, 1, 1 );
+				if ( trunc == fullFloat && trunc + FLOAT_INT_BIAS >= 0 &&
+					 trunc + FLOAT_INT_BIAS < (1 << FLOAT_INT_BITS) )
+				{
+					// send as small integer
+					MSG_WriteBits( msg, 0, 1 );
+					MSG_WriteBits( msg, trunc + FLOAT_INT_BIAS, FLOAT_INT_BITS );
+				}
+				else
+				{
+					// send as full floating point value
+					MSG_WriteBits( msg, 1, 1 );
+					MSG_WriteBits( msg, *toF, 32 );
+				}
+			}
+		}
+		else
+		{
+			if ( *toF == 0 )
+			{
+				MSG_WriteBits( msg, 0, 1 );
+			}
+			else
+			{
+				MSG_WriteBits( msg, 1, 1 );
+				// integer
+				MSG_WriteBits( msg, *toF, bits );
+			}
+		}
+	}
+
+
+	// ===================
+	// ReadDeltaEntity
+	// ===================
+	void ReadDeltaEntity( msg_t* msg, entityState_t* from, entityState_t* to )
+	{
+		switch ( fieldType )
+		{
+		case NF_Long: return ReadDeltaEntity_impl<int>( msg, from, to );
+		case NF_Short: return ReadDeltaEntity_impl<short>( msg, from, to );
+		case NF_Byte: return ReadDeltaEntity_impl<byte>( msg, from, to );
+		}
+	}
+
+	template<typename T>
+	void ReadDeltaEntity_impl( msg_t* msg, entityState_t* from, entityState_t* to )
+	{
+		T* fromF = (T*)((byte*)from + offset);
+		T* toF = (T*)((byte*)to + offset);
+
+		if ( !MSG_ReadBits( msg, 1 ) )
+		{
+			// no change
+			*toF = *fromF;
+		}
+		else
+		{
+			if ( bits == 0 )
+			{
+				// float
+				if ( MSG_ReadBits( msg, 1 ) == 0 )
+				{
+					*(float*)toF = 0.0f;
+				}
+				else
+				{
+					if ( MSG_ReadBits( msg, 1 ) == 0 )
+					{
+						// integral float
+						int trunc = MSG_ReadBits( msg, FLOAT_INT_BITS );
+						// bias to allow equal parts positive and negative
+						trunc -= FLOAT_INT_BIAS;
+						*(float*)toF = trunc;
+					}
+					else
+					{
+						// full floating point value
+						*toF = MSG_ReadBits( msg, 32 );
+					}
+				}
+			}
+			else
+			{
+				if ( MSG_ReadBits( msg, 1 ) == 0 )
+				{
+					*toF = 0;
+				}
+				else
+				{
+					*toF = MSG_ReadBits( msg, bits );
+				}
+			}
+		}
+	}
+
+	// ===================
+	// NoChange
+	// ===================
+	void NoChange( entityState_t* from, entityState_t* to )
+	{
+		switch ( fieldType )
+		{
+		case NF_Long: return NoChange_impl<int>( from, to );
+		case NF_Short: return NoChange_impl<short>( from, to );
+		case NF_Byte: return NoChange_impl<byte>( from, to );
+		}
+	}
+
+	template<typename T>
+	void NoChange_impl( entityState_t* from, entityState_t* to )
+	{
+		T* fromF = (T*)((byte*)from + offset);
+		T* toF = (T*)((byte*)to + offset);
+		// no change
+		*toF = *fromF;
+	}
+
+};
 
 // using the stringizing operator to save typing...
 #define	NETF(x) #x,(size_t)&((entityState_t*)0)->x
@@ -753,121 +953,82 @@ typedef struct {
 
 netField_t	entityStateFields[] = 
 {
-{ NETF(pos.trTime), 32 },
-{ NETF(pos.trBase[0]), 0 },
-{ NETF(pos.trBase[1]), 0 },
-{ NETF(pos.trDelta[0]), 0 },
-{ NETF(pos.trDelta[1]), 0 },
-{ NETF(pos.trBase[2]), 0 },
-{ NETF(apos.trBase[1]), 0 },
-{ NETF(pos.trDelta[2]), 0 },
-{ NETF(apos.trBase[0]), 0 },
-{ NETF(event), 10 },
-{ NETF(angles2[1]), 0 },
-{ NETF(eType), 8 },
-{ NETF(torsoAnim), 8 },
-{ NETF(eventParm), 8 },
-{ NETF(legsAnim), 8 },
-{ NETF(groundEntityNum), GENTITYNUM_BITS },
-{ NETF(pos.trType), 8 },
-{ NETF(eFlags), 19 },
-{ NETF(otherEntityNum), GENTITYNUM_BITS },
-{ NETF(weapon), 8 },
-{ NETF(clientNum), 8 },
-{ NETF(angles[1]), 0 },
-{ NETF(pos.trDuration), 32 },
-{ NETF(apos.trType), 8 },
-{ NETF(origin[0]), 0 },
-{ NETF(origin[1]), 0 },
-{ NETF(origin[2]), 0 },
-{ NETF(solid), 24 },
-{ NETF(powerups), MAX_POWERUPS },
-{ NETF(modelindex), 8 },
-{ NETF(otherEntityNum2), GENTITYNUM_BITS },
-{ NETF(loopSound), 8 },
-{ NETF(generic1), 8 },
-{ NETF(origin2[2]), 0 },
-{ NETF(origin2[0]), 0 },
-{ NETF(origin2[1]), 0 },
-{ NETF(modelindex2), 8 },
-{ NETF(angles[0]), 0 },
-{ NETF(time), 32 },
-{ NETF(apos.trTime), 32 },
-{ NETF(apos.trDuration), 32 },
-{ NETF(apos.trBase[2]), 0 },
-{ NETF(apos.trDelta[0]), 0 },
-{ NETF(apos.trDelta[1]), 0 },
-{ NETF(apos.trDelta[2]), 0 },
-{ NETF(time2), 32 },
-{ NETF(angles[2]), 0 },
-{ NETF(angles2[0]), 0 },
-{ NETF(angles2[2]), 0 },
-{ NETF(constantLight), 32 },
-{ NETF(frame), 16 }
+	// pos
+	netField_t{ NETF(pos.trType), 8 },
+	netField_t{ NETF(pos.trTime), 32 },
+	netField_t{ NETF(pos.trDuration), 32 },
+	netField_t{ NETF(pos.trBase[0]), 0 },
+	netField_t{ NETF(pos.trBase[1]), 0 },
+	netField_t{ NETF(pos.trBase[2]), 0 },
+	netField_t{ NETF(pos.trDelta[0]), 0 },
+	netField_t{ NETF(pos.trDelta[1]), 0 },
+	netField_t{ NETF(pos.trDelta[2]), 0 },
+
+	// apos
+	netField_t{ NETF(apos.trType), 8 },
+	netField_t{ NETF(apos.trTime ), 32 },
+	netField_t{ NETF(apos.trDuration ), 32 },
+	netField_t{ NETF(apos.trBase[2] ), 0 },
+	netField_t{ NETF(apos.trDelta[0] ), 0 },
+	netField_t{ NETF(apos.trDelta[1] ), 0 },
+	netField_t{ NETF(apos.trDelta[2] ), 0 },
+	netField_t{ NETF(apos.trBase[1]), 0 },
+	netField_t{ NETF(apos.trBase[0]), 0 },
+
+	// event stuff
+	netField_t{ NETF(event), 10 },
+	netField_t{ NETF(generic1), 8 },
+	netField_t{ NETF(eType), 8 },
+	netField_t{ NETF(eFlags), 19 },
+	netField_t{ NETF(torsoAnim), 8 },
+	netField_t{ NETF(eventParm), 8 },
+	netField_t{ NETF(legsAnim), 8 },
+
+	// entity num stuff
+	netField_t{ NETF(groundEntityNum), GENTITYNUM_BITS },
+	netField_t{ NETF(otherEntityNum), GENTITYNUM_BITS },
+	netField_t{ NETF(otherEntityNum2), GENTITYNUM_BITS },
+	
+	netField_t{ NETF(weapon), 8 },
+	netField_t{ NETF(clientNum), 8 },
+
+	// origin
+	netField_t{ NETF(origin[0]), 0 },
+	netField_t{ NETF(origin[1]), 0 },
+	netField_t{ NETF(origin[2]), 0 },
+	netField_t{ NETF(solid), 24 },
+	
+	netField_t{ NETF(powerups), MAX_POWERUPS },
+	netField_t{ NETF(modelindex), 10 }, // raised from 8 to 10
+	netField_t{ NETF(modelindex2), 10 },// so we can have 1024 models -Admer
+	netField_t{ NETF(loopSound), 8 },
+
+	// origin2
+	netField_t{ NETF(origin2[2]), 0 },
+	netField_t{ NETF(origin2[0]), 0 },
+	netField_t{ NETF(origin2[1]), 0 },
+
+	// angles
+	netField_t{ NETF(angles[0]), 0 },
+	netField_t{ NETF(angles[1]), 0 },
+	netField_t{ NETF(angles[2]), 0 },
+	
+	// angles2
+	netField_t{ NETF(angles2[0]), 0 },
+	netField_t{ NETF(angles2[1]), 0 },
+	netField_t{ NETF(angles2[2]), 0 },
+	
+	// time
+	netField_t{ NETF(time), 32 },
+	netField_t{ NETF(time2), 32 },
+	netField_t{ NETF(constantLight), 32 },
+
+	// animation stuff
+	netField_t{ NETF(frame), 16 },
+	netField_t{ NETF(framerate), 0 },
+	netField_t{ NETF(animation), 8, NF_Byte },
+	netField_t{ NETF(animationFlags), 8, NF_Byte },
 };
-
-// Not all members from SharedComponent will be delta'ed
-// Right now, we're trying to maintain compatibility with the old entity system
-// until we go deep enough to get rid of it
-/*netField_t sharedComponentFields[] =
-{
-	{ CompNetFieldExplicit( "pos.trTime", trPos.trTime ), 32 },
-	{ CompNetFieldExplicit( "pos.trBase[0]", trPos.trBase[0] ), 0 },
-	{ CompNetFieldExplicit( "pos.trBase[1]", trPos.trBase[1] ), 0 },
-	{ CompNetFieldExplicit( "pos.trDelta[0]", trPos.trDelta[0] ), 0 },
-	{ CompNetFieldExplicit( "pos.trDelta[1]", trPos.trDelta[1] ), 0 },
-	{ CompNetFieldExplicit( "pos.trBase[2]", trPos.trBase[2] ), 0 },
-	{ CompNetFieldExplicit( "apos.trBase[1]", trApos.trBase[1] ), 0 },
-	{ CompNetFieldExplicit( "pos.trDelta[2]", trPos.trDelta[2] ), 0 },
-	{ CompNetFieldExplicit( "apos.trBase[0]", trApos.trBase[0] ), 0 },
-	{ CompNetField( event ), 10 },
-	{ CompNetField( angles2[1] ), 0 },
-	{ CompNetFieldExplicit( "eType", entityType ), 8 },
-	{ CompNetField( torsoAnim ), 8 },
-	{ CompNetField( eventParm ), 8 },
-	{ CompNetField( legsAnim ), 8 },
-	{ CompNetFieldExplicit( "groundEntityNum", groundEntityIndex ), GENTITYNUM_BITS },
-	{ CompNetFieldExplicit( "pos.trType", trPos.trType ), 8 },
-	{ CompNetFieldExplicit( "eFlags", entityFlags ), 19 },
-	{ CompNetFieldExplicit( "otherEntityNum", otherEntityIndex[0] ), GENTITYNUM_BITS },
-	{ CompNetField( weapon ), 8 },
-	{ CompNetField( clientNum ), 8 },
-	{ CompNetField( angles[1] ), 0 },
-	{ CompNetFieldExplicit( "pos.trDuration", trPos.trDuration ), 32 },
-	{ CompNetFieldExplicit( "apos.trType", trApos.trType ), 8 },
-	{ CompNetField( origin[0] ), 0 },
-	{ CompNetField( origin[1] ), 0 },
-	{ CompNetField( origin[2] ), 0 },
-	{ CompNetField( solid ), 24 },
-	{ CompNetField( powerups ), MAX_POWERUPS },
-	{ CompNetFieldExplicit( "modelindex", modelIndex ), 8 },
-	{ CompNetFieldExplicit( "otherEntityNum2", otherEntityIndex[1] ), GENTITYNUM_BITS },
-	{ CompNetField( loopSound ), 8 },
-	{ CompNetField( generic1 ), 8 },
-	{ CompNetField( origin2[2] ), 0 },
-	{ CompNetField( origin2[0] ), 0 },
-	{ CompNetField( origin2[1] ), 0 },
-	{ CompNetFieldExplicit( "modelindex2", modelIndex2 ), 8 },
-	{ CompNetField( angles[0] ), 0 },
-	{ CompNetField( time ), 32 },
-	{ CompNetFieldExplicit( "apos.trTime", trApos.trTime ), 32 },
-	{ CompNetFieldExplicit( "apos.trDuration", trApos.trDuration ), 32 },
-	{ CompNetFieldExplicit( "apos.trBase[2]", trApos.trBase[2] ), 0 },
-	{ CompNetFieldExplicit( "apos.trDelta[0]", trApos.trDelta[0] ), 0 },
-	{ CompNetFieldExplicit( "apos.trDelta[1]", trApos.trDelta[1] ), 0 },
-	{ CompNetFieldExplicit( "apos.trDelta[2]", trApos.trDelta[2] ), 0 },
-	{ CompNetField( time2 ), 32 },
-	{ CompNetField( angles[2] ), 0 },
-	{ CompNetField( angles2[0] ), 0 },
-	{ CompNetField( angles2[2] ), 0 },
-	{ CompNetField( constantLight ), 32 },
-	{ CompNetField( frame ), 16 }
-};*/
-
-// if (int)f == f and (int)f + ( 1<<(FLOAT_INT_BITS-1) ) < ( 1 << FLOAT_INT_BITS )
-// the float will be sent with FLOAT_INT_BITS, otherwise all 32 bits will be sent
-#define	FLOAT_INT_BITS	13
-#define	FLOAT_INT_BIAS	(1<<(FLOAT_INT_BITS-1))
 
 /*
 ==================
@@ -880,22 +1041,23 @@ If force is not set, then nothing at all will be generated if the entity is
 identical, under the assumption that the in-order delta code will catch it.
 ==================
 */
-void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entityState_s *to, 
-						   qboolean force ) {
+void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entityState_s *to, qboolean force ) 
+{
 	int			i, lc;
 	int			numFields;
 	netField_t	*field;
-	int			trunc;
-	float		fullFloat;
-	int			*fromF, *toF;
+	//int			trunc;
+	//float		fullFloat;
+	//int			*fromF, *toF;
 
 	numFields = ARRAY_LEN( entityStateFields );
 
-	// all fields should be 32 bits to avoid any compiler packing issues
-	// the "number" field is not part of the field list
-	// if this assert fails, someone added a field to the entityState_t
-	// struct without updating the message fields
-	assert( numFields + 1 == sizeof( *from )/4 );
+	// We support differently-sized vars now
+	//// all fields should be 32 bits to avoid any compiler packing issues
+	//// the "number" field is not part of the field list
+	//// if this assert fails, someone added a field to the entityState_t
+	//// struct without updating the message fields
+	//assert( numFields + 1 == sizeof( *from )/4 );
 
 	// a NULL to is a delta remove message
 	if ( to == NULL ) {
@@ -914,17 +1076,16 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 
 	lc = 0;
 	// build the change vector as bytes so it is endien independent
-	for ( i = 0, field = entityStateFields ; i < numFields ; i++, field++ ) {
-		fromF = (int *)( (byte *)from + field->offset );
-		toF = (int *)( (byte *)to + field->offset );
-		if ( *fromF != *toF ) {
-			lc = i+1;
-		}
+	for ( i = 0, field = entityStateFields ; i < numFields ; i++, field++ ) 
+	{
+		field->BuildChangeVector( from, to, lc, i );
 	}
 
-	if ( lc == 0 ) {
+	if ( lc == 0 ) 
+	{
 		// nothing at all changed
-		if ( !force ) {
+		if ( !force ) 
+		{
 			return;		// nothing at all
 		}
 		// write two bits for no change
@@ -942,47 +1103,9 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 
 	oldsize += numFields;
 
-	for ( i = 0, field = entityStateFields ; i < lc ; i++, field++ ) {
-		fromF = (int *)( (byte *)from + field->offset );
-		toF = (int *)( (byte *)to + field->offset );
-
-		if ( *fromF == *toF ) {
-			MSG_WriteBits( msg, 0, 1 );	// no change
-			continue;
-		}
-
-		MSG_WriteBits( msg, 1, 1 );	// changed
-
-		if ( field->bits == 0 ) {
-			// float
-			fullFloat = *(float *)toF;
-			trunc = (int)fullFloat;
-
-			if (fullFloat == 0.0f) {
-					MSG_WriteBits( msg, 0, 1 );
-					oldsize += FLOAT_INT_BITS;
-			} else {
-				MSG_WriteBits( msg, 1, 1 );
-				if ( trunc == fullFloat && trunc + FLOAT_INT_BIAS >= 0 && 
-					trunc + FLOAT_INT_BIAS < ( 1 << FLOAT_INT_BITS ) ) {
-					// send as small integer
-					MSG_WriteBits( msg, 0, 1 );
-					MSG_WriteBits( msg, trunc + FLOAT_INT_BIAS, FLOAT_INT_BITS );
-				} else {
-					// send as full floating point value
-					MSG_WriteBits( msg, 1, 1 );
-					MSG_WriteBits( msg, *toF, 32 );
-				}
-			}
-		} else {
-			if (*toF == 0) {
-				MSG_WriteBits( msg, 0, 1 );
-			} else {
-				MSG_WriteBits( msg, 1, 1 );
-				// integer
-				MSG_WriteBits( msg, *toF, field->bits );
-			}
-		}
+	for ( i = 0, field = entityStateFields ; i < lc ; i++, field++ ) 
+	{
+		field->WriteDeltaEntity( msg, from, to );
 	}
 }
 
@@ -998,134 +1121,17 @@ If the delta removes the entity, entityState_t->number will be set to MAX_GENTIT
 Can go from either a baseline or a previous packet_entity
 ==================
 */
-void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to, 
-						 int number) {
-	int			i, lc;
-	int			numFields;
-	netField_t	*field;
-	int			*fromF, *toF;
-	int			print;
-	int			trunc;
-	int			startBit, endBit;
-
-	if ( number < 0 || number >= MAX_GENTITIES) {
-		Com_Error( ERR_DROP, "Bad delta entity number: %i", number );
-	}
-
-	if ( msg->bit == 0 ) {
-		startBit = msg->readcount * 8 - GENTITYNUM_BITS;
-	} else {
-		startBit = ( msg->readcount - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
-	}
-
-	// check for a remove
-	if ( MSG_ReadBits( msg, 1 ) == 1 ) {
-		Com_Memset( to, 0, sizeof( *to ) );	
-		to->number = MAX_GENTITIES - 1;
-		if ( cl_shownet && ( cl_shownet->integer >= 2 || cl_shownet->integer == -1 ) ) {
-			Com_Printf( "%3i: #%-3i remove\n", msg->readcount, number );
-		}
-		return;
-	}
-
-	// check for no delta
-	if ( MSG_ReadBits( msg, 1 ) == 0 ) {
-		*to = *from;
-		to->number = number;
-		return;
-	}
-
-	numFields = ARRAY_LEN( entityStateFields );
-	lc = MSG_ReadByte(msg);
-
-	if ( lc > numFields || lc < 0 ) {
-		Com_Error( ERR_DROP, "invalid entityState field count" );
-	}
-
-	// shownet 2/3 will interleave with other printed info, -1 will
-	// just print the delta records`
-	if ( cl_shownet && ( cl_shownet->integer >= 2 || cl_shownet->integer == -1 ) ) {
-		print = 1;
-		Com_Printf( "%3i: #%-3i ", msg->readcount, to->number );
-	} else {
-		print = 0;
-	}
-
-	to->number = number;
-
-	for ( i = 0, field = entityStateFields ; i < lc ; i++, field++ ) {
-		fromF = (int *)( (byte *)from + field->offset );
-		toF = (int *)( (byte *)to + field->offset );
-
-		if ( ! MSG_ReadBits( msg, 1 ) ) {
-			// no change
-			*toF = *fromF;
-		} else {
-			if ( field->bits == 0 ) {
-				// float
-				if ( MSG_ReadBits( msg, 1 ) == 0 ) {
-						*(float *)toF = 0.0f; 
-				} else {
-					if ( MSG_ReadBits( msg, 1 ) == 0 ) {
-						// integral float
-						trunc = MSG_ReadBits( msg, FLOAT_INT_BITS );
-						// bias to allow equal parts positive and negative
-						trunc -= FLOAT_INT_BIAS;
-						*(float *)toF = trunc; 
-						if ( print ) {
-							Com_Printf( "%s:%i ", field->name, trunc );
-						}
-					} else {
-						// full floating point value
-						*toF = MSG_ReadBits( msg, 32 );
-						if ( print ) {
-							Com_Printf( "%s:%f ", field->name, *(float *)toF );
-						}
-					}
-				}
-			} else {
-				if ( MSG_ReadBits( msg, 1 ) == 0 ) {
-					*toF = 0;
-				} else {
-					// integer
-					*toF = MSG_ReadBits( msg, field->bits );
-					if ( print ) {
-						Com_Printf( "%s:%i ", field->name, *toF );
-					}
-				}
-			}
-//			pcount[i]++;
-		}
-	}
-	for ( i = lc, field = &entityStateFields[lc] ; i < numFields ; i++, field++ ) {
-		fromF = (int *)( (byte *)from + field->offset );
-		toF = (int *)( (byte *)to + field->offset );
-		// no change
-		*toF = *fromF;
-	}
-
-	if ( print ) {
-		if ( msg->bit == 0 ) {
-			endBit = msg->readcount * 8 - GENTITYNUM_BITS;
-		} else {
-			endBit = ( msg->readcount - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
-		}
-		Com_Printf( " (%i bits)\n", endBit - startBit  );
-	}
-}
-
-/*
-void MSG_ReadDeltaEntity( msg_t* msg, Components::SharedComponent* from, Components::SharedComponent* to, int number )
+void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to, int number) 
 {
 	int			i, lc;
 	int			numFields;
-	netField_t* field;
-	int* fromF, *toF;
+	netField_t	*field;
+	//int			*fromF, *toF;
 	int			print;
-	int			trunc;
+	//int			trunc;
 	int			startBit, endBit;
 
-	if ( number < 0 || number >= MAX_GENTITIES ) 
+	if ( number < 0 || number >= MAX_GENTITIES) 
 	{
 		Com_Error( ERR_DROP, "Bad delta entity number: %i", number );
 	}
@@ -1133,20 +1139,18 @@ void MSG_ReadDeltaEntity( msg_t* msg, Components::SharedComponent* from, Compone
 	if ( msg->bit == 0 ) 
 	{
 		startBit = msg->readcount * 8 - GENTITYNUM_BITS;
-	}
-
+	} 
 	else 
 	{
-		startBit = (msg->readcount - 1) * 8 + msg->bit - GENTITYNUM_BITS;
+		startBit = ( msg->readcount - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
 	}
 
 	// check for a remove
 	if ( MSG_ReadBits( msg, 1 ) == 1 ) 
 	{
-		Com_Memset( to, 0, sizeof( *to ) );
-		to->entityIndex = MAX_GENTITIES - 1;
-
-		if ( cl_shownet && (cl_shownet->integer >= 2 || cl_shownet->integer == -1) ) 
+		Com_Memset( to, 0, sizeof( *to ) );	
+		to->number = MAX_GENTITIES - 1;
+		if ( cl_shownet && ( cl_shownet->integer >= 2 || cl_shownet->integer == -1 ) ) 
 		{
 			Com_Printf( "%3i: #%-3i remove\n", msg->readcount, number );
 		}
@@ -1157,12 +1161,12 @@ void MSG_ReadDeltaEntity( msg_t* msg, Components::SharedComponent* from, Compone
 	if ( MSG_ReadBits( msg, 1 ) == 0 ) 
 	{
 		*to = *from;
-		to->entityIndex = number;
+		to->number = number;
 		return;
 	}
 
-	numFields = ARRAY_LEN( sharedComponentFields );
-	lc = MSG_ReadByte( msg );
+	numFields = ARRAY_LEN( entityStateFields );
+	lc = MSG_ReadByte(msg);
 
 	if ( lc > numFields || lc < 0 ) 
 	{
@@ -1171,95 +1175,25 @@ void MSG_ReadDeltaEntity( msg_t* msg, Components::SharedComponent* from, Compone
 
 	// shownet 2/3 will interleave with other printed info, -1 will
 	// just print the delta records`
-	if ( cl_shownet && (cl_shownet->integer >= 2 || cl_shownet->integer == -1) ) 
+	if ( cl_shownet && ( cl_shownet->integer >= 2 || cl_shownet->integer == -1 ) ) 
 	{
 		print = 1;
-		Com_Printf( "%3i: #%-3i ", msg->readcount, to->entityIndex );
-	}
-
+		Com_Printf( "%3i: #%-3i ", msg->readcount, to->number );
+	} 
 	else 
 	{
 		print = 0;
 	}
 
-	to->entityIndex = number;
+	to->number = number;
 
-	for ( i = 0, field = sharedComponentFields; i < lc; i++, field++ )
+	for ( i = 0, field = entityStateFields ; i < lc ; i++, field++ ) 
 	{
-		fromF = (int*)((byte*)from + field->offset);
-		toF = (int*)((byte*)to + field->offset);
-
-		if ( !MSG_ReadBits( msg, 1 ) ) 
-		{
-			// no change
-			*toF = *fromF;
-		}
-
-		else 
-		{
-			if ( field->bits == 0 ) 
-			{
-				// float
-				if ( MSG_ReadBits( msg, 1 ) == 0 ) 
-				{
-					*(float*)toF = 0.0f;
-				}
-
-				else
-				{
-					if ( MSG_ReadBits( msg, 1 ) == 0 ) 
-					{
-						// integral float
-						trunc = MSG_ReadBits( msg, FLOAT_INT_BITS );
-						// bias to allow equal parts positive and negative
-						trunc -= FLOAT_INT_BIAS;
-						*(float*)toF = trunc;
-						if ( print ) 
-						{
-							Com_Printf( "%s:%i ", field->name, trunc );
-						}
-					}
-
-					else 
-					{
-						// full floating point value
-						*toF = MSG_ReadBits( msg, 32 );
-						if ( print ) 
-						{
-							Com_Printf( "%s:%f ", field->name, *(float*)toF );
-						}
-					}
-				}
-			}
-
-			else 
-			{
-				if ( MSG_ReadBits( msg, 1 ) == 0 ) 
-				{
-					*toF = 0;
-				}
-
-				else 
-				{
-					// integer
-					*toF = MSG_ReadBits( msg, field->bits );
-
-					if ( print ) 
-					{
-						Com_Printf( "%s:%i ", field->name, *toF );
-					}
-				}
-			}
-			//			pcount[i]++;
-		}
+		field->ReadDeltaEntity( msg, from, to );
 	}
-
-	for ( i = lc, field = &sharedComponentFields[lc]; i < numFields; i++, field++ )
+	for ( i = lc, field = &entityStateFields[lc] ; i < numFields ; i++, field++ ) 
 	{
-		fromF = (int*)((byte*)from + field->offset);
-		toF = (int*)((byte*)to + field->offset);
-		// no change
-		*toF = *fromF;
+		field->NoChange( from, to ); 
 	}
 
 	if ( print ) 
@@ -1267,15 +1201,14 @@ void MSG_ReadDeltaEntity( msg_t* msg, Components::SharedComponent* from, Compone
 		if ( msg->bit == 0 ) 
 		{
 			endBit = msg->readcount * 8 - GENTITYNUM_BITS;
-		}
-	
+		} 
 		else 
 		{
-			endBit = (msg->readcount - 1) * 8 + msg->bit - GENTITYNUM_BITS;
+			endBit = ( msg->readcount - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
 		}
-		Com_Printf( " (%i bits)\n", endBit - startBit );
+		Com_Printf( " (%i bits)\n", endBit - startBit  );
 	}
-}*/
+}
 
 /*
 ============================================================================
