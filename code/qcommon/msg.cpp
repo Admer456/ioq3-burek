@@ -977,8 +977,8 @@ netField_t	entityStateFields[] =
 
 	// event stuff
 	netField_t{ NETF(event), 10 },
-	netField_t{ NETF(generic1), 8 },
-	netField_t{ NETF(eType), 8 },
+	netField_t{ NETF(generic1), 10 },	// Sound ents can use generic1 to store a sound index,
+	netField_t{ NETF(eType), 8 },		// so I increased generic1 bits from 8 to 10, to have 1024 sounds -Admer
 	netField_t{ NETF(eFlags), 19 },
 	netField_t{ NETF(torsoAnim), 8 },
 	netField_t{ NETF(eventParm), 8 },
@@ -991,6 +991,7 @@ netField_t	entityStateFields[] =
 	
 	netField_t{ NETF(weapon), 8 },
 	netField_t{ NETF(clientNum), 8 },
+	netField_t{ NETF(powerups), MAX_POWERUPS },
 
 	// origin
 	netField_t{ NETF(origin[0]), 0 },
@@ -998,7 +999,6 @@ netField_t	entityStateFields[] =
 	netField_t{ NETF(origin[2]), 0 },
 	netField_t{ NETF(solid), 24 },
 	
-	netField_t{ NETF(powerups), MAX_POWERUPS },
 	netField_t{ NETF(modelindex), 10 }, // raised from 8 to 10
 	netField_t{ NETF(modelindex2), 10 },// so we can have 1024 models -Admer
 	netField_t{ NETF(loopSound), 8 },

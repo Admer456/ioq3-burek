@@ -1159,12 +1159,12 @@ typedef enum {
 #define	ENTITYNUM_WORLD		(MAX_GENTITIES-2)
 #define	ENTITYNUM_MAX_NORMAL	(MAX_GENTITIES-2)
 
-// TODO: increase to 16 bits
-#define	MAX_MODELS			256		// these are sent over the net as 8 bits
-#define	MAX_SOUNDS			256		// so they cannot be blindly increased
+// Increased from 8 to 10 bits -Admer
+#define	MAX_MODELS			1024	// these are sent over the net as 10 bits
+#define	MAX_SOUNDS			1024	// so if you wanna increase them, check msg.cpp
 
-
-#define	MAX_CONFIGSTRINGS	1024
+// If you change MAX_MODELS or MAX_SOUNDS, you'll also need to update this:
+#define	MAX_CONFIGSTRINGS	2272	// Changed from 1024 to 2272
 
 // these are the only configstrings that the system reserves, all the
 // other ones are strictly for servergame to clientgame communication
@@ -1173,7 +1173,8 @@ typedef enum {
 
 #define	RESERVED_CONFIGSTRINGS	2	// game can't modify below this, only the system can
 
-#define	MAX_GAMESTATE_CHARS	16000
+// Increased from 16000 to 65536 -Admer
+#define	MAX_GAMESTATE_CHARS	65536
 typedef struct {
 	int			stringOffsets[MAX_CONFIGSTRINGS];
 	char		stringData[MAX_GAMESTATE_CHARS];
@@ -1410,7 +1411,7 @@ typedef struct entityState_s {
 	int		legsAnim;		// mask off ANIM_TOGGLEBIT
 	int		torsoAnim;		// mask off ANIM_TOGGLEBIT
 
-	int		generic1;
+	int		generic1;		// Can be used as an event parameter in some cases
 } entityState_t;
 
 typedef enum {
