@@ -12,6 +12,8 @@ namespace Entities
 
 		void			Spawn() override;
 
+		void			TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFlags, float damageDealt ) override;
+
 	public: // "Properties"
 		gclient_t*		GetClient();
 		void			SetClient( const gclient_t* playerClient );
@@ -43,6 +45,15 @@ namespace Entities
 		void			StopFollowing();
 		void			FollowCycle( int dir );
 
+		// Burn from lava, drowning etc.
+		void			WorldEffects();
+
+		// Applies all the damage taken this frame
+		void			ApplyDamage();
+
+		// Teleports the player to a given place
+		void			Teleport( const Vector& toOrigin, const Vector& toAngles );
+
 	protected: // Client command, implemented in BasePlayerCommands.cpp
 		void			Command_Say( int mode, bool arg0 );
 		void			Command_Tell();
@@ -67,5 +78,7 @@ namespace Entities
 
 	protected:
 		gclient_s*		client{ nullptr };
+		float			damage{ 0 };
+		int32_t			painDebounceTime{ 0 };
 	};
 }

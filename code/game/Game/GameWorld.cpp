@@ -1450,11 +1450,11 @@ void GameWorld::ClientEndFrame( Entities::BasePlayer* player )
 		return;
 	}
 
-	//// burn from lava, etc
-	//::P_WorldEffects( player );
+	// burn from lava, etc
+	player->WorldEffects();
 
-	//// apply all the damage taken this frame
-	//::P_DamageFeedback( ent );
+	// apply all the damage taken this frame
+	player->ApplyDamage();
 
 	// add the EF_CONNECTION flag if we haven't gotten commands recently
 	if ( level.time - player->GetClient()->lastCmdTime > 1000 )

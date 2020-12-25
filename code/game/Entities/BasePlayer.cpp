@@ -19,6 +19,172 @@ void BasePlayer::Spawn()
 	// Do nothing
 }
 
+void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFlags, float damageDealt )
+{
+	int			take;
+	//int			asave;
+	int			knockback;
+	int			max;
+
+	if ( !takeDamage ) 
+	{
+		return;
+	}
+
+	// the intermission has already been qualified for, so don't
+	// allow any extra scoring
+	if ( level.intermissionQueued ) 
+	{
+		return;
+	}
+
+	if ( !inflictor ) 
+	{
+		inflictor = gEntities[ENTITYNUM_WORLD];
+	}
+
+	if ( !attacker ) 
+	{
+		attacker = gEntities[ENTITYNUM_WORLD];
+	}
+
+	// reduce damage by the attacker's handicap value
+	// unless they are rocket jumping
+	if ( attacker->IsSubclassOf( BasePlayer::ClassInfo ) && attacker != this ) 
+	{
+		max = static_cast<BasePlayer*>(attacker)->GetClient()->ps.stats[STAT_MAX_HEALTH];
+		damage = damage * max / 100;
+	}
+
+	if ( client ) 
+	{
+		if ( client->noclip ) 
+		{
+			return;
+		}
+	}
+
+	knockback = damage;
+	if ( knockback > 200 ) 
+	{
+		knockback = 200;
+	}
+	if ( flags & FL_NO_KNOCKBACK ) 
+	{
+		knockback = 0;
+	}
+	//if ( dflags & DAMAGE_NO_KNOCKBACK ) 
+	//{
+	//	knockback = 0;
+	//}
+
+	//// check for completely getting out of the damage
+	//if ( !(dflags & DAMAGE_NO_PROTECTION) ) 
+	//{
+		//// if TF_NO_FRIENDLY_FIRE is set, don't do damage to the target
+		//// if the attacker was on the same team	
+		//if ( targ != attacker && OnSameTeam( targ, attacker ) ) 
+		//{
+		//	if ( !g_friendlyFire.integer ) 
+		//	{
+		//		return;
+		//	}
+		//}
+
+	//	// check for godmode
+	//	if ( flags & FL_GODMODE ) 
+	//	{
+	//		return;
+	//	}
+	//}
+
+	//// add to the attacker's hit counter (if the target isn't a general entity like a prox mine)
+	//if ( attacker->client && client
+	//	 && targ != attacker && targ->health > 0
+	//	 && targ->s.eType != ET_MISSILE
+	//	 && targ->s.eType != ET_GENERAL ) 
+	//{
+	//	if ( OnSameTeam( targ, attacker ) ) 
+	//	{
+	//		attacker->client->ps.persistant[PERS_HITS]--;
+	//	}
+	//	else 
+	//	{
+	//		attacker->client->ps.persistant[PERS_HITS]++;
+	//	}
+	//	attacker->client->ps.persistant[PERS_ATTACKEE_ARMOR] = (targ->health << 8) | (client->ps.stats[STAT_ARMOR]);
+	//}
+
+	// always give half damage if hurting self
+	// calculated after knockback, so rocket jumping works
+	if ( this == attacker ) 
+	{
+		damage *= 0.5;
+	}
+
+	if ( damage < 1 ) {
+		damage = 1;
+	}
+	take = damage;
+
+	// TODO: implement armour
+	//// save some from armor
+	//asave = CheckArmor( targ, take, dflags );
+	//take -= asave;
+
+	if ( g_debugDamage.integer ) {
+		G_Printf( "%i: client:%i health:%i damage:%i armor:%i\n", level.time, GetEntityIndex(),
+				  health, take, 0 /*asave*/ );
+	}
+
+	// add to the damage inflicted on a player this frame
+	// the total will be turned into screen blends and view angle kicks
+	// at the end of the frame
+	if ( client ) {
+		if ( attacker ) {
+			client->ps.persistant[PERS_ATTACKER] = attacker->GetEntityIndex();
+		}
+		else {
+			client->ps.persistant[PERS_ATTACKER] = ENTITYNUM_WORLD;
+		}
+		client->damage_armor += 0 /*asave*/;
+		client->damage_blood += take;
+		client->damage_knockback += knockback;
+		
+		VectorCopy( GetShared()->currentOrigin, client->damage_from );
+		client->damage_fromWorld = qtrue;
+
+	}
+
+	if ( client ) 
+	{
+		// set the last client who damaged the target
+		client->lasthurt_client = attacker->GetEntityIndex();
+	}
+
+	// do the damage
+	if ( take ) 
+	{
+		health = health - take;
+
+		if ( client ) 
+		{
+			client->ps.stats[STAT_HEALTH] = health;
+		}
+
+		if ( health <= 0 ) 
+		{
+			if ( client )
+				flags |= FL_NO_KNOCKBACK;
+
+			if ( health < -999 )
+				health = -999;
+
+			return;
+		}
+	}
+}
+
 gclient_t* BasePlayer::GetClient()
 {
 	return client;
@@ -363,4 +529,189 @@ void BasePlayer::FollowCycle( int dir )
 	} while ( clientnum != original );
 
 	// leave it where it was
+}
+
+void Entities::BasePlayer::WorldEffects()
+{
+	bool		envirosuit;
+	int			_waterlevel;
+
+	if ( client->noclip ) {
+		client->airOutTime = level.time + 12000;	// don't need air
+		return;
+	}
+
+	_waterlevel = waterLevel;
+
+	envirosuit = (client->ps.powerups[PW_BATTLESUIT] > level.time);
+
+	// check for drowning
+	if ( waterLevel == 3 ) 
+	{
+		// envirosuit give air
+		if ( envirosuit ) 
+		{
+			client->airOutTime = level.time + 10000;
+		}
+
+		// if out of air, start drowning
+		if ( client->airOutTime < level.time ) 
+		{
+			// drown!
+			client->airOutTime += 1000;
+			if ( health > 0 ) 
+			{
+				// take more damage the longer underwater
+				damage += 2;
+				if ( damage > 15 )
+					damage = 15;
+
+				// don't play a normal pain sound
+				painDebounceTime = level.time + 200;
+
+				TakeDamage( nullptr, nullptr, DAMAGE_NO_ARMOR, damage );
+			}
+		}
+	}
+	else 
+	{
+		client->airOutTime = level.time + 12000;
+		damage = 2;
+	}
+
+	// check for sizzle damage (move to pmove?)
+	if ( waterLevel &&
+		 (waterType & (CONTENTS_LAVA | CONTENTS_SLIME)) ) 
+	{
+		if ( health > 0 && painDebounceTime <= level.time ) 
+		{
+
+			if ( envirosuit ) 
+			{
+				AddEvent( EV_POWERUP_BATTLESUIT, 0 );
+			}
+			else 
+			{
+				if ( waterType & CONTENTS_LAVA ) 
+				{
+					TakeDamage( nullptr, nullptr, 0, 30 * waterLevel );
+				}
+
+				if ( waterType & CONTENTS_SLIME ) 
+				{
+					TakeDamage( nullptr, nullptr, 0, 10 * waterLevel );
+				}
+			}
+		}
+	}
+}
+
+void Entities::BasePlayer::ApplyDamage()
+{
+	float	count;
+	vec3_t	angles;
+
+	if ( client->ps.pm_type == PM_DEAD ) 
+	{
+		return;
+	}
+
+	// total points of damage shot at the player this frame
+	count = client->damage_blood + client->damage_armor;
+	if ( count == 0 ) 
+	{
+		return;	// didn't take any damage
+	}
+
+	if ( count > 255 ) 
+	{
+		count = 255;
+	}
+
+	// send the information to the client
+
+	// world damage (falling, slime, etc) uses a special code
+	// to make the blend blob centered instead of positional
+	if ( client->damage_fromWorld ) 
+	{
+		client->ps.damagePitch = 255;
+		client->ps.damageYaw = 255;
+
+		client->damage_fromWorld = qfalse;
+	}
+	else 
+	{
+		vectoangles( client->damage_from, angles );
+		client->ps.damagePitch = angles[PITCH] / 360.0 * 256;
+		client->ps.damageYaw = angles[YAW] / 360.0 * 256;
+	}
+
+	// play an appropriate pain sound
+	if ( (level.time > painDebounceTime) && !(GetFlags() & FL_GODMODE) ) 
+	{
+		painDebounceTime = level.time + 700;
+		AddEvent( EV_PAIN, health );
+		client->ps.damageEvent++;
+	}
+
+
+	client->ps.damageCount = count;
+
+	// clear totals
+	client->damage_blood = 0;
+	client->damage_armor = 0;
+	client->damage_knockback = 0;
+}
+
+void BasePlayer::Teleport( const Vector& toOrigin, const Vector& toAngles )
+{
+	IEntity* tent;
+	bool noAngles;
+
+	noAngles = (angles[0] > 999999.0);
+	// use temp events at source and destination to prevent the effect
+	// from getting dropped by a second player event
+	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) 
+	{
+		tent = gameWorld->CreateTempEntity( client->ps.origin, EV_PLAYER_TELEPORT_OUT );
+		tent->GetState()->clientNum = GetState()->clientNum;
+
+		tent = gameWorld->CreateTempEntity( origin, EV_PLAYER_TELEPORT_IN );
+		tent->GetState()->clientNum = GetState()->clientNum;
+	}
+
+	// unlink to make sure it can't possibly interfere with G_KillBox
+	gameImports->UnlinkEntity( this );
+
+	VectorCopy( toOrigin, client->ps.origin );
+	client->ps.origin[2] += 1;
+	if ( !noAngles ) 
+	{
+		// spit the player out
+		AngleVectors( angles, client->ps.velocity, NULL, NULL );
+		VectorScale( client->ps.velocity, 400, client->ps.velocity );
+		client->ps.pm_time = 160;		// hold time
+		client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
+		// set angles
+		SetClientViewAngle( toAngles );
+	}
+	// toggle the teleport bit so the client knows to not lerp
+	client->ps.eFlags ^= EF_TELEPORT_BIT;
+	
+	// kill anything at the destination
+	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) 
+	{
+		KillBox();
+	}
+
+	// save results of pmove
+	BG_PlayerStateToEntityState( &client->ps, GetState(), qtrue );
+
+	// use the precise origin for linking
+	VectorCopy( client->ps.origin, GetShared()->currentOrigin );
+
+	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) 
+	{
+		gameImports->LinkEntity( this );
+	}
 }
