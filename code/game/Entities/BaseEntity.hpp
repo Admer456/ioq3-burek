@@ -18,7 +18,7 @@ namespace Entities
 
 		virtual void	Spawn() override;
 		virtual void	Precache() override { return; }
-		
+
 		virtual void	PreKeyValue();
 		virtual void	PostKeyValue();
 		virtual void	KeyValue() override;
@@ -72,13 +72,13 @@ namespace Entities
 
 		// Getters and setters
 		// name
-		const char*		GetName() const override;
+		const char* GetName() const override;
 
 		// classname, for whatever reason
-		const char*		GetClassname() const override;
+		const char* GetClassname() const override;
 
 		// target
-		const char*		GetTarget() const override;
+		const char* GetTarget() const override;
 
 		// origin
 		Vector			GetOrigin() const override;
@@ -123,6 +123,12 @@ namespace Entities
 		// Kills everything in size.xyz radius around this entity
 		void			KillBox( const Vector& size, bool onlyPlayers = false ) override;
 
+		// Checks if this entity is inside another entity
+		// If yes, then it returns that entity, else nullptr
+		BaseQuakeEntity* TestEntityPosition();
+
+		bool			TryPushingEntity( IEntity* check, Vector move, Vector amove );
+
 		// Class comparison
 		bool			IsClass( const EntityClassInfo& eci ) override final;
 		bool			IsSubclassOf( const EntityClassInfo& eci ) override final;
@@ -144,7 +150,7 @@ namespace Entities
 		// Damage
 		int				health{ 0 };
 		bool			takeDamage{ false };
-		
+
 		// Movement
 		int				clipMask{ 0 };	// Brushes with this content value will be collided against when moving. 
 										// Items and corpses do not collide against players, for instance
@@ -160,7 +166,7 @@ namespace Entities
 		// Water
 		byte			waterLevel{ 0 };
 		byte			waterType{ 0 };
-		
+
 		// Thinking
 		float			nextThink{ 0 };
 
@@ -168,7 +174,9 @@ namespace Entities
 		int				flags{ 0 };				// FL_* variables
 		int				spawnFlags{ 0 };		// 64 bits of
 		int				spawnFlagsExtra{ 0 };	// spawnflags cuz' why not
-	
+
+		BaseQuakeEntity* chain{ nullptr };		// For parenting
+
 	protected:
 		virtual bool	CheckAndClearEvents();
 

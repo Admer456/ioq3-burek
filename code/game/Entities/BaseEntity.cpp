@@ -28,6 +28,9 @@ void BaseQuakeEntity::Spawn()
 {
 	shared.s.number = GetEntityIndex();
 
+	targetName = spawnArgs->GetCString( "targetname", "" );
+	target = spawnArgs->GetCString( "target", "" );
+
 	const char* model = spawnArgs->GetCString( "model", nullptr );
 	Vector keyOrigin = spawnArgs->GetVector( "origin", Vector::Zero );
 	Vector keyAngles = spawnArgs->GetVector( "angles", Vector::Zero );
@@ -173,6 +176,7 @@ Vector BaseQuakeEntity::GetOrigin() const
 void BaseQuakeEntity::SetOrigin( const Vector& newOrigin )
 {
 	newOrigin.CopyToArray( shared.s.origin );
+	newOrigin.CopyToArray( shared.r.currentOrigin );
 }
 
 Vector BaseQuakeEntity::GetAngles() const
@@ -237,11 +241,13 @@ void BaseQuakeEntity::UseTargets( IEntity* activator )
 	UseTargets( activator, "target" );
 }
 
-void BaseQuakeEntity::UseTargets( IEntity* activator, const char* targetName )
+void BaseQuakeEntity::UseTargets( IEntity* activator, const char* targetKey )
 {
-	IEntity* ent = gameWorld->FindByName( targetName );
+	const char* name = spawnArgs->GetCString( targetKey, "" );
 
-	while ( ent = gameWorld->FindByName( targetName, ent ) )
+	IEntity* ent = nullptr;
+
+	while ( ent = gameWorld->FindByName( name, ent ) )
 	{
 		ent->Use( activator, this, 0 );
 	}
@@ -319,6 +325,155 @@ void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers )
 		// nail it
 		hit->TakeDamage( this, this, DAMAGE_NO_PROTECTION, 100000 );
 	}
+}
+
+BaseQuakeEntity* BaseQuakeEntity::TestEntityPosition()
+{
+	trace_t	tr;
+	int		mask;
+
+	if ( clipMask ) {
+		mask = clipMask;
+	}
+	else {
+		mask = MASK_SOLID;
+	}
+
+	gameImports->Trace( &tr, shared.s.pos.trBase, shared.r.mins, shared.r.maxs, shared.s.pos.trBase, shared.s.number, mask );
+	
+	if ( tr.startsolid )
+		return static_cast<BaseQuakeEntity*>( gEntities[tr.entityNum] );
+
+	return NULL;
+}
+
+struct pushed_t
+{
+	BaseQuakeEntity* ent;
+	Vector	origin;
+	Vector	angles;
+	float	deltayaw;
+};
+
+extern pushed_t pushed[MAX_GENTITIES];
+extern pushed_t* pushed_p;
+
+extern void G_CreateRotationMatrix( vec3_t angles, vec3_t matrix[3] );
+extern void G_TransposeMatrix( vec3_t matrix[3], vec3_t transpose[3] );
+extern void G_RotatePoint( vec3_t point, vec3_t matrix[3] );
+
+bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amove )
+{
+	vec3_t matrix[3], transpose[3];
+	vec3_t org, org2, move2;
+	BaseQuakeEntity* block;
+	BasePlayer* player{ nullptr };
+
+	if ( check->IsClass( BasePlayer::ClassInfo ) )
+	{
+		player = static_cast<BasePlayer*>(check);
+	}
+
+	// EF_MOVER_STOP will just stop when contacting another entity
+	// instead of pushing it, but entities can still ride on top of it
+	if ( (shared.s.eFlags & EF_MOVER_STOP) && check->GetState()->groundEntityNum != shared.s.number ) 
+	{
+		return false;
+	}
+
+	// save off the old position
+	if ( pushed_p > & pushed[MAX_GENTITIES] ) 
+	{
+		G_Error( "pushed_p > &pushed[MAX_GENTITIES]" );
+	}
+
+	pushed_p->ent = static_cast<BaseQuakeEntity*>( check );
+	VectorCopy( check->GetState()->pos.trBase, pushed_p->origin );
+	VectorCopy( check->GetState()->apos.trBase, pushed_p->angles );
+	if ( player ) 
+	{
+		pushed_p->deltayaw = player->GetClient()->ps.delta_angles[YAW];
+		VectorCopy( player->GetClient()->ps.origin, pushed_p->origin );
+	}
+
+	pushed_p++;
+
+	// try moving the contacted entity 
+	// figure movement due to the pusher's amove
+	G_CreateRotationMatrix( amove, transpose );
+	G_TransposeMatrix( transpose, matrix );
+
+	if ( check->IsClass( BasePlayer::ClassInfo ) ) 
+	{
+		VectorSubtract( player->GetClient()->ps.origin, shared.r.currentOrigin, org );
+	}
+	
+	else 
+	{
+		VectorSubtract( check->GetState()->pos.trBase, shared.r.currentOrigin, org );
+	}
+	
+	VectorCopy( org, org2 );
+	G_RotatePoint( org2, matrix );
+	VectorSubtract( org2, org, move2 );
+	
+	// add movement
+	VectorAdd( check->GetState()->pos.trBase, move, check->GetState()->pos.trBase );
+	VectorAdd( check->GetState()->pos.trBase, move2, check->GetState()->pos.trBase );
+	
+	if ( check->IsClass( BasePlayer::ClassInfo ) ) {
+		VectorAdd( player->GetClient()->ps.origin, move, player->GetClient()->ps.origin );
+		VectorAdd( player->GetClient()->ps.origin, move2, player->GetClient()->ps.origin );
+		// make sure the client's view rotates when on a rotating mover
+		player->GetClient()->ps.delta_angles[YAW] += ANGLE2SHORT( amove[YAW] );
+	}
+
+	// may have pushed them off an edge
+	if ( check->GetState()->groundEntityNum != shared.s.number ) 
+	{
+		check->GetState()->groundEntityNum = ENTITYNUM_NONE;
+	}
+
+	block = static_cast<BaseQuakeEntity*>(check)->TestEntityPosition();
+	if ( !block ) 
+	{
+		// pushed ok
+		if ( player ) 
+		{
+			VectorCopy( player->GetClient()->ps.origin, check->GetShared()->currentOrigin );
+		}
+		
+		else 
+		{
+			VectorCopy( check->GetState()->pos.trBase, check->GetShared()->currentOrigin );
+		}
+		
+		gameImports->LinkEntity( check );
+		
+		return true;
+	}
+
+	// if it is ok to leave in the old position, do it
+	// this is only relevant for riding entities, not pushed
+	// Sliding trapdoors can cause this.
+	VectorCopy( (pushed_p - 1)->origin, check->GetState()->pos.trBase );
+
+	if ( player ) 
+	{
+		VectorCopy( (pushed_p - 1)->origin, player->GetClient()->ps.origin );
+	}
+	VectorCopy( (pushed_p - 1)->angles, check->GetState()->apos.trBase );
+	block = static_cast<BaseQuakeEntity*>(check)->TestEntityPosition();
+
+	if ( !block ) 
+	{
+		check->GetState()->groundEntityNum = ENTITYNUM_NONE;
+		pushed_p--;
+		return true;
+	}
+
+	// blocked
+	return false;
 }
 
 bool BaseQuakeEntity::IsClass( const EntityClassInfo& eci )
