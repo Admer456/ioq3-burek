@@ -13,10 +13,7 @@
 #include "Entities/BaseEntity.hpp"
 #include "Entities/BasePlayer.hpp"
 
-extern void G_InitGame( int levelTime, int randomSeed, int restart );
 extern void G_ShutdownGame( int restart );
-extern void ClientUserinfoChanged( int clientNum );
-extern void G_RunFrame( int levelTime );
 
 // g_main.cpp
 extern int QDECL SortRanks( const void* a, const void* b );

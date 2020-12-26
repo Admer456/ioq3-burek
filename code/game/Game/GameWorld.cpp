@@ -453,13 +453,16 @@ Entities::IEntity* GameWorld::FindByName( const char* entityName, Entities::IEnt
 	size_t index = 0;
 
 	if ( lastEntity )
-		index = lastEntity->GetEntityIndex();
+		index = lastEntity->GetEntityIndex()+1;
 
 	for ( ; index < MaxEntities; index++ )
 	{
 		Entities::IEntity* ent = gEntities[index];
 		
 		if ( nullptr == ent )
+			continue;
+
+		if ( !ent->GetName() )
 			continue;
 
 		if ( !strcmp( ent->GetName(), entityName ) )
