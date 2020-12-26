@@ -16,5 +16,4 @@ DefineEntityClass( "info_notnull", InfoNotNull, BaseQuakeEntity );
 void InfoNotNull::Spawn()
 {
 	BaseQuakeEntity::Spawn();
-
 }
