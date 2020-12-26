@@ -129,6 +129,9 @@ namespace Entities
 
 		bool			TryPushingEntity( IEntity* check, Vector move, Vector amove );
 
+		// Adds an event to this entity, is overridden by BasePlayer
+		virtual void	AddEvent( int event, int eventParameter );
+
 		// Class comparison
 		bool			IsClass( const EntityClassInfo& eci ) override final;
 		bool			IsSubclassOf( const EntityClassInfo& eci ) override final;

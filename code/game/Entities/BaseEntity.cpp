@@ -478,6 +478,24 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 	return false;
 }
 
+void BaseQuakeEntity::AddEvent( int event, int eventParameter )
+{
+	int	bits = 0;
+
+	if ( !event )
+	{
+		G_Printf( "G_AddEvent: zero event added for entity %i\n", GetEntityIndex() );
+		return;
+	}
+
+	bits = shared.s.event & EV_EVENT_BITS;
+	bits = (bits + EV_EVENT_BIT1) & EV_EVENT_BITS;
+	shared.s.event = event | bits;
+	shared.s.eventParm = eventParameter;
+
+	eventTime = level.time;
+}
+
 bool BaseQuakeEntity::IsClass( const EntityClassInfo& eci )
 {
 	return GetClassInfo()->IsClass( eci );

@@ -415,24 +415,12 @@ void BasePlayer::AddEvent( int event, int eventParameter )
 		return;
 	}
 
-	// clients need to add the event in playerState_t instead of entityState_t
-	if ( client ) 
-	{
-		bits = client->ps.externalEvent & EV_EVENT_BITS;
-		bits = (bits + EV_EVENT_BIT1) & EV_EVENT_BITS;
-		client->ps.externalEvent = event | bits;
-		client->ps.externalEventParm = eventParameter;
-		client->ps.externalEventTime = level.time;
-	}
-	
-	else 
-	{
-		bits = shared.s.event & EV_EVENT_BITS;
-		bits = (bits + EV_EVENT_BIT1) & EV_EVENT_BITS;
-		shared.s.event = event | bits;
-		shared.s.eventParm = eventParameter;
-	}
-	
+	bits = client->ps.externalEvent & EV_EVENT_BITS;
+	bits = (bits + EV_EVENT_BIT1) & EV_EVENT_BITS;
+	client->ps.externalEvent = event | bits;
+	client->ps.externalEventParm = eventParameter;
+	client->ps.externalEventTime = level.time;
+
 	eventTime = level.time;
 }
 

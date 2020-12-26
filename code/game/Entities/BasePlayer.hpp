@@ -38,7 +38,7 @@ namespace Entities
 		// Aka spawn a dead body
 		void			CopyToBodyQue();
 		// Add an event to be played back by the client
-		void			AddEvent( int event, int eventParameter );
+		void			AddEvent( int event, int eventParameter ) override;
 		// Forcibly fire a weapon
 		void			FireWeapon();
 		void			SetTeam( const char* teamName );
