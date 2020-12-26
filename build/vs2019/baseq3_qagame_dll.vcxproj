@@ -199,6 +199,7 @@
     <ClInclude Include="..\..\code\game\Entities\Func\FuncBobbing.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncButton.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncToggle.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Func\FuncDoor.hpp" />
     <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoNotNull.hpp" />
@@ -245,6 +246,7 @@
     <ClCompile Include="..\..\code\game\Entities\EntityClassInfo.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncBobbing.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncButton.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Func\FuncDoor.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncToggle.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_client.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_misc.cpp" />
