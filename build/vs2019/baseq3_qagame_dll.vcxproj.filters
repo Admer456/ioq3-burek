@@ -186,6 +186,12 @@
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.hpp">
       <Filter>Sources\Entities\Info</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Info\InfoNull.hpp">
+      <Filter>Sources\Entities\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Info\InfoNotNull.hpp">
+      <Filter>Sources\Entities\Info</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -354,6 +360,12 @@
       <Filter>Sources\Entities\Trigger</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.cpp">
+      <Filter>Sources\Entities\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Info\InfoNull.cpp">
+      <Filter>Sources\Entities\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Info\InfoNotNull.cpp">
       <Filter>Sources\Entities\Info</Filter>
     </ClCompile>
   </ItemGroup>

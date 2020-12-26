@@ -201,6 +201,8 @@
     <ClInclude Include="..\..\code\game\Entities\Func\FuncToggle.hpp" />
     <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Info\InfoNotNull.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Info\InfoNull.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerStart.hpp" />
     <ClInclude Include="..\..\code\game\Entities\KeyValueElement.hpp" />
@@ -251,6 +253,8 @@
     <ClCompile Include="..\..\code\game\Entities\g_target.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_team.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_trigger.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Info\InfoNotNull.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Info\InfoNull.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerStart.cpp" />
     <ClCompile Include="..\..\code\game\Entities\KeyValueElement.cpp" />
