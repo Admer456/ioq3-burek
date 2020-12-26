@@ -39,7 +39,7 @@ typedef struct {
 	vec3_t	angles;
 	float	deltayaw;
 } pushed_t;
-pushed_t	pushed[MAX_GENTITIES], *pushed_p;
+extern pushed_t	pushed[MAX_GENTITIES], *pushed_p;
 
 
 /*
