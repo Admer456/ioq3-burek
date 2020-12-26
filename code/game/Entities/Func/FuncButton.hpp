@@ -20,8 +20,12 @@ namespace Entities
 		constexpr static int SF_DontMove = 1 << 2;
 
 		void		Spawn() override;
+		void		Precache() override;
 
 		void		ButtonUse( IEntity* activator, IEntity* caller, float value );
 		void		ButtonTouch( IEntity* other, trace_t* trace );
+
+	private:
+		uint16_t	buttonSound{ 0 };
 	};
 }

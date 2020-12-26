@@ -36,11 +36,19 @@ void FuncButton::Spawn()
 	}
 }
 
+void FuncButton::Precache()
+{
+	const char* soundFile = spawnArgs->GetCString( "sound", "sound/buttons/default.wav" );
+	buttonSound = G_SoundIndex( const_cast<char*>(soundFile) );
+}
+
 void FuncButton::ButtonUse( IEntity* activator, IEntity* caller, float value )
 {
 	UseTargets( activator );
 	SetTouch( nullptr );
 	SetUse( nullptr );
+
+	AddEvent( EV_GENERAL_SOUND, buttonSound );
 }
 
 void FuncButton::ButtonTouch( IEntity* other, trace_t* trace )
