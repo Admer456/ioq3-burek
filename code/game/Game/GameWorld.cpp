@@ -324,6 +324,7 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 	ent->spawnArgs = &map;
 
 	ent->KeyValue();
+	ent->Precache();
 	ent->Spawn();
 }
 
