@@ -550,7 +550,8 @@ static void CG_Grapple( centity_t *cent ) {
 CG_Mover
 ===============
 */
-static void CG_Mover( centity_t *cent ) {
+static void CG_Mover( centity_t *cent ) 
+{
 	refEntity_t			ent;
 	entityState_t		*s1;
 
@@ -568,9 +569,12 @@ static void CG_Mover( centity_t *cent ) {
 	ent.skinNum = ( cg.time >> 6 ) & 1;
 
 	// get the model, either as a bmodel or a modelindex
-	if ( s1->solid == SOLID_BMODEL ) {
+	if ( s1->solid == SOLID_BMODEL ) 
+	{
 		ent.hModel = cgs.inlineDrawModel[s1->modelindex];
-	} else {
+	} 
+	else 
+	{
 		ent.hModel = cgs.gameModels[s1->modelindex];
 	}
 
@@ -578,7 +582,8 @@ static void CG_Mover( centity_t *cent ) {
 	trap_R_AddRefEntityToScene(&ent);
 
 	// add the secondary model
-	if ( s1->modelindex2 ) {
+	if ( s1->modelindex2 ) 
+	{
 		ent.skinNum = 0;
 		ent.hModel = cgs.gameModels[s1->modelindex2];
 		trap_R_AddRefEntityToScene(&ent);
