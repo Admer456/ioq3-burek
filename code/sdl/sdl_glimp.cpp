@@ -362,6 +362,75 @@ static void GLimp_ClearProcAddresses( void ) {
 #undef GLE
 }
 
+#include <string>
+#include <fstream>
+
+/*
+===============
+PrepareWindowTitle
+Loads a gamemeta.txt file and grabs the title from it
+===============
+*/
+const char* PrepareWindowTitle()
+{
+	static char windowTitle[128]{ 0 };
+	std::string currentLine;
+	cvar_t* fs_gamedir = ri.Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
+	std::string gamedir;
+
+	// If we're running a custom mod, then use that directory instead
+	if ( fs_gamedir->string[0] )
+		gamedir += fs_gamedir->string;
+	else
+		gamedir = BASEGAME;
+
+	gamedir += "/gamemeta.txt";
+
+	std::ifstream f = std::ifstream( gamedir );
+
+	if ( !f.is_open() )
+		return CLIENT_WINDOW_TITLE;
+
+	while ( std::getline( f, currentLine ) )
+	{
+		// Skip comments
+		if ( currentLine.find( "//" ) <= 1 )
+			continue;
+
+		// Search for 'title'
+		if ( currentLine.find( "title" ) == std::string::npos )
+			continue;
+
+		size_t titleSpot = currentLine.find( "title" );
+		size_t firstQuote = currentLine.find( '"', titleSpot );
+		if ( firstQuote == std::string::npos )
+		{
+			Com_Printf( "Cannot find first quote in %s\n", gamedir.c_str() );
+			f.close();
+			return "Check your game/mod's gamemeta.txt, there's an error";
+		}
+
+		size_t secondQuote = currentLine.find( '"', firstQuote + 1 );
+		if ( secondQuote == std::string::npos )
+		{
+			Com_Printf( "Cannot find second quote in %s\n", gamedir.c_str() );
+			f.close();
+			return "Check your game/mod's gamemeta.txt, there's an error";
+		}
+
+		std::string actualTitle = currentLine.substr( firstQuote + 1, secondQuote - firstQuote - 1 );
+
+		strcpy( windowTitle, actualTitle.c_str() );
+	}
+
+	f.close();
+
+	if ( windowTitle[0] )
+		return windowTitle;
+	else
+		return CLIENT_WINDOW_TITLE;
+}
+
 /*
 ===============
 GLimp_SetMode
@@ -599,7 +668,7 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder, qbool
 			SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
 #endif
 
-		if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, x, y,
+		if( ( SDL_window = SDL_CreateWindow( PrepareWindowTitle(), x, y,
 				glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL )
 		{
 			ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
