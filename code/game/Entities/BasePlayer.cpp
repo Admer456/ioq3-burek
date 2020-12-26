@@ -69,18 +69,20 @@ void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFl
 	{
 		knockback = 200;
 	}
+	
 	if ( flags & FL_NO_KNOCKBACK ) 
 	{
 		knockback = 0;
 	}
-	//if ( dflags & DAMAGE_NO_KNOCKBACK ) 
-	//{
-	//	knockback = 0;
-	//}
+	
+	if ( damageFlags & DAMAGE_NO_KNOCKBACK ) 
+	{
+		knockback = 0;
+	}
 
-	//// check for completely getting out of the damage
-	//if ( !(dflags & DAMAGE_NO_PROTECTION) ) 
-	//{
+	// check for completely getting out of the damage
+	if ( !(damageFlags & DAMAGE_NO_PROTECTION) ) 
+	{
 		//// if TF_NO_FRIENDLY_FIRE is set, don't do damage to the target
 		//// if the attacker was on the same team	
 		//if ( targ != attacker && OnSameTeam( targ, attacker ) ) 
@@ -91,12 +93,12 @@ void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFl
 		//	}
 		//}
 
-	//	// check for godmode
-	//	if ( flags & FL_GODMODE ) 
-	//	{
-	//		return;
-	//	}
-	//}
+		// check for godmode
+		if ( flags & FL_GODMODE ) 
+		{
+			return;
+		}
+	}
 
 	//// add to the attacker's hit counter (if the target isn't a general entity like a prox mine)
 	//if ( attacker->client && client
@@ -122,9 +124,11 @@ void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFl
 		damage *= 0.5;
 	}
 
-	if ( damage < 1 ) {
+	if ( damage < 1 ) 
+	{
 		damage = 1;
 	}
+	
 	take = damage;
 
 	// TODO: implement armour
@@ -132,7 +136,8 @@ void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFl
 	//asave = CheckArmor( targ, take, dflags );
 	//take -= asave;
 
-	if ( g_debugDamage.integer ) {
+	if ( g_debugDamage.integer ) 
+	{
 		G_Printf( "%i: client:%i health:%i damage:%i armor:%i\n", level.time, GetEntityIndex(),
 				  health, take, 0 /*asave*/ );
 	}
@@ -140,11 +145,14 @@ void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFl
 	// add to the damage inflicted on a player this frame
 	// the total will be turned into screen blends and view angle kicks
 	// at the end of the frame
-	if ( client ) {
-		if ( attacker ) {
+	if ( client ) 
+	{
+		if ( attacker ) 
+		{
 			client->ps.persistant[PERS_ATTACKER] = attacker->GetEntityIndex();
 		}
-		else {
+		else 
+		{
 			client->ps.persistant[PERS_ATTACKER] = ENTITYNUM_WORLD;
 		}
 		client->damage_armor += 0 /*asave*/;
