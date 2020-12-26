@@ -180,6 +180,12 @@
     <ClInclude Include="..\..\code\game\Entities\Base\BaseTrigger.hpp">
       <Filter>Sources\Entities\Base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Trigger\TriggerMultiple.hpp">
+      <Filter>Sources\Entities\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.hpp">
+      <Filter>Sources\Entities\Info</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -343,6 +349,12 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Base\BaseTrigger.cpp">
       <Filter>Sources\Entities\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerMultiple.cpp">
+      <Filter>Sources\Entities\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.cpp">
+      <Filter>Sources\Entities\Info</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

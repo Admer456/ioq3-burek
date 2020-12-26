@@ -201,10 +201,12 @@
     <ClInclude Include="..\..\code\game\Entities\Func\FuncToggle.hpp" />
     <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerStart.hpp" />
     <ClInclude Include="..\..\code\game\Entities\KeyValueElement.hpp" />
     <ClInclude Include="..\..\code\game\Entities\LegacyQuakeEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\TestModel.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Trigger\TriggerMultiple.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Trigger\TriggerOnce.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Weapons\BaseWeapon.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Test.hpp" />
@@ -249,10 +251,12 @@
     <ClCompile Include="..\..\code\game\Entities\g_target.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_team.cpp" />
     <ClCompile Include="..\..\code\game\Entities\g_trigger.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerStart.cpp" />
     <ClCompile Include="..\..\code\game\Entities\KeyValueElement.cpp" />
     <ClCompile Include="..\..\code\game\Entities\LegacyQuakeEntity.cpp" />
     <ClCompile Include="..\..\code\game\Entities\TestModel.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerMultiple.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerOnce.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Weapons\BaseWeapon.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Test.cpp" />
