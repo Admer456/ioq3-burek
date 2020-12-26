@@ -41,4 +41,6 @@ void FuncToggle::ToggleUse( IEntity* activator, IEntity* caller, float value )
 		GetState()->solid |= SOLID_BMODEL;
 		gameImports->LinkEntity( this );
 	}
+
+	visible = !visible;
 }
