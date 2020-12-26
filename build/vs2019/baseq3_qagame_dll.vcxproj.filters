@@ -34,6 +34,15 @@
     <Filter Include="Sources\Entities\Weapons">
       <UniqueIdentifier>{7a8ee1af-1b7d-4ce0-b4b3-19105a1c2d06}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Entities\Func">
+      <UniqueIdentifier>{4d3d4e21-b6bf-4ab1-ba93-22540908e158}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Entities\Trigger">
+      <UniqueIdentifier>{f4180bde-18c7-4c7e-bec8-661adb3e0b9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Entities\Base">
+      <UniqueIdentifier>{2641f497-59e0-42d9-be3f-f614561542d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -152,6 +161,24 @@
     </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Test2.hpp">
       <Filter>Sources\Entities\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Func\FuncToggle.hpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Trigger\TriggerOnce.hpp">
+      <Filter>Sources\Entities\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Func\FuncButton.hpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Func\FuncBobbing.hpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Base\BaseMover.hpp">
+      <Filter>Sources\Entities\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Base\BaseTrigger.hpp">
+      <Filter>Sources\Entities\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +325,24 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Test2.cpp">
       <Filter>Sources\Entities\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Func\FuncToggle.cpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerOnce.cpp">
+      <Filter>Sources\Entities\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Func\FuncButton.cpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Func\FuncBobbing.cpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Base\BaseMover.cpp">
+      <Filter>Sources\Entities\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Base\BaseTrigger.cpp">
+      <Filter>Sources\Entities\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
