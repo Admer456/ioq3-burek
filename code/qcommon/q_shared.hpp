@@ -1340,6 +1340,16 @@ enum AnimationFlags
 	AnimFlag_Manual = 1 << 1,
 };
 
+enum ClipFlags
+{
+	// Never clip against this
+	ClipFlag_Never = 0,
+
+	// Special clipflag for triggers
+	// They aren't clipped against, but they're still different than ClipFlag_Never
+	ClipFlag_Trigger = 1 << 0,
+};
+
 enum trType_t
 {
 	TR_STATIONARY,
@@ -1401,6 +1411,7 @@ typedef struct entityState_s {
 	byte	animationFlags; // AnimationFlags enum
 
 	int		solid;			// for client side prediction, trap_linkentity sets this properly
+	int		clipFlags; // Acts like a clipmask
 
 	int		event;			// impulse events -- muzzle flashes, footsteps, etc
 	int		eventParm;

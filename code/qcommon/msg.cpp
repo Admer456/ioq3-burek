@@ -998,6 +998,7 @@ netField_t	entityStateFields[] =
 	netField_t{ NETF(origin[1]), 0 },
 	netField_t{ NETF(origin[2]), 0 },
 	netField_t{ NETF(solid), 24 },
+	netField_t{ NETF(clipFlags), 8 },
 	
 	netField_t{ NETF(modelindex), 10 }, // raised from 8 to 10
 	netField_t{ NETF(modelindex2), 10 },// so we can have 1024 models -Admer

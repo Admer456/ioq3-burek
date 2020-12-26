@@ -18,4 +18,9 @@ void BaseTrigger::Spawn()
 	BaseQuakeEntity::Spawn();
 
 	GetShared()->contents |= CONTENTS_TRIGGER;
+	GetShared()->svFlags = SVF_NOCLIENT;
+
+	gameImports->LinkEntity( this );
+
+	GetState()->clipFlags |= ClipFlag_Trigger;
 }

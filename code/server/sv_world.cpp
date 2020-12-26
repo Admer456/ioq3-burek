@@ -506,7 +506,8 @@ SV_ClipMoveToEntities
 
 ====================
 */
-static void SV_ClipMoveToEntities( moveclip_t *clip ) {
+static void SV_ClipMoveToEntities( moveclip_t *clip ) 
+{
 	int			i, num;
 	int			touchlist[MAX_GENTITIES];
 	sharedEntity_t *touch;
@@ -517,37 +518,56 @@ static void SV_ClipMoveToEntities( moveclip_t *clip ) {
 
 	num = SV_AreaEntities( clip->boxmins, clip->boxmaxs, touchlist, MAX_GENTITIES);
 
-	if ( clip->passEntityNum != ENTITYNUM_NONE ) {
+	if ( clip->passEntityNum != ENTITYNUM_NONE ) 
+	{
 		passOwnerNum = ( SV_GentityNum( clip->passEntityNum ) )->r.ownerNum;
-		if ( passOwnerNum == ENTITYNUM_NONE ) {
+		if ( passOwnerNum == ENTITYNUM_NONE ) 
+		{
 			passOwnerNum = -1;
 		}
-	} else {
+	} 
+	else 
+	{
 		passOwnerNum = -1;
 	}
 
-	for ( i=0 ; i<num ; i++ ) {
-		if ( clip->trace.allsolid ) {
+	for ( i=0 ; i<num ; i++ ) 
+	{
+		if ( clip->trace.allsolid ) 
+		{
 			return;
 		}
+		
 		touch = SV_GentityNum( touchlist[i] );
 
 		// see if we should ignore this entity
-		if ( clip->passEntityNum != ENTITYNUM_NONE ) {
-			if ( touchlist[i] == clip->passEntityNum ) {
+		if ( clip->passEntityNum != ENTITYNUM_NONE ) 
+		{
+			if ( touchlist[i] == clip->passEntityNum ) 
+			{
 				continue;	// don't clip against the pass entity
 			}
-			if ( touch->r.ownerNum == clip->passEntityNum ) {
+			
+			if ( touch->r.ownerNum == clip->passEntityNum ) 
+			{
 				continue;	// don't clip against own missiles
 			}
-			if ( touch->r.ownerNum == passOwnerNum ) {
+			
+			if ( touch->r.ownerNum == passOwnerNum ) 
+			{
 				continue;	// don't clip against other missiles from our owner
 			}
 		}
 
+		if ( touch->s.clipFlags & (ClipFlag_Never | ClipFlag_Trigger) )
+		{
+			continue;
+		}
+
 		// if it doesn't have any brushes of a type we
 		// are looking for, ignore it
-		if ( ! ( clip->contentmask & touch->r.contents ) ) {
+		if ( !( clip->contentmask & touch->r.contents ) ) 
+		{
 			continue;
 		}
 
@@ -558,7 +578,8 @@ static void SV_ClipMoveToEntities( moveclip_t *clip ) {
 		angles = touch->r.currentAngles;
 
 
-		if ( !touch->r.bmodel ) {
+		if ( !touch->r.bmodel ) 
+		{
 			angles = vec3_origin;	// boxes don't rotate
 		}
 
@@ -566,15 +587,19 @@ static void SV_ClipMoveToEntities( moveclip_t *clip ) {
 			(float *)clip->mins, (float *)clip->maxs, clipHandle,  clip->contentmask,
 			origin, angles, clip->capsule);
 
-		if ( trace.allsolid ) {
+		if ( trace.allsolid ) 
+		{
 			clip->trace.allsolid = qtrue;
 			trace.entityNum = touch->s.number;
-		} else if ( trace.startsolid ) {
+		} 
+		else if ( trace.startsolid ) 
+		{
 			clip->trace.startsolid = qtrue;
 			trace.entityNum = touch->s.number;
 		}
 
-		if ( trace.fraction < clip->trace.fraction ) {
+		if ( trace.fraction < clip->trace.fraction ) 
+		{
 			qboolean	oldStart;
 
 			// make sure we keep a startsolid from a previous trace

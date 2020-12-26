@@ -43,7 +43,8 @@ of the entities that are actually solid, to make for more
 efficient collision detection
 ====================
 */
-void CG_BuildSolidList( void ) {
+void CG_BuildSolidList( void ) 
+{
 	int			i;
 	centity_t	*cent;
 	snapshot_t	*snap;
@@ -52,23 +53,29 @@ void CG_BuildSolidList( void ) {
 	cg_numSolidEntities = 0;
 	cg_numTriggerEntities = 0;
 
-	if ( cg.nextSnap && !cg.nextFrameTeleport && !cg.thisFrameTeleport ) {
+	if ( cg.nextSnap && !cg.nextFrameTeleport && !cg.thisFrameTeleport ) 
+	{
 		snap = cg.nextSnap;
-	} else {
+	} 
+	else 
+	{
 		snap = cg.snap;
 	}
 
-	for ( i = 0 ; i < snap->numEntities ; i++ ) {
+	for ( i = 0 ; i < snap->numEntities ; i++ ) 
+	{
 		cent = &cg_entities[ snap->entities[ i ].number ];
 		ent = &cent->currentState;
 
-		if ( ent->eType == ET_ITEM || ent->eType == ET_PUSH_TRIGGER || ent->eType == ET_TELEPORT_TRIGGER ) {
+		if ( ent->eType == ET_ITEM || ent->eType == ET_PUSH_TRIGGER || ent->eType == ET_TELEPORT_TRIGGER ) 
+		{
 			cg_triggerEntities[cg_numTriggerEntities] = cent;
 			cg_numTriggerEntities++;
 			continue;
 		}
 
-		if ( cent->nextState.solid ) {
+		if ( cent->nextState.solid ) 
+		{
 			cg_solidEntities[cg_numSolidEntities] = cent;
 			cg_numSolidEntities++;
 			continue;
@@ -83,7 +90,8 @@ CG_ClipMoveToEntities
 ====================
 */
 static void CG_ClipMoveToEntities ( const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-							int skipNumber, int mask, trace_t *tr ) {
+							int skipNumber, int mask, trace_t *tr ) 
+{
 	int			i, x, zd, zu;
 	trace_t		trace;
 	entityState_t	*ent;
@@ -92,20 +100,25 @@ static void CG_ClipMoveToEntities ( const vec3_t start, const vec3_t mins, const
 	vec3_t		origin, angles;
 	centity_t	*cent;
 
-	for ( i = 0 ; i < cg_numSolidEntities ; i++ ) {
+	for ( i = 0 ; i < cg_numSolidEntities ; i++ ) 
+	{
 		cent = cg_solidEntities[ i ];
 		ent = &cent->currentState;
 
-		if ( ent->number == skipNumber ) {
+		if ( ent->number == skipNumber || ent->clipFlags & (ClipFlag_Never | ClipFlag_Trigger) ) 
+		{
 			continue;
 		}
 
-		if ( ent->solid == SOLID_BMODEL ) {
+		if ( ent->solid == SOLID_BMODEL ) 
+		{
 			// special value for bmodel
 			cmodel = trap_CM_InlineModel( ent->modelindex );
 			VectorCopy( cent->lerpAngles, angles );
 			BG_EvaluateTrajectory( &cent->currentState.pos, cg.physicsTime, origin );
-		} else {
+		} 
+		else 
+		{
 			// encoded bbox
 			x = (ent->solid & 255);
 			zd = ((ent->solid>>8) & 255);
@@ -121,16 +134,19 @@ static void CG_ClipMoveToEntities ( const vec3_t start, const vec3_t mins, const
 			VectorCopy( cent->lerpOrigin, origin );
 		}
 
-		trap_CM_TransformedBoxTrace ( &trace, start, end,
-			mins, maxs, cmodel,  mask, origin, angles);
+		trap_CM_TransformedBoxTrace ( &trace, start, end, mins, maxs, cmodel,  mask, origin, angles);
 
-		if (trace.allsolid || trace.fraction < tr->fraction) {
+		if (trace.allsolid || trace.fraction < tr->fraction) 
+		{
 			trace.entityNum = ent->number;
 			*tr = trace;
-		} else if (trace.startsolid) {
+		} 
+		else if (trace.startsolid) 
+		{
 			tr->startsolid = qtrue;
 		}
-		if ( tr->allsolid ) {
+		if ( tr->allsolid ) 
+		{
 			return;
 		}
 	}

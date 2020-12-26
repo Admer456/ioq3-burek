@@ -37,6 +37,8 @@ void BaseQuakeEntity::Spawn()
 
 	engine->Print( va( "Spawned a BaseQuakeEntity at %i\n", GetEntityIndex() ) );
 
+	GetShared()->ownerNum = ENTITYNUM_NONE;
+
 	keyOrigin.CopyToArray( shared.s.origin );
 	keyAngles.CopyToArray( shared.s.angles );
 
