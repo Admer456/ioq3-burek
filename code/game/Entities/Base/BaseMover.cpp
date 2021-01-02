@@ -46,29 +46,34 @@ void BaseMover::Think()
 
 void BaseMover::MoverThink()
 {
-	// If stationary at one of the positions, MOVE
+	// If not stationary at one of the positions, MOVE
 	if ( GetState()->pos.trType == TR_STATIONARY && GetState()->apos.trType == TR_STATIONARY )
 		return;
 
 	Vector		move, amove;
-	BaseQuakeEntity* part, * obstacle;
+	BaseMover* part;
+	BaseQuakeEntity* obstacle;
 	Vector		origin, angles;
 
 	obstacle = nullptr;
+
+	engine->Print( va( "mins %3.2f maxs %3.2f\n", shared.r.absmin[2], shared.r.absmax[2] ) );
 
 	// make sure all team slaves can move before committing
 	// any moves or calling any think functions
 	// if the move is blocked, all moved objects will be backed out
 	pushed_p = pushed;
-	for ( part = this; part; part = part->chain )
+	for ( part = this; part; part = static_cast<BaseMover*>(part->chain) )
 	{
 		// get current position
 		BG_EvaluateTrajectory( &part->GetState()->pos, level.time, origin );
 		BG_EvaluateTrajectory( &part->GetState()->apos, level.time, angles );
 		VectorSubtract( origin, part->GetShared()->currentOrigin, move );
 		VectorSubtract( angles, part->GetShared()->currentAngles, amove );
-		if ( !MoverPush( part, move, amove, &obstacle ) )
+
+		if ( !part->MoverPush( move, amove, &obstacle ) )
 		{
+			engine->Print( "BLOCKED\n" );
 			break;	// move was blocked
 		}
 	}
@@ -76,7 +81,7 @@ void BaseMover::MoverThink()
 	if ( part )
 	{
 		// go back to the previous position
-		for ( part = this; part; part = part->chain )
+		for ( part = this; part; part = static_cast<BaseMover*>(part->chain) )
 		{
 			part->GetState()->pos.trTime += level.time - level.previousTime;
 			part->GetState()->apos.trTime += level.time - level.previousTime;
@@ -86,12 +91,12 @@ void BaseMover::MoverThink()
 		}
 
 		// if the pusher has a "blocked" function, call it
-		Blocked( obstacle );
+		part->Blocked( obstacle );
 		return;
 	}
 
 	// the move succeeded
-	for ( part = this; part; part = part->chain )
+	for ( part = this; part; part = static_cast<BaseMover*>(part->chain) )
 	{
 		// call the reached function if time is at or past end point
 		if ( part->GetState()->pos.trType == TR_LINEAR_STOP )
@@ -116,7 +121,7 @@ otherwise riders would continue to slide.
 If false is returned, *obstacle will be the blocking entity
 ============
 */
-bool BaseMover::MoverPush( IEntity* pusher, Vector move, Vector amove, BaseQuakeEntity** obstacle )
+bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle )
 {
 	int i, e;
 	BaseQuakeEntity* check;
@@ -130,16 +135,16 @@ bool BaseMover::MoverPush( IEntity* pusher, Vector move, Vector amove, BaseQuake
 
 	// mins/maxs are the bounds at the destination
 	// totalMins / totalMaxs are the bounds for the entire move
-	if ( pusher->GetShared()->currentAngles[0] || pusher->GetShared()->currentAngles[1] || pusher->GetShared()->currentAngles[2]
+	if ( GetShared()->currentAngles[0] || GetShared()->currentAngles[1] || GetShared()->currentAngles[2]
 		 || amove[0] || amove[1] || amove[2] )
 	{
 		float radius;
 
-		radius = RadiusFromBounds( pusher->GetShared()->mins, pusher->GetShared()->maxs );
+		radius = RadiusFromBounds( GetShared()->mins, GetShared()->maxs );
 		for ( i = 0; i < 3; i++ )
 		{
-			mins[i] = pusher->GetShared()->currentOrigin[i] + move[i] - radius;
-			maxs[i] = pusher->GetShared()->currentOrigin[i] + move[i] + radius;
+			mins[i] = GetShared()->currentOrigin[i] + move[i] - radius;
+			maxs[i] = GetShared()->currentOrigin[i] + move[i] + radius;
 			totalMins[i] = mins[i] - move[i];
 			totalMaxs[i] = maxs[i] - move[i];
 		}
@@ -148,12 +153,12 @@ bool BaseMover::MoverPush( IEntity* pusher, Vector move, Vector amove, BaseQuake
 	{
 		for ( i = 0; i < 3; i++ )
 		{
-			mins[i] = pusher->GetShared()->absmin[i] + move[i];
-			maxs[i] = pusher->GetShared()->absmax[i] + move[i];
+			mins[i] = GetShared()->absmin[i] + move[i];
+			maxs[i] = GetShared()->absmax[i] + move[i];
 		}
 
-		VectorCopy( pusher->GetShared()->absmin, totalMins );
-		VectorCopy( pusher->GetShared()->absmax, totalMaxs );
+		VectorCopy( GetShared()->absmin, totalMins );
+		VectorCopy( GetShared()->absmax, totalMaxs );
 		for ( i = 0; i < 3; i++ )
 		{
 			if ( move[i] > 0 )
@@ -168,19 +173,29 @@ bool BaseMover::MoverPush( IEntity* pusher, Vector move, Vector amove, BaseQuake
 	}
 
 	// unlink the pusher so we don't get it in the entityList
-	gameImports->UnlinkEntity( pusher );
+	gameImports->UnlinkEntity( this );
 
 	listedEntities = trap_EntitiesInBox( totalMins, totalMaxs, entityList, MAX_GENTITIES );
 
 	// move the pusher to its final position
-	VectorAdd( pusher->GetShared()->currentOrigin, move, pusher->GetShared()->currentOrigin );
-	VectorAdd( pusher->GetShared()->currentAngles, amove, pusher->GetShared()->currentAngles );
-	gameImports->LinkEntity( pusher );
+	VectorAdd( GetShared()->currentOrigin, move, GetShared()->currentOrigin );
+	VectorAdd( GetShared()->currentAngles, amove, GetShared()->currentAngles );
+	
+	gameImports->LinkEntity( this );
+
+	if ( GetEntityIndex() == 65 )
+		engine->Print( va( "pushing le foq %i\n", listedEntities ) );
 
 	// see if any solid entities are inside the final position
 	for ( e = 0; e < listedEntities; e++ )
 	{
 		check = static_cast<BaseQuakeEntity*>(gEntities[entityList[e]]);
+		
+		if ( nullptr == check )
+			continue;
+
+		if ( check == this )
+			continue;
 
 		// only push items and players
 		if ( check->GetState()->eType != ET_ITEM && check->GetState()->eType != ET_PLAYER && !check->isPhysicsObject )
@@ -189,7 +204,7 @@ bool BaseMover::MoverPush( IEntity* pusher, Vector move, Vector amove, BaseQuake
 		}
 
 		// if the entity is standing on the pusher, it will definitely be moved
-		if ( check->GetState()->groundEntityNum != pusher->GetState()->number ) 
+		if ( check->GetState()->groundEntityNum != GetState()->number ) 
 		{
 			// see if the ent needs to be tested
 			if ( check->GetShared()->absmin[0] >= maxs[0]
@@ -210,7 +225,7 @@ bool BaseMover::MoverPush( IEntity* pusher, Vector move, Vector amove, BaseQuake
 		}
 
 		// the entity needs to be pushed
-		if ( static_cast<BaseQuakeEntity*>(pusher)->TryPushingEntity( check, move, amove ) )
+		if ( TryPushingEntity( check, move, amove ) )
 		{
 			continue;
 		}
@@ -218,9 +233,9 @@ bool BaseMover::MoverPush( IEntity* pusher, Vector move, Vector amove, BaseQuake
 		// the move was blocked an entity
 
 		// bobbing entities are instant-kill and never get blocked
-		if ( pusher->GetState()->pos.trType == TR_SINE || pusher->GetState()->apos.trType == TR_SINE )
+		if ( GetState()->pos.trType == TR_SINE || GetState()->apos.trType == TR_SINE )
 		{
-			check->TakeDamage( pusher, pusher, 0, 99999 );
+			check->TakeDamage( this, this, 0, 99999 );
 			continue;
 		}
 

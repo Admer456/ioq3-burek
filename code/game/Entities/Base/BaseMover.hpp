@@ -26,6 +26,6 @@ namespace Entities
 		void Think() override;
 
 		void MoverThink();
-		bool MoverPush( IEntity* pusher, Vector move, Vector amove, BaseQuakeEntity** obstacle );
+		bool MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle );
 	};
 }
