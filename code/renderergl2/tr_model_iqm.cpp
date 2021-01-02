@@ -1255,12 +1255,12 @@ void R_AddIQMSurfaces( trRefEntity_t *ent ) {
 	if ( (ent->e.frame >= data->num_frames)
 		 || (ent->e.frame < 0)
 		 || (ent->e.oldframe >= data->num_frames)
-		 || (ent->e.oldframe < 0) 
-		 || (!ent->e.frame && !ent->e.oldframe)) // Silence warning on static models with no anims -Admer
+		 || (ent->e.oldframe < 0))
 	{
-		ri.Printf( PRINT_DEVELOPER, "R_AddIQMSurfaces: no such frame %d to %d for '%s'\n",
-				   ent->e.oldframe, ent->e.frame,
-				   tr.currentModel->name );
+		if ( (ent->e.oldframe && ent->e.frame) )
+			ri.Printf( PRINT_DEVELOPER, "R_AddIQMSurfaces: no such frame %d to %d for '%s'\n",
+					   ent->e.oldframe, ent->e.frame,
+					   tr.currentModel->name );
 
 		ent->e.frame = 0;
 		ent->e.oldframe = 0;
