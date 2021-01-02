@@ -8,6 +8,7 @@
 #include "Game/IGameImports.h"
 #include "Entities/BasePlayer.hpp"
 #include "Entities/Base/BaseMover.hpp"
+#include "Entities/TestModel.hpp"
 
 #include "FuncBobbing.hpp"
 
@@ -19,25 +20,22 @@ void FuncBobbing::Spawn()
 {
 	BaseMover::Spawn();
 
-	bobIntensity = spawnArgs->GetFloat( "bobIntensity", 16.0f );
-
-	//GetShared()->svFlags &= ~SVF_USE_CURRENT_ORIGIN;
+	GetState()->eType = ET_MOVER;
+	bobIntensity = spawnArgs->GetFloat( "bobIntensity", 64.0f );
 
 	trajectory_t* tr = &GetState()->pos;
-
 	tr->trType = TR_SINE;
-	tr->trTime = level.time;
-	tr->trDuration = 1000;
+	tr->trTime = 0;
+	tr->trDuration = 10000;
+
+	shared.r.contents |= CONTENTS_MOVER | CONTENTS_SOLID | CONTENTS_PLAYERCLIP;
 
 	GetOrigin().CopyToArray( tr->trBase );
 	Vector( 0, 0, bobIntensity ).CopyToArray( tr->trDelta );
+	Vector::Zero.CopyToArray( shared.s.origin );
 }
 
 void FuncBobbing::Think()
 {
 	BaseMover::Think();
-
-	Vector result;
-	BG_EvaluateTrajectory( &GetState()->pos, level.time, result );
-	SetOrigin( result );
 }
