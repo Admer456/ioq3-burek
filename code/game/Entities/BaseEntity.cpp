@@ -181,6 +181,15 @@ Vector BaseQuakeEntity::GetOrigin() const
 void BaseQuakeEntity::SetOrigin( const Vector& newOrigin )
 {
 	newOrigin.CopyToArray( shared.s.origin );
+}
+
+Vector BaseQuakeEntity::GetCurrentOrigin() const
+{
+	return Vector( shared.r.currentOrigin );
+}
+
+void BaseQuakeEntity::SetCurrentOrigin( const Vector& newOrigin )
+{
 	newOrigin.CopyToArray( shared.r.currentOrigin );
 }
 
@@ -192,6 +201,16 @@ Vector BaseQuakeEntity::GetAngles() const
 void BaseQuakeEntity::SetAngles( const Vector& newAngles )
 {
 	newAngles.CopyToArray( shared.s.angles );
+}
+
+Vector BaseQuakeEntity::GetCurrentAngles() const
+{
+	return Vector( shared.r.currentAngles );
+}
+
+void BaseQuakeEntity::SetCurrentAngles( const Vector& newAngles )
+{
+	newAngles.CopyToArray( shared.r.currentAngles );
 }
 
 Vector BaseQuakeEntity::GetVelocity() const

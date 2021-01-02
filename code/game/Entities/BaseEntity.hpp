@@ -84,9 +84,17 @@ namespace Entities
 		Vector			GetOrigin() const override;
 		void			SetOrigin( const Vector& newOrigin ) override;
 
+		// currentOrigin
+		Vector			GetCurrentOrigin() const override;
+		void			SetCurrentOrigin( const Vector& newOrigin ) override;
+
 		// angles
 		Vector			GetAngles() const override;
 		void			SetAngles( const Vector& newAngles ) override;
+
+		// currentAngles
+		Vector			GetCurrentAngles() const override;
+		void			SetCurrentAngles( const Vector& newAngles ) override;
 
 		// velocity
 		Vector			GetVelocity() const override;

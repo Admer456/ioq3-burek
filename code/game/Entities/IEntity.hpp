@@ -81,9 +81,17 @@ namespace Entities
 		virtual Vector				GetOrigin() const = 0;
 		virtual void				SetOrigin( const Vector& newOrigin ) = 0;
 
+		// currentOrigin (a.k.a. server origin)
+		virtual Vector				GetCurrentOrigin() const = 0;
+		virtual void				SetCurrentOrigin( const Vector& newOrigin ) = 0;
+
 		// angles
 		virtual Vector				GetAngles() const = 0;
 		virtual void				SetAngles( const Vector& newAngles ) = 0;
+
+		// currentAngles
+		virtual Vector				GetCurrentAngles() const = 0;
+		virtual void				SetCurrentAngles( const Vector& newAngles ) = 0;
 
 		// velocity
 		virtual Vector				GetVelocity() const = 0;
