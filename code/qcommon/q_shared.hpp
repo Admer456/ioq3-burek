@@ -1343,11 +1343,16 @@ enum AnimationFlags
 enum ClipFlags
 {
 	// Never clip against this
-	ClipFlag_Never = 0,
+	ClipFlag_Never = 1 << 0,
 
 	// Special clipflag for triggers
 	// They aren't clipped against, but they're still different than ClipFlag_Never
-	ClipFlag_Trigger = 1 << 0,
+	ClipFlag_Trigger = 1 << 1,
+
+	// If a solid entity has an origin brush, this gets set
+	// SV_AreaEntities will then take into consideration its origin vector 
+	// instead of its abs bbox
+	ClipFlag_HasOriginBrush = 1 << 2,
 };
 
 enum trType_t
@@ -1411,7 +1416,7 @@ typedef struct entityState_s {
 	byte	animationFlags; // AnimationFlags enum
 
 	int		solid;			// for client side prediction, trap_linkentity sets this properly
-	int		clipFlags; // Acts like a clipmask
+	int		clipFlags;		// Acts like a clipmask
 
 	int		event;			// impulse events -- muzzle flashes, footsteps, etc
 	int		eventParm;
