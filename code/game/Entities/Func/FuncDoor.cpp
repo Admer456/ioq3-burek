@@ -19,24 +19,50 @@ void FuncDoor::Spawn()
 {
 	BaseMover::Spawn();
 
+	GetShared()->contents |= CONTENTS_TRIGGER;
+
 	expand = spawnArgs->GetFloat( "expand", 1.0f );
 	distance = spawnArgs->GetFloat( "distance", 64.0f );
 	axis = spawnArgs->GetVector( "axis", Vector( 0, 0, 1 ) );
 	speed = spawnArgs->GetFloat( "speed", 256.0f );
 
-	openedPos = GetOrigin();
-	closedPos = openedPos + axis * distance;
+	// Expand the absolute bounding box by expand's value,
+	// so the door can open before the player runs into it
+	Vector expandVector( expand, expand, expand );
+	Vector absmax = GetShared()->absmax;
+	Vector absmin = GetShared()->absmin;
+	Vector maxs = GetShared()->maxs;
+	Vector mins = GetShared()->mins;
+
+	absmax += expandVector;
+	absmin -= expandVector;
+	maxs += expandVector;
+	mins -= expandVector;
+
+	absmax.CopyToArray( GetShared()->absmax );
+	absmin.CopyToArray( GetShared()->absmin );
+	maxs.CopyToArray( GetShared()->maxs );
+	mins.CopyToArray( GetShared()->mins );
+
+	closedPos = GetOrigin();
+	openedPos = closedPos + axis * distance;
 
 	if ( openedPos == closedPos )
 	{
-		closedPos = openedPos + Vector( 0, 0, 80 );
+		openedPos = closedPos + Vector( 0, 0, 80 );
 		engine->Print( "WARNING: door at %3.2f %3.2f %3.2f has the same open and closed position, check its 'axis' and 'distance'!\n" );
 	}
 
-	SetThink( &FuncDoor::DoorThink );
+	Enable();
+	SetThink( nullptr );
 
 	if ( spawnFlags & SF_StartOpen )
 	{
+		// Open the area portal!
+		gameImports->AdjustAreaPortalState( this, true );
+		// Get out of my way!
+		SetOrigin( openedPos );
+		// OPEN SESAMEEEEEEEEEE!!!!!!!
 		doorState = Door_Opened;
 	}
 }
@@ -49,12 +75,18 @@ void FuncDoor::DoorThink()
 
 void FuncDoor::DoorUse( IEntity* activator, IEntity* caller, float value )
 {
+	if ( spawnFlags & SF_NoUse )
+		return;
+
 	UpdateDoorState();
 	Disable();
 }
 
 void FuncDoor::DoorTouch( IEntity* other, trace_t* trace )
 {
+	if ( spawnFlags & SF_NoTouch )
+		return;
+
 	UpdateDoorState();
 	Disable();
 }
@@ -64,8 +96,8 @@ void FuncDoor::OnClose()
 	float requiredTime = distance / speed;
 
 	trajectory_t* tr = &GetState()->pos;
-	closedPos.CopyToArray( tr->trBase );
-	(axis*-1).CopyToArray( tr->trDelta );
+	openedPos.CopyToArray( tr->trBase );
+	(distance*axis*-1.333f).CopyToArray( tr->trDelta );
 	tr->trDuration = requiredTime * 1000;
 	tr->trTime = level.time;
 	tr->trType = TR_LINEAR_STOP;
@@ -81,7 +113,11 @@ void FuncDoor::OnCloseFinished()
 {
 	Enable();
 
-	GetState()->pos.trType = TR_STATIONARY;
+	// Close any areaportals if assigned to
+	gameImports->AdjustAreaPortalState( this, false );
+
+	closedPos.CopyToArray( GetState()->pos.trBase );
+	GetState()->pos.trType = TR_INTERPOLATE;
 
 	doorState = Door_Closed;
 }
@@ -90,9 +126,12 @@ void FuncDoor::OnOpen()
 {
 	float requiredTime = distance / speed;
 
+	// Open any areaportals if assigned to
+	gameImports->AdjustAreaPortalState( this, true );
+
 	trajectory_t* tr = &GetState()->pos;
-	openedPos.CopyToArray( tr->trBase );
-	axis.CopyToArray( tr->trDelta );
+	closedPos.CopyToArray( tr->trBase );
+	(distance*axis*1.333f).CopyToArray( tr->trDelta );
 	tr->trDuration = requiredTime * 1000;
 	tr->trTime = level.time;
 	tr->trType = TR_LINEAR_STOP;
@@ -108,7 +147,8 @@ void FuncDoor::OnOpenFinished()
 {
 	Enable();
 
-	GetState()->pos.trType = TR_STATIONARY;
+	openedPos.CopyToArray( GetState()->pos.trBase );
+	GetState()->pos.trType = TR_INTERPOLATE;
 
 	doorState = Door_Opened;
 }
@@ -117,10 +157,10 @@ void FuncDoor::UpdateDoorState()
 {
 	switch ( doorState )
 	{
-	case Door_Closed: OnOpen(); break;
-	case Door_Opened: OnClose(); break;
-	case Door_Closing: OnCloseFinished(); break;
-	case Door_Opening: OnOpenFinished(); break;
+	case Door_Closed: OnOpen(); break; // When the door is closed, the player opens it
+	case Door_Opened: OnClose(); break; // When the door is opened, the player closes it
+	case Door_Closing: OnCloseFinished(); break; // When the door is closing, it becomes closed
+	case Door_Opening: OnOpenFinished(); break; // When the door is opening, it becomes open
 	}
 }
 
