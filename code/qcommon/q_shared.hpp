@@ -1353,6 +1353,9 @@ enum ClipFlags
 	// SV_AreaEntities will then take into consideration its origin vector 
 	// instead of its abs bbox
 	ClipFlag_HasOriginBrush = 1 << 2,
+
+	// LinkEntity won't touch absmin and absmax
+	ClipFlag_ManualAbsoluteBox = 1 << 3,
 };
 
 enum trType_t

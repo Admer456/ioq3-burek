@@ -54,6 +54,8 @@ namespace Entities
 		// Teleports the player to a given place
 		void			Teleport( const Vector& toOrigin, const Vector& toAngles );
 
+		BaseQuakeEntity* TestEntityPosition() override;
+
 	protected: // Client command, implemented in BasePlayerCommands.cpp
 		void			Command_Say( int mode, bool arg0 );
 		void			Command_Tell();

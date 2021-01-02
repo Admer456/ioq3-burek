@@ -16,7 +16,8 @@ DefineEntityClass_NoMapSpawn( BasePlayer, BaseQuakeEntity );
 
 void BasePlayer::Spawn()
 {
-	// Do nothing
+	GetState()->clipFlags |= ClipFlag_HasOriginBrush;
+	GetShared()->svFlags |= SVF_USE_CURRENT_ORIGIN;
 }
 
 void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFlags, float damageDealt )
@@ -710,4 +711,24 @@ void BasePlayer::Teleport( const Vector& toOrigin, const Vector& toAngles )
 	{
 		gameImports->LinkEntity( this );
 	}
+}
+
+BaseQuakeEntity* BasePlayer::TestEntityPosition()
+{
+	trace_t	tr;
+	int		mask;
+
+	if ( clipMask ) {
+		mask = clipMask;
+	}
+	else {
+		mask = MASK_SOLID;
+	}
+
+	gameImports->Trace( &tr, GetClient()->ps.origin, shared.r.mins, shared.r.maxs, GetClient()->ps.origin, GetEntityIndex(), mask );
+
+	if ( tr.startsolid )
+		return static_cast<BaseQuakeEntity*>(gEntities[tr.entityNum]);
+
+	return nullptr;
 }

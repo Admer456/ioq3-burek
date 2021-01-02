@@ -28,11 +28,19 @@ void FuncBobbing::Spawn()
 	tr->trTime = 0;
 	tr->trDuration = 10000;
 
-	shared.r.contents |= CONTENTS_MOVER | CONTENTS_SOLID | CONTENTS_PLAYERCLIP;
-
 	GetOrigin().CopyToArray( tr->trBase );
+	SetCurrentOrigin( GetOrigin() );
+	SetOrigin( Vector::Zero );
 	Vector( 0, 0, bobIntensity ).CopyToArray( tr->trDelta );
-	Vector::Zero.CopyToArray( shared.s.origin );
+
+	gameImports->LinkEntity( this );
+	//GetState()->clipFlags |= ClipFlag_ManualAbsoluteBox;
+
+	for ( int i = 0; i < 3; i++ )
+	{
+		GetShared()->absmax[i] += bobIntensity * 2.0f;
+		GetShared()->absmin[i] -= bobIntensity * 2.0f;
+	}
 }
 
 void FuncBobbing::Think()

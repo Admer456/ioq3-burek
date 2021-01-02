@@ -133,7 +133,7 @@ namespace Entities
 
 		// Checks if this entity is inside another entity
 		// If yes, then it returns that entity, else nullptr
-		BaseQuakeEntity* TestEntityPosition();
+		virtual BaseQuakeEntity* TestEntityPosition();
 
 		bool			TryPushingEntity( IEntity* check, Vector move, Vector amove );
 

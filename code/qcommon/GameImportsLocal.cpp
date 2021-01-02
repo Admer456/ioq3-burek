@@ -276,38 +276,48 @@ void GameImportsLocal::LinkEntity( IEntity* gEnt )
 	}
 
 	// get the position
-	origin = shared->s.origin;
-	angles = shared->s.angles;
-
-	// set the abs box
-	if ( shared->r.bmodel && (angles[0] || angles[1] || angles[2]) )
+	if ( !(shared->r.svFlags & SVF_USE_CURRENT_ORIGIN) )
 	{
-		// expand for rotation
-		float		max;
+		origin = shared->s.origin;
+		angles = shared->s.angles;
+	}
+	else
+	{
+		origin = shared->r.currentOrigin;
+		angles = shared->r.currentAngles;
+	}
 
-		max = RadiusFromBounds( shared->r.mins, shared->r.maxs );
-		for ( i = 0; i < 3; i++ ) 
+	if ( !(shared->s.clipFlags & ClipFlag_ManualAbsoluteBox) )
+	{
+		// set the abs box
+		if ( shared->r.bmodel && (angles[0] || angles[1] || angles[2]) )
 		{
-			shared->r.absmin[i] = origin[i] - max;
-			shared->r.absmax[i] = origin[i] + max;
+			// expand for rotation
+			float		max;
+
+			max = RadiusFromBounds( shared->r.mins, shared->r.maxs );
+			for ( i = 0; i < 3; i++ )
+			{
+				shared->r.absmin[i] = origin[i] - max;
+				shared->r.absmax[i] = origin[i] + max;
+			}
 		}
-	}
+		else
+		{
+			// normal
+			VectorAdd( origin, shared->r.mins, shared->r.absmin );
+			VectorAdd( origin, shared->r.maxs, shared->r.absmax );
+		}
 
-	else 
-	{
-		// normal
-		VectorAdd( origin, shared->r.mins, shared->r.absmin );
-		VectorAdd( origin, shared->r.maxs, shared->r.absmax );
+		// because movement is clipped an epsilon away from an actual edge,
+		// we must fully check even when bounding boxes don't quite touch
+		shared->r.absmin[0] -= 1;
+		shared->r.absmin[1] -= 1;
+		shared->r.absmin[2] -= 1;
+		shared->r.absmax[0] += 1;
+		shared->r.absmax[1] += 1;
+		shared->r.absmax[2] += 1;
 	}
-
-	// because movement is clipped an epsilon away from an actual edge,
-	// we must fully check even when bounding boxes don't quite touch
-	shared->r.absmin[0] -= 1;
-	shared->r.absmin[1] -= 1;
-	shared->r.absmin[2] -= 1;
-	shared->r.absmax[0] += 1;
-	shared->r.absmax[1] += 1;
-	shared->r.absmax[2] += 1;
 
 	// link to PVS leafs
 	ent->numClusters = 0;

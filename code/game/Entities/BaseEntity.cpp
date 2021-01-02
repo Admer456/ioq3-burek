@@ -363,7 +363,7 @@ BaseQuakeEntity* BaseQuakeEntity::TestEntityPosition()
 		mask = MASK_SOLID;
 	}
 
-	gameImports->Trace( &tr, shared.s.pos.trBase, shared.r.mins, shared.r.maxs, shared.s.pos.trBase, shared.s.number, mask );
+	gameImports->Trace( &tr, shared.s.pos.trBase, shared.r.mins, shared.r.maxs, shared.s.pos.trBase, GetEntityIndex(), mask );
 	
 	if ( tr.startsolid )
 		return static_cast<BaseQuakeEntity*>( gEntities[tr.entityNum] );
@@ -449,6 +449,8 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 	{
 		VectorAdd( player->GetClient()->ps.origin, move, player->GetClient()->ps.origin );
 		VectorAdd( player->GetClient()->ps.origin, move2, player->GetClient()->ps.origin );
+		player->SetOrigin( player->GetClient()->ps.origin );
+		player->SetCurrentOrigin( player->GetClient()->ps.origin );
 		// make sure the client's view rotates when on a rotating mover
 		player->GetClient()->ps.delta_angles[YAW] += ANGLE2SHORT( amove[YAW] );
 	}
@@ -460,12 +462,16 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 	}
 
 	block = static_cast<BaseQuakeEntity*>(check)->TestEntityPosition();
+
+	engine->Print( block ? "BLOCKED\n" : "NOT BLOCKED\n" );
+
 	if ( !block ) 
 	{
 		// pushed ok
 		if ( player ) 
 		{
 			VectorCopy( player->GetClient()->ps.origin, check->GetShared()->currentOrigin );
+			SetOrigin( player->GetClient()->ps.origin );
 		}
 		
 		else 
@@ -490,6 +496,8 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 
 	VectorCopy( (pushed_p - 1)->angles, check->GetState()->apos.trBase );
 	block = static_cast<BaseQuakeEntity*>(check)->TestEntityPosition();
+
+	engine->Print( block ? "BLOCKED 2\n" : "NOT BLOCKED 2\n" );
 
 	if ( !block ) 
 	{

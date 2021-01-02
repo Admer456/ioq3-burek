@@ -57,7 +57,7 @@ void BaseMover::MoverThink()
 
 	obstacle = nullptr;
 
-	engine->Print( va( "mins %3.2f maxs %3.2f\n", shared.r.absmin[2], shared.r.absmax[2] ) );
+	//engine->Print( va( "mins %3.2f maxs %3.2f\n", shared.r.absmin[2], shared.r.absmax[2] ) );
 
 	// make sure all team slaves can move before committing
 	// any moves or calling any think functions
@@ -183,8 +183,7 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle
 	
 	gameImports->LinkEntity( this );
 
-	if ( GetEntityIndex() == 65 )
-		engine->Print( va( "pushing le foq %i\n", listedEntities ) );
+	GetShared()->absmax[2] += 1.0f;
 
 	// see if any solid entities are inside the final position
 	for ( e = 0; e < listedEntities; e++ )
@@ -192,9 +191,6 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle
 		check = static_cast<BaseQuakeEntity*>(gEntities[entityList[e]]);
 		
 		if ( nullptr == check )
-			continue;
-
-		if ( check == this )
 			continue;
 
 		// only push items and players
@@ -224,7 +220,19 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle
 			}
 		}
 
+		if ( check->GetState()->eType == ET_PLAYER )
+		{
+			check->GetShared()->absmin[2] -= 2.0f;
+		}
+
 		// the entity needs to be pushed
+		if ( TryPushingEntity( check, move, amove ) )
+		{
+			continue;
+		}
+
+		// THIS IS EXTREMELY DUMB
+		// But it solves a bug
 		if ( TryPushingEntity( check, move, amove ) )
 		{
 			continue;
@@ -235,10 +243,9 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle
 		// bobbing entities are instant-kill and never get blocked
 		if ( GetState()->pos.trType == TR_SINE || GetState()->apos.trType == TR_SINE )
 		{
-			check->TakeDamage( this, this, 0, 99999 );
+			//check->TakeDamage( this, this, 0, 99999 );
 			continue;
 		}
-
 
 		// save off the obstacle so we can call the block function (crush, etc)
 		*obstacle = check;

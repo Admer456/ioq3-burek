@@ -391,14 +391,48 @@ static void SV_AreaEntities_r( worldSector_t *node, areaParms_t *ap )
 		if ( !gcheck )
 			continue;
 
-		if ( gcheck->r.absmin[0] > ap->maxs[0]
-		|| gcheck->r.absmin[1] > ap->maxs[1]
-		|| gcheck->r.absmin[2] > ap->maxs[2]
-		|| gcheck->r.absmax[0] < ap->mins[0]
-		|| gcheck->r.absmax[1] < ap->mins[1]
-		|| gcheck->r.absmax[2] < ap->mins[2]) 
+		// Calculate absmin/absmax at the given moment
+		if ( gcheck->s.clipFlags & ClipFlag_HasOriginBrush )
 		{
-			continue;
+			Vector amin, amax;
+			amin = gcheck->r.mins;
+			amax = gcheck->r.maxs;
+			
+			if ( gcheck->r.svFlags & SVF_USE_CURRENT_ORIGIN )
+			{
+				amin += gcheck->r.currentOrigin;
+				amax += gcheck->r.currentOrigin;
+			}
+			else 
+			{
+				amin += gcheck->s.origin;
+				amax += gcheck->s.origin;
+			}
+			
+			amin -= Vector(1,1,1);
+			amax += Vector(1,1,1);
+
+			if ( amin[0] > ap->maxs[0]
+			|| amin[1] > ap->maxs[1]
+			|| amin[2] > ap->maxs[2]
+			|| amax[0] < ap->mins[0]
+			|| amax[1] < ap->mins[1]
+			|| amax[2] < ap->mins[2])
+			{
+				continue;
+			}
+		}
+		else
+		{
+			if ( gcheck->r.absmin[0] > ap->maxs[0]
+			|| gcheck->r.absmin[1] > ap->maxs[1]
+			|| gcheck->r.absmin[2] > ap->maxs[2]
+			|| gcheck->r.absmax[0] < ap->mins[0]
+			|| gcheck->r.absmax[1] < ap->mins[1]
+			|| gcheck->r.absmax[2] < ap->mins[2]) 
+			{
+				continue;
+			}
 		}
 
 		if ( ap->count == ap->maxcount ) 

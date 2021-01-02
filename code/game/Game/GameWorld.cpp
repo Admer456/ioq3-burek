@@ -985,8 +985,15 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	// execute client events
 	ClientEvents( player, oldEventSequence );
 
+	Vector playerOrigin = player->GetClient()->ps.origin;
+	Vector amax = playerOrigin + playerMaxs;
+	Vector amin = playerOrigin + playerMins;
+
 	// link entity now, after any personal teleporters have been used
 	gameImports->LinkEntity( player );
+
+	amax.CopyToArray( player->GetShared()->absmax );
+	amin.CopyToArray( player->GetShared()->absmin );
 
 	if ( !player->GetClient()->noclip ) 
 	{
