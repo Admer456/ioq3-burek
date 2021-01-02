@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // world.c -- world query functions
 
 #include "server.hpp"
+#include "Maths/Vector.hpp"
 
 /*
 ================
@@ -371,20 +372,20 @@ typedef struct {
 	int			count, maxcount;
 } areaParms_t;
 
-
 /*
 ====================
 SV_AreaEntities_r
 
 ====================
 */
-static void SV_AreaEntities_r( worldSector_t *node, areaParms_t *ap ) {
+static void SV_AreaEntities_r( worldSector_t *node, areaParms_t *ap ) 
+{
 	svEntity_t	*check, *next;
 	sharedEntity_t *gcheck;
 
-	for ( check = node->entities  ; check ; check = next ) {
+	for ( check = node->entities; check; check = next ) 
+	{
 		next = check->nextEntityInWorldSector;
-
 		gcheck = SV_GEntityForSvEntity( check );
 		
 		if ( !gcheck )
@@ -395,11 +396,13 @@ static void SV_AreaEntities_r( worldSector_t *node, areaParms_t *ap ) {
 		|| gcheck->r.absmin[2] > ap->maxs[2]
 		|| gcheck->r.absmax[0] < ap->mins[0]
 		|| gcheck->r.absmax[1] < ap->mins[1]
-		|| gcheck->r.absmax[2] < ap->mins[2]) {
+		|| gcheck->r.absmax[2] < ap->mins[2]) 
+		{
 			continue;
 		}
 
-		if ( ap->count == ap->maxcount ) {
+		if ( ap->count == ap->maxcount ) 
+		{
 			Com_Printf ("SV_AreaEntities: MAXCOUNT\n");
 			return;
 		}
@@ -408,15 +411,19 @@ static void SV_AreaEntities_r( worldSector_t *node, areaParms_t *ap ) {
 		ap->count++;
 	}
 	
-	if (node->axis == -1) {
+	if (node->axis == -1) 
+	{
 		return;		// terminal node
 	}
 
 	// recurse down both sides
-	if ( ap->maxs[node->axis] > node->dist ) {
+	if ( ap->maxs[node->axis] > node->dist ) 
+	{
 		SV_AreaEntities_r ( node->children[0], ap );
 	}
-	if ( ap->mins[node->axis] < node->dist ) {
+	
+	if ( ap->mins[node->axis] < node->dist ) 
+	{
 		SV_AreaEntities_r ( node->children[1], ap );
 	}
 }
@@ -576,7 +583,6 @@ static void SV_ClipMoveToEntities( moveclip_t *clip )
 
 		origin = touch->r.currentOrigin;
 		angles = touch->r.currentAngles;
-
 
 		if ( !touch->r.bmodel ) 
 		{
