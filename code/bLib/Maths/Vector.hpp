@@ -115,6 +115,22 @@ public: // Utilities
 		v[2] = z;
 	}
 
+	// Snaps the vector to integers
+	inline void Snap()
+	{
+		x = static_cast<int>(x);
+		y = static_cast<int>(y);
+		z = static_cast<int>(z);
+	}
+
+	// Same as Snap() but returns a new vector, not modifying this one 
+	inline Vector Snapped() const
+	{
+		Vector v( *this );
+		v.Snap();
+		return v;
+	}
+
 public: // Static methods
 
 	// A Vector from pitch and yaw angles, using spherical coordinates
