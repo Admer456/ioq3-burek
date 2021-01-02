@@ -169,7 +169,7 @@ public: // Operators
 	}
 
 	// Vector * float
-	inline const Vector& operator* ( const float& operand ) const
+	inline Vector operator* ( const float& operand ) const
 	{
 		return Vector( x * operand, y * operand, z * operand );
 	}
