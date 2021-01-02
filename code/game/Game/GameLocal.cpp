@@ -347,25 +347,16 @@ void GameLocal::ClientBegin( int clientNum )
 	gclient_t* client;
 	int			flags;
 
-	//ent = g_entities + clientNum;
 	ent = gEntities[clientNum];
 
 	client = &level.clients[clientNum];
 
-	//if ( nullptr != ent )
-	//{
-	//	engine->Error( va( "Entity slot %d taken by another entity, yet it's reserved for clients!\n", clientNum ) );
-	//	return;
-	//}
-
-	// Does this really need to be checked?
 	// Is this entity linked into the world?
-	if ( ent->GetShared()->linked ) // Crash happins on dis line
+	if ( ent->GetShared()->linked )
 	{
 		gameImports->UnlinkEntity( ent );
 	}
 
-	//ent = gameWorld->CreateEntity<Entities::BasePlayer>( clientNum );
 	player = static_cast<Entities::BasePlayer*>(ent);
 
 	player->GetShared()->ownerNum = ENTITYNUM_NONE;
@@ -374,8 +365,6 @@ void GameLocal::ClientBegin( int clientNum )
 	client->pers.connected = CON_CONNECTED;
 	client->pers.enterTime = level.time;
 	client->pers.teamState.state = TEAM_BEGIN;
-
-	//gameWorld->SpawnClient( player );
 
 	// save eflags around this, because changing teams will
 	// cause this to happen with a valid entity, and we

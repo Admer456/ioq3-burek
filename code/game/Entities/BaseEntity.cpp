@@ -35,24 +35,27 @@ void BaseQuakeEntity::Spawn()
 	Vector keyOrigin = spawnArgs->GetVector( "origin", Vector::Zero );
 	Vector keyAngles = spawnArgs->GetVector( "angles", Vector::Zero );
 
-	engine->Print( va( "Spawned a BaseQuakeEntity at %i\n", GetEntityIndex() ) );
+	//engine->Print( va( "Spawned a BaseQuakeEntity at %i\n", GetEntityIndex() ) );
 
 	GetShared()->ownerNum = ENTITYNUM_NONE;
+	GetState()->groundEntityNum = ENTITYNUM_NONE;
 
 	keyOrigin.CopyToArray( shared.s.origin );
+	keyOrigin.CopyToArray( shared.r.currentOrigin );
+	keyOrigin.CopyToArray( shared.s.pos.trBase );
 	keyAngles.CopyToArray( shared.s.angles );
 
 	shared.s.eType = ET_GENERAL;
 
 	if ( !model )
 	{
-		engine->Print( "This entity has no model\n" );
+		//engine->Print( "This entity has no model\n" );
 	}
 	else
 	{
-		engine->Print( "Setting model " );
-		engine->Print( model );
-		engine->Print( "\n" );
+		//engine->Print( "Setting model " );
+		//engine->Print( model );
+		//engine->Print( "\n" );
 
 		if ( model[0] == '*' )
 		{
@@ -69,7 +72,7 @@ void BaseQuakeEntity::Spawn()
 	gameImports->LinkEntity( this );
 	shared.s.pos.trType = TR_STATIONARY;
 
-	engine->Print( va( "Spawned a BaseQuakeEntity at pos %3.2f %3.2f %3.2f\n", keyOrigin.x, keyOrigin.y, keyOrigin.z ) );
+	//engine->Print( va( "Spawned a BaseQuakeEntity at pos %3.2f %3.2f %3.2f\n", keyOrigin.x, keyOrigin.y, keyOrigin.z ) );
 
 	VectorCopy( shared.s.origin, shared.s.pos.trBase );
 	VectorCopy( shared.s.origin, shared.r.currentOrigin );
@@ -405,7 +408,7 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 	G_CreateRotationMatrix( amove, transpose );
 	G_TransposeMatrix( transpose, matrix );
 
-	if ( check->IsClass( BasePlayer::ClassInfo ) ) 
+	if ( player )
 	{
 		VectorSubtract( player->GetClient()->ps.origin, shared.r.currentOrigin, org );
 	}
@@ -423,7 +426,8 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 	VectorAdd( check->GetState()->pos.trBase, move, check->GetState()->pos.trBase );
 	VectorAdd( check->GetState()->pos.trBase, move2, check->GetState()->pos.trBase );
 	
-	if ( check->IsClass( BasePlayer::ClassInfo ) ) {
+	if ( player )
+	{
 		VectorAdd( player->GetClient()->ps.origin, move, player->GetClient()->ps.origin );
 		VectorAdd( player->GetClient()->ps.origin, move2, player->GetClient()->ps.origin );
 		// make sure the client's view rotates when on a rotating mover
@@ -464,6 +468,7 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 	{
 		VectorCopy( (pushed_p - 1)->origin, player->GetClient()->ps.origin );
 	}
+
 	VectorCopy( (pushed_p - 1)->angles, check->GetState()->apos.trBase );
 	block = static_cast<BaseQuakeEntity*>(check)->TestEntityPosition();
 

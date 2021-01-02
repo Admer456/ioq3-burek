@@ -315,7 +315,7 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 
 	// let the server system know that there are more entities
 	gameImports->LocateGameData(
-		reinterpret_cast<sharedEntity_t*>(level.gentities), level.num_entities, sizeof( gentity_t ),
+		nullptr, level.num_entities, 0,
 		level.entities, level.numEntities, sizeof( IEntity* ),
 		&level.clients[0].ps, sizeof( level.clients[0] ) );
 
@@ -755,9 +755,12 @@ void GameWorld::ClientThink( const uint16_t& clientNum )
 void GameWorld::ClientThink( Entities::BasePlayer* player )
 {
 	gameImports->GetUsercmd( player->GetEntityIndex(), &player->GetClient()->pers.cmd );
+
+	// mark the time we got info, so we can display the
+	// phone jack if they don't get any for a while
 	player->GetClient()->lastCmdTime = level.time;
 
-	if ( !g_synchronousClients.integer )
+	if ( !(player->GetShared()->svFlags & SVF_BOT) && !g_synchronousClients.integer )
 	{
 		ClientThinkReal( player );
 	}
@@ -765,11 +768,11 @@ void GameWorld::ClientThink( Entities::BasePlayer* player )
 
 void GameWorld::RunClient( Entities::BasePlayer* player )
 {
-	if ( g_synchronousClients.integer )
-	{
-		player->GetClient()->pers.cmd.serverTime = level.time;
-		ClientThinkReal( player );
-	}
+	if ( !(player->GetShared()->svFlags & SVF_BOT) && !g_synchronousClients.integer )
+		return;
+	
+	player->GetClient()->pers.cmd.serverTime = level.time;
+	ClientThinkReal( player );
 }
 
 void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
@@ -934,6 +937,7 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	{
 		pm.tracemask = MASK_PLAYERSOLID;
 	}
+
 	pm.trace = trap_Trace;
 	pm.pointcontents = trap_PointContents;
 	pm.debugLevel = g_debugMove.integer;

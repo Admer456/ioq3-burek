@@ -2,9 +2,6 @@
 //#include "../botlib/botlib.hpp"
 #include "../qcommon/vm_local.hpp"
 
-struct gentity_s;
-struct gentity_t;
-
 #include "../game/Game/IGameImports.h"
 #include "GameImportsLocal.h"
 //#include "../sys/sys_loadlib.hpp"
