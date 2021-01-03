@@ -11,6 +11,8 @@
 
 using namespace Entities;
 
+DefineEntityClass( "env_explosion", EnvExplosion, BaseQuakeEntity );
+
 void EnvExplosion::Spawn()
 {
 	BaseQuakeEntity::Spawn();
@@ -72,8 +74,8 @@ void EnvExplosion::RadiusDamage( float damageAmount, float radius )
 		if ( length > radius )
 			continue;
 
-		// The explosion will damage most efficiently if 
-		// you're in its very centre
+		// The explosion will damage most 
+		// efficiently if you're in its very centre
 		if ( length < 1.0f )
 			length = 1.0f;
 

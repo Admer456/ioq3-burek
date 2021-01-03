@@ -8,6 +8,8 @@ namespace Entities
 	class EnvExplosion : public BaseQuakeEntity
 	{
 	public:
+		DeclareEntityClass();
+
 		constexpr static int SF_Repeatable = 1 << 0;
 		constexpr static int SF_NoDamage = 1 << 1;
 
