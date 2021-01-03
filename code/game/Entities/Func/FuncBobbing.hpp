@@ -16,6 +16,9 @@ namespace Entities
 		void Think() override;
 
 	private:
+		float bobPhase{ 0.0f };
+		float bobDuration{ 0.0f };
 		float bobIntensity{ 0.0f };
+		Vector bobAxis{ Vector::Zero };
 	};
 }

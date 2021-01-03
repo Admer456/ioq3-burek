@@ -17,6 +17,24 @@ DefineAbstractEntityClass( BaseMover, BaseQuakeEntity );
 pushed_t pushed[MAX_GENTITIES];
 pushed_t* pushed_p;
 
+void BaseMover::Spawn()
+{
+	BaseQuakeEntity::Spawn();
+
+	GetState()->eType = ET_MOVER;
+
+	trajectory_t* tr = &GetState()->pos;
+
+	GetShared()->svFlags |= SVF_USE_CURRENT_ORIGIN;
+
+	GetOrigin().CopyToArray( tr->trBase );
+	SetCurrentOrigin( GetOrigin() );
+	gameImports->LinkEntity( this );
+	SetOrigin( Vector::Zero );
+	//GetState()->clipFlags |= ClipFlag_ManualAbsoluteBox;
+	//GetState()->clipFlags |= ClipFlag_HasOriginBrush;
+}
+
 void BaseMover::Think()
 {
 	if ( CheckAndClearEvents() )
@@ -159,6 +177,7 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle
 
 		VectorCopy( GetShared()->absmin, totalMins );
 		VectorCopy( GetShared()->absmax, totalMaxs );
+
 		for ( i = 0; i < 3; i++ )
 		{
 			if ( move[i] > 0 )
@@ -182,8 +201,6 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle
 	VectorAdd( GetShared()->currentAngles, amove, GetShared()->currentAngles );
 	
 	gameImports->LinkEntity( this );
-
-	GetShared()->absmax[2] += 1.0f;
 
 	// see if any solid entities are inside the final position
 	for ( e = 0; e < listedEntities; e++ )
@@ -218,11 +235,6 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle
 			{
 				continue;
 			}
-		}
-
-		if ( check->GetState()->eType == ET_PLAYER )
-		{
-			check->GetShared()->absmin[2] -= 2.0f;
 		}
 
 		// the entity needs to be pushed

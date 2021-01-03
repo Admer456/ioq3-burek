@@ -34,6 +34,8 @@ namespace Entities
 
 		void		Spawn() override;
 
+		void		Blocked( IEntity* other ) override;
+
 		void		DoorThink();
 
 		void		DoorUse( IEntity* activator, IEntity* caller, float value );

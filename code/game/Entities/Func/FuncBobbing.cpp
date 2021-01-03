@@ -20,30 +20,28 @@ void FuncBobbing::Spawn()
 {
 	BaseMover::Spawn();
 
-	GetState()->eType = ET_MOVER;
 	bobIntensity = spawnArgs->GetFloat( "bobIntensity", 64.0f );
+	bobDuration = spawnArgs->GetFloat( "bobDuration", 5.0f );
+	bobAxis = spawnArgs->GetVector( "bobAxis", Vector(0,0,1) );
+	bobPhase = spawnArgs->GetFloat( "bobPhase", 0.0f );
 
 	trajectory_t* tr = &GetState()->pos;
 	tr->trType = TR_SINE;
-	tr->trTime = 0;
-	tr->trDuration = 10000;
+	tr->trTime = 1000 * bobDuration * bobPhase;
+	tr->trDuration = 1000 * bobDuration;
 
-	GetOrigin().CopyToArray( tr->trBase );
-	SetCurrentOrigin( GetOrigin() );
-	SetOrigin( Vector::Zero );
-	Vector( 0, 0, bobIntensity ).CopyToArray( tr->trDelta );
-
-	gameImports->LinkEntity( this );
-	//GetState()->clipFlags |= ClipFlag_ManualAbsoluteBox;
+	(bobAxis * bobIntensity).CopyToArray( tr->trDelta );
 
 	for ( int i = 0; i < 3; i++ )
 	{
-		GetShared()->absmax[i] += bobIntensity * 2.0f;
-		GetShared()->absmin[i] -= bobIntensity * 2.0f;
+		GetShared()->absmax[i] += bobAxis[i] * bobIntensity;
+		GetShared()->absmin[i] -= bobAxis[i] * bobIntensity;
 	}
 }
 
 void FuncBobbing::Think()
 {
 	BaseMover::Think();
+	SetOrigin( GetCurrentOrigin() );
+	gameImports->LinkEntity( this );
 }

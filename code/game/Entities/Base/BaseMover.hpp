@@ -22,6 +22,8 @@ namespace Entities
 	public:
 		DeclareEntityClass();
 
+		virtual void Spawn() override;
+
 		// Overridden to call both MoverThink and thinkFunction
 		void Think() override;
 

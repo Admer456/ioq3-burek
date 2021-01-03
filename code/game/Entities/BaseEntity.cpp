@@ -354,12 +354,14 @@ void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers )
 BaseQuakeEntity* BaseQuakeEntity::TestEntityPosition()
 {
 	trace_t	tr;
-	int		mask;
+	int	mask;
 
-	if ( clipMask ) {
+	if ( clipMask ) 
+	{
 		mask = clipMask;
 	}
-	else {
+	else 
+	{
 		mask = MASK_SOLID;
 	}
 
@@ -368,7 +370,7 @@ BaseQuakeEntity* BaseQuakeEntity::TestEntityPosition()
 	if ( tr.startsolid )
 		return static_cast<BaseQuakeEntity*>( gEntities[tr.entityNum] );
 
-	return NULL;
+	return nullptr;
 }
 
 struct pushed_t

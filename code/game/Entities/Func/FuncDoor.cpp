@@ -67,6 +67,11 @@ void FuncDoor::Spawn()
 	}
 }
 
+void FuncDoor::Blocked( IEntity* other )
+{
+	other->TakeDamage( this, this, 0, 99999 );
+}
+
 void FuncDoor::DoorThink()
 {
 	UpdateDoorState();
