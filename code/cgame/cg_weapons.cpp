@@ -1318,7 +1318,6 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 	duration = 600;
 
 	switch ( weapon ) {
-	default:
 	case WP_LIGHTNING:
 		// no explosion at LG impact, it is added with the beam
 		r = rand() & 3;
@@ -1341,6 +1340,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 		light = 300;
 		isSprite = qtrue;
 		break;
+	default:
 	case WP_ROCKET_LAUNCHER:
 		mod = cgs.media.dishFlashModel;
 		shader = cgs.media.rocketExplosionShader;
@@ -1351,8 +1351,8 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 		isSprite = qtrue;
 		duration = 1000;
 		lightColor[0] = 1;
-		lightColor[1] = 0.75;
-		lightColor[2] = 0.0;
+		lightColor[1] = 0.9;
+		lightColor[2] = 0.7;
 		if (cg_oldRocket.integer == 0) {
 			// explosion sprite animation
 			VectorMA( origin, 24, dir, sprOrg );
@@ -1454,21 +1454,9 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 CG_MissileHitPlayer
 =================
 */
-void CG_MissileHitPlayer( int weapon, vec3_t origin, vec3_t dir, int entityNum ) {
-	CG_Bleed( origin, entityNum );
-
-	// some weapons will make an explosion with the blood, while
-	// others will just make the blood
-	switch ( weapon ) {
-	case WP_GRENADE_LAUNCHER:
-	case WP_ROCKET_LAUNCHER:
-	case WP_PLASMAGUN:
-	case WP_BFG:
-		CG_MissileHitWall( weapon, 0, origin, dir, IMPACTSOUND_FLESH );
-		break;
-	default:
-		break;
-	}
+void CG_MissileHitPlayer( int weapon, vec3_t origin, vec3_t dir, int entityNum ) 
+{
+	CG_MissileHitWall( weapon, 0, origin, dir, IMPACTSOUND_FLESH );
 }
 
 

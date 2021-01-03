@@ -773,6 +773,9 @@ static void CG_RegisterGraphics( void )
 	cgs.media.medalAssist = trap_R_RegisterShaderNoMip( "medal_assist" );
 	cgs.media.medalCapture = trap_R_RegisterShaderNoMip( "medal_capture" );
 
+	cgs.media.rocketExplosionShader = trap_R_RegisterShader( "rocketExplosion" );
+	cgs.media.grenadeExplosionShader = trap_R_RegisterShader( "grenadeExplosion" );
+
 	memset( cg_items, 0, sizeof( cg_items ) );
 	memset( gWeapons, 0, sizeof( gWeapons ) );
 
