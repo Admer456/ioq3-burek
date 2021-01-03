@@ -16,8 +16,8 @@ DefineEntityClass_NoMapSpawn( BasePlayer, BaseQuakeEntity );
 
 void BasePlayer::Spawn()
 {
-	GetState()->clipFlags |= ClipFlag_HasOriginBrush;
-	GetShared()->svFlags |= SVF_USE_CURRENT_ORIGIN;
+	//GetState()->clipFlags |= ClipFlag_HasOriginBrush;
+	//GetShared()->svFlags |= SVF_USE_CURRENT_ORIGIN;
 }
 
 void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFlags, float damageDealt )
@@ -389,6 +389,40 @@ void BasePlayer::ClientCommand()
 		gameImports->SendServerCommand( GetEntityIndex(), va( "print \"unknown cmd %s\n\"", cmd ) );
 }
 
+void BasePlayer::PlayerUse()
+{
+	isUsing = client->interactionButtons & Interaction_Use;
+	wasUsing = client->oldInteractionButtons & Interaction_Use;
+
+	Vector eyes = GetViewOrigin();
+	Vector viewAngles = Vector( client->ps.viewangles );
+	Vector forward;
+	trace_t tr;
+
+	// Calculate the view direction based on view angles
+	Vector::AngleVectors( viewAngles, &forward, nullptr, nullptr );
+
+	// TODO: Simplify some of this
+	gameImports->Trace( &tr, eyes, nullptr, nullptr, eyes + forward * 64.0f, GetEntityIndex(), CONTENTS_SOLID );
+
+	// Didn't hit anything, return
+	if ( tr.fraction == 1.0f )
+		return;
+
+	// Hit a player, worldspawn, or none, return
+	if ( tr.entityNum < MAX_CLIENTS || tr.entityNum >= ENTITYNUM_MAX_NORMAL )
+		return;
+
+	// Use the entity
+	if ( gEntities[tr.entityNum] )
+		gEntities[tr.entityNum]->Use( this, this, 0 );
+}
+
+Vector BasePlayer::GetViewOrigin()
+{
+	return Vector( client->ps.origin ) + Vector( 0, 0, client->ps.viewheight );
+}
+
 void BasePlayer::CopyToBodyQue()
 {
 	IEntity* body;
@@ -713,15 +747,20 @@ void BasePlayer::Teleport( const Vector& toOrigin, const Vector& toAngles )
 	}
 }
 
+// Players test their entity position from ps.origin
+// instead of s.pos.trBase in most other ents
+// This fixed the "Stupid Mover Bug"
 BaseQuakeEntity* BasePlayer::TestEntityPosition()
 {
 	trace_t	tr;
-	int		mask;
+	int	mask;
 
-	if ( clipMask ) {
+	if ( clipMask ) 
+	{
 		mask = clipMask;
 	}
-	else {
+	else 
+	{
 		mask = MASK_SOLID;
 	}
 

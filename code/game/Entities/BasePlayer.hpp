@@ -34,7 +34,10 @@ namespace Entities
 
 	public: // Misc
 		void			ClientCommand();
-
+		// Uses the object the player is looking at
+		void			PlayerUse();
+		// Get the position of the player's "eyes"
+		Vector			GetViewOrigin();
 		// Aka spawn a dead body
 		void			CopyToBodyQue();
 		// Add an event to be played back by the client
@@ -44,13 +47,10 @@ namespace Entities
 		void			SetTeam( const char* teamName );
 		void			StopFollowing();
 		void			FollowCycle( int dir );
-
 		// Burn from lava, drowning etc.
 		void			WorldEffects();
-
 		// Applies all the damage taken this frame
 		void			ApplyDamage();
-
 		// Teleports the player to a given place
 		void			Teleport( const Vector& toOrigin, const Vector& toAngles );
 
@@ -82,5 +82,8 @@ namespace Entities
 		gclient_s*		client{ nullptr };
 		float			damage{ 0 };
 		int32_t			painDebounceTime{ 0 };
+
+		bool			isUsing; // Is holding use the current frame
+		bool			wasUsing; // Held use last frame?
 	};
 }

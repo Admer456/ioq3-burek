@@ -1187,6 +1187,7 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 		case EV_WEAPON_RELOAD:		player->SendWeaponEvent( WeaponEvent::WE_DoReload ); break;
 		case EV_WEAPON_HOLSTER:		player->SendWeaponEvent( WeaponEvent::WE_DoHolster ); break;
 		case EV_WEAPON_DRAW:		player->SendWeaponEvent( WeaponEvent::WE_DoDraw ); break;
+		case EV_PLAYERUSE:			player->PlayerUse(); break;
 
 			// TODO: Handle this event
 		case EV_USE_ITEM1:		// teleporter
