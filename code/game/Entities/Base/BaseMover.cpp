@@ -243,19 +243,12 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle
 			continue;
 		}
 
-		// THIS IS EXTREMELY DUMB
-		// But it solves a bug
-		if ( TryPushingEntity( check, move, amove ) )
-		{
-			continue;
-		}
-
 		// the move was blocked an entity
 
 		// bobbing entities are instant-kill and never get blocked
 		if ( GetState()->pos.trType == TR_SINE || GetState()->apos.trType == TR_SINE )
 		{
-			//check->TakeDamage( this, this, 0, 99999 );
+			check->TakeDamage( this, this, DAMAGE_NO_PROTECTION, 99999 );
 			continue;
 		}
 

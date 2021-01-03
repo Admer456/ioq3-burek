@@ -32,6 +32,8 @@ void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFl
 		return;
 	}
 
+	damage = damageDealt;
+
 	// the intermission has already been qualified for, so don't
 	// allow any extra scoring
 	if ( level.intermissionQueued ) 
