@@ -199,8 +199,8 @@ void		NET_JoinMulticast6(void);
 void		NET_LeaveMulticast6(void);
 void		NET_Sleep(int msec);
 
-
-#define	MAX_MSGLEN				16384		// max length of a message, which may
+// Changed from 16k to 32k to support 8192 ents -Admer
+#define	MAX_MSGLEN				32768		// max length of a message, which may
 											// be fragmented into multiple packets
 
 #define MAX_DOWNLOAD_WINDOW		48	// ACK window of 48 download chunks. Cannot set this higher, or clients
