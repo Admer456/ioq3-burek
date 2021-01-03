@@ -16,7 +16,9 @@ namespace Entities
 	public:
 		DeclareEntityClass();
 
-		virtual void	Spawn() override;
+		virtual void	Spawn() override; // Gets called *while* entities are spawning
+		virtual void	PostSpawn() override { return; } // Gets called after all entities have spawned
+
 		virtual void	Precache() override { return; }
 
 		virtual void	PreKeyValue();
@@ -32,6 +34,12 @@ namespace Entities
 
 		virtual void	Remove() override;
 
+		virtual void	OnClientBegin( int clientNum ) { return; } // Called when the client joins and spawns
+		virtual void	OnClientDisconnect( int clientNum ) { return; } // Called when the client disconnects
+
+		virtual void	OnPlayerDie( int clientNum ) { return; } // Called when a player dies
+
+
 		// All entities have an entity index
 		unsigned int	GetEntityIndex() const
 		{
@@ -44,7 +52,7 @@ namespace Entities
 		}
 
 		// Every entity that has custom keyvalues will need to declare this too
-		// THese are basically some sort of keyvalue handlers, and are used to
+		// These are basically some sort of keyvalue handlers, and are used to
 		// set & get keyvalues
 		static KeyValueElement keyValues[];
 

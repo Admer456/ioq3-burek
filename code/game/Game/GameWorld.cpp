@@ -877,6 +877,12 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	else if ( client->ps.stats[STAT_HEALTH] <= 0 ) 
 	{
 		client->ps.pm_type = PM_DEAD;
+
+		for ( int i = 0; i < GameWorld::MaxEntities; i++ )
+		{
+			if ( gEntities[i] )
+				gEntities[i]->OnPlayerDie( player->GetClient()->ps.clientNum );
+		}
 	}
 
 	else 

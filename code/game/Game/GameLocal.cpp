@@ -378,6 +378,12 @@ void GameLocal::ClientBegin( int clientNum )
 	// locate ent at a spawn point
 	gameWorld->SpawnClient( player );
 
+	for ( int i = 0; i < GameWorld::MaxEntities; i++ )
+	{
+		if ( gEntities[i] )
+			gEntities[i]->OnClientBegin( clientNum );
+	}
+
 	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) 
 	{
 		if ( g_gametype.integer != GT_TOURNAMENT ) 
@@ -534,6 +540,12 @@ void GameLocal::ClientDisconnect( int clientNum )
 
 	if ( nullptr == gEntities[clientNum] )
 		return;
+
+	for ( int i = 0; i < GameWorld::MaxEntities; i++ )
+	{
+		if ( gEntities[i] )
+			gEntities[i]->OnClientDisconnect( clientNum );
+	}
 
 	ent = static_cast<Entities::BasePlayer*>( gEntities[clientNum] );
 

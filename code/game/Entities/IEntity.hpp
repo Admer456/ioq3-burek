@@ -23,7 +23,9 @@ namespace Entities
 	class IEntity
 	{
 	public:
-		virtual void				Spawn() = 0;
+		virtual void				Spawn() = 0; // Gets called *while* entities are spawning
+		virtual void				PostSpawn() = 0; // Gets called after all entities have spawned
+
 		virtual void				Precache() = 0;
 		virtual void				KeyValue() = 0;
 
@@ -35,6 +37,11 @@ namespace Entities
 		virtual void				Die( IEntity* killer ) = 0;
 		
 		virtual void				Remove() = 0; // Mark for removal
+
+		virtual void				OnClientBegin( int clientNum ) = 0; // Called when the client joins and spawns
+		virtual void				OnClientDisconnect( int clientNum ) = 0; // Called when the client disconnects
+
+		virtual void				OnPlayerDie( int clientNum ) = 0; // Called when a player dies
 
 		// All entities have an entity index
 		virtual unsigned int		GetEntityIndex() const = 0;
