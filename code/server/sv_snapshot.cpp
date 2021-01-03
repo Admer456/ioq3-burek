@@ -268,15 +268,18 @@ static int QDECL SV_QsortEntityNumbers( const void *a, const void *b ) {
 SV_AddEntToSnapshot
 ===============
 */
-static void SV_AddEntToSnapshot( svEntity_t *svEnt, sharedEntity_t *gEnt, snapshotEntityNumbers_t *eNums ) {
+static void SV_AddEntToSnapshot( svEntity_t *svEnt, sharedEntity_t *gEnt, snapshotEntityNumbers_t *eNums ) 
+{
 	// if we have already added this entity to this snapshot, don't add again
-	if ( svEnt->snapshotCounter == sv.snapshotCounter ) {
+	if ( svEnt->snapshotCounter == sv.snapshotCounter ) 
+	{
 		return;
 	}
 	svEnt->snapshotCounter = sv.snapshotCounter;
 
 	// if we are full, silently discard entities
-	if ( eNums->numSnapshotEntities == MAX_SNAPSHOT_ENTITIES ) {
+	if ( eNums->numSnapshotEntities == MAX_SNAPSHOT_ENTITIES ) 
+	{
 		return;
 	}
 
