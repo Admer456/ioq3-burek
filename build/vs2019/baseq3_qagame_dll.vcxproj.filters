@@ -43,6 +43,9 @@
     <Filter Include="Sources\Entities\Base">
       <UniqueIdentifier>{2641f497-59e0-42d9-be3f-f614561542d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Entities\Env">
+      <UniqueIdentifier>{9b81ee66-2d58-4f05-b30e-aafca67c9b5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -194,6 +197,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\Func\FuncDoor.hpp">
       <Filter>Sources\Entities\Func</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Env\EnvExplosion.hpp">
+      <Filter>Sources\Entities\Env</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -373,6 +379,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Func\FuncDoor.cpp">
       <Filter>Sources\Entities\Func</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Env\EnvExplosion.cpp">
+      <Filter>Sources\Entities\Env</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

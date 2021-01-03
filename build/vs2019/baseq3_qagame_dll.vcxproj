@@ -196,6 +196,7 @@
     <ClInclude Include="..\..\code\game\Entities\Base\BaseMover.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Base\BaseTrigger.hpp" />
     <ClInclude Include="..\..\code\game\Entities\EntityClassInfo.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Env\EnvExplosion.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncBobbing.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncButton.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncToggle.hpp" />
@@ -244,6 +245,7 @@
     <ClCompile Include="..\..\code\game\Entities\Base\BaseMover.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Base\BaseTrigger.cpp" />
     <ClCompile Include="..\..\code\game\Entities\EntityClassInfo.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Env\EnvExplosion.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncBobbing.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncButton.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncDoor.cpp" />
