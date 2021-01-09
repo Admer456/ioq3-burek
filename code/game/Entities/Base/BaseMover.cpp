@@ -31,6 +31,7 @@ void BaseMover::Spawn()
 	SetCurrentOrigin( GetOrigin() );
 	gameImports->LinkEntity( this );
 	SetOrigin( Vector::Zero );
+	SetCurrentAngles( GetState()->apos.trBase );
 	//GetState()->clipFlags |= ClipFlag_ManualAbsoluteBox;
 	//GetState()->clipFlags |= ClipFlag_HasOriginBrush;
 }

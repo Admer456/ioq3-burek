@@ -201,6 +201,9 @@
     <ClInclude Include="..\..\code\game\Entities\Env\EnvSprite.hpp">
       <Filter>Sources\Entities\Env</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Func\FuncRotating.hpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -382,6 +385,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Env\EnvSprite.cpp">
       <Filter>Sources\Entities\Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Func\FuncRotating.cpp">
+      <Filter>Sources\Entities\Func</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
