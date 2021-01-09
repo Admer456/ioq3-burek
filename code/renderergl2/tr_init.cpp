@@ -1046,23 +1046,28 @@ void GfxInfo_f( void )
 	ri.Printf( PRINT_ALL, "\nGL_VENDOR: %s\n", glConfig.vendor_string );
 	ri.Printf( PRINT_ALL, "GL_RENDERER: %s\n", glConfig.renderer_string );
 	ri.Printf( PRINT_ALL, "GL_VERSION: %s\n", glConfig.version_string );
-	ri.Printf( PRINT_ALL, "GL_EXTENSIONS: " );
-	if ( qglGetStringi )
+	
+	if ( ri.Cvar_VariableIntegerValue( "developer" ) )
 	{
-		GLint numExtensions;
-		int i;
-
-		qglGetIntegerv( GL_NUM_EXTENSIONS, &numExtensions );
-		for ( i = 0; i < numExtensions; i++ )
+		ri.Printf( PRINT_ALL, "GL_EXTENSIONS: " );
+		if ( qglGetStringi )
 		{
-			ri.Printf( PRINT_ALL, "%s ", qglGetStringi( GL_EXTENSIONS, i ) );
+			GLint numExtensions;
+			int i;
+
+			qglGetIntegerv( GL_NUM_EXTENSIONS, &numExtensions );
+			for ( i = 0; i < numExtensions; i++ )
+			{
+				ri.Printf( PRINT_ALL, "%s ", qglGetStringi( GL_EXTENSIONS, i ) );
+			}
 		}
+		else
+		{
+			R_PrintLongString( glConfig.extensions_string );
+		}
+		ri.Printf( PRINT_ALL, "\n" );
 	}
-	else
-	{
-		R_PrintLongString( glConfig.extensions_string );
-	}
-	ri.Printf( PRINT_ALL, "\n" );
+
 	ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_SIZE: %d\n", glConfig.maxTextureSize );
 	ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_IMAGE_UNITS: %d\n", glConfig.numTextureUnits );
 	ri.Printf( PRINT_ALL, "\nPIXELFORMAT: color(%d-bits) Z(%d-bit) stencil(%d-bits)\n", glConfig.colorBits, glConfig.depthBits, glConfig.stencilBits );
