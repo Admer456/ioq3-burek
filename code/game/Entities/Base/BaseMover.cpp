@@ -153,7 +153,7 @@ void BaseMover::CustomMoverThink()
 
 	float delta = (level.time - level.previousTime) * 0.001f;
 
-	if ( pos->trType == TR_INTERPOLATE )
+	if ( pos->trType == TR_INTERPOLATE && velocity != Vector::Zero )
 	{
 		Vector currentPos = pos->trBase;
 		currentPos += velocity * delta;
@@ -166,7 +166,7 @@ void BaseMover::CustomMoverThink()
 		SetCurrentOrigin( currentPos );
 	}
 
-	if ( apos->trType == TR_INTERPOLATE )
+	if ( apos->trType == TR_INTERPOLATE && angularVelocity != Vector::Zero )
 	{
 		Vector currentPos = apos->trBase;
 		currentPos += angularVelocity * delta;
@@ -179,8 +179,9 @@ void BaseMover::CustomMoverThink()
 		SetCurrentAngles( currentPos );
 	}
 
-	if ( !MoverPush( velocity * delta, angularVelocity * delta, &obstacle ) )
-		Blocked( obstacle );
+	if ( velocity != Vector::Zero || angularVelocity != Vector::Zero )
+		if ( !MoverPush( velocity * delta, angularVelocity * delta, &obstacle ) )
+			Blocked( obstacle );
 }
 
 /*

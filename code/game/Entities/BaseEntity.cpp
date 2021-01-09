@@ -460,8 +460,6 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 	VectorCopy( (pushed_p - 1)->angles, check->GetState()->apos.trBase );
 	block = static_cast<BaseQuakeEntity*>(check)->TestEntityPosition();
 
-	engine->Print( block ? "BLOCKED 2\n" : "NOT BLOCKED 2\n" );
-
 	if ( !block ) 
 	{
 		check->GetState()->groundEntityNum = ENTITYNUM_NONE;
