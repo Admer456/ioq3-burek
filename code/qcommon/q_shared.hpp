@@ -1162,9 +1162,10 @@ typedef enum {
 // Increased from 8 to 10 bits -Admer
 #define	MAX_MODELS			1024	// these are sent over the net as 10 bits
 #define	MAX_SOUNDS			1024	// so if you wanna increase them, check msg.cpp
+#define MAX_CSSHADERS		256		// Some entities like env_sprite need config string shaders
 
-// If you change MAX_MODELS or MAX_SOUNDS, you'll also need to update this:
-#define	MAX_CONFIGSTRINGS	2272	// Changed from 1024 to 2272
+// If you change MAX_MODELS, MAX_SOUNDS or MAX_CSSHADERS, you'll also need to update this:
+#define	MAX_CONFIGSTRINGS	2528	// Changed from 1024 to 2528
 
 // these are the only configstrings that the system reserves, all the
 // other ones are strictly for servergame to clientgame communication

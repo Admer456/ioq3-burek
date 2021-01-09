@@ -244,7 +244,6 @@ static void CG_Item( centity_t *cent ) {
 	int				msec;
 	float			frac;
 	float			scale;
-	//weaponInfo_t	*wi;
 
 	es = &cent->currentState;
 	if ( es->modelindex >= bg_numItems ) {
@@ -285,28 +284,6 @@ static void CG_Item( centity_t *cent ) {
 		VectorCopy( cg.autoAngles, cent->lerpAngles );
 		AxisCopy( cg.autoAxis, ent.axis );
 	}
-
-	//wi = NULL;
-	//// the weapons have their origin where they attatch to player
-	//// models, so we need to offset them or they will rotate
-	//// eccentricly
-	//if ( item->giType == IT_WEAPON ) {
-	//	wi = &cg_weapons[item->giTag];
-	//	cent->lerpOrigin[0] -= 
-	//		wi->weaponMidpoint[0] * ent.axis[0][0] +
-	//		wi->weaponMidpoint[1] * ent.axis[1][0] +
-	//		wi->weaponMidpoint[2] * ent.axis[2][0];
-	//	cent->lerpOrigin[1] -= 
-	//		wi->weaponMidpoint[0] * ent.axis[0][1] +
-	//		wi->weaponMidpoint[1] * ent.axis[1][1] +
-	//		wi->weaponMidpoint[2] * ent.axis[2][1];
-	//	cent->lerpOrigin[2] -= 
-	//		wi->weaponMidpoint[0] * ent.axis[0][2] +
-	//		wi->weaponMidpoint[1] * ent.axis[1][2] +
-	//		wi->weaponMidpoint[2] * ent.axis[2][2];
-	//
-	//	cent->lerpOrigin[2] += 8;	// an extra height boost
-	//}
 	
 	if( item->giType == IT_WEAPON && item->giTag == WP_RAILGUN ) {
 		clientInfo_t *ci = &cgs.clientinfo[cg.snap->ps.clientNum];
@@ -349,30 +326,6 @@ static void CG_Item( centity_t *cent ) {
 
 	// add to refresh list
 	trap_R_AddRefEntityToScene(&ent);
-
-	//if ( item->giType == IT_WEAPON && wi && wi->barrelModel ) {
-	//	refEntity_t	barrel;
-	//	vec3_t		angles;
-	//
-	//	memset( &barrel, 0, sizeof( barrel ) );
-	//
-	//	barrel.hModel = wi->barrelModel;
-	//
-	//	VectorCopy( ent.lightingOrigin, barrel.lightingOrigin );
-	//	barrel.shadowPlane = ent.shadowPlane;
-	//	barrel.renderfx = ent.renderfx;
-	//
-	//	angles[YAW] = 0;
-	//	angles[PITCH] = 0;
-	//	angles[ROLL] = 0;
-	//	AnglesToAxis( angles, barrel.axis );
-	//
-	//	CG_PositionRotatedEntityOnTag( &barrel, &ent, wi->weaponModel, "tag_barrel" );
-	//
-	//	barrel.nonNormalizedAxes = ent.nonNormalizedAxes;
-	//
-	//	trap_R_AddRefEntityToScene( &barrel );
-	//}
 
 	// accompanying rings / spheres for powerups
 	if ( !cg_simpleItems.integer ) 
@@ -844,6 +797,32 @@ static void CG_TeamBase( centity_t *cent ) {
 
 /*
 ===============
+CG_Sprite
+===============
+*/
+static void CG_Sprite( centity_t* cent )
+{
+	refEntity_t spr;
+	
+	memset( &spr, 0, sizeof( spr ) );
+
+	spr.reType = RT_SPRITE;
+	
+	VectorCopy( cent->lerpOrigin, spr.lightingOrigin );
+	VectorCopy( cent->lerpOrigin, spr.origin );
+
+	spr.customShader = cgs.gameMaterials[cent->currentState.modelindex];
+	spr.radius = cent->currentState.origin2[0];
+	spr.shaderRGBA[0] = 0xff;
+	spr.shaderRGBA[1] = 0xff;
+	spr.shaderRGBA[2] = 0xff;
+	spr.shaderRGBA[3] = 0xff * cent->currentState.origin2[1];
+
+	trap_R_AddRefEntityToScene( &spr );
+}
+
+/*
+===============
 CG_AddCEntity
 
 ===============
@@ -866,39 +845,19 @@ static void CG_AddCEntity( centity_t *cent ) {
 		break;
 	case ET_INVISIBLE:
 	case ET_PUSH_TRIGGER:
-	case ET_TELEPORT_TRIGGER:
-		break;
-	case ET_GENERAL:
-		CG_General( cent );
-		break;
-	case ET_PLAYER:
-		CG_Player( cent );
-		break;
-	case ET_ITEM:
-		CG_Item( cent );
-		break;
-	case ET_MISSILE:
-		CG_Missile( cent );
-		break;
+	case ET_TELEPORT_TRIGGER: break;
+	case ET_GENERAL:	CG_General( cent ); break;
+	case ET_PLAYER:		CG_Player( cent ); break;
+	case ET_ITEM:		CG_Item( cent ); break;
+	case ET_MISSILE:	CG_Missile( cent ); break;
 	case ET_MOVER:
-	case ET_BREAKABLE:
-		CG_Mover( cent );
-		break;
-	case ET_BEAM:
-		CG_Beam( cent );
-		break;
-	case ET_PORTAL:
-		CG_Portal( cent );
-		break;
-	case ET_SPEAKER:
-		CG_Speaker( cent );
-		break;
-	case ET_GRAPPLE:
-		CG_Grapple( cent );
-		break;
-	case ET_TEAM:
-		CG_TeamBase( cent );
-		break;
+	case ET_BREAKABLE:	CG_Mover( cent ); break;
+	case ET_BEAM:		CG_Beam( cent ); break;
+	case ET_PORTAL:		CG_Portal( cent ); break;
+	case ET_SPEAKER:	CG_Speaker( cent ); break;
+	case ET_GRAPPLE:	CG_Grapple( cent ); break;
+	case ET_TEAM:		CG_TeamBase( cent ); break;
+	case ET_SPRITE:		CG_Sprite( cent ); break;
 	}
 }
 

@@ -169,6 +169,18 @@ public:
 	// Find a random entity by its classname
 	Entities::IEntity* FindByClassnameRandom( const char* className );
 
+	// ------ Asset loading methods ------
+	// NOTE: if the asset is already precached, they will just return its index
+
+	// Models: bsp, iqm, md3, mdr, lwo etc.
+	uint32_t		PrecacheModel( const char* name );
+	// Sounds: wav, ogg, mp3 etc.
+	uint32_t		PrecacheSound( const char* name );
+	// Materials a.k.a. Q3 shaders
+	uint32_t		PrecacheMaterial( const char* name );
+
+	uint32_t		FindConfigstringIndex( const char* name, uint32_t start, uint32_t max, bool create );
+
 	// ------ Client & players methods ------
 
 	// Locate a client at a spawnpoint

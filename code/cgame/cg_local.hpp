@@ -919,6 +919,7 @@ typedef struct {
 	//
 	qhandle_t		gameModels[MAX_MODELS];
 	sfxHandle_t		gameSounds[MAX_SOUNDS];
+	qhandle_t		gameMaterials[MAX_CSSHADERS];
 
 	int				numInlineModels;
 	qhandle_t		inlineDrawModel[MAX_MODELS];

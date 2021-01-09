@@ -816,43 +816,43 @@ static void CG_RegisterGraphics( void )
 
 	// register the inline models
 	cgs.numInlineModels = trap_CM_NumInlineModels();
-	for ( i = 1 ; i < cgs.numInlineModels ; i++ ) {
-		char	name[10];
-		vec3_t			mins, maxs;
-		int				j;
+	for ( i = 1; i < cgs.numInlineModels; i++ )
+	{
+		char name[10];
+		vec3_t mins, maxs;
+		int j;
 
-		Com_sprintf( name, sizeof(name), "*%i", i );
+		Com_sprintf( name, sizeof( name ), "*%i", i );
 		cgs.inlineDrawModel[i] = trap_R_RegisterModel( name );
 		trap_R_ModelBounds( cgs.inlineDrawModel[i], mins, maxs );
-		for ( j = 0 ; j < 3 ; j++ ) {
-			cgs.inlineModelMidpoints[i][j] = mins[j] + 0.5 * ( maxs[j] - mins[j] );
+		for ( j = 0; j < 3; j++ )
+		{
+			cgs.inlineModelMidpoints[i][j] = mins[j] + 0.5 * (maxs[j] - mins[j]);
 		}
 	}
 
 	// register all the server specified models
-	for (i=1 ; i<MAX_MODELS ; i++) {
+	for ( i = 1; i < MAX_MODELS; i++) 
+	{
 		const char		*modelName;
-
 		modelName = CG_ConfigString( CS_MODELS+i );
-		if ( !modelName[0] ) {
+		if ( !modelName[0] ) 
 			break;
-		}
+		
 		cgs.gameModels[i] = trap_R_RegisterModel( modelName );
 	}
 
-	CG_ClearParticles ();
-/*
-	for (i=1; i<MAX_PARTICLES_AREAS; i++)
+	for ( i = 1; i < MAX_CSSHADERS; i++ )
 	{
-		{
-			int rval;
+		const char* material;
+		material = CG_ConfigString( CS_SHADERS + i );
+		if ( !material[0] )
+			break;
 
-			rval = CG_NewParticleArea ( CS_PARTICLES + i);
-			if (!rval)
-				break;
-		}
+		cgs.gameMaterials[i] = trap_R_RegisterShader( material );
 	}
-*/
+
+	CG_ClearParticles();
 }
 
 

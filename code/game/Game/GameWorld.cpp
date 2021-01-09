@@ -546,6 +546,60 @@ Entities::IEntity* GameWorld::FindByClassnameRandom( const char* className )
 	return gEntities[ents[index]->GetEntityIndex()]; // am a little paranoid about returning ents[index], err...
 }
 
+uint32_t GameWorld::PrecacheModel( const char* name )
+{
+	return FindConfigstringIndex( name, CS_MODELS, MAX_MODELS, true );
+}
+
+uint32_t GameWorld::PrecacheSound( const char* name )
+{
+	return FindConfigstringIndex( name, CS_SOUNDS, MAX_SOUNDS, true );
+}
+
+uint32_t GameWorld::PrecacheMaterial( const char* name )
+{
+	return FindConfigstringIndex( name, CS_SHADERS, MAX_CSSHADERS, true );
+}
+
+uint32_t GameWorld::FindConfigstringIndex( const char* name, uint32_t start, uint32_t max, bool create )
+{
+	int		i;
+	char	s[MAX_STRING_CHARS];
+
+	if ( !name || !name[0] ) 
+	{
+		return 0;
+	}
+
+	for ( i = 1; i < max; i++ ) 
+	{
+		gameImports->GetConfigString( start + i, s, sizeof( s ) );
+		if ( !s[0] ) 
+		{
+			break;
+		}
+		
+		if ( !strcmp( s, name ) ) 
+		{
+			return i;
+		}
+	}
+
+	if ( !create ) 
+	{
+		return 0;
+	}
+
+	if ( i == max ) 
+	{
+		engine->Error( "GameWorld::FindConfigstringIndex: overflow" );
+	}
+
+	gameImports->SetConfigString( start + i, name );
+
+	return i;
+}
+
 void GameWorld::SpawnClient( Entities::BasePlayer* player )
 {
 	int		index;

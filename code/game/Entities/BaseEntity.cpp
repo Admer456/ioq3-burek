@@ -198,7 +198,7 @@ void BaseQuakeEntity::SetModel( const char* modelPath )
 		}
 		else
 		{
-			shared.s.modelindex = G_ModelIndex( const_cast<char*>(modelPath) );
+			shared.s.modelindex = gameWorld->PrecacheModel( modelPath );
 		}
 	}
 }

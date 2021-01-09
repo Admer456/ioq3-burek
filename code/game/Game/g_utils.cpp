@@ -116,12 +116,14 @@ int G_FindConfigstringIndex( char *name, int start, int max, qboolean create ) {
 }
 
 
-int G_ModelIndex( char *name ) {
-	return G_FindConfigstringIndex (name, CS_MODELS, MAX_MODELS, qtrue);
+int G_ModelIndex( char* name ) 
+{
+	return G_FindConfigstringIndex( name, CS_MODELS, MAX_MODELS, qtrue );
 }
 
-int G_SoundIndex( char *name ) {
-	return G_FindConfigstringIndex (name, CS_SOUNDS, MAX_SOUNDS, qtrue);
+int G_SoundIndex( char* name ) 
+{
+	return G_FindConfigstringIndex( name, CS_SOUNDS, MAX_SOUNDS, qtrue );
 }
 
 //=====================================================================

@@ -316,10 +316,15 @@ static void CG_ConfigStringModified( void )
 	} 
 	else if ( num >= CS_SOUNDS && num < CS_SOUNDS+MAX_SOUNDS ) 
 	{
-		if ( str[0] != '*' ) {	// player specific sounds don't register here
+		if ( str[0] != '*' ) 
+		{	// player specific sounds don't register here
 			cgs.gameSounds[num-CS_SOUNDS] = trap_S_RegisterSound( str, qfalse );
 		}
-	} 
+	}
+	else if ( num >= CS_SHADERS && num < CS_SHADERS+MAX_CSSHADERS )
+	{
+		cgs.gameMaterials[num-CS_SHADERS] = trap_R_RegisterShader( str );
+	}
 	else if ( num >= CS_PLAYERS && num < CS_PLAYERS+MAX_CLIENTS ) 
 	{
 		CG_NewClientInfo( num - CS_PLAYERS );
@@ -338,7 +343,6 @@ static void CG_ConfigStringModified( void )
 	{
 		CG_ShaderStateChanged();
 	}
-		
 }
 
 
