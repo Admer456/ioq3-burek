@@ -229,7 +229,8 @@ CG_ConfigStringModified
 
 ================
 */
-static void CG_ConfigStringModified( void ) {
+static void CG_ConfigStringModified( void ) 
+{
 	const char	*str;
 	int		num;
 
@@ -243,59 +244,98 @@ static void CG_ConfigStringModified( void ) {
 	str = CG_ConfigString( num );
 
 	// do something with it if necessary
-	if ( num == CS_MUSIC ) {
+	if ( num == CS_MUSIC ) 
+	{
 		CG_StartMusic();
-	} else if ( num == CS_SERVERINFO ) {
+	} 
+	else if ( num == CS_SERVERINFO ) 
+	{
 		CG_ParseServerinfo();
-	} else if ( num == CS_WARMUP ) {
+	} 
+	else if ( num == CS_WARMUP ) 
+	{
 		CG_ParseWarmup();
-	} else if ( num == CS_SCORES1 ) {
+	} 
+	else if ( num == CS_SCORES1 ) 
+	{
 		cgs.scores1 = atoi( str );
-	} else if ( num == CS_SCORES2 ) {
+	} 
+	else if ( num == CS_SCORES2 ) 
+	{
 		cgs.scores2 = atoi( str );
-	} else if ( num == CS_LEVEL_START_TIME ) {
+	} 
+	else if ( num == CS_LEVEL_START_TIME ) 
+	{
 		cgs.levelStartTime = atoi( str );
-	} else if ( num == CS_VOTE_TIME ) {
+	} 
+	else if ( num == CS_VOTE_TIME ) 
+	{
 		cgs.voteTime = atoi( str );
 		cgs.voteModified = qtrue;
-	} else if ( num == CS_VOTE_YES ) {
+	} 
+	else if ( num == CS_VOTE_YES ) 
+	{
 		cgs.voteYes = atoi( str );
 		cgs.voteModified = qtrue;
-	} else if ( num == CS_VOTE_NO ) {
+	} 
+	else if ( num == CS_VOTE_NO ) 
+	{
 		cgs.voteNo = atoi( str );
 		cgs.voteModified = qtrue;
-	} else if ( num == CS_VOTE_STRING ) {
+	} 
+	else if ( num == CS_VOTE_STRING ) 
+	{
 		Q_strncpyz( cgs.voteString, str, sizeof( cgs.voteString ) );
-	} else if ( num >= CS_TEAMVOTE_TIME && num <= CS_TEAMVOTE_TIME + 1) {
+	} 
+	else if ( num >= CS_TEAMVOTE_TIME && num <= CS_TEAMVOTE_TIME + 1) 
+	{
 		cgs.teamVoteTime[num-CS_TEAMVOTE_TIME] = atoi( str );
 		cgs.teamVoteModified[num-CS_TEAMVOTE_TIME] = qtrue;
-	} else if ( num >= CS_TEAMVOTE_YES && num <= CS_TEAMVOTE_YES + 1) {
+	} 
+	else if ( num >= CS_TEAMVOTE_YES && num <= CS_TEAMVOTE_YES + 1) 
+	{
 		cgs.teamVoteYes[num-CS_TEAMVOTE_YES] = atoi( str );
 		cgs.teamVoteModified[num-CS_TEAMVOTE_YES] = qtrue;
-	} else if ( num >= CS_TEAMVOTE_NO && num <= CS_TEAMVOTE_NO + 1) {
+	} 
+	else if ( num >= CS_TEAMVOTE_NO && num <= CS_TEAMVOTE_NO + 1) 
+	{
 		cgs.teamVoteNo[num-CS_TEAMVOTE_NO] = atoi( str );
 		cgs.teamVoteModified[num-CS_TEAMVOTE_NO] = qtrue;
-	} else if ( num >= CS_TEAMVOTE_STRING && num <= CS_TEAMVOTE_STRING + 1) {
+	} 
+	else if ( num >= CS_TEAMVOTE_STRING && num <= CS_TEAMVOTE_STRING + 1) 
+	{
 		Q_strncpyz( cgs.teamVoteString[num-CS_TEAMVOTE_STRING], str, sizeof( cgs.teamVoteString[0] ) );
-	} else if ( num == CS_INTERMISSION ) {
+	} 
+	else if ( num == CS_INTERMISSION ) 
+	{
 		cg.intermissionStarted = (qboolean)atoi( str );
-	} else if ( num >= CS_MODELS && num < CS_MODELS+MAX_MODELS ) {
+	} 
+	else if ( num >= CS_MODELS && num < CS_MODELS+MAX_MODELS ) 
+	{
 		cgs.gameModels[num-CS_MODELS] = trap_R_RegisterModel( str );
-	} else if ( num >= CS_SOUNDS && num < CS_SOUNDS+MAX_SOUNDS ) {
+	} 
+	else if ( num >= CS_SOUNDS && num < CS_SOUNDS+MAX_SOUNDS ) 
+	{
 		if ( str[0] != '*' ) {	// player specific sounds don't register here
 			cgs.gameSounds[num-CS_SOUNDS] = trap_S_RegisterSound( str, qfalse );
 		}
-	} else if ( num >= CS_PLAYERS && num < CS_PLAYERS+MAX_CLIENTS ) {
+	} 
+	else if ( num >= CS_PLAYERS && num < CS_PLAYERS+MAX_CLIENTS ) 
+	{
 		CG_NewClientInfo( num - CS_PLAYERS );
 		CG_BuildSpectatorString();
-	} else if ( num == CS_FLAGSTATUS ) {
-		if( cgs.gametype == GT_CTF ) {
+	} 
+	else if ( num == CS_FLAGSTATUS ) 
+	{
+		if( cgs.gametype == GT_CTF ) 
+		{
 			// format is rb where its red/blue, 0 is at base, 1 is taken, 2 is dropped
 			cgs.redflag = str[0] - '0';
 			cgs.blueflag = str[1] - '0';
 		}
 	}
-	else if ( num == CS_SHADERSTATE ) {
+	else if ( num == CS_SHADERSTATE ) 
+	{
 		CG_ShaderStateChanged();
 	}
 		
