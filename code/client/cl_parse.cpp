@@ -38,12 +38,13 @@ char *svc_strings[256] = {
 	"svc_voipOpus",
 };
 
-void SHOWNET( msg_t *msg, char *s) {
-	if ( cl_shownet->integer >= 2) {
+void SHOWNET( msg_t *msg, char *s) 
+{
+	if ( cl_shownet->integer == 2) 
+	{
 		Com_Printf ("%3i:%s\n", msg->readcount-1, s);
 	}
 }
-
 
 /*
 =========================================================================

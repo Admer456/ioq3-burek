@@ -326,34 +326,40 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 			continue;
 
 		// never send entities that aren't linked in
-		if ( !ent->r.linked ) {
+		if ( !ent->r.linked ) 
+		{
 			continue;
 		}
 
-		if (ent->s.number != e) {
+		if (ent->s.number != e) 
+		{
 			Com_DPrintf ("FIXING ENT->S.NUMBER!!!\n");
 			ent->s.number = e;
 		}
 
 		// entities can be flagged to explicitly not be sent to the client
-		if ( ent->r.svFlags & SVF_NOCLIENT ) {
+		if ( ent->r.svFlags & SVF_NOCLIENT ) 
+		{
 			continue;
 		}
 
 		// entities can be flagged to be sent to only one client
 		if ( ent->r.svFlags & SVF_SINGLECLIENT ) {
-			if ( ent->r.singleClient != frame->ps.clientNum ) {
+			if ( ent->r.singleClient != frame->ps.clientNum ) 
+			{
 				continue;
 			}
 		}
 		// entities can be flagged to be sent to everyone but one client
 		if ( ent->r.svFlags & SVF_NOTSINGLECLIENT ) {
-			if ( ent->r.singleClient == frame->ps.clientNum ) {
+			if ( ent->r.singleClient == frame->ps.clientNum ) 
+			{
 				continue;
 			}
 		}
 		// entities can be flagged to be sent to a given mask of clients
-		if ( ent->r.svFlags & SVF_CLIENTMASK ) {
+		if ( ent->r.svFlags & SVF_CLIENTMASK ) 
+		{
 			if (frame->ps.clientNum >= 32)
 				Com_Error( ERR_DROP, "SVF_CLIENTMASK: clientNum >= 32" );
 			if (~ent->r.singleClient & (1 << frame->ps.clientNum))
@@ -363,22 +369,26 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 		svEnt = SV_SvEntityForGentity( ent );
 
 		// don't double add an entity through portals
-		if ( svEnt->snapshotCounter == sv.snapshotCounter ) {
+		if ( svEnt->snapshotCounter == sv.snapshotCounter ) 
+		{
 			continue;
 		}
 
 		// broadcast entities are always sent
-		if ( ent->r.svFlags & SVF_BROADCAST ) {
+		if ( ent->r.svFlags & SVF_BROADCAST ) 
+		{
 			SV_AddEntToSnapshot( svEnt, ent, eNums );
 			continue;
 		}
 
 		// ignore if not touching a PV leaf
 		// check area
-		if ( !CM_AreasConnected( clientarea, svEnt->areanum ) ) {
+		if ( !CM_AreasConnected( clientarea, svEnt->areanum ) ) 
+		{
 			// doors can legally straddle two areas, so
 			// we may need to check another one
-			if ( !CM_AreasConnected( clientarea, svEnt->areanum2 ) ) {
+			if ( !CM_AreasConnected( clientarea, svEnt->areanum2 ) ) 
+			{
 				continue;		// blocked by a door
 			}
 		}
@@ -386,30 +396,40 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 		bitvector = clientpvs;
 
 		// check individual leafs
-		if ( !svEnt->numClusters ) {
+		if ( !svEnt->numClusters ) 
+		{
 			continue;
 		}
 		l = 0;
-		for ( i=0 ; i < svEnt->numClusters ; i++ ) {
+		for ( i=0 ; i < svEnt->numClusters ; i++ ) 
+		{
 			l = svEnt->clusternums[i];
-			if ( bitvector[l >> 3] & (1 << (l&7) ) ) {
+			if ( bitvector[l >> 3] & (1 << (l&7) ) ) 
+			{
 				break;
 			}
 		}
 
 		// if we haven't found it to be visible,
 		// check overflow clusters that coudln't be stored
-		if ( i == svEnt->numClusters ) {
-			if ( svEnt->lastCluster ) {
-				for ( ; l <= svEnt->lastCluster ; l++ ) {
-					if ( bitvector[l >> 3] & (1 << (l&7) ) ) {
+		if ( i == svEnt->numClusters ) 
+		{
+			if ( svEnt->lastCluster ) 
+			{
+				for ( ; l <= svEnt->lastCluster ; l++ ) 
+				{
+					if ( bitvector[l >> 3] & (1 << (l&7) ) ) 
+					{
 						break;
 					}
 				}
-				if ( l == svEnt->lastCluster ) {
+				if ( l == svEnt->lastCluster ) 
+				{
 					continue;	// not visible
 				}
-			} else {
+			} 
+			else 
+			{
 				continue;
 			}
 		}
@@ -418,11 +438,14 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 		SV_AddEntToSnapshot( svEnt, ent, eNums );
 
 		// if it's a portal entity, add everything visible from its camera position
-		if ( ent->r.svFlags & SVF_PORTAL ) {
-			if ( ent->s.generic1 ) {
+		if ( ent->r.svFlags & SVF_PORTAL ) 
+		{
+			if ( ent->s.generic1 ) 
+			{
 				vec3_t dir;
 				VectorSubtract(ent->s.origin, origin, dir);
-				if ( VectorLengthSquared(dir) > (float) ent->s.generic1 * ent->s.generic1 ) {
+				if ( VectorLengthSquared(dir) > (float) ent->s.generic1 * ent->s.generic1 ) 
+				{
 					continue;
 				}
 			}
