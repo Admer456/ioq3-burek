@@ -19,8 +19,8 @@ namespace Entities
 		virtual void	Spawn() override; // Gets called *while* entities are spawning
 		virtual void	PostSpawn() override { return; } // Gets called after all entities have spawned
 
-		virtual void	Precache() override { return; }
-		virtual void	ParseKeyvalues() override;
+		virtual void	Precache() override { return; } // Gets called before Spawn
+		virtual void	ParseKeyvalues() override; // Gets called before Precache; you may parse keyvalues anywhere tho'
 
 		virtual void	Think() override;
 		virtual void	Use( IEntity* activator, IEntity* caller, float value ) override;
