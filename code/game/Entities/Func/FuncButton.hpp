@@ -22,10 +22,12 @@ namespace Entities
 		void		Spawn() override;
 		void		Precache() override;
 
+		void		ButtonThink();
 		void		ButtonUse( IEntity* activator, IEntity* caller, float value );
 		void		ButtonTouch( IEntity* other, trace_t* trace );
 
 	private:
 		uint16_t	buttonSound{ 0 };
+		float		resetTime{ 0.0f };
 	};
 }

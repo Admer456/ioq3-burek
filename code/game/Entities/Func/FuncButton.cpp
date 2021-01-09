@@ -24,16 +24,7 @@ void FuncButton::Spawn()
 	SetTouch( &FuncButton::ButtonTouch );
 	GetShared()->contents |= CONTENTS_TRIGGER;
 
-	if ( spawnFlags & SF_NoTouch )
-	{
-		SetTouch( nullptr );
-		GetShared()->contents &= ~CONTENTS_TRIGGER;
-	}
-
-	if ( spawnFlags & SF_NoUse )
-	{
-		SetUse( nullptr );
-	}
+	resetTime = spawnArgs->GetFloat( "wait", 0.5f );
 }
 
 void FuncButton::Precache()
@@ -42,18 +33,39 @@ void FuncButton::Precache()
 	buttonSound = G_SoundIndex( const_cast<char*>(soundFile) );
 }
 
+void FuncButton::ButtonThink()
+{
+	SetUse( &FuncButton::ButtonUse );
+	SetTouch( &FuncButton::ButtonTouch );
+}
+
 void FuncButton::ButtonUse( IEntity* activator, IEntity* caller, float value )
 {
+	if ( spawnFlags & SF_NoUse && caller != this )
+		return;
+
 	UseTargets( activator );
 	SetTouch( nullptr );
 	SetUse( nullptr );
 
 	AddEvent( EV_GENERAL_SOUND, buttonSound );
+
+	SetThink( &FuncButton::ButtonThink );
+	nextThink = level.time * 0.001f + resetTime;
+
+	if ( resetTime <= 0.0f )
+	{
+		SetThink( nullptr );
+		nextThink = 0.0f;
+	}
 }
 
 void FuncButton::ButtonTouch( IEntity* other, trace_t* trace )
 {
+	if ( spawnFlags & SF_NoTouch )
+		return;
+
 	engine->Print( "FuncButton::ButtonTouch\n" );
 
-	ButtonUse( other, other, 0 );
+	ButtonUse( other, this, 0 );
 }
