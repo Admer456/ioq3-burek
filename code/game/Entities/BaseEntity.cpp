@@ -53,6 +53,8 @@ void BaseQuakeEntity::ParseKeyvalues()
 	spawnFlags = spawnArgs->GetInt( "spawnflags", 0 );
 	spawnFlagsExtra = spawnArgs->GetInt( "spawnflags2", 0 );
 
+	// health
+	health = spawnArgs->GetFloat( "health", 100.0f );
 }
 
 void BaseQuakeEntity::Think()

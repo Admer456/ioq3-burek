@@ -8,7 +8,6 @@
 #include "Game/IGameImports.h"
 #include "Entities/BasePlayer.hpp"
 #include "Entities/Base/BaseMover.hpp"
-#include "Entities/TestModel.hpp"
 
 #include "FuncBobbing.hpp"
 
