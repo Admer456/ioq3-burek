@@ -198,6 +198,9 @@
     <ClInclude Include="..\..\code\game\Entities\Env\EnvExplosion.hpp">
       <Filter>Sources\Entities\Env</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Env\EnvSprite.hpp">
+      <Filter>Sources\Entities\Env</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -375,6 +378,9 @@
       <Filter>Sources\Entities\Func</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Env\EnvExplosion.cpp">
+      <Filter>Sources\Entities\Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Env\EnvSprite.cpp">
       <Filter>Sources\Entities\Env</Filter>
     </ClCompile>
   </ItemGroup>
