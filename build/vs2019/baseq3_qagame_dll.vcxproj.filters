@@ -132,9 +132,6 @@
     <ClInclude Include="..\..\code\game\Entities\KeyValueElement.hpp">
       <Filter>Sources\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\code\game\Entities\LegacyQuakeEntity.hpp">
-      <Filter>Sources\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\code\game\Components\SharedComponent.hpp">
       <Filter>Sources\Components</Filter>
     </ClInclude>
@@ -312,9 +309,6 @@
       <Filter>Sources\Game</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\KeyValueElement.cpp">
-      <Filter>Sources\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\game\Entities\LegacyQuakeEntity.cpp">
       <Filter>Sources\Entities</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Components\SharedComponent.cpp">

@@ -208,7 +208,6 @@
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerStart.hpp" />
     <ClInclude Include="..\..\code\game\Entities\KeyValueElement.hpp" />
-    <ClInclude Include="..\..\code\game\Entities\LegacyQuakeEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\TestModel.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Trigger\TriggerMultiple.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Trigger\TriggerOnce.hpp" />
@@ -262,7 +261,6 @@
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerStart.cpp" />
     <ClCompile Include="..\..\code\game\Entities\KeyValueElement.cpp" />
-    <ClCompile Include="..\..\code\game\Entities\LegacyQuakeEntity.cpp" />
     <ClCompile Include="..\..\code\game\Entities\TestModel.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerMultiple.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerOnce.cpp" />
