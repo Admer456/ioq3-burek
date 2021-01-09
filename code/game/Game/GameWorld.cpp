@@ -900,27 +900,10 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 		client->ps.speed *= 1.3;
 	}
 
-	//// Let go of the hook if we aren't firing
-	//if ( client->ps.weapon == WP_GRAPPLING_HOOK &&
-	//	 client->hook && !(ucmd->buttons & Button_Attack) ) 
-	//{
-	//	Weapon_HookFree( client->hook );
-	//}
-
 	// set up for pmove
 	oldEventSequence = client->ps.eventSequence;
 
 	memset( &pm, 0, sizeof( pm ) );
-
-	//// check for the hit-scan gauntlet, don't let the action
-	//// go through as an attack unless it actually hits something
-	
-	// gauntletHit will be handled elsewhere
-	//if ( client->ps.weapon == WP_GAUNTLET && !(ucmd->buttons & Button_Talk) &&
-	//	 (ucmd->buttons & Button_Attack) && client->ps.weaponTime <= 0 ) 
-	//{
-	//	pm.gauntletHit = CheckGauntletAttack( player );
-	//}
 
 	if ( player->flags & FL_FORCE_GESTURE ) 
 	{
@@ -995,8 +978,15 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	Vector amax = playerOrigin + playerMaxs;
 	Vector amin = playerOrigin + playerMins;
 
+	// Set state origin for linking
+	// https://github.com/Admer456/ioq3-burek/issues/34
+	player->SetOrigin( playerOrigin );
+
 	// link entity now, after any personal teleporters have been used
 	gameImports->LinkEntity( player );
+
+	// Unset it
+	player->SetOrigin( Vector::Zero );
 
 	amax.CopyToArray( player->GetShared()->absmax );
 	amin.CopyToArray( player->GetShared()->absmin );
