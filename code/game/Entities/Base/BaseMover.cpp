@@ -45,10 +45,26 @@ void BaseMover::Think()
 	if ( freeAfterEvent )
 		return;
 
+	if ( GetState()->pos.trType == TR_INTERPOLATE && GetState()->apos.trType == TR_INTERPOLATE )
+	{
+		CustomMoverThink();
+	}
+	else
+	{
+		MoverThink();
+	}
+
+	SetOrigin( GetCurrentOrigin() );
+
+	//Vector angles;
+	//BG_EvaluateTrajectory( &GetState()->apos, level.time, angles );
+	//SetAngles( angles );
+	//SetCurrentAngles( angles );
+
+	gameImports->LinkEntity( this );
+
 	if ( !shared.r.linked && neverFree )
 		return;
-
-	MoverThink();
 
 	if ( nullptr == thinkFunction )
 	{
@@ -126,6 +142,44 @@ void BaseMover::MoverThink()
 			}
 		}
 	}
+}
+
+void BaseMover::CustomMoverThink()
+{
+	BaseQuakeEntity* obstacle{ nullptr };
+
+	trajectory_t* pos = &GetState()->pos;
+	trajectory_t* apos = &GetState()->apos;
+
+	float delta = (level.time - level.previousTime) * 0.001f;
+
+	if ( pos->trType == TR_INTERPOLATE )
+	{
+		Vector currentPos = pos->trBase;
+		currentPos += velocity * delta;
+
+		currentPos.CopyToArray( pos->trBase );
+		(velocity * delta).CopyToArray( pos->trDelta );
+		pos->trDuration = delta * 1000;
+
+		SetOrigin( currentPos );
+		SetCurrentOrigin( currentPos );
+	}
+
+	if ( apos->trType == TR_INTERPOLATE )
+	{
+		Vector currentPos = apos->trBase;
+		currentPos += angularVelocity * delta;
+
+		currentPos.CopyToArray( apos->trBase );
+		(angularVelocity * delta).CopyToArray( apos->trDelta );
+		pos->trDuration = delta * 1000;
+
+		SetAngles( currentPos );
+		SetCurrentAngles( currentPos );
+	}
+
+	MoverPush( velocity * delta, angularVelocity * delta, &obstacle );
 }
 
 /*

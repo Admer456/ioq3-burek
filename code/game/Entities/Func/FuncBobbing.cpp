@@ -42,6 +42,6 @@ void FuncBobbing::Spawn()
 void FuncBobbing::Think()
 {
 	BaseMover::Think();
-	SetOrigin( GetCurrentOrigin() );
-	gameImports->LinkEntity( this );
+	//SetOrigin( GetCurrentOrigin() );
+	//gameImports->LinkEntity( this );
 }
