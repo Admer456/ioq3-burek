@@ -60,6 +60,35 @@ void FuncDoorRotating::DoorUse( IEntity* activator, IEntity* caller, float value
 	Disable();
 }
 
+void FuncDoorRotating::Blocked( IEntity* other )
+{
+	Vector curAngles = GetCurrentAngles();
+	Vector targetAngles{ Vector::Zero };
+	Vector deltaAngles{ Vector::Zero };
+
+	if ( doorState == Door_Opened || doorState == Door_Closed )
+		return;
+
+	// If it WAS opening, then let's shift it in reverse
+	if ( doorState == Door_Opening )
+	{
+		angularVelocity = rotationDir * -rotationSpeed;
+		targetAngles = anglesStart;
+		doorState = Door_Closing;
+	}
+	else //if ( doorState == Door_Closing )
+	{
+		angularVelocity = rotationDir * rotationSpeed;
+		targetAngles = anglesEnd;
+		doorState = Door_Opening;
+	}
+
+	deltaAngles = targetAngles - curAngles;
+
+	float requiredTime = deltaAngles.y / rotationSpeed;
+	nextThink = level.time * 0.001f + requiredTime;
+}
+
 void FuncDoorRotating::UpdateDoorState()
 {
 	switch ( doorState )
@@ -79,7 +108,7 @@ void FuncDoorRotating::OnClose()
 	anglesEnd.CopyToArray( tr->trBase );
 	(rotationDir * -rotationAngle).CopyToArray( tr->trDelta );
 	tr->trTime = level.time;
-	tr->trDuration = requiredTime * 1000 + level.time;
+	tr->trDuration = requiredTime * 1000;
 	tr->trType = TR_INTERPOLATE;
 
 	angularVelocity = rotationDir * -rotationSpeed;
@@ -100,6 +129,8 @@ void FuncDoorRotating::OnCloseFinished()
 	anglesStart.CopyToArray( GetState()->apos.trBase );
 	GetState()->apos.trTime = TR_INTERPOLATE;
 
+	angularVelocity = Vector::Zero;
+
 	doorState = Door_Closed;
 }
 
@@ -111,7 +142,7 @@ void FuncDoorRotating::OnOpen()
 	anglesStart.CopyToArray( tr->trBase );
 	(rotationDir * rotationAngle).CopyToArray( tr->trDelta );
 	tr->trTime = level.time;
-	tr->trDuration = requiredTime * 1000 + level.time;
+	tr->trDuration = requiredTime * 1000;
 	tr->trType = TR_INTERPOLATE;
 
 	angularVelocity = rotationDir * rotationSpeed;
@@ -128,6 +159,8 @@ void FuncDoorRotating::OnOpenFinished()
 
 	anglesEnd.CopyToArray( GetState()->apos.trBase );
 	GetState()->apos.trTime = TR_INTERPOLATE;
+
+	angularVelocity = Vector::Zero;
 
 	doorState = Door_Opened;
 }

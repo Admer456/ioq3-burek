@@ -179,7 +179,8 @@ void BaseMover::CustomMoverThink()
 		SetCurrentAngles( currentPos );
 	}
 
-	MoverPush( velocity * delta, angularVelocity * delta, &obstacle );
+	if ( !MoverPush( velocity * delta, angularVelocity * delta, &obstacle ) )
+		Blocked( obstacle );
 }
 
 /*

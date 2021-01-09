@@ -16,10 +16,12 @@ namespace Entities
 		constexpr static uint32_t SF_Reverse = 1 << 2;
 
 		void		Spawn() override;
+		
+		void		Blocked( IEntity* other ) override;
 
 		void		DoorThink();
 		void		DoorUse( IEntity* activator, IEntity* caller, float value );
-		
+
 		void		UpdateDoorState();
 
 		void		OnClose();
