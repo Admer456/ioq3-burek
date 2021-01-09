@@ -207,6 +207,9 @@
     <ClInclude Include="..\..\code\game\Entities\Func\FuncDoorRotating.hpp">
       <Filter>Sources\Entities\Func</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Func\FuncBreakable.hpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -393,6 +396,9 @@
       <Filter>Sources\Entities\Func</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Func\FuncDoorRotating.cpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Func\FuncBreakable.cpp">
       <Filter>Sources\Entities\Func</Filter>
     </ClCompile>
   </ItemGroup>

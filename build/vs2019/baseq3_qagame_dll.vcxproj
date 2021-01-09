@@ -199,6 +199,7 @@
     <ClInclude Include="..\..\code\game\Entities\Env\EnvExplosion.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Env\EnvSprite.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncBobbing.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Func\FuncBreakable.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncButton.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncDoorRotating.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncRotating.hpp" />
@@ -250,6 +251,7 @@
     <ClCompile Include="..\..\code\game\Entities\Env\EnvExplosion.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Env\EnvSprite.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncBobbing.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Func\FuncBreakable.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncButton.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncDoor.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncDoorRotating.cpp" />
