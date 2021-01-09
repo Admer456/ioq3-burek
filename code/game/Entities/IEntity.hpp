@@ -27,7 +27,7 @@ namespace Entities
 		virtual void				PostSpawn() = 0; // Gets called after all entities have spawned
 
 		virtual void				Precache() = 0;
-		virtual void				KeyValue() = 0;
+		virtual void				ParseKeyvalues() = 0;
 
 		virtual void				Think() = 0;
 		virtual void				Use( IEntity* activator, IEntity* caller, float value ) = 0;

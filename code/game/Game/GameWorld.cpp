@@ -277,7 +277,7 @@ void GameWorld::SpawnWorldspawn()
 	ent->className = "worldspawn";
 	ent->spawnArgs = worldLib;
 
-	ent->KeyValue();
+	ent->ParseKeyvalues();
 	ent->Spawn();
 
 	auto nothingEnt = CreateEntity<BaseQuakeEntity>( ENTITYNUM_NONE );
@@ -323,7 +323,7 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 
 	ent->spawnArgs = &map;
 
-	ent->KeyValue();
+	ent->ParseKeyvalues();
 	ent->Precache();
 	ent->Spawn();
 }
@@ -1642,17 +1642,4 @@ char* GameWorld::AddKeyvalueToken( const char* string )
 	level.numSpawnVarChars += l + 1;
 
 	return dest;
-}
-
-void GameWorld::AssignKeyValuesToEntities()
-{
-	for ( auto& ent : gEntities )
-	{
-		if ( ent == nullptr )
-		{
-			continue;
-		}
-
-		ent->KeyValue();
-	}
 }

@@ -20,10 +20,7 @@ namespace Entities
 		virtual void	PostSpawn() override { return; } // Gets called after all entities have spawned
 
 		virtual void	Precache() override { return; }
-
-		virtual void	PreKeyValue();
-		virtual void	PostKeyValue();
-		virtual void	KeyValue() override;
+		virtual void	ParseKeyvalues() override;
 
 		virtual void	Think() override;
 		virtual void	Use( IEntity* activator, IEntity* caller, float value ) override;
@@ -39,7 +36,6 @@ namespace Entities
 
 		virtual void	OnPlayerDie( int clientNum ) { return; } // Called when a player dies
 
-
 		// All entities have an entity index
 		unsigned int	GetEntityIndex() const
 		{
@@ -51,42 +47,36 @@ namespace Entities
 			entityIndex = index;
 		}
 
-		// Every entity that has custom keyvalues will need to declare this too
-		// These are basically some sort of keyvalue handlers, and are used to
-		// set & get keyvalues
-		static KeyValueElement keyValues[];
-
-		// Every entity will have its own sets of keyvalues,
-		// for example:
+		// Every entity will have its own sets of keyvalues, for example:
 		// "classname" "func_rotating"
 		// "speed" "200"
 		// Each pair is stored in here
 		KeyValueLibrary* spawnArgs;
 
-		entityState_t* GetState() override
+		entityState_t*	GetState() override
 		{
 			return &shared.s;
 		}
 
-		entityShared_t* GetShared() override
+		entityShared_t*	GetShared() override
 		{
 			return &shared.r;
 		}
 
-		sharedEntity_t* GetSharedEntity() override
+		sharedEntity_t*	GetSharedEntity() override
 		{
 			return &shared;
 		}
 
 		// Getters and setters
 		// name
-		const char* GetName() const override;
+		const char*		GetName() const override;
 
 		// classname, for whatever reason
-		const char* GetClassname() const override;
+		const char*		GetClassname() const override;
 
 		// target
-		const char* GetTarget() const override;
+		const char*		GetTarget() const override;
 
 		// origin
 		Vector			GetOrigin() const override;
@@ -116,6 +106,10 @@ namespace Entities
 
 		// (mins + maxs)/2
 		Vector			GetAverageOrigin() const override;
+
+		// Gets and sets the model index
+		int				GetModel();
+		void			SetModel( const char* modelPath );
 
 		// spawnflags
 		// TODO: create a class to store bitfields in it
@@ -157,9 +151,10 @@ namespace Entities
 		std::string		targetName;
 		std::string		target;
 
-		// Transform
-		Vector			origin{ Vector::Zero };
-		Vector			angles{ Vector::Zero };
+		// These are in entityState and entityShared
+		//// Transform
+		//Vector			origin{ Vector::Zero };
+		//Vector			angles{ Vector::Zero };
 		Vector			velocity{ Vector::Zero };
 		Vector			angularVelocity{ Vector::Zero };
 
@@ -203,13 +198,5 @@ namespace Entities
 		unsigned int	entityIndex{ EntityIndexNotSet };
 
 		sharedEntity_t	shared;
-	};
-
-	// Test base entity, will move a brush up'n'down
-	class BaseEntity_Test : public BaseQuakeEntity
-	{
-	public: 
-		void			Spawn() override;
-		void			MyThink();
 	};
 }

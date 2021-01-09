@@ -701,7 +701,7 @@ void BasePlayer::Teleport( const Vector& toOrigin, const Vector& toAngles )
 	IEntity* tent;
 	bool noAngles;
 
-	noAngles = (angles[0] > 999999.0);
+	noAngles = (GetCurrentAngles()[0] > 999999.0);
 	// use temp events at source and destination to prevent the effect
 	// from getting dropped by a second player event
 	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) 
@@ -709,7 +709,7 @@ void BasePlayer::Teleport( const Vector& toOrigin, const Vector& toAngles )
 		tent = gameWorld->CreateTempEntity( client->ps.origin, EV_PLAYER_TELEPORT_OUT );
 		tent->GetState()->clientNum = GetState()->clientNum;
 
-		tent = gameWorld->CreateTempEntity( origin, EV_PLAYER_TELEPORT_IN );
+		tent = gameWorld->CreateTempEntity( GetCurrentOrigin(), EV_PLAYER_TELEPORT_IN );
 		tent->GetState()->clientNum = GetState()->clientNum;
 	}
 
@@ -721,7 +721,7 @@ void BasePlayer::Teleport( const Vector& toOrigin, const Vector& toAngles )
 	if ( !noAngles ) 
 	{
 		// spit the player out
-		AngleVectors( angles, client->ps.velocity, NULL, NULL );
+		AngleVectors( client->ps.viewangles, client->ps.velocity, NULL, NULL );
 		VectorScale( client->ps.velocity, 400, client->ps.velocity );
 		client->ps.pm_time = 160;		// hold time
 		client->ps.pm_flags |= PMF_TIME_KNOCKBACK;

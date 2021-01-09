@@ -15,110 +15,44 @@ using namespace Components;
 
 DefineEntityClass( "func_nothing", BaseQuakeEntity, IEntity );
 
-KeyValueElement BaseQuakeEntity::keyValues[] =
-{
-	//KeyValueElement( "origin",	offsetof( BaseQuakeEntity, shared.s.origin ),	KVHandlers::Vector ),
-	//KeyValueElement( "angles",	0,												KVHandlers::Vector ),
-	KeyValueElement( "spawnflags",	offsetof( BaseQuakeEntity, spawnFlags ),		KVHandlers::Int ),
-	KeyValueElement( "spawnflags2", offsetof( BaseQuakeEntity, spawnFlagsExtra ),	KVHandlers::Int ),
-	KeyValueElement()
-};
-
 void BaseQuakeEntity::Spawn()
 {
 	shared.s.number = GetEntityIndex();
 
-	targetName = spawnArgs->GetCString( "targetname", "" );
-	target = spawnArgs->GetCString( "target", "" );
-
-	const char* model = spawnArgs->GetCString( "model", nullptr );
-	Vector keyOrigin = spawnArgs->GetVector( "origin", Vector::Zero );
-	Vector keyAngles = spawnArgs->GetVector( "angles", Vector::Zero );
-
-	//engine->Print( va( "Spawned a BaseQuakeEntity at %i\n", GetEntityIndex() ) );
-
 	GetShared()->ownerNum = ENTITYNUM_NONE;
 	GetState()->groundEntityNum = ENTITYNUM_NONE;
 
-	keyOrigin.CopyToArray( shared.s.origin );
-	keyOrigin.CopyToArray( shared.r.currentOrigin );
-	keyOrigin.CopyToArray( shared.s.pos.trBase );
-	keyAngles.CopyToArray( shared.s.angles );
-
 	shared.s.eType = ET_GENERAL;
-
-	if ( !model )
-	{
-		//engine->Print( "This entity has no model\n" );
-	}
-	else
-	{
-		//engine->Print( "Setting model " );
-		//engine->Print( model );
-		//engine->Print( "\n" );
-
-		if ( model[0] == '*' )
-		{
-			gameImports->SetBrushModel( this, model );
-		}
-
-		//else
-		//{
-		//	engine->Print( "This is not a brush model, not yet supported\n" );
-		//}
-	}
 
 	shared.r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	gameImports->LinkEntity( this );
 	shared.s.pos.trType = TR_STATIONARY;
-
-	//engine->Print( va( "Spawned a BaseQuakeEntity at pos %3.2f %3.2f %3.2f\n", keyOrigin.x, keyOrigin.y, keyOrigin.z ) );
-
-	VectorCopy( shared.s.origin, shared.s.pos.trBase );
-	VectorCopy( shared.s.origin, shared.r.currentOrigin );
 }
 
-void BaseQuakeEntity::PreKeyValue()
+void BaseQuakeEntity::ParseKeyvalues()
 {
+	// target stuff
+	targetName = spawnArgs->GetCString( "targetname", "" );
+	target = spawnArgs->GetCString( "target", "" );
 
-}
+	// model
+	SetModel( spawnArgs->GetCString( "model", nullptr ) );
 
-void BaseQuakeEntity::PostKeyValue()
-{
+	// origin
+	Vector keyOrigin = spawnArgs->GetVector( "origin", Vector::Zero );
+	SetOrigin( keyOrigin );
+	SetCurrentOrigin( keyOrigin );
+	keyOrigin.CopyToArray( shared.s.pos.trBase );
 	
-}
+	// angles
+	Vector keyAngles = spawnArgs->GetVector( "angles", Vector::Zero );
+	SetAngles( keyAngles );
+	SetCurrentAngles( keyAngles );
 
-void BaseQuakeEntity::KeyValue()
-{
-	auto& map = spawnArgs->GetMap();
+	// spawnflags
+	spawnFlags = spawnArgs->GetInt( "spawnflags", 0 );
+	spawnFlagsExtra = spawnArgs->GetInt( "spawnflags2", 0 );
 
-	PreKeyValue();
-
-	// For every keyvalue string pair
-	for ( auto& keyValue : map )
-	{
-		// Check to see if we can dispatch any of our keyvalues on it
-		for ( auto& element : keyValues )
-		{
-			// Skip this element if it's already handled
-			if ( element.IsHandled() )
-				continue;
-
-			// Try dispatching the keyvalue
-			int result = element.KeyValue( keyValue.first.c_str(), keyValue.second.c_str(), this );
-		
-			// If it's a success, then stop processing this specific keyvalue
-			if ( result == KVHandlers::Success )
-				break;
-		}
-	}
-
-	PostKeyValue();
-}
-
-void BaseQuakeEntity::Remove()
-{
-	flags |= FL_REMOVE_ME;
 }
 
 void BaseQuakeEntity::Think()
@@ -156,6 +90,11 @@ void BaseQuakeEntity::Touch( IEntity* other, trace_t* trace )
 {
 	if ( touchFunction )
 		(this->*touchFunction)( other, trace );
+}
+
+void BaseQuakeEntity::Remove()
+{
+	flags |= FL_REMOVE_ME;
 }
 
 const char* BaseQuakeEntity::GetName() const
@@ -238,6 +177,30 @@ Vector BaseQuakeEntity::GetAverageOrigin() const
 	const Vector& mins = GetMins();
 	const Vector& maxs = GetMaxs();
 	return (mins + maxs) / 2.0f;
+}
+
+int BaseQuakeEntity::GetModel()
+{
+	return shared.s.modelindex;
+}
+
+void BaseQuakeEntity::SetModel( const char* modelPath )
+{
+	if ( !modelPath )
+	{
+		shared.s.modelindex = 0;
+	}
+	else
+	{
+		if ( modelPath[0] == '*' )
+		{
+			gameImports->SetBrushModel( this, modelPath );
+		}
+		else
+		{
+			shared.s.modelindex = G_ModelIndex( const_cast<char*>(modelPath) );
+		}
+	}
 }
 
 const int& BaseQuakeEntity::GetSpawnflags() const
@@ -561,20 +524,4 @@ bool BaseQuakeEntity::CheckAndClearEvents()
 	}
 
 	return false;
-}
-
-void BaseEntity_Test::Spawn()
-{
-	SetThink( &BaseEntity_Test::MyThink );
-}
-
-void BaseEntity_Test::MyThink()
-{
-	static float cycle = 0.0f;
-	static float originalZ = 0;
-	static float iterator = 0.008f;
-
-	cycle += iterator;
-	if ( fabs( cycle ) > 1.000f )
-		iterator *= -1.0f;
 }

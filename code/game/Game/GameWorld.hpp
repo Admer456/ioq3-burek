@@ -218,10 +218,6 @@ public:
 
 	char*			AddKeyvalueToken( const char* string );
 
-	// After parsing, the game world will give each 
-	// entity its respective list of keyvalue pairs
-	void			AssignKeyValuesToEntities();
-
 	// All the entity keyvalue pairs in the map
 	// Each KV library represents one entity
 	std::vector<KeyValueLibrary> keyValueLibraries;
