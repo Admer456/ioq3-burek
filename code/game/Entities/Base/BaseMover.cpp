@@ -75,8 +75,6 @@ void BaseMover::MoverThink()
 
 	obstacle = nullptr;
 
-	//engine->Print( va( "mins %3.2f maxs %3.2f\n", shared.r.absmin[2], shared.r.absmax[2] ) );
-
 	// make sure all team slaves can move before committing
 	// any moves or calling any think functions
 	// if the move is blocked, all moved objects will be backed out
@@ -91,7 +89,6 @@ void BaseMover::MoverThink()
 
 		if ( !part->MoverPush( move, amove, &obstacle ) )
 		{
-			engine->Print( "BLOCKED\n" );
 			break;	// move was blocked
 		}
 	}
@@ -109,7 +106,7 @@ void BaseMover::MoverThink()
 		}
 
 		// if the pusher has a "blocked" function, call it
-		part->Blocked( obstacle );
+		Blocked( obstacle );
 		return;
 	}
 

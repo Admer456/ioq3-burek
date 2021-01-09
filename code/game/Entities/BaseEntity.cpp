@@ -465,8 +465,6 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 
 	block = static_cast<BaseQuakeEntity*>(check)->TestEntityPosition();
 
-	engine->Print( block ? "BLOCKED\n" : "NOT BLOCKED\n" );
-
 	if ( !block ) 
 	{
 		// pushed ok
