@@ -18,7 +18,8 @@ void EnvExplosion::Spawn()
 	BaseQuakeEntity::Spawn();
 
 	explosionDamage = spawnArgs->GetFloat( "damage", 200.0f );
-	explosionRadius = spawnArgs->GetFloat( "radius", 512.0f );
+	explosionRadius = spawnArgs->GetFloat( "radius", 200.0f );
+	spawnFlags = spawnArgs->GetInt( "spawnflags", 0 );
 }
 
 void EnvExplosion::Use( IEntity* activator, IEntity* caller, float value )
@@ -67,7 +68,7 @@ void EnvExplosion::RadiusDamage( float damageAmount, float radius )
 
 		// Calculate the entity's position
 		// This should work for origin-less brush ents and point ents!
-		Vector pos = ent->GetAverageOrigin() + ent->GetOrigin();
+		Vector pos = ent->GetAverageOrigin() + ent->GetCurrentOrigin();
 		float length = (GetOrigin() - pos).Length();
 
 		// If it's too far away, don't hurt
@@ -80,9 +81,9 @@ void EnvExplosion::RadiusDamage( float damageAmount, float radius )
 			length = 1.0f;
 
 		// Calculate linear damage
-		float damage = damageAmount * (length / radius);
+		float damage = damageAmount * (1.0f - (length / radius));
 
 		// Bang
-		ent->TakeDamage( activator, this, 0, damageAmount );
+		ent->TakeDamage( this, activator, 0, damage );
 	}
 }
