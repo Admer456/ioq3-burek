@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "cg_local.hpp"
 
-#define	MAX_LOCAL_ENTITIES	512
+#define	MAX_LOCAL_ENTITIES	4096 // Increased from 512 to 4096. Allocate on the heap in the future? -Admer
 localEntity_t	cg_localEntities[MAX_LOCAL_ENTITIES];
 localEntity_t	cg_activeLocalEntities;		// double linked list
 localEntity_t	*cg_freeLocalEntities;		// single linked list
@@ -283,6 +283,10 @@ void CG_AddFragment( localEntity_t *le ) {
 
 			BG_EvaluateTrajectory( &le->angles, cg.time, angles );
 			AnglesToAxis( angles, le->refEntity.axis );
+
+			for ( int i = 0; i < 3; i++ )
+				for ( int j = 0; j < 3; j++ )
+					le->refEntity.axis[i][j] *= le->refEntity.radius;
 		}
 
 		trap_R_AddRefEntityToScene( &le->refEntity );

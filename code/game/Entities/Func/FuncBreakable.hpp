@@ -24,6 +24,8 @@ namespace Entities
 		constexpr static uint32_t SF_TriggerOnly = 1 << 0;
 		// Twitch when damaged
 		constexpr static uint32_t SF_Twitch = 1 << 1;
+		// Gib direction = attack direction
+		constexpr static uint32_t SF_AttackDirection = 1 << 2;
 
 		constexpr static const char* BreakGibs[Material_Max*3]
 		{
@@ -68,6 +70,7 @@ namespace Entities
 		void		Break();
 
 	protected:
+		Vector		gibDirection{ Vector::Zero };
 		byte		materialType{};
 
 		qhandle_t	gibModels[3];

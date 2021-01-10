@@ -15,25 +15,33 @@ public:
 		re = &le->refEntity;
 
 		le->leType = LE_FRAGMENT;
+		le->leFlags = LEF_TUMBLE;
 		le->startTime = cg.time;
 		le->endTime = le->startTime + 30000 + random() * 10000;
 
 		origin.CopyToArray( re->origin );
 		origin.CopyToArray( le->pos.trBase );
 
-		AxisCopy( axisDefault, re->axis );
+		Vector randomAngles = CRandomVector( Vector( 180, 180, 180 ) );
+		AnglesToAxis( randomAngles, re->axis );
+
 		re->hModel = model;
 
 		le->pos.trType = TR_GRAVITY;
 		velocity.CopyToArray( le->pos.trDelta );
 		le->pos.trTime = cg.time;
+
+		le->angles.trType = TR_LINEAR;
+		le->angles.trTime = cg.time + random() * 2000;
+		le->angles.trDelta[0] = crandom() * 180.0f;
+		le->angles.trDelta[1] = crandom() * 180.0f;
+		le->angles.trDelta[2] = crandom() * 180.0f;
+
 		le->bounceFactor = 0.6f;
 
 		float randomScale = 2.0f + crandom()*1.5f;
 
-		for ( int i = 0; i < 3; i++ )
-			for ( int j = 0; j < 3; j++ )
-				re->axis[i][j] *= randomScale;
+		re->radius = randomScale;
 	}
 
 	Vector CRandomVector( Vector max )
@@ -48,6 +56,8 @@ public:
 
 	void Parse( centity_t* cent, Vector position )
 	{
+		CG_Printf( "CE_GibSpan from %i\n", cent->currentState.number );
+
 		EventData ed( cent->currentState );
 
 		Vector mins = ed.vparm;

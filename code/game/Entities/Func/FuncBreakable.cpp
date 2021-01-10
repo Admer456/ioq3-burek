@@ -48,6 +48,8 @@ void FuncBreakable::TakeDamage( IEntity* attacker, IEntity* inflictor, int damag
 
 	health -= damage;
 
+	gibDirection = inflictor->GetCurrentOrigin() - GetOrigin();
+
 	/*
 	if ( spawnFlags & SF_Twitch )
 	{
@@ -67,15 +69,15 @@ void FuncBreakable::Break()
 
 	ed.id = CE_GibSpan;
 
-	ed.parm = 30; // 30 gibs
+	ed.parm = spawnArgs->GetInt( "gibs", 30 ); // 30 gibs
 	ed.parm2 = 3; // 3 different models
 	ed.parm3 = 0; // type 0 = model
-	ed.fparm = 0.0f; // pitch
-	ed.fparm2 = 0.0f; // yaw
-	ed.fparm3 = -100.0f; // force -100.0f = random dir at intensity 100
+	ed.fparm = gibDirection.ToAngles().x; // pitch
+	ed.fparm2 = gibDirection.ToAngles().y; // yaw
+	ed.fparm3 = spawnArgs->GetFloat( "force", -100.0f ); // force -100.0f = random dir at intensity 100
 
-	ed.vparm = GetMins() + Vector(5,5,5);
-	ed.vparm2 = GetMaxs() - Vector(5,5,5);
+	ed.vparm = GetMins() + Vector(3,3,3);
+	ed.vparm2 = GetMaxs() - Vector(3,3,3);
 
 	ed.model = gibModels[0];
 
