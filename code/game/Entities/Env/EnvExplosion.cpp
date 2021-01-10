@@ -11,11 +11,11 @@
 
 using namespace Entities;
 
-DefineEntityClass( "env_explosion", EnvExplosion, BaseQuakeEntity );
+DefineEntityClass( "env_explosion", EnvExplosion, BaseEntity );
 
 void EnvExplosion::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 
 	explosionDamage = spawnArgs->GetFloat( "damage", 200.0f );
 	explosionRadius = spawnArgs->GetFloat( "radius", 200.0f );
@@ -24,7 +24,7 @@ void EnvExplosion::Spawn()
 
 void EnvExplosion::Use( IEntity* activator, IEntity* caller, float value )
 {
-	this->activator = static_cast<BaseQuakeEntity*>( activator );
+	this->activator = static_cast<BaseEntity*>( activator );
 	Explode();
 }
 

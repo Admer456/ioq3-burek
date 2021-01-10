@@ -3,7 +3,7 @@
 // Legacy Q3 push stuff
 struct pushed_t
 {
-	Entities::BaseQuakeEntity* ent;
+	Entities::BaseEntity* ent;
 	Vector	origin;
 	Vector	angles;
 	float	deltayaw;
@@ -15,9 +15,9 @@ extern pushed_t* pushed_p;
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 
-	class BaseMover : public BaseQuakeEntity
+	class BaseMover : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();
@@ -29,6 +29,6 @@ namespace Entities
 
 		void MoverThink();
 		void CustomMoverThink();
-		bool MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle );
+		bool MoverPush( Vector move, Vector amove, BaseEntity** obstacle );
 	};
 }

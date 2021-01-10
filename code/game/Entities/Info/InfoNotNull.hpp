@@ -3,9 +3,9 @@
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 
-	class InfoNotNull : public BaseQuakeEntity
+	class InfoNotNull : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();

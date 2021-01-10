@@ -11,11 +11,11 @@
 
 using namespace Entities;
 
-DefineEntityClass( "env_sprite", EnvSprite, BaseQuakeEntity );
+DefineEntityClass( "env_sprite", EnvSprite, BaseEntity );
 
 void EnvSprite::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 
 	GetState()->eType = ET_SPRITE;
 	GetState()->modelindex = spriteHandle;

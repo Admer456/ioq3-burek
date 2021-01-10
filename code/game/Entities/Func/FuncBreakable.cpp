@@ -12,11 +12,13 @@
 
 using namespace Entities;
 
+DefineEntityClass( "func_breakable", FuncBreakable, BaseEntity );
+
 void FuncBreakable::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 
-
+	// TODO: stuff
 }
 
 void FuncBreakable::Precache()
@@ -33,7 +35,7 @@ void FuncBreakable::Precache()
 
 void FuncBreakable::Use( IEntity* activator, IEntity* caller, float value )
 {
-
+	Break();
 }
 
 void FuncBreakable::TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage )

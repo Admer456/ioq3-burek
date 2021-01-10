@@ -11,11 +11,11 @@
 
 using namespace Entities;
 
-DefineEntityClass( "func_toggle", FuncToggle, BaseQuakeEntity );
+DefineEntityClass( "func_toggle", FuncToggle, BaseEntity );
 
 void FuncToggle::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 
 	SetUse( &FuncToggle::ToggleUse );
 	originalModelIndex = GetState()->modelindex;

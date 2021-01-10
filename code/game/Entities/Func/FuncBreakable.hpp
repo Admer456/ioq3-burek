@@ -13,9 +13,9 @@ enum BreakMaterialTypes
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 
-	class FuncBreakable : public BaseQuakeEntity
+	class FuncBreakable : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();

@@ -3,14 +3,14 @@
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 	
 	// A generic button
 	// Triggers something when:
 	// - used by the player
 	// - shot (if health > 0)
 	// - touched (if the flag is set)
-	class FuncButton : public BaseQuakeEntity
+	class FuncButton : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();

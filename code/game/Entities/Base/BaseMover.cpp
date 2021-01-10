@@ -12,14 +12,14 @@
 
 using namespace Entities;
 
-DefineAbstractEntityClass( BaseMover, BaseQuakeEntity );
+DefineAbstractEntityClass( BaseMover, BaseEntity );
 
 pushed_t pushed[MAX_GENTITIES];
 pushed_t* pushed_p;
 
 void BaseMover::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 
 	GetState()->eType = ET_MOVER;
 
@@ -87,7 +87,7 @@ void BaseMover::MoverThink()
 
 	Vector		move, amove;
 	BaseMover* part;
-	BaseQuakeEntity* obstacle;
+	BaseEntity* obstacle;
 	Vector		origin, angles;
 
 	obstacle = nullptr;
@@ -146,7 +146,7 @@ void BaseMover::MoverThink()
 
 void BaseMover::CustomMoverThink()
 {
-	BaseQuakeEntity* obstacle{ nullptr };
+	BaseEntity* obstacle{ nullptr };
 
 	trajectory_t* pos = &GetState()->pos;
 	trajectory_t* apos = &GetState()->apos;
@@ -193,10 +193,10 @@ otherwise riders would continue to slide.
 If false is returned, *obstacle will be the blocking entity
 ============
 */
-bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle )
+bool BaseMover::MoverPush( Vector move, Vector amove, BaseEntity** obstacle )
 {
 	int i, e;
-	BaseQuakeEntity* check;
+	BaseEntity* check;
 	vec3_t mins, maxs;
 	pushed_t* p;
 	int entityList[MAX_GENTITIES];
@@ -259,7 +259,7 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseQuakeEntity** obstacle
 	// see if any solid entities are inside the final position
 	for ( e = 0; e < listedEntities; e++ )
 	{
-		check = static_cast<BaseQuakeEntity*>(gEntities[entityList[e]]);
+		check = static_cast<BaseEntity*>(gEntities[entityList[e]]);
 		
 		if ( nullptr == check )
 			continue;

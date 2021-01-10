@@ -2,7 +2,7 @@
 
 namespace Entities
 {
-	class TestModel : public BaseQuakeEntity
+	class TestModel : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();

@@ -13,9 +13,9 @@
 using namespace Entities;
 using namespace Components;
 
-DefineEntityClass( "func_nothing", BaseQuakeEntity, IEntity );
+DefineEntityClass( "func_nothing", BaseEntity, IEntity );
 
-void BaseQuakeEntity::Spawn()
+void BaseEntity::Spawn()
 {
 	shared.s.number = GetEntityIndex();
 
@@ -29,7 +29,7 @@ void BaseQuakeEntity::Spawn()
 	shared.s.pos.trType = TR_STATIONARY;
 }
 
-void BaseQuakeEntity::ParseKeyvalues()
+void BaseEntity::ParseKeyvalues()
 {
 	// target stuff
 	targetName = spawnArgs->GetCString( "targetname", "" );
@@ -57,7 +57,7 @@ void BaseQuakeEntity::ParseKeyvalues()
 	health = spawnArgs->GetFloat( "health", 100.0f );
 }
 
-void BaseQuakeEntity::Think()
+void BaseEntity::Think()
 {
 	if ( CheckAndClearEvents() )
 		return;
@@ -82,111 +82,111 @@ void BaseQuakeEntity::Think()
 	(this->*thinkFunction)();
 }
 
-void BaseQuakeEntity::Use( IEntity* activator, IEntity* caller, float value )
+void BaseEntity::Use( IEntity* activator, IEntity* caller, float value )
 {
 	if ( useFunction )
 		(this->*useFunction)( activator, caller, value );
 }
 
-void BaseQuakeEntity::Touch( IEntity* other, trace_t* trace )
+void BaseEntity::Touch( IEntity* other, trace_t* trace )
 {
 	if ( touchFunction )
 		(this->*touchFunction)( other, trace );
 }
 
-void BaseQuakeEntity::Remove()
+void BaseEntity::Remove()
 {
 	flags |= FL_REMOVE_ME;
 }
 
-const char* BaseQuakeEntity::GetName() const
+const char* BaseEntity::GetName() const
 {
 	return targetName.c_str();
 }
 
-const char* BaseQuakeEntity::GetClassname() const
+const char* BaseEntity::GetClassname() const
 {
 	return className.c_str();
 }
 
-const char* BaseQuakeEntity::GetTarget() const
+const char* BaseEntity::GetTarget() const
 {
 	return target.c_str();
 }
 
-Vector BaseQuakeEntity::GetOrigin() const
+Vector BaseEntity::GetOrigin() const
 {
 	return Vector( shared.s.origin );
 }
 
-void BaseQuakeEntity::SetOrigin( const Vector& newOrigin )
+void BaseEntity::SetOrigin( const Vector& newOrigin )
 {
 	newOrigin.CopyToArray( shared.s.origin );
 }
 
-Vector BaseQuakeEntity::GetCurrentOrigin() const
+Vector BaseEntity::GetCurrentOrigin() const
 {
 	return Vector( shared.r.currentOrigin );
 }
 
-void BaseQuakeEntity::SetCurrentOrigin( const Vector& newOrigin )
+void BaseEntity::SetCurrentOrigin( const Vector& newOrigin )
 {
 	newOrigin.CopyToArray( shared.r.currentOrigin );
 }
 
-Vector BaseQuakeEntity::GetAngles() const
+Vector BaseEntity::GetAngles() const
 {
 	return Vector( shared.s.angles );
 }
 
-void BaseQuakeEntity::SetAngles( const Vector& newAngles )
+void BaseEntity::SetAngles( const Vector& newAngles )
 {
 	newAngles.CopyToArray( shared.s.angles );
 }
 
-Vector BaseQuakeEntity::GetCurrentAngles() const
+Vector BaseEntity::GetCurrentAngles() const
 {
 	return Vector( shared.r.currentAngles );
 }
 
-void BaseQuakeEntity::SetCurrentAngles( const Vector& newAngles )
+void BaseEntity::SetCurrentAngles( const Vector& newAngles )
 {
 	newAngles.CopyToArray( shared.r.currentAngles );
 }
 
-Vector BaseQuakeEntity::GetVelocity() const
+Vector BaseEntity::GetVelocity() const
 {
 	return shared.s.pos.trDelta;
 }
 
-void BaseQuakeEntity::SetVelocity( const Vector& newVelocity )
+void BaseEntity::SetVelocity( const Vector& newVelocity )
 {
 	newVelocity.CopyToArray( shared.s.pos.trDelta );
 }
 
-Vector BaseQuakeEntity::GetMins() const
+Vector BaseEntity::GetMins() const
 {
 	return shared.r.mins;
 }
 
-Vector BaseQuakeEntity::GetMaxs() const
+Vector BaseEntity::GetMaxs() const
 {
 	return shared.r.maxs;
 }
 
-Vector BaseQuakeEntity::GetAverageOrigin() const
+Vector BaseEntity::GetAverageOrigin() const
 {
 	const Vector& mins = GetMins();
 	const Vector& maxs = GetMaxs();
 	return (mins + maxs) / 2.0f;
 }
 
-int BaseQuakeEntity::GetModel()
+int BaseEntity::GetModel()
 {
 	return shared.s.modelindex;
 }
 
-void BaseQuakeEntity::SetModel( const char* modelPath )
+void BaseEntity::SetModel( const char* modelPath )
 {
 	if ( !modelPath )
 	{
@@ -205,32 +205,32 @@ void BaseQuakeEntity::SetModel( const char* modelPath )
 	}
 }
 
-const int& BaseQuakeEntity::GetSpawnflags() const
+const int& BaseEntity::GetSpawnflags() const
 {
 	return spawnFlags;
 }
 
-void BaseQuakeEntity::SetSpawnflags( int newFlags )
+void BaseEntity::SetSpawnflags( int newFlags )
 {
 	spawnFlags = newFlags;
 }
 
-const int& BaseQuakeEntity::GetFlags() const
+const int& BaseEntity::GetFlags() const
 {
 	return flags;
 }
 
-void BaseQuakeEntity::SetFlags( int newFlags )
+void BaseEntity::SetFlags( int newFlags )
 {
 	flags = newFlags;
 }
 
-void BaseQuakeEntity::UseTargets( IEntity* activator )
+void BaseEntity::UseTargets( IEntity* activator )
 {
 	UseTargets( activator, "target" );
 }
 
-void BaseQuakeEntity::UseTargets( IEntity* activator, const char* targetKey )
+void BaseEntity::UseTargets( IEntity* activator, const char* targetKey )
 {
 	const char* name = spawnArgs->GetCString( targetKey, "" );
 
@@ -242,7 +242,7 @@ void BaseQuakeEntity::UseTargets( IEntity* activator, const char* targetKey )
 	}
 }
 
-void BaseQuakeEntity::KillBox( bool onlyPlayers )
+void BaseEntity::KillBox( bool onlyPlayers )
 {
 	int	i, num;
 	std::vector<int> touch;
@@ -279,7 +279,7 @@ void BaseQuakeEntity::KillBox( bool onlyPlayers )
 	}
 }
 
-void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers )
+void BaseEntity::KillBox( const Vector& size, bool onlyPlayers )
 {
 	int	i, num;
 	std::vector<int> touch;
@@ -316,7 +316,7 @@ void BaseQuakeEntity::KillBox( const Vector& size, bool onlyPlayers )
 	}
 }
 
-BaseQuakeEntity* BaseQuakeEntity::TestEntityPosition()
+BaseEntity* BaseEntity::TestEntityPosition()
 {
 	trace_t	tr;
 	int	mask;
@@ -333,14 +333,14 @@ BaseQuakeEntity* BaseQuakeEntity::TestEntityPosition()
 	gameImports->Trace( &tr, shared.s.pos.trBase, shared.r.mins, shared.r.maxs, shared.s.pos.trBase, GetEntityIndex(), mask );
 	
 	if ( tr.startsolid )
-		return static_cast<BaseQuakeEntity*>( gEntities[tr.entityNum] );
+		return static_cast<BaseEntity*>( gEntities[tr.entityNum] );
 
 	return nullptr;
 }
 
 struct pushed_t
 {
-	BaseQuakeEntity* ent;
+	BaseEntity* ent;
 	Vector	origin;
 	Vector	angles;
 	float	deltayaw;
@@ -353,11 +353,11 @@ extern void G_CreateRotationMatrix( vec3_t angles, vec3_t matrix[3] );
 extern void G_TransposeMatrix( vec3_t matrix[3], vec3_t transpose[3] );
 extern void G_RotatePoint( vec3_t point, vec3_t matrix[3] );
 
-bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amove )
+bool BaseEntity::TryPushingEntity( IEntity* check, Vector move, Vector amove )
 {
 	vec3_t matrix[3], transpose[3];
 	vec3_t org, org2, move2;
-	BaseQuakeEntity* block;
+	BaseEntity* block;
 	BasePlayer* player{ nullptr };
 
 	if ( check->IsClass( BasePlayer::ClassInfo ) )
@@ -378,7 +378,7 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 		G_Error( "pushed_p > &pushed[MAX_GENTITIES]" );
 	}
 
-	pushed_p->ent = static_cast<BaseQuakeEntity*>( check );
+	pushed_p->ent = static_cast<BaseEntity*>( check );
 	VectorCopy( check->GetState()->pos.trBase, pushed_p->origin );
 	VectorCopy( check->GetState()->apos.trBase, pushed_p->angles );
 	if ( player ) 
@@ -428,7 +428,7 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 		check->GetState()->groundEntityNum = ENTITYNUM_NONE;
 	}
 
-	block = static_cast<BaseQuakeEntity*>(check)->TestEntityPosition();
+	block = static_cast<BaseEntity*>(check)->TestEntityPosition();
 
 	if ( !block ) 
 	{
@@ -460,7 +460,7 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 	}
 
 	VectorCopy( (pushed_p - 1)->angles, check->GetState()->apos.trBase );
-	block = static_cast<BaseQuakeEntity*>(check)->TestEntityPosition();
+	block = static_cast<BaseEntity*>(check)->TestEntityPosition();
 
 	if ( !block ) 
 	{
@@ -473,7 +473,7 @@ bool BaseQuakeEntity::TryPushingEntity( IEntity* check, Vector move, Vector amov
 	return false;
 }
 
-void BaseQuakeEntity::AddEvent( int event, int eventParameter )
+void BaseEntity::AddEvent( int event, int eventParameter )
 {
 	int	bits = 0;
 
@@ -491,17 +491,17 @@ void BaseQuakeEntity::AddEvent( int event, int eventParameter )
 	eventTime = level.time;
 }
 
-bool BaseQuakeEntity::IsClass( const EntityClassInfo& eci )
+bool BaseEntity::IsClass( const EntityClassInfo& eci )
 {
 	return GetClassInfo()->IsClass( eci );
 }
 
-bool BaseQuakeEntity::IsSubclassOf( const EntityClassInfo& eci )
+bool BaseEntity::IsSubclassOf( const EntityClassInfo& eci )
 {
 	return GetClassInfo()->IsSubclassOf( eci );
 }
 
-bool BaseQuakeEntity::CheckAndClearEvents()
+bool BaseEntity::CheckAndClearEvents()
 {
 	if ( level.time - eventTime > EVENT_VALID_MSEC )
 	{

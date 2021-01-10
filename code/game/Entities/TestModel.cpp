@@ -8,11 +8,11 @@
 
 using namespace Entities;
 
-DefineEntityClass( "test_model", TestModel, BaseQuakeEntity );
+DefineEntityClass( "test_model", TestModel, BaseEntity );
 
 void TestModel::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 
 	const char* model = spawnArgs->GetCString( "model", "models/testmodel.iqm" );
 	int modelIndex = G_ModelIndex( const_cast<char*>( model ) );

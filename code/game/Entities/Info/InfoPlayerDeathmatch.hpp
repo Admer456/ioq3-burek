@@ -3,9 +3,9 @@
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 
-	class InfoPlayerDeathmatch : public BaseQuakeEntity
+	class InfoPlayerDeathmatch : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();

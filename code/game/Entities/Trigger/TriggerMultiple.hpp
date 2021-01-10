@@ -3,7 +3,7 @@
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 	class BaseTrigger;
 
 	class TriggerMultiple : public BaseTrigger

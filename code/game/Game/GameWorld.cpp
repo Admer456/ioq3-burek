@@ -280,7 +280,7 @@ void GameWorld::SpawnWorldspawn()
 	ent->ParseKeyvalues();
 	ent->Spawn();
 
-	auto nothingEnt = CreateEntity<BaseQuakeEntity>( ENTITYNUM_NONE );
+	auto nothingEnt = CreateEntity<BaseEntity>( ENTITYNUM_NONE );
 	nothingEnt->GetShared()->ownerNum = ENTITYNUM_NONE;
 	nothingEnt->className = "nothing";
 	nothingEnt->spawnArgs = nullptr;
@@ -301,7 +301,7 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 		return;
 	}
 
-	BaseQuakeEntity* ent = static_cast<BaseQuakeEntity*>( eci->AllocateInstance() );
+	BaseEntity* ent = static_cast<BaseEntity*>( eci->AllocateInstance() );
 
 	memset( ent->GetSharedEntity(), 0, sizeof( sharedEntity_t ) );
 
@@ -330,7 +330,7 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 
 Entities::IEntity* GameWorld::CreateTempEntity( const Vector& origin, int event )
 {
-	Entities::BaseQuakeEntity* ent = CreateEntity<Entities::BaseQuakeEntity>();
+	Entities::BaseEntity* ent = CreateEntity<Entities::BaseEntity>();
 	Vector snapped = origin;
 	
 	ent->GetState()->eType = ET_EVENTS + event;

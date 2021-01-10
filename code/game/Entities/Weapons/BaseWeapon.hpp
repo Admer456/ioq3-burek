@@ -25,7 +25,7 @@ namespace Entities
 
 	class BasePlayer;
 
-	class BaseWeapon : public BaseQuakeEntity
+	class BaseWeapon : public BaseEntity
 	{
 	public:
 		struct WeaponInfo

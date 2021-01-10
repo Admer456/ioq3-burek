@@ -9,11 +9,11 @@
 
 using namespace Entities;
 
-DefineAbstractEntityClass( BaseWeapon, BaseQuakeEntity );
+DefineAbstractEntityClass( BaseWeapon, BaseEntity );
 
 void BaseWeapon::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 
 	SetTouch( &BaseWeapon::WeaponTouch );
 

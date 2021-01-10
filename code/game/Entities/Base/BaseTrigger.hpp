@@ -3,9 +3,9 @@
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 
-	class BaseTrigger : public BaseQuakeEntity
+	class BaseTrigger : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();

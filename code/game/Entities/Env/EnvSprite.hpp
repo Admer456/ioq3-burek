@@ -3,9 +3,9 @@
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 
-	class EnvSprite : public BaseQuakeEntity
+	class EnvSprite : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();

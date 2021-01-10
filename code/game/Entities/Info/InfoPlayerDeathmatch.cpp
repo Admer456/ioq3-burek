@@ -11,7 +11,7 @@
 
 using namespace Entities;
 
-DefineEntityClass( "info_player_deathmatch", InfoPlayerDeathmatch, BaseQuakeEntity );
+DefineEntityClass( "info_player_deathmatch", InfoPlayerDeathmatch, BaseEntity );
 
 void InfoPlayerDeathmatch::Spawn()
 {

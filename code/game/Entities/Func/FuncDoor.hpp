@@ -11,7 +11,7 @@ enum DoorStates
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 	class BaseMover;
 
 	/*

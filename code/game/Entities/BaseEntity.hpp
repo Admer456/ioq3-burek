@@ -11,7 +11,7 @@ namespace Entities
 
 	// This is the base entity, which has all properties 
 	// typically needed for Quake entities
-	class BaseQuakeEntity : public IEntity
+	class BaseEntity : public IEntity
 	{
 	public:
 		DeclareEntityClass();
@@ -135,7 +135,7 @@ namespace Entities
 
 		// Checks if this entity is inside another entity
 		// If yes, then it returns that entity, else nullptr
-		virtual BaseQuakeEntity* TestEntityPosition();
+		virtual BaseEntity* TestEntityPosition();
 
 		bool			TryPushingEntity( IEntity* check, Vector move, Vector amove );
 
@@ -189,7 +189,7 @@ namespace Entities
 		int				spawnFlags{ 0 };		// 64 bits of
 		int				spawnFlagsExtra{ 0 };	// spawnflags cuz' why not
 
-		BaseQuakeEntity* chain{ nullptr };		// For parenting
+		BaseEntity* chain{ nullptr };		// For parenting
 
 	protected:
 		virtual bool	CheckAndClearEvents();

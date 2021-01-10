@@ -656,13 +656,13 @@ void GameLocal::RunFrame( int levelTime )
 	// get any cvar changes
 	UpdateCVars();
 
-	Entities::BaseQuakeEntity* gent = nullptr;
+	Entities::BaseEntity* gent = nullptr;
 	for ( auto ent : gEntities )
 	{
 		if ( nullptr == ent )
 			continue;
 
-		gent = static_cast<Entities::BaseQuakeEntity*>(ent);
+		gent = static_cast<Entities::BaseEntity*>(ent);
 
 		if ( ent->GetFlags() & FL_REMOVE_ME )
 		{

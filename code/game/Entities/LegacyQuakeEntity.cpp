@@ -40,8 +40,8 @@ KeyValueElement LegacyQuakeEntity::keyValues[] =
 	//DefineKV_Explicit(	origin,		state.origin,		Vector )
 	//DefineKV_Explicit(	angles,		state.angles,		Vector )
 
-	// Inherit keyvalues from BaseQuakeEntity
-	KeyValueElement(	BaseQuakeEntity::keyValues ),
+	// Inherit keyvalues from BaseEntity
+	KeyValueElement(	BaseEntity::keyValues ),
 };
 
 LegacyQuakeEntity::LegacyQuakeEntity()
@@ -82,14 +82,14 @@ LegacyQuakeEntity::~LegacyQuakeEntity()
 
 void LegacyQuakeEntity::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 }
 
 void LegacyQuakeEntity::KeyValue()
 {
 	auto& map = spawnArgs->GetMap();
 
-	BaseQuakeEntity::KeyValue();
+	BaseEntity::KeyValue();
 
 	// For every keyvalue string pair
 	for ( auto& keyValue : map )

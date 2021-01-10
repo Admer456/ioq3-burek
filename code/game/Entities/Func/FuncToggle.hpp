@@ -3,10 +3,10 @@
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 
 	// func_toggle, turns itself on/off when triggered
-	class FuncToggle final : public BaseQuakeEntity
+	class FuncToggle final : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();

@@ -2,7 +2,7 @@
 
 namespace Entities
 {
-	class LegacyQuakeEntity : public BaseQuakeEntity
+	class LegacyQuakeEntity : public BaseEntity
 	{
 	public:
 		LegacyQuakeEntity();

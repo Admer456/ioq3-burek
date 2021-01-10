@@ -3,9 +3,9 @@
 namespace Entities
 {
 	class IEntity;
-	class BaseQuakeEntity;
+	class BaseEntity;
 
-	class EnvExplosion : public BaseQuakeEntity
+	class EnvExplosion : public BaseEntity
 	{
 	public:
 		DeclareEntityClass();
@@ -19,7 +19,7 @@ namespace Entities
 
 		void Explode();
 
-		// TODO: move to BaseQuakeEntity or utils
+		// TODO: move to BaseEntity or utils
 		void RadiusDamage( float damageAmount, float radius );
 	
 	protected:
@@ -27,7 +27,7 @@ namespace Entities
 		float explosionDamage{ 0.0f };
 		float explosionRadius{ 0.0f };
 
-		// TODO: move to BaseQuakeEntity
-		BaseQuakeEntity* activator{ nullptr };
+		// TODO: move to BaseEntity
+		BaseEntity* activator{ nullptr };
 	};
 }

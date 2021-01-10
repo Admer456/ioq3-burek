@@ -12,7 +12,7 @@
 
 using namespace Entities;
 
-DefineEntityClass_NoMapSpawn( BasePlayer, BaseQuakeEntity );
+DefineEntityClass_NoMapSpawn( BasePlayer, BaseEntity );
 
 void BasePlayer::Spawn()
 {
@@ -752,7 +752,7 @@ void BasePlayer::Teleport( const Vector& toOrigin, const Vector& toAngles )
 // Players test their entity position from ps.origin
 // instead of s.pos.trBase in most other ents
 // This fixed the "Stupid Mover Bug"
-BaseQuakeEntity* BasePlayer::TestEntityPosition()
+BaseEntity* BasePlayer::TestEntityPosition()
 {
 	trace_t	tr;
 	int	mask;
@@ -769,7 +769,7 @@ BaseQuakeEntity* BasePlayer::TestEntityPosition()
 	gameImports->Trace( &tr, GetClient()->ps.origin, shared.r.mins, shared.r.maxs, GetClient()->ps.origin, GetEntityIndex(), mask );
 
 	if ( tr.startsolid )
-		return static_cast<BaseQuakeEntity*>(gEntities[tr.entityNum]);
+		return static_cast<BaseEntity*>(gEntities[tr.entityNum]);
 
 	return nullptr;
 }

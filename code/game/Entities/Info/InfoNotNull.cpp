@@ -11,9 +11,9 @@
 
 using namespace Entities;
 
-DefineEntityClass( "info_notnull", InfoNotNull, BaseQuakeEntity );
+DefineEntityClass( "info_notnull", InfoNotNull, BaseEntity );
 
 void InfoNotNull::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 }

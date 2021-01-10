@@ -11,7 +11,7 @@
 
 using namespace Entities;
 
-DefineEntityClass( "info_player_start", InfoPlayerStart, BaseQuakeEntity );
+DefineEntityClass( "info_player_start", InfoPlayerStart, BaseEntity );
 
 void InfoPlayerStart::Spawn()
 {

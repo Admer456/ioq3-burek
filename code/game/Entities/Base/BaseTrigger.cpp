@@ -11,11 +11,11 @@
 
 using namespace Entities;
 
-DefineAbstractEntityClass( BaseTrigger, BaseQuakeEntity );
+DefineAbstractEntityClass( BaseTrigger, BaseEntity );
 
 void BaseTrigger::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 
 	GetShared()->contents |= CONTENTS_TRIGGER;
 	GetShared()->svFlags = SVF_NOCLIENT;

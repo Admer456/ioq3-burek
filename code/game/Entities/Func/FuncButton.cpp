@@ -11,11 +11,11 @@
 
 using namespace Entities;
 
-DefineEntityClass( "func_button", FuncButton, BaseQuakeEntity );
+DefineEntityClass( "func_button", FuncButton, BaseEntity );
 
 void FuncButton::Spawn()
 {
-	BaseQuakeEntity::Spawn();
+	BaseEntity::Spawn();
 
 	// This thing moves
 	GetState()->eType = ET_MOVER;
