@@ -27,6 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #pragma once
 
+#include "Maths/Vector.hpp"
+
 #define	GAME_VERSION		BASEGAME "-1"
 
 #define	DEFAULT_GRAVITY		800
@@ -343,7 +345,9 @@ typedef enum {
 
 #define	EVENT_VALID_MSEC	300
 
-typedef enum {
+// Handled in cg_event.cpp, CG_EntityEvent
+enum EntityEvent
+{
 	EV_NONE,
 
 	EV_FOOTSTEP,
@@ -453,10 +457,63 @@ typedef enum {
 	EV_TAUNT_FOLLOWME,
 	EV_TAUNT_GETFLAG,
 	EV_TAUNT_GUARDBASE,
-	EV_TAUNT_PATROL
+	EV_TAUNT_PATROL,
 
-} entity_event_t;
+	EV_END,
+};
 
+// Handled in code/cgame/Events/*
+enum ComplexEvent
+{
+	CE_Start = EV_END,
+
+	// Spawn gibs along mins and maxs
+	// parm: number of gibs
+	// parm2: number of different gib models
+	// parm3: type (0 = model, 1 = sprite) [UNUSED]
+	// fparm: pitch
+	// fparm2: yaw
+	// fparm3: force (<0 = random, >=0 = in this direction)
+	// vparm: mins
+	// vparm2: maxs
+	// model: gib model
+	CE_GibSpan,
+
+	// Spawns a parametric explosion
+	// fparm: explosion radius
+	// parm: sprite material
+	CE_Explosion,
+};
+
+// Used by CE_ "complex entity events"
+struct EventData
+{
+	EventData() = default;
+
+	// defined in bg_misc.cpp
+	EventData( const entityState_t& es );
+	entityState_t ToEntityState() const;
+
+	int16_t		id{ EV_NONE }; // encoded as event
+
+	int			parm{ 0 }; // encoded as eventParm
+	int			parm2{ 0 }; // encoded as generic1
+	int			parm3{ 0 }; // encoded as otherEntityNum
+	int			parm4{ 0 }; // encoded as otherEntityNum2
+
+	float		fparm{ 0.0f }; // encoded as origin2[0]
+	float		fparm2{ 0.0f }; // encoded as origin2[1]
+	float		fparm3{ 0.0f }; // encoded as origin2[2]
+	float		fparm4{ 0.0f }; // encoded as framerate
+	
+	Vector		vparm{ Vector::Zero }; // encoded as state.apos.trBase
+	Vector		vparm2{ Vector::Zero }; // encoded as state.apos.trDelta
+
+	uint16_t	model; // encoded as modelindex
+	uint16_t	sound; // encoded as loopSound
+};
+
+constexpr size_t EventDataSize = sizeof( EventData );
 
 typedef enum {
 	GTS_RED_CAPTURE,

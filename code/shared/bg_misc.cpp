@@ -29,6 +29,51 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/q_shared.hpp"
 #include "bg_public.hpp"
 
+EventData::EventData( const entityState_t& es )
+{
+	id = es.event;
+	parm = es.eventParm;
+	parm2 = es.generic1;
+	parm3 = es.otherEntityNum;
+	parm4 = es.otherEntityNum2;
+
+	fparm = es.origin2[0];
+	fparm2 = es.origin2[1];
+	fparm3 = es.origin2[2];
+	fparm4 = es.framerate;
+
+	vparm = es.apos.trBase;
+	vparm2 = es.apos.trDelta;
+
+	model = es.modelindex;
+	sound = es.loopSound;
+}
+
+entityState_t EventData::ToEntityState() const
+{
+	entityState_t ret;
+	memset( &ret, 0, sizeof( ret ) );
+
+	ret.event = id;
+	ret.eventParm = parm;
+	ret.generic1 = parm2;
+	ret.otherEntityNum = parm3;
+	ret.otherEntityNum2 = parm4;
+
+	ret.origin2[0] = fparm;
+	ret.origin2[1] = fparm2;
+	ret.origin2[2] = fparm3;
+	ret.framerate = fparm4;
+
+	vparm.CopyToArray( ret.apos.trBase );
+	vparm2.CopyToArray( ret.apos.trDelta );
+
+	ret.modelindex = model;
+	ret.loopSound = sound;
+
+	return ret;
+}
+
 /*QUAKED item_***** ( 0 0 0 ) (-16 -16 -16) (16 16 16) suspended
 DO NOT USE THIS CLASS, IT JUST HOLDS GENERAL INFORMATION.
 The suspended flag will allow items to hang in the air, otherwise they are dropped to the next surface.

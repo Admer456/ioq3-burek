@@ -16,6 +16,9 @@
     <Filter Include="Shared\Weapons">
       <UniqueIdentifier>{0467c8ec-ceff-4e9c-b3fd-7338928610f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Events">
+      <UniqueIdentifier>{f0cc07f7-38ed-412a-8fdf-aab52cccfac9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -68,6 +71,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\RenderEntity.hpp">
       <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Events\ComplexEventHandler.hpp">
+      <Filter>Sources\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +169,12 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\RenderEntity.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Events\ComplexEventHandler.cpp">
+      <Filter>Sources\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Events\GibSpan.cpp">
+      <Filter>Sources\Events</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

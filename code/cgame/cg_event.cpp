@@ -496,6 +496,12 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 		weapon = GetClient()->GetCurrentWeapon();
 	}
 
+	if ( event > EV_END )
+	{
+		GetClient()->ParseComplexEvent( event, cent, position );
+		return;
+	}
+
 	switch ( event ) 
 	{
 	//
@@ -1100,7 +1106,6 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 		CG_Error( "Unknown event: %i", event );
 		break;
 	}
-
 }
 
 

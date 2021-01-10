@@ -346,6 +346,19 @@ Entities::IEntity* GameWorld::CreateTempEntity( const Vector& origin, int event 
 	return ent;
 }
 
+void GameWorld::EmitComplexEvent( const Vector& origin, const Vector& angles, const EventData& ed )
+{
+	entityState_t es = ed.ToEntityState();
+	Vector anglesSnapped = angles.Snapped();
+	auto ent = CreateTempEntity( origin, ed.id );
+
+	ent->SetAngles( anglesSnapped );
+	es.number = ent->GetEntityIndex();
+
+	// USUALLY, I would NEVER do this, but in this case, it makes sense
+	memcpy( ent->GetState(), &es, sizeof( entityState_t ) );
+}
+
 void GameWorld::FreeEntity( Entities::IEntity* ent )
 {
 	if ( ent )

@@ -147,6 +147,9 @@ public:
 	// Allocates a temporary entity, for events
 	Entities::IEntity* CreateTempEntity( const Vector& origin, int event );
 
+	// Allocates a temporary entity to send a complex event
+	void			EmitComplexEvent( const Vector& origin, const Vector& angles, const EventData& ed );
+
 	// Deletes an entity from memory
 	void			FreeEntity( Entities::IEntity* ent );
 
