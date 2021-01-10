@@ -427,7 +427,7 @@ Vector BasePlayer::GetViewOrigin()
 
 void BasePlayer::CopyToBodyQue()
 {
-	IEntity* body;
+	//IEntity* body;
 	int contents;
 
 	gameImports->UnlinkEntity( this );

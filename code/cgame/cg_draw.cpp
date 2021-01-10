@@ -428,7 +428,7 @@ static void CG_DrawStatusBar( void ) {
 
 			// if we didn't draw a 3D icon, draw a 2D icon for ammo
 			if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
-				qhandle_t	icon;
+				//qhandle_t	icon;
 
 				//icon = cg_weapons[ cg.predictedPlayerState.weapon ].ammoIcon;
 				//if ( icon ) {

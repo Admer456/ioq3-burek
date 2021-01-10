@@ -863,9 +863,6 @@ sound should only be done on the world model case.
 void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent, int team ) 
 {
 	refEntity_t	gun;
-	refEntity_t	barrel;
-	refEntity_t	flash;
-	vec3_t		angles;
 	ClientEntities::BaseClientWeapon* weapon;
 	centity_t	*nonPredictedCent;
 	orientation_t	lerped;
@@ -1026,8 +1023,7 @@ void CG_DrawWeaponSelect( void ) {
 	int		i;
 	int		bits;
 	int		count;
-	int		x, y, w;
-	char	*name;
+	int		x, y;
 	float	*color;
 
 	// don't display if dead
@@ -1248,7 +1244,6 @@ Caused by an EV_FIRE_WEAPON event
 */
 void CG_FireWeapon( centity_t *cent ) {
 	entityState_t *ent;
-	int				c;
 	//weaponInfo_t	*weap;
 
 	ent = &cent->currentState;

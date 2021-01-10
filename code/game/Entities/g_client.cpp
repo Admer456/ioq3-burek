@@ -951,7 +951,6 @@ void ClientBegin( int clientNum ) {
 	Entities::IEntity* ent;
 	Entities::BasePlayer* player;
 	gclient_t	*client;
-	int			flags;
 
 	//ent = g_entities + clientNum;
 	ent = gEntities[clientNum];

@@ -92,6 +92,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifdef _MSC_VER
 
+#pragma warning(disable : 4834)		// discarding return value of function with 'nodiscard' attribute
+#pragma warning(disable : 4065)		// switch statement contains 'default' but no 'case' labels
+#pragma warning(disable : 4305)		// truncation from double to float etc.
+#pragma warning(disable : 4996)		// stricmp vs. _stricmp etc.
 #pragma warning(disable : 4018)     // signed/unsigned mismatch
 #pragma warning(disable : 4032)
 #pragma warning(disable : 4051)
