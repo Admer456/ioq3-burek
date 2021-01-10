@@ -20,7 +20,10 @@ namespace Entities
 	public:
 		DeclareEntityClass();
 		
+		// Cannot take damage from weapons etc., only destroy on trigger
 		constexpr static uint32_t SF_TriggerOnly = 1 << 0;
+		// Twitch when damaged
+		constexpr static uint32_t SF_Twitch = 1 << 1;
 
 		constexpr static const char* BreakGibs[Material_Max*3]
 		{
@@ -56,18 +59,20 @@ namespace Entities
 			"sound/gibs/metal2.wav"
 		};
 
-		void	Spawn() override;
-		void	Precache() override;
+		void		Spawn() override;
+		void		Precache() override;
 
-		void	Use( IEntity* activator, IEntity* caller, float value ) override;
-		void	TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) override;
+		void		Use( IEntity* activator, IEntity* caller, float value ) override;
+		void		TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) override;
 
-		void	Break();
+		void		Break();
 
 	protected:
-		byte	materialType{};
+		byte		materialType{};
 
-		qhandle_t gibModels[3];
-		qhandle_t sounds[2];
+		qhandle_t	gibModels[3];
+		qhandle_t	sounds[2];
+
+		qhandle_t	currentModel{};
 	};
 }

@@ -18,32 +18,66 @@ void FuncBreakable::Spawn()
 {
 	BaseEntity::Spawn();
 
-	// TODO: stuff
+	// Grab the current model index, so we can
+	// use it again if this entity respawns
+	currentModel = GetState()->modelindex;
 }
 
 void FuncBreakable::Precache()
 {
-	materialType = spawnArgs->GetInt( "material", Material_Glass );
+	materialType = spawnArgs->GetInt( "material", Material_Concrete );
 
-	gibModels[0] = gameWorld->PrecacheModel( BreakGibs[materialType] );
-	gibModels[1] = gameWorld->PrecacheModel( BreakGibs[materialType+1] );
-	gibModels[2] = gameWorld->PrecacheModel( BreakGibs[materialType+2] );
+	gibModels[0] = gameWorld->PrecacheModel( BreakGibs[materialType*3] );
+	gibModels[1] = gameWorld->PrecacheModel( BreakGibs[materialType*3+1] );
+	gibModels[2] = gameWorld->PrecacheModel( BreakGibs[materialType*3+2] );
 
-	sounds[0] = gameWorld->PrecacheSound( BreakSounds[materialType] );
-	sounds[1] = gameWorld->PrecacheSound( BreakSounds[materialType+1] );
+	sounds[0] = gameWorld->PrecacheSound( BreakSounds[materialType*3] );
+	sounds[1] = gameWorld->PrecacheSound( BreakSounds[materialType*3+1] );
 }
 
 void FuncBreakable::Use( IEntity* activator, IEntity* caller, float value )
 {
 	Break();
+	health = 0;
 }
 
 void FuncBreakable::TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage )
 {
+	if ( spawnFlags & SF_TriggerOnly )
+		return;
 
+	health -= damage;
+
+	/*
+	if ( spawnFlags & SF_Twitch )
+	{
+		SetAngles( GetAngles() + Vector( Maths::FRandom( 0.5, -0.5 ) ) );
+	}
+	*/
+
+	if ( health <= 0 )
+		Break();
 }
 
 void FuncBreakable::Break()
 {
+	SetModel( nullptr );
 
+	EventData ed;
+
+	ed.id = CE_GibSpan;
+
+	ed.parm = 30; // 30 gibs
+	ed.parm2 = 3; // 3 different models
+	ed.parm3 = 0; // type 0 = model
+	ed.fparm = 0.0f; // pitch
+	ed.fparm2 = 0.0f; // yaw
+	ed.fparm3 = -100.0f; // force -100.0f = random dir at intensity 100
+
+	ed.vparm = GetMins() + Vector(5,5,5);
+	ed.vparm2 = GetMaxs() - Vector(5,5,5);
+
+	ed.model = gibModels[0];
+
+	gameWorld->EmitComplexEvent( GetOrigin(), GetAngles(), ed );
 }
