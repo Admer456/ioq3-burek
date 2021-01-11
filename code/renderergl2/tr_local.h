@@ -871,7 +871,7 @@ typedef enum {
 } surfaceType_t;
 
 typedef struct drawSurf_s {
-	unsigned int		sort;			// bit combination for fast compares
+	uint64_t			sort;			// bit combination for fast compares; changed from uint32 to uint64 -Admer
 	int                 cubemapIndex;
 	surfaceType_t		*surface;		// any of surface*_t
 } drawSurf_t;
@@ -1332,11 +1332,20 @@ the bits are allocated as follows:
 2-6   : fog index
 1     : pshadow flag
 0     : dlight flag
+
+	Admer - more refentities
+38-63	: unused (!!!)
+23-37	: entity index
+7-22	: entity index
+2-6		: fog index
+1		: pshadow flag
+0		: dlight flag
+
 */
 #define	QSORT_FOGNUM_SHIFT	2
 #define	QSORT_REFENTITYNUM_SHIFT	7
 #define	QSORT_SHADERNUM_SHIFT	(QSORT_REFENTITYNUM_SHIFT+REFENTITYNUM_BITS)
-#if (QSORT_SHADERNUM_SHIFT+SHADERNUM_BITS) > 32
+#if (QSORT_SHADERNUM_SHIFT+SHADERNUM_BITS) > 64
 	#error "Need to update sorting, too many bits."
 #endif
 #define QSORT_PSHADOW_SHIFT     1
