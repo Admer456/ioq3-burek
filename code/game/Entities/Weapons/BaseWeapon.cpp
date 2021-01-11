@@ -30,8 +30,6 @@ void BaseWeapon::Spawn()
 
 void BaseWeapon::WeaponTouch( IEntity* other, trace_t* trace )
 {
-	engine->Print( "BaseWeapon::WeaponTouch\n" );
-
 	// Only players can pick up weapons by touching them
 	if ( !other->IsClass( BasePlayer::ClassInfo ) )
 		return;

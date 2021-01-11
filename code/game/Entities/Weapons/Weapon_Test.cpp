@@ -24,5 +24,5 @@ Weapon_Test::WeaponInfo Weapon_Test::GetWeaponInfo()
 
 void Weapon_Test::PrimaryAttack()
 {
-	engine->Print( "Server Weapon_Test::PrimaryFire\n" );
+
 }

@@ -26,8 +26,6 @@ void TriggerOnce::Spawn()
 
 void TriggerOnce::OnceTouch( IEntity* other, trace_t* trace )
 {
-	engine->Print( "TriggerOnce::OnceTouch\n" );
-
 	OnceUse( other, other, 0 );
 }
 
