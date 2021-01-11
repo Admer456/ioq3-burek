@@ -439,7 +439,7 @@ typedef struct {
 // all cg.stepTime, cg.duckTime, cg.landTime, etc are set to cg.time when the action
 // occurs, and they will have visible effects for #define STEP_TIME or whatever msec after
 
-#define MAX_PREDICTED_EVENTS	16
+#define MAX_PREDICTED_EVENTS	64 // Increased from 16 to 64 -Admer
  
 typedef struct {
 	int			clientFrame;		// incremented each frame
