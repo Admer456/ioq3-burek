@@ -2,18 +2,22 @@
 
 ![BurekTech 'logo'](https://i.imgur.com/uhxkRl8.png)
 
-Specialised version of idTech 3 (precisely [ioquake3](https://github.com/ioquake/ioq3)) for standalone game development.  
+Specialised version of idTech 3 (precisely [ioquake3](https://github.com/ioquake/ioq3)) for development of retro shooters and retro immersive sims.  
 
-## Features 
+## Features, limits and changes
 
-  * Nothing really significant so far :p
+  * Max visible entities: 1024 (from 256)
+  * Max refentities/render entities: 65k (from 1024)
+  * Most of the game library is rewritten in C++
+  * Player-entity interaction with the 'use' key
+  * Complex entity events with multiple parameters
 
 ## Plans
 
 #### For programmers  
   * Rewrite game library in C++
   * Rewrite client library in C++
-  * Merge UI library with the client library
+  * Rewrite UI library in C++
 
 #### For non-programmers
   * Terrain system
@@ -22,7 +26,6 @@ Specialised version of idTech 3 (precisely [ioquake3](https://github.com/ioquake
 
 #### For both
   * C# scripting, so you can add new entities, weapons, monsters and level scripts - without needing to write any C++ code
-  * Extend maximum visible entities from 256 to 1024
   * Entity [components](https://i.imgur.com/EAP3rrj.png)
 
 ## Downloads
@@ -31,8 +34,7 @@ None at the moment. This is under heavy and early development. Check back in lat
 
 ## How to build
 
-Note: I haven't updated the makefiles for Linux, unfortunately. I am doing all development on Windows, but I will eventually get to it.  
-Note 2: While it may build successfully, it will likely not run successfully. A lot of code still has to be ported to the new entity system.  
+Note: I haven't updated the makefiles for Linux, unfortunately. I am doing all development on Windows, but I will eventually get to it.   
   
 In order to build BUREKTech, clone or download the code, go to the `build` directory, then go to `vs2019`, and open `BurekTech.sln`.  
 It's as simple as building the entire solution. The compiled binaries will appear in the `bin` directory in the repo's folder.  
