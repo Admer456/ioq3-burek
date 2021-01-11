@@ -1616,11 +1616,11 @@ static void PM_Weapon( void )
 			return;
 		}
 
-		if ( pm->cmd.interactionButtons & Interaction_Use )
-		{
-			PM_AddEvent( EV_PLAYERUSE );
-			return;
-		}
+		//if ( pm->cmd.interactionButtons & Interaction_Use )
+		//{
+		//	PM_AddEvent( EV_PLAYERUSE );
+		//	return;
+		//}
 
 		if ( pm->cmd.interactionButtons & Interaction_UseItem )
 		{
