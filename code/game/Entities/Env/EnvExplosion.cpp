@@ -84,6 +84,6 @@ void EnvExplosion::RadiusDamage( float damageAmount, float radius )
 		float damage = damageAmount * (1.0f - (length / radius));
 
 		// Bang
-		ent->TakeDamage( this, activator, 0, damage );
+		ent->TakeDamage( activator, this, 0, damage );
 	}
 }
