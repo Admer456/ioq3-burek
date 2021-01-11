@@ -330,7 +330,9 @@ void GameWorld::SpawnEntity( KeyValueLibrary& map )
 
 Entities::IEntity* GameWorld::CreateTempEntity( const Vector& origin, int event )
 {
-	Entities::BaseEntity* ent = CreateEntity<Entities::BaseEntity>();
+	using namespace Entities;
+
+	BaseEntity* ent = CreateEntity<BaseEntity>();
 	Vector snapped = origin;
 	
 	ent->GetState()->eType = ET_EVENTS + event;
@@ -343,6 +345,15 @@ Entities::IEntity* GameWorld::CreateTempEntity( const Vector& origin, int event 
 
 	gameImports->LinkEntity( ent );
 
+	// THERE SHALL BE MORE ENTITIES
+	level.num_entities++;
+
+	// let the server system know that there are more entities
+	gameImports->LocateGameData(
+		nullptr, level.num_entities, 0,
+		level.entities, level.numEntities, sizeof( IEntity* ),
+		&level.clients[0].ps, sizeof( level.clients[0] ) );
+
 	return ent;
 }
 
@@ -354,9 +365,11 @@ void GameWorld::EmitComplexEvent( const Vector& origin, const Vector& angles, co
 
 	ent->SetAngles( anglesSnapped );
 	es.number = ent->GetEntityIndex();
+	es.eType = ET_EVENTS + ed.id;
 
 	// USUALLY, I would NEVER do this, but in this case, it makes sense
 	memcpy( ent->GetState(), &es, sizeof( entityState_t ) );
+	gameImports->LinkEntity( ent );
 }
 
 void GameWorld::FreeEntity( Entities::IEntity* ent )
@@ -1086,6 +1099,11 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	client->oldInteractionButtons = client->interactionButtons;
 	client->interactionButtons = ucmd->interactionButtons;
 	client->latchedInteractionButtons |= client->interactionButtons & ~client->oldInteractionButtons;
+
+	if ( client->interactionButtons & Interaction_Use )
+	{
+		player->PlayerUse();
+	}
 
 	// check for respawning
 	if ( client->ps.stats[STAT_HEALTH] <= 0 ) 

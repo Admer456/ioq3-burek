@@ -110,9 +110,7 @@ public:
 	{
 		for ( unsigned int i = MAX_CLIENTS; i < MaxEntities; i++ )
 		{
-			// Also check for g_entities so we don't get any conflicts
-			// on the client & server and whatnot
-			if ( gEntities[i] == nullptr && !g_entities[i].inuse )
+			if ( nullptr == gEntities[i] )
 			{
 				gEntities[i] = new entityType();
 				gEntities[i]->SetEntityIndex( i );
