@@ -14,9 +14,7 @@ void TestModel::Spawn()
 {
 	BaseEntity::Spawn();
 
-	const char* model = spawnArgs->GetCString( "model", "models/testmodel.iqm" );
-	int modelIndex = G_ModelIndex( const_cast<char*>( model ) );
+	SetModel( spawnArgs->GetCString( "model", "models/testmodel.iqm" ) );
 
-	GetState()->modelindex = modelIndex;
 	gameImports->LinkEntity( this );
 }
