@@ -467,51 +467,87 @@ Fixed fov at intermissions, otherwise account for fov variable and zooms.
 #define	WAVE_AMPLITUDE	1
 #define	WAVE_FREQUENCY	0.4
 
-static int CG_CalcFov( void ) {
+static int CG_CalcFov( void ) 
+{
 	float	x;
 	float	phase;
 	float	v;
 	int		contents;
-	float	fov_x, fov_y;
+	float	fov_x{};
+	float	fov_y{};
+	float	wfov_x{};
+	float	wfov_y{};
 	float	zoomFov;
 	float	f;
 	int		inwater;
 
-	if ( cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
+	static float sfov_x{ 160.0f };
+	static float sfov_y{ 160.0f };
+	static float swfov_x{ 45.0f };
+	static float swfov_y{ 45.0f };
+
+	wfov_x = cg_weaponFov.value;
+
+	if ( cg.predictedPlayerState.pm_type == PM_INTERMISSION ) 
+	{
 		// if in intermission, use a fixed value
 		fov_x = 90;
-	} else {
+	} 
+	else 
+	{
 		// user selectable
-		if ( cgs.dmflags & DF_FIXED_FOV ) {
+		if ( cgs.dmflags & DF_FIXED_FOV ) 
+		{
 			// dmflag to prevent wide fov for all clients
 			fov_x = 90;
-		} else {
+			wfov_x = 70;
+		} 
+		else 
+		{
 			fov_x = cg_fov.value;
-			if ( fov_x < 1 ) {
+			if ( fov_x < 1 ) 
+			{
 				fov_x = 1;
-			} else if ( fov_x > 160 ) {
+			} 
+			else if ( fov_x > 160 ) 
+			{
 				fov_x = 160;
+			}
+
+			if ( wfov_x == 0 )
+			{ 
+				wfov_x = 70;
 			}
 		}
 
 		// account for zooms
 		zoomFov = cg_zoomFov.value;
-		if ( zoomFov < 1 ) {
+		if ( zoomFov < 1 ) 
+		{
 			zoomFov = 1;
-		} else if ( zoomFov > 160 ) {
+		} 
+		else if ( zoomFov > 160 ) 
+		{
 			zoomFov = 160;
 		}
 
-		if ( cg.zoomed ) {
+		if ( cg.zoomed ) 
+		{
 			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME;
-			if ( f > 1.0 ) {
+			if ( f > 1.0 ) 
+			{
 				fov_x = zoomFov;
-			} else {
+			} 
+			else 
+			{
 				fov_x = fov_x + f * ( zoomFov - fov_x );
 			}
-		} else {
+		} 
+		else 
+		{
 			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME;
-			if ( f <= 1.0 ) {
+			if ( f <= 1.0 ) 
+			{
 				fov_x = zoomFov + f * ( fov_x - zoomFov );
 			}
 		}
@@ -521,27 +557,44 @@ static int CG_CalcFov( void ) {
 	fov_y = atan2( cg.refdef.height, x );
 	fov_y = fov_y * 360 / M_PI;
 
+	x = cg.refdef.width / tan( wfov_x / 360 * M_PI );
+	wfov_y = atan2( cg.refdef.height, x );
+	wfov_y = wfov_y * 360.0f / M_PI;
+
 	// warp if underwater
 	contents = CG_PointContents( cg.refdef.vieworg, -1 );
-	if ( contents & ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) ){
+	if ( contents & ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) )
+	{
 		phase = cg.time / 1000.0 * WAVE_FREQUENCY * M_PI * 2;
 		v = WAVE_AMPLITUDE * sin( phase );
 		fov_x += v;
 		fov_y -= v;
 		inwater = qtrue;
 	}
-	else {
+	else 
+	{
 		inwater = qfalse;
 	}
 
 
 	// set it
-	cg.refdef.fov_x = fov_x;
-	cg.refdef.fov_y = fov_y;
+	sfov_x = sfov_x*0.95f + fov_x*0.05f;
+	sfov_y = sfov_y*0.95f + fov_y*0.05f;
 
-	if ( !cg.zoomed ) {
+	swfov_x = swfov_x*0.95f + wfov_x*0.05f;
+	swfov_y = swfov_y*0.95f + wfov_y*0.05f;
+
+	cg.refdef.fov_x = sfov_x;
+	cg.refdef.fov_y = sfov_y;
+	cg.refdef.wfov_x = swfov_x;
+	cg.refdef.wfov_y = swfov_y;
+
+	if ( !cg.zoomed ) 
+	{
 		cg.zoomSensitivity = 1;
-	} else {
+	} 
+	else 
+	{
 		cg.zoomSensitivity = cg.refdef.fov_y / 75.0;
 	}
 

@@ -455,8 +455,10 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 
 	backEnd.pc.c_surfaces += numDrawSurfs;
 
-	for (i = 0, drawSurf = drawSurfs ; i < numDrawSurfs ; i++, drawSurf++) {
-		if ( drawSurf->sort == oldSort && drawSurf->cubemapIndex == oldCubemapIndex) {
+	for (i = 0, drawSurf = drawSurfs ; i < numDrawSurfs ; i++, drawSurf++) 
+	{
+		if ( drawSurf->sort == oldSort && drawSurf->cubemapIndex == oldCubemapIndex) 
+		{
 			if (backEnd.depthFill && shader && shader->sort != SS_OPAQUE)
 				continue;
 
@@ -473,8 +475,10 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		// a "entityMergable" shader is a shader that can have surfaces from separate
 		// entities merged into a single batch, like smoke and blood puff sprites
 		if ( shader != NULL && ( shader != oldShader || fogNum != oldFogNum || dlighted != oldDlighted || pshadowed != oldPshadowed || cubemapIndex != oldCubemapIndex
-			|| ( entityNum != oldEntityNum && !shader->entityMergable ) ) ) {
-			if (oldShader != NULL) {
+			|| ( entityNum != oldEntityNum && !shader->entityMergable ) ) ) 
+		{
+			if (oldShader != NULL) 
+			{
 				RB_EndSurface();
 			}
 			RB_BeginSurface( shader, fogNum, cubemapIndex );
@@ -492,10 +496,12 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		//
 		// change the modelview matrix if needed
 		//
-		if ( entityNum != oldEntityNum ) {
+		if ( entityNum != oldEntityNum ) 
+		{
 			depthRange = isCrosshair = qfalse;
 
-			if ( entityNum != REFENTITYNUM_WORLD ) {
+			if ( entityNum != REFENTITYNUM_WORLD ) 
+			{
 				backEnd.currentEntity = &backEnd.refdef.entities[entityNum];
 
 				// FIXME: e.shaderTime must be passed as int to avoid fp-precision loss issues
@@ -509,7 +515,8 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 				R_RotateForEntity( backEnd.currentEntity, &backEnd.viewParms, &backEnd.or );
 
 				// set up the dynamic lighting if needed
-				if ( backEnd.currentEntity->needDlights ) {
+				if ( backEnd.currentEntity->needDlights ) 
+				{
 					R_TransformDlights( backEnd.refdef.num_dlights, backEnd.refdef.dlights, &backEnd.or );
 				}
 
@@ -521,7 +528,9 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 					if(backEnd.currentEntity->e.renderfx & RF_CROSSHAIR)
 						isCrosshair = qtrue;
 				}
-			} else {
+			} 
+			else 
+			{
 				backEnd.currentEntity = &tr.worldEntity;
 				backEnd.refdef.floatTime = originalTime;
 				backEnd.or = backEnd.viewParms.world;
@@ -532,6 +541,17 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 			}
 
 			GL_SetModelviewMatrix( backEnd.or.modelMatrix );
+
+			if ( backEnd.currentEntity->e.renderfx & (RF_WEAPONFOV | RF_DEPTHHACK) )
+			{
+				viewParms_t temp = backEnd.viewParms;
+
+				temp.fovX = backEnd.refdef.wfov_x;
+				temp.fovY = backEnd.refdef.wfov_y;
+
+				R_SetupProjection( &temp, r_znear->value, 0, qfalse );
+				GL_SetProjectionMatrix( temp.projectionMatrix );
+			}
 
 			//
 			// change depthrange. Also change projection matrix so first person weapon does not look like coming

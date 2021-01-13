@@ -964,7 +964,7 @@ void CG_AddViewWeapon( playerState_t *ps )
 	// drop gun lower at higher fov
 	if ( cg_fov.integer > 90 ) 
 	{
-		fovOffset = -0.08f * ( cg_fov.integer - 90 );
+		fovOffset = -0.03f * ( cg_fov.integer - 90 );
 	} 
 	else 
 	{
@@ -1000,7 +1000,7 @@ void CG_AddViewWeapon( playerState_t *ps )
 	}
 
 	hand.hModel = 0;//weapon->handsModel;
-	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON; //| RF_MINLIGHT;
+	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_WEAPONFOV; //| RF_MINLIGHT;
 
 	// add everything onto the hand
 	CG_AddPlayerWeapon( &hand, ps, &cg.predictedPlayerEntity, ps->persistant[PERS_TEAM] );

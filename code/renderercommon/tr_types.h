@@ -55,6 +55,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	RF_WRAP_FRAMES		0x0200		// mod the model frames by the maxframes to allow continuous
 										// animation without needing to know the frame count
 
+#define	RF_WEAPONFOV		0x0400		// use cg_weaponFov instead of cg_fov
+
 // refdef flags
 #define RDF_NOWORLDMODEL	0x0001		// used for player configuration screen
 #define RDF_HYPERSPACE		0x0004		// teleportation effect
@@ -123,9 +125,13 @@ typedef struct {
 #define	MAX_RENDER_STRINGS			8
 #define	MAX_RENDER_STRING_LENGTH	32
 
-typedef struct {
+struct refdef_t
+{
 	int			x, y, width, height;
-	float		fov_x, fov_y;
+	float		fov_x{ 0.0f };
+	float		fov_y{ 0.0f };
+	float		wfov_x{ 0.0f };
+	float		wfov_y{ 0.0f };
 	vec3_t		vieworg;
 	vec3_t		viewaxis[3];		// transformation matrix
 
@@ -139,8 +145,7 @@ typedef struct {
 
 	// text messages for deform text shaders
 	char		text[MAX_RENDER_STRINGS][MAX_RENDER_STRING_LENGTH];
-} refdef_t;
-
+};
 
 typedef enum {
 	STEREO_CENTER,

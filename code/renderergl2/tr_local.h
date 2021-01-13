@@ -723,9 +723,13 @@ typedef struct shaderProgram_s
 
 // trRefdef_t holds everything that comes in refdef_t,
 // as well as the locally generated scene information
-typedef struct {
+struct trRefdef_t
+{
 	int			x, y, width, height;
-	float		fov_x, fov_y;
+	float		fov_x{ 0.0f };
+	float		fov_y{ 0.0f };
+	float		wfov_x{ 0.0f };
+	float		wfov_y{ 0.0f };
 	vec3_t		vieworg;
 	vec3_t		viewaxis[3];		// transformation matrix
 
@@ -768,7 +772,7 @@ typedef struct {
 
 	float       autoExposureMinMax[2];
 	float       toneMinAvgMaxLinear[3];
-} trRefdef_t;
+};
 
 
 //=================================================================================

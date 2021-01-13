@@ -294,6 +294,8 @@ void RE_BeginScene(const refdef_t *fd)
 	tr.refdef.height = fd->height;
 	tr.refdef.fov_x = fd->fov_x;
 	tr.refdef.fov_y = fd->fov_y;
+	tr.refdef.wfov_x = fd->wfov_x;
+	tr.refdef.wfov_y = fd->wfov_y;
 
 	VectorCopy( fd->vieworg, tr.refdef.vieworg );
 	VectorCopy( fd->viewaxis[0], tr.refdef.viewaxis[0] );
