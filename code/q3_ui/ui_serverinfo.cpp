@@ -228,9 +228,9 @@ void UI_ServerInfoMenu( void )
 	s_serverinfo.add.generic.id	      = ID_ADD;
 	s_serverinfo.add.generic.x		  = 320;
 	s_serverinfo.add.generic.y		  = 371;
-	s_serverinfo.add.string  		  = "ADD TO FAVORITES";
+	s_serverinfo.add.string  		  = "Add to favourites";
 	s_serverinfo.add.style  		  = UI_CENTER|UI_SMALLFONT;
-	s_serverinfo.add.color			  =	color_red;
+	s_serverinfo.add.color			  = color_menutext;
 	if( trap_Cvar_VariableValue( "sv_running" ) ) {
 		s_serverinfo.add.generic.flags |= QMF_GRAYED;
 	}

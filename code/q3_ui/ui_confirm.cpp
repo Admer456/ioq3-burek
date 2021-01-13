@@ -180,8 +180,8 @@ void UI_ConfirmMenu_Style( const char *question, int style, void (*draw)( void )
 
 	ConfirmMenu_Cache();
 
-	n1 = UI_ProportionalStringWidth( "YES/NO" );
-	n2 = UI_ProportionalStringWidth( "YES" ) + PROP_GAP_WIDTH;
+	n1 = UI_ProportionalStringWidth( "Yes/No" );
+	n2 = UI_ProportionalStringWidth( "Yes" ) + PROP_GAP_WIDTH;
 	n3 = UI_ProportionalStringWidth( "/" )  + PROP_GAP_WIDTH;
 	l1 = 320 - ( n1 / 2 );
 	l2 = l1 + n2;
@@ -211,7 +211,7 @@ void UI_ConfirmMenu_Style( const char *question, int style, void (*draw)( void )
 	s_confirm.yes.generic.id		= ID_CONFIRM_YES;
 	s_confirm.yes.generic.x			= l1;
 	s_confirm.yes.generic.y			= 264;
-	s_confirm.yes.string			= "YES";
+	s_confirm.yes.string			= "Yes";
 	s_confirm.yes.color				= color_red;
 	s_confirm.yes.style				= UI_LEFT;
 
@@ -221,7 +221,7 @@ void UI_ConfirmMenu_Style( const char *question, int style, void (*draw)( void )
 	s_confirm.no.generic.id			= ID_CONFIRM_NO;
 	s_confirm.no.generic.x		    = l3;
 	s_confirm.no.generic.y		    = 264;
-	s_confirm.no.string				= "NO";
+	s_confirm.no.string				= "No";
 	s_confirm.no.color			    = color_red;
 	s_confirm.no.style			    = UI_LEFT;
 
