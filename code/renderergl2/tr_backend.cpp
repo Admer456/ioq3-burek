@@ -552,6 +552,10 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 				R_SetupProjection( &temp, r_znear->value, 0, qfalse );
 				GL_SetProjectionMatrix( temp.projectionMatrix );
 			}
+			else
+			{
+				GL_SetProjectionMatrix( backEnd.viewParms.projectionMatrix );
+			}
 
 			//
 			// change depthrange. Also change projection matrix so first person weapon does not look like coming
@@ -1203,7 +1207,8 @@ RB_DrawBuffer
 
 =============
 */
-const void	*RB_DrawBuffer( const void *data ) {
+const void	*RB_DrawBuffer( const void *data ) 
+{
 	const drawBufferCommand_t	*cmd;
 
 	cmd = (const drawBufferCommand_t *)data;
@@ -1218,8 +1223,9 @@ const void	*RB_DrawBuffer( const void *data ) {
 	qglDrawBuffer( cmd->buffer );
 
 	// clear screen for debugging
-	if ( r_clear->integer ) {
-		qglClearColor( 1, 0, 0.5, 1 );
+	if ( r_clear->integer ) 
+	{
+		qglClearColor( 0.5, 0.5, 0.5, 1 );
 		qglClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	}
 
