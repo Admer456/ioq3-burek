@@ -1,8 +1,5 @@
 #include "Maths/Vector.hpp"
 #include "cg_local.hpp"
-#include "RenderEntity.hpp"
-#include "WeaponFactory.hpp"
-#include "BaseClientWeapon.hpp"
 
 using namespace ClientEntities;
 
@@ -12,20 +9,15 @@ void BaseClientWeapon::Precache()
 
 	WeaponInfo wi = GetWeaponInfo();
 
-	renderEntity.hModel = trap_R_RegisterModel( wi.viewModel );
+	renderEntity = RenderEntity( wi.viewModel );
 }
 
 void BaseClientWeapon::WeaponFrame()
 {
-	renderEntity.backlerp = 0;
-	renderEntity.frame++;
-	//renderEntity.oldframe = 91;
+	renderEntity.Update( cg.frametime * 0.001f );
 
-	if ( renderEntity.frame > 91 )
-		renderEntity.frame = 0;
+	if ( cg.time * 0.001f > nextIdle )
+		OnIdle();
 
-	renderEntity.oldframe = renderEntity.frame;
-
-	//if ( renderEntity.oldframe > 91 )
-	//	renderEntity.oldframe = 0;
+	CG_Printf( "time %3.2f next %3.2f\n", cg.time*0.001f, nextIdle );
 }

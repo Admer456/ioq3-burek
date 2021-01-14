@@ -9,6 +9,7 @@
 
 #include "Entities/Info/InfoPlayerStart.hpp"
 #include "Entities/Weapons/BaseWeapon.hpp"
+#include "Entities/Weapons/Weapon_Fists.hpp"
 
 #include <type_traits>
 #include <array>
@@ -748,9 +749,11 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 			player->KillBox();
 
 			// force the base weapon up
-			client->ps.weapon = WeaponID_None;
+			client->ps.weapon = WeaponID_Fists;
 			client->ps.weaponstate = WEAPON_READY;
 			
+			player->AddWeapon( gameWorld->CreateEntity<Entities::Weapon_Fists>() );
+
 			// fire the targets of the spawn point
 			if ( info.entityId != ENTITYNUM_NONE && gEntities[info.entityId] )
 				gEntities[info.entityId]->UseTargets( player );

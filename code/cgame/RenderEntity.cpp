@@ -7,12 +7,19 @@ Animation::Animation()
 	memset( name, 0, sizeof( name ) );
 }
 
+float Animation::Length()
+{
+	return static_cast<float>(numFrames) / (1000.0f / frameLerp);
+}
+
 RenderEntity::RenderEntity( const char* modelName )
 {
 	memset( &ref, 0, sizeof( ref ) );
 
+	ref.hModel = trap_R_RegisterModel( modelName );
+
 	std::string modelPath = modelName;
-	modelPath.substr( 0, modelPath.size() - 5 ); // strip the extension
+	modelPath = modelPath.substr( 0, modelPath.size() - 4 ); // strip the extension
 	modelPath += ".mcfg"; // MCFG = Model ConFiGuration file
 
 	LoadModelConfig( modelPath.c_str() );
@@ -20,18 +27,25 @@ RenderEntity::RenderEntity( const char* modelName )
 
 void RenderEntity::Update( float deltaTime )
 {
-	// manual = frames are set manually elsewhere
-	if ( !isManual )
+	if ( currentAnim != AnimHandleNotFound )
 	{
-		float framerate = 1.0f / anims[currentAnim].frameLerp;
-		currentFrame += deltaTime * framerate;
+		// manual = frames are set manually elsewhere
+		if ( !isManual )
+		{
+			float framerate = 1000.0f / MAX( 1, anims[currentAnim].frameLerp );
+			currentFrame += deltaTime * framerate;
+		}
+
+		ref.oldframe = currentFrame + anims[currentAnim].firstFrame;
+		ref.frame = ref.oldframe + 1;
+		ref.backlerp = 1.0f - (currentFrame - (int)currentFrame);
 	}
 
-	ref.oldframe = currentFrame + anims[currentAnim].firstFrame;
-	ref.frame = ref.oldframe + 1;
-	ref.backlerp = 1.0f - (currentFrame - (int)currentFrame);
-
 	origin.CopyToArray( ref.origin );
+	AnglesToAxis( angles, ref.axis );
+
+	if ( currentFrame > anims[currentAnim].numFrames )
+		currentFrame -= anims[currentAnim].numFrames;
 }
 
 void RenderEntity::StartAnimation( animHandle anim, bool fromStart )
@@ -76,6 +90,11 @@ animHandle RenderEntity::GetAnimByName( const char* animName )
 	}
 
 	return AnimHandleNotFound;
+}
+
+Animation RenderEntity::GetAnimData( animHandle handle )
+{
+	return anims[handle];
 }
 
 refEntity_t& RenderEntity::GetRefEntity()
@@ -175,7 +194,5 @@ void RenderEntity::LoadModelConfig( const char* modelConfigPath )
 			if ( numAnims >= Animation::MaxAnimations )
 				break;
 		}
-
-
 	}
 }

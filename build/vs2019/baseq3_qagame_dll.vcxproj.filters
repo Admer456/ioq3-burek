@@ -156,12 +156,6 @@
     <ClInclude Include="..\..\code\shared\Weapons\WeaponIDs.hpp">
       <Filter>Shared\Weapons</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Test.hpp">
-      <Filter>Sources\Entities\Weapons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Test2.hpp">
-      <Filter>Sources\Entities\Weapons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\Func\FuncToggle.hpp">
       <Filter>Sources\Entities\Func</Filter>
     </ClInclude>
@@ -209,6 +203,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\Func\FuncBreakable.hpp">
       <Filter>Sources\Entities\Func</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Fists.hpp">
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -347,12 +344,6 @@
     <ClCompile Include="..\..\code\game\Entities\Weapons\BaseWeapon.cpp">
       <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Test.cpp">
-      <Filter>Sources\Entities\Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Test2.cpp">
-      <Filter>Sources\Entities\Weapons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Func\FuncToggle.cpp">
       <Filter>Sources\Entities\Func</Filter>
     </ClCompile>
@@ -400,6 +391,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Func\FuncBreakable.cpp">
       <Filter>Sources\Entities\Func</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Fists.cpp">
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

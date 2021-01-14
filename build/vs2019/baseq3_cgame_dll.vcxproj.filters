@@ -57,14 +57,8 @@
     <ClInclude Include="..\..\code\cgame\Weapons\WeaponFactory.hpp">
       <Filter>Sources\Weapons</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Test.hpp">
-      <Filter>Sources\Weapons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\code\shared\Weapons\WeaponIDs.hpp">
       <Filter>Shared\Weapons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Test2.hpp">
-      <Filter>Sources\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\Client.hpp">
       <Filter>Sources</Filter>
@@ -74,6 +68,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\Events\ComplexEventHandler.hpp">
       <Filter>Sources\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Fists.hpp">
+      <Filter>Sources\Weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -158,12 +155,6 @@
     <ClCompile Include="..\..\code\cgame\Weapons\WeaponFactory.cpp">
       <Filter>Sources\Weapons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Test.cpp">
-      <Filter>Sources\Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Test2.cpp">
-      <Filter>Sources\Weapons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\code\cgame\Client.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -175,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\Events\GibSpan.cpp">
       <Filter>Sources\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Fists.cpp">
+      <Filter>Sources\Weapons</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

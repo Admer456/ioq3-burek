@@ -8,6 +8,8 @@ class Animation
 public:
 	Animation();
 
+	float	Length(); // Animation length in seconds
+
 	char	name[32];			// So we can look up by names
 	short	firstFrame{ 0 };
 	short	numFrames{ 0 };
@@ -23,6 +25,7 @@ public:
 class RenderEntity
 {
 public:
+	RenderEntity() = default;
 	RenderEntity( const char* modelName );
 	RenderEntity( qhandle_t modelHandle );
 
@@ -49,9 +52,12 @@ public:
 	// If it fails to find one, it returns 0xff
 	animHandle	GetAnimByName( const char* animName );
 
+	Animation	GetAnimData( animHandle handle );
+
 	refEntity_t& GetRefEntity();
 
 	Vector		origin{ Vector::Zero };
+	Vector		angles{ Vector::Zero };
 
 protected:
 	// Initialises the animation data etc.

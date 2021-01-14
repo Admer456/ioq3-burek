@@ -876,7 +876,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	}
 
 	// add the weapon
-	gun = weapon->GetRenderEntity();
+	gun = weapon->GetRenderEntity().GetRefEntity();
 
 	VectorCopy( parent->lightingOrigin, gun.lightingOrigin );
 	gun.shadowPlane = parent->shadowPlane;
@@ -907,7 +907,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	gun.backlerp = parent->backlerp;
 
 	trap_R_AddRefEntityToScene( &gun );
-	//CG_AddWeaponWithPowerups( &gun, cent->currentState.powerups );
 
 	// make sure we aren't looking at cg.predictedPlayerEntity for LG
 	nonPredictedCent = &cg_entities[cent->currentState.number];
@@ -921,6 +920,27 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	}
 }
 
+void CG_AddWeapon( Vector weaponPos, Vector weaponAngles, playerState_t* ps, centity_t* cent )
+{
+	ClientEntities::BaseClientWeapon* weapon = nullptr;
+	weapon = GetClient()->GetCurrentWeapon();
+
+	if ( nullptr == weapon )
+		return;
+
+	RenderEntity& gun = weapon->GetRenderEntity();
+
+	gun.origin = weaponPos;
+	gun.angles = weaponAngles;
+
+	gun.GetRefEntity().renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_WEAPONFOV;
+
+	// Update the position and angles, don't update frames
+	gun.Update( 0.0f );
+
+	trap_R_AddRefEntityToScene( &gun.GetRefEntity() );
+}
+
 /*
 ==============
 CG_AddViewWeapon
@@ -930,29 +950,22 @@ Add the weapon, and flash for the player's view
 */
 void CG_AddViewWeapon( playerState_t *ps ) 
 {
-	refEntity_t	hand;
-	centity_t	*cent;
-	clientInfo_t	*ci;
-	float		fovOffset;
-	vec3_t		angles;
-	//weaponInfo_t	*weapon;
+	centity_t *cent;
+	clientInfo_t *ci;
+	float fovOffset;
+	Vector weaponAngles;
+	Vector weaponPos;
 
 	if ( ps->persistant[PERS_TEAM] == TEAM_SPECTATOR ) 
-	{
 		return;
-	}
 
 	if ( ps->pm_type == PM_INTERMISSION ) 
-	{
 		return;
-	}
 
 	// no gun if in third person view or a camera is active
 	//if ( cg.renderingThirdPerson || cg.cameraMode) {
 	if ( cg.renderingThirdPerson ) 
-	{
 		return;
-	}
 
 	// allow the gun to be completely removed
 	if ( !cg_drawGun.integer || cg.testGun ) // don't draw if testing a gun model
@@ -971,39 +984,16 @@ void CG_AddViewWeapon( playerState_t *ps )
 		fovOffset = 0;
 	}
 
-	cent = &cg.predictedPlayerEntity;	// &cg_entities[cg.snap->ps.clientNum];
-	memset (&hand, 0, sizeof(hand));
+	cent = &cg.predictedPlayerEntity;
 
 	// set up gun position
-	CG_CalculateWeaponPosition( hand.origin, angles );
+	CG_CalculateWeaponPosition( weaponPos, weaponAngles );
 
-	VectorMA( hand.origin, cg_gun_x.value, cg.refdef.viewaxis[0], hand.origin );
-	VectorMA( hand.origin, cg_gun_y.value, cg.refdef.viewaxis[1], hand.origin );
-	VectorMA( hand.origin, (cg_gun_z.value+fovOffset), cg.refdef.viewaxis[2], hand.origin );
+	VectorMA( weaponPos, cg_gun_x.value, cg.refdef.viewaxis[0], weaponPos );
+	VectorMA( weaponPos, cg_gun_y.value, cg.refdef.viewaxis[1], weaponPos );
+	VectorMA( weaponPos, (cg_gun_z.value+fovOffset), cg.refdef.viewaxis[2], weaponPos );
 
-	AnglesToAxis( angles, hand.axis );
-
-	// map torso animations to weapon animations
-	if ( cg_gun_frame.integer ) 
-	{
-		// development tool
-		hand.frame = hand.oldframe = cg_gun_frame.integer;
-		hand.backlerp = 0;
-	} 
-	else 
-	{
-		// get clientinfo for animation map
-		ci = &cgs.clientinfo[ cent->currentState.clientNum ];
-		hand.frame = CG_MapTorsoToWeaponFrame( ci, cent->pe.torso.frame );
-		hand.oldframe = CG_MapTorsoToWeaponFrame( ci, cent->pe.torso.oldFrame );
-		hand.backlerp = cent->pe.torso.backlerp;
-	}
-
-	hand.hModel = 0;//weapon->handsModel;
-	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_WEAPONFOV; //| RF_MINLIGHT;
-
-	// add everything onto the hand
-	CG_AddPlayerWeapon( &hand, ps, &cg.predictedPlayerEntity, ps->persistant[PERS_TEAM] );
+	CG_AddWeapon( weaponPos, weaponAngles, ps, &cg.predictedPlayerEntity );
 }
 
 /*

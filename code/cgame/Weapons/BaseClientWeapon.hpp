@@ -13,8 +13,10 @@ namespace ClientEntities
 			const char* name;
 		};
 
+		BaseClientWeapon() = default;
+
 		virtual WeaponInfo GetWeaponInfo() = 0;
-		virtual refEntity_t& GetRenderEntity()
+		virtual RenderEntity& GetRenderEntity()
 		{
 			return renderEntity;
 		}
@@ -22,6 +24,8 @@ namespace ClientEntities
 		virtual void	Precache();
 
 		virtual void	WeaponFrame();
+
+		virtual void	OnIdle() {}
 
 		virtual void	OnPrimaryFire() {}
 		virtual void	OnSecondaryFire() {}
@@ -33,6 +37,12 @@ namespace ClientEntities
 		virtual void	OnHolster() {}
 
 	protected:
-		refEntity_t		renderEntity;
+		RenderEntity	renderEntity;
+
+		// "Timers"
+		float			nextPrimary{};
+		float			nextSecondary{};
+		float			nextTertiary{};
+		float			nextIdle{};
 	};
 }
