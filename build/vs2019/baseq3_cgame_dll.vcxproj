@@ -191,9 +191,12 @@
     <ClInclude Include="..\..\code\cgame\Weapons\BaseClientWeapon.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\WeaponFactory.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Fists.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelConfigData.hpp" />
     <ClInclude Include="..\..\code\qcommon\IEngineExports.h" />
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
     <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp" />
     <ClInclude Include="..\..\code\shared\bg_local.hpp" />
     <ClInclude Include="..\..\code\shared\bg_public.hpp" />
     <ClInclude Include="..\..\code\shared\Weapons\WeaponIDs.hpp" />
@@ -226,8 +229,11 @@
     <ClCompile Include="..\..\code\cgame\Weapons\BaseClientWeapon.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\WeaponFactory.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Fists.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_shared.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Util\Utilities_Client.cpp" />
     <ClCompile Include="..\..\code\shared\bg_misc.cpp" />
     <ClCompile Include="..\..\code\shared\bg_pmove.cpp" />
     <ClCompile Include="..\..\code\shared\bg_slidemove.cpp" />

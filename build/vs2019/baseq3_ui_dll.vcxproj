@@ -177,7 +177,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\q3_ui\ui_local.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelConfigData.hpp" />
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\q3_ui\ui_addbots.cpp" />
@@ -218,8 +221,11 @@
     <ClCompile Include="..\..\code\q3_ui\ui_team.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_teamorders.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_video.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_shared.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Util\Utilities_UI.cpp" />
     <ClCompile Include="..\..\code\shared\bg_misc.cpp" />
     <ClCompile Include="..\..\code\ui\ui_syscalls.cpp" />
   </ItemGroup>

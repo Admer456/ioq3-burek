@@ -237,6 +237,8 @@
     <ClInclude Include="..\..\code\botlib\l_script.hpp" />
     <ClInclude Include="..\..\code\botlib\l_struct.hpp" />
     <ClInclude Include="..\..\code\botlib\l_utils.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelConfigData.hpp" />
     <ClInclude Include="..\..\code\qcommon\cm_local.hpp" />
     <ClInclude Include="..\..\code\qcommon\cm_patch.hpp" />
     <ClInclude Include="..\..\code\qcommon\cm_polylib.hpp" />
@@ -252,6 +254,7 @@
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
     <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp" />
     <ClInclude Include="..\..\code\qcommon\unzip.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp" />
     <ClInclude Include="..\..\code\server\server.hpp" />
     <ClInclude Include="..\..\code\sys\sys_loadlib.hpp" />
     <ClInclude Include="..\..\code\sys\sys_local.hpp" />
@@ -289,6 +292,8 @@
     <ClCompile Include="..\..\code\null\null_client.cpp" />
     <ClCompile Include="..\..\code\null\null_input.cpp" />
     <ClCompile Include="..\..\code\null\null_snddma.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp" />
     <ClCompile Include="..\..\code\qcommon\cmd.cpp" />
     <ClCompile Include="..\..\code\qcommon\cm_load.cpp" />
     <ClCompile Include="..\..\code\qcommon\cm_patch.cpp" />
@@ -311,6 +316,7 @@
     <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_shared.cpp" />
     <ClCompile Include="..\..\code\qcommon\unzip.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Util\Utilities_Engine.cpp" />
     <ClCompile Include="..\..\code\qcommon\vm.cpp" />
     <ClCompile Include="..\..\code\qcommon\vm_interpreted.cpp" />
     <ClCompile Include="..\..\code\qcommon\vm_x86.cpp" />

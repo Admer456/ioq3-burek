@@ -46,6 +46,15 @@
     <Filter Include="Sources\Entities\Env">
       <UniqueIdentifier>{9b81ee66-2d58-4f05-b30e-aafca67c9b5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="qcommon\Util">
+      <UniqueIdentifier>{90fb4e2d-2911-4bb4-ba38-118d4546e6fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Asset">
+      <UniqueIdentifier>{6b2ec9be-983e-4924-9023-a0c1af9d9bc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Asset\Model">
+      <UniqueIdentifier>{a4a94c46-3337-4089-85c8-22bcd2c4e28d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -206,6 +215,18 @@
     </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Fists.hpp">
       <Filter>Sources\Entities\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Func\FuncDynamic.hpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelConfigData.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp">
+      <Filter>qcommon\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -394,6 +415,18 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Fists.cpp">
       <Filter>Sources\Entities\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Func\FuncDynamic.cpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Util\Utilities_Game.cpp">
+      <Filter>qcommon\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,15 @@
     <Filter Include="sys">
       <UniqueIdentifier>{24AC880B-90B5-887C-1931-9F7C8539947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="qcommon\Asset">
+      <UniqueIdentifier>{eb710799-50cd-4cee-9d66-018aedae0c47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Asset\Model">
+      <UniqueIdentifier>{10b31a72-82b8-49d2-baf8-c7aa4d8dbef4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Util">
+      <UniqueIdentifier>{676fdc36-dec7-4e50-a089-8488f10891cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\res\win_resource.h">
@@ -182,6 +191,15 @@
     </ClInclude>
     <ClInclude Include="..\..\code\qcommon\EngineLocal.h">
       <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelConfigData.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp">
+      <Filter>qcommon\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -394,6 +412,15 @@
     </ClCompile>
     <ClCompile Include="..\..\code\qcommon\EngineLocal.cpp">
       <Filter>qcommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Util\Utilities_Engine.cpp">
+      <Filter>qcommon\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

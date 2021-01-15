@@ -19,6 +19,15 @@
     <Filter Include="Sources\Events">
       <UniqueIdentifier>{f0cc07f7-38ed-412a-8fdf-aab52cccfac9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="qcommon\Asset">
+      <UniqueIdentifier>{901d6818-b896-4073-a513-900b09b7f60b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Asset\Model">
+      <UniqueIdentifier>{fabaa6f3-861f-4b00-a5ff-dc70fcb66f65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Util">
+      <UniqueIdentifier>{55fed3f1-d04f-45b1-940a-2be9c1d07937}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -71,6 +80,15 @@
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Fists.hpp">
       <Filter>Sources\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelConfigData.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp">
+      <Filter>qcommon\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +187,15 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Fists.cpp">
       <Filter>Sources\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Util\Utilities_Client.cpp">
+      <Filter>qcommon\Util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -183,11 +183,14 @@
     <ClInclude Include="..\..\code\jpeg-8c\jpegint.h" />
     <ClInclude Include="..\..\code\jpeg-8c\jpeglib.h" />
     <ClInclude Include="..\..\code\jpeg-8c\jversion.h" />
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelConfigData.hpp" />
     <ClInclude Include="..\..\code\qcommon\puff.hpp" />
     <ClInclude Include="..\..\code\qcommon\qcommon.hpp" />
     <ClInclude Include="..\..\code\qcommon\qfiles.hpp" />
     <ClInclude Include="..\..\code\qcommon\q_shared.hpp" />
     <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp" />
+    <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp" />
     <ClInclude Include="..\..\code\renderercommon\iqm.h" />
     <ClInclude Include="..\..\code\renderercommon\qgl.h" />
     <ClInclude Include="..\..\code\renderercommon\tr_common.h" />
@@ -247,9 +250,12 @@
     <ClCompile Include="..\..\code\jpeg-8c\jquant1.c" />
     <ClCompile Include="..\..\code\jpeg-8c\jquant2.c" />
     <ClCompile Include="..\..\code\jpeg-8c\jutils.c" />
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp" />
     <ClCompile Include="..\..\code\qcommon\puff.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_shared.cpp" />
+    <ClCompile Include="..\..\code\qcommon\Util\Util_RendererGL2.cpp" />
     <ClCompile Include="..\..\code\renderercommon\tr_font.cpp" />
     <ClCompile Include="..\..\code\renderercommon\tr_image_bmp.cpp" />
     <ClCompile Include="..\..\code\renderercommon\tr_image_jpg.cpp" />

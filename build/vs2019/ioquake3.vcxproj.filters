@@ -31,6 +31,15 @@
     <Filter Include="Game\Entities">
       <UniqueIdentifier>{9fe72949-d5dd-4880-a788-3ee7d8039bff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="qcommon\Asset">
+      <UniqueIdentifier>{1a1d9e93-ff13-45d0-82d0-8606b098a504}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Asset\Model">
+      <UniqueIdentifier>{588f1ad1-9c56-4e58-b776-a177145759bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Util">
+      <UniqueIdentifier>{f2357078-3995-4b6d-84d9-d2d4298a18bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\res\win_resource.h">
@@ -227,6 +236,15 @@
     </ClInclude>
     <ClInclude Include="..\..\code\client\ButtonFunction.hpp">
       <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelConfigData.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp">
+      <Filter>qcommon\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -514,6 +532,15 @@
     </ClCompile>
     <ClCompile Include="..\..\code\client\ButtonFunction.cpp">
       <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Util\Utilities_Engine.cpp">
+      <Filter>qcommon\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

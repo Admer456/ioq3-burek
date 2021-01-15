@@ -22,6 +22,15 @@
     <Filter Include="sdl">
       <UniqueIdentifier>{68A9880B-D4B2-887C-5D2E-9F7CC936947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="qcommon\Asset">
+      <UniqueIdentifier>{218a79bb-00b5-47c7-a076-6949f116b068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Asset\Model">
+      <UniqueIdentifier>{77e523ad-2a5a-4645-8a7e-30743d249455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qcommon\Util">
+      <UniqueIdentifier>{54a43b67-9347-4d5b-85a1-fa67110843c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\jpeg-8c\jconfig.h">
@@ -98,6 +107,15 @@
     </ClInclude>
     <ClInclude Include="..\..\code\qcommon\surfaceflags.hpp">
       <Filter>qcommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelConfigData.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp">
+      <Filter>qcommon\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -451,6 +469,15 @@
     </ClCompile>
     <ClCompile Include="..\..\code\renderergl2\tr_glsl.cpp">
       <Filter>renderergl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp">
+      <Filter>qcommon\Asset\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\Util\Util_RendererGL2.cpp">
+      <Filter>qcommon\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
