@@ -1,27 +1,5 @@
 #pragma once
 
-using animHandle = unsigned char;
-constexpr animHandle AnimHandleNotFound = 0xff;
-
-class Animation
-{
-public:
-	Animation();
-
-	float	Length(); // Animation length in seconds
-
-	char	name[32];			// So we can look up by names
-	short	firstFrame{ 0 };
-	short	numFrames{ 0 };
-	short	loopFrames{ 0 };	// 0 to numFrames
-	short	frameLerp{ 0 };		// msec between frames
-	short	initialLerp{ 0 };	// msec to get to first frame
-	bool	reversed{ false };	// True if animation is reversed
-	bool	active{ false };	// Does this animation exist in an array? 
-
-	constexpr static size_t MaxAnimations = 256U;
-};
-
 class RenderEntity
 {
 public:
@@ -52,7 +30,7 @@ public:
 	// If it fails to find one, it returns 0xff
 	animHandle	GetAnimByName( const char* animName );
 
-	Animation	GetAnimData( animHandle handle );
+	Assets::ModelAnimation GetAnimData( animHandle handle );
 
 	refEntity_t& GetRefEntity();
 
@@ -74,7 +52,7 @@ protected:
 	// very easily calculate ref.frame, ref.oldframe AND ref.backlerp
 	float		currentFrame{ 0 };
 
-	animHandle	currentAnim{ AnimHandleNotFound };
+	animHandle	currentAnim{ 0 };
 
-	Animation	anims[Animation::MaxAnimations];
+	std::vector<Assets::ModelAnimation> anims;
 };
