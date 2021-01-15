@@ -12,11 +12,18 @@ namespace Entities
 
 		void Spawn() override;
 
+		void Use( IEntity* activator, IEntity* caller, float value ) override;
+		void AnimationThink();
+
 		void StartAnimation( const char* name );
 		void IdleAnimation( const char* name );
 
+		animHandle GetAnimByName( const char* name );
+
 	protected:
-		qhandle_t actionAnimation{};
-		qhandle_t idleAnimation{};
+		animHandle actionAnimation{};
+		animHandle idleAnimation{};
+
+		std::vector<Assets::ModelAnimation> anims;
 	};
 }

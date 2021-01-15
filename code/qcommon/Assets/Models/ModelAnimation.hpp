@@ -17,7 +17,7 @@ namespace Assets
 		short	firstFrame{ 0 };
 		short	numFrames{ 0 };
 		short	loopFrames{ 0 };	// 0 to numFrames
-		short	frameLerp{ 0 };		// msec between frames
+		float	frameLerp{ 0 };		// msec between frames
 		short	initialLerp{ 0 };	// msec to get to first frame
 		bool	reversed{ false };	// True if animation is reversed
 

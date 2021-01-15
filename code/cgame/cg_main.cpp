@@ -842,6 +842,7 @@ static void CG_RegisterGraphics( void )
 			break;
 		
 		cgs.gameModels[i] = trap_R_RegisterModel( modelName );
+		GetClient()->RegisterModelConfigData( i, modelName );
 	}
 
 	for ( i = 1; i < MAX_CSSHADERS; i++ )

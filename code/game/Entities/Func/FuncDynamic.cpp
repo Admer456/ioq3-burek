@@ -7,7 +7,6 @@
 #include "../qcommon/IEngineExports.h"
 #include "Game/IGameImports.h"
 #include "Entities/BasePlayer.hpp"
-#include "../qcommon/Assets/Models/ModelConfigData.hpp"
 
 #include "FuncDynamic.hpp"
 
@@ -18,6 +17,80 @@ DefineEntityClass( "func_dynamic", FuncDynamic, BaseEntity );
 void FuncDynamic::Spawn()
 {
 	BaseEntity::Spawn();
+
+	const char* model = spawnArgs->GetCString( "model", nullptr );
+
+	if ( nullptr == model )
+	{
+		Util::PrintWarning( va( "func_dynamic '%s' has no model!", targetName.c_str() ) );
+		Remove();
+		return;
+	}
+
+	if ( model[0] == '*' )
+	{
+		Util::PrintWarning( va( "func_dynamic doesn't support brush models ('%s')", targetName.c_str() ) );
+		Remove();
+		return;
+	}
+
+	std::string modelConfig = model;
+	modelConfig = modelConfig.substr( 0, modelConfig.size() - 4 );
+	modelConfig += ".mcfg";
+
+	anims = Assets::ModelConfigData::GetAnimations( modelConfig.c_str() );
+
+	actionAnimation = GetAnimByName( spawnArgs->GetCString( "animAction", "action" ) );
+	idleAnimation = GetAnimByName( spawnArgs->GetCString( "animIdle", "idle" ) );
+
+	GetState()->animation = idleAnimation;
+	GetState()->animationFlags = AnimFlag_Loop;
+	GetState()->framerate = 1000.0f / anims[idleAnimation].frameLerp;
 }
 
+void FuncDynamic::Use( IEntity* activator, IEntity* caller, float value )
+{
+	GetState()->animation = actionAnimation;
+	GetState()->animationFlags = AnimFlag_ForceStart;
+	GetState()->animationTime = level.time;
+	GetState()->framerate = 1000.0f / anims[actionAnimation].frameLerp;
 
+	nextThink = level.time * 0.001f + anims[actionAnimation].Length();
+	SetThink( &FuncDynamic::AnimationThink );
+}
+
+void FuncDynamic::AnimationThink()
+{
+	GetState()->animation = idleAnimation;
+	GetState()->animationFlags = AnimFlag_ForceStart | AnimFlag_Loop;
+	GetState()->animationTime = level.time;
+	GetState()->framerate = 1000.0f / anims[idleAnimation].frameLerp;
+
+	SetThink( nullptr );
+}
+
+void FuncDynamic::StartAnimation( const char* name )
+{
+	actionAnimation = GetAnimByName( name );
+	
+	Use( this, this, 0 );
+}
+
+void FuncDynamic::IdleAnimation( const char* name )
+{
+	idleAnimation = GetAnimByName( name );
+}
+
+animHandle FuncDynamic::GetAnimByName( const char* name )
+{
+	for ( Assets::ModelAnimation& anim : anims )
+	{
+		if ( !anim.name[0] )
+			continue;
+
+		if ( !strcmp( name, anim.name ) )
+			return &anim - anims.data();
+	}
+
+	return AnimHandleNotFound;
+}

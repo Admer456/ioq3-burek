@@ -707,6 +707,9 @@ void GameLocal::RunFrame( int levelTime )
 			continue;
 		}
 
+		// Clear the force start animation flag
+		ent->GetState()->animationFlags &= ~AnimFlag_ForceStart;
+
 		ent->Think();
 	}
 

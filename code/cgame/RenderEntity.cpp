@@ -15,6 +15,49 @@ RenderEntity::RenderEntity( const char* modelName )
 	LoadModelConfig( modelPath.c_str() );
 }
 
+void RenderEntity::CalculateAnimation( refEntity_t& ref, entityState_t& es )
+{
+	float framerate = es.framerate;
+	float animTime = es.animationTime * 0.001f;
+	int frame = es.frame;
+	int flags = es.animationFlags;
+	animHandle anim = es.animation;
+	qhandle_t model = es.modelindex;
+
+	if ( GetClient()->GetAnimationsForModel( model ).empty() )
+	{
+		return;
+	}
+
+	Assets::ModelAnimation ma = GetClient()->GetAnimationsForModel( model ).at( anim );
+
+	if ( flags & AnimFlag_Manual )
+	{
+		ref.frame = frame;
+		ref.oldframe = 0;
+		ref.backlerp = 0.0f;
+		return;
+	}
+
+	float calcFrame = (cg.time * 0.001f - animTime) * framerate;
+
+	if ( flags & AnimFlag_Loop )
+	{
+		if ( calcFrame >= ma.numFrames )
+		{
+			calcFrame = ((int)calcFrame & ma.numFrames) + (calcFrame - (int)calcFrame);
+		}
+	}
+	else if ( calcFrame > ma.numFrames )
+	{
+		calcFrame = ma.numFrames;
+	}
+
+	ref.oldframe = calcFrame + ma.firstFrame;
+	ref.frame = ref.oldframe + 1;
+	ref.backlerp = 1.0f - (calcFrame - (int)calcFrame);
+}
+
 void RenderEntity::Update( float deltaTime )
 {
 	if ( currentAnim != AnimHandleNotFound )

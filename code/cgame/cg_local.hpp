@@ -25,15 +25,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../shared/bg_public.hpp"
 #include "cg_public.hpp"
 
-#include "../game/Components/IComponent.hpp"
-#include "../game/Components/SharedComponent.hpp"
-
-#include "RenderEntity.hpp"
-#include "Weapons/WeaponFactory.hpp"
-#include "Weapons/BaseClientWeapon.hpp"
-
-#include "Client.hpp"
-
 // The entire cgame module is unloaded and reloaded on each level change,
 // so there is NO persistant data between levels on the client side.
 // If you absolutely need something stored, it can either be kept
@@ -161,7 +152,8 @@ typedef struct {
 
 // centity_t have a direct corespondence with gentity_t in the game, but
 // only the entityState_t is directly communicated to the cgame
-typedef struct centity_s {
+struct centity_t
+{
 	entityState_t	currentState;	// from cg.frame
 	entityState_t	nextState;		// from cg.nextFrame, if available
 	qboolean		interpolate;	// true if next is valid to interpolate to
@@ -192,8 +184,13 @@ typedef struct centity_s {
 	// exact interpolated position of entity on this frame
 	vec3_t			lerpOrigin;
 	vec3_t			lerpAngles;
-} centity_t;
+};
 
+#include "RenderEntity.hpp"
+#include "Weapons/WeaponFactory.hpp"
+#include "Weapons/BaseClientWeapon.hpp"
+
+#include "Client.hpp"
 
 //======================================================================
 

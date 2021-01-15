@@ -70,7 +70,7 @@ std::vector<ModelAnimation> ModelConfigData::GetAnimations( const char* modelFil
 				else if ( !stricmp( token, "frameLerp" ) )
 				{
 					token = COM_Parse( &contents_p );
-					ma.frameLerp = atoi( token );
+					ma.frameLerp = atof( token );
 				}
 				else if ( !stricmp( token, "reversed" ) )
 				{

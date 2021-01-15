@@ -18,6 +18,4 @@ void BaseClientWeapon::WeaponFrame()
 
 	if ( cg.time * 0.001f > nextIdle )
 		OnIdle();
-
-	CG_Printf( "time %3.2f next %3.2f\n", cg.time*0.001f, nextIdle );
 }

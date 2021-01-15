@@ -1339,10 +1339,13 @@ enum AnimationFlags
 	AnimFlag_None = 0,
 
 	// Force loop
-	AnimFlag_Loop = 1 << 0, 
+	AnimFlag_Loop = 1 << 0,
 
 	// Don't increment entityState::frame, animation is no longer controlled by framerate; useful for sprites
 	AnimFlag_Manual = 1 << 1,
+
+	// Reset the animation; this flag gets cleared by the server
+	AnimFlag_ForceStart = 1 << 2,
 };
 
 enum ClipFlags
@@ -1422,6 +1425,7 @@ typedef struct entityState_s {
 	float	framerate;		// framerate of the animation
 	byte	animation;		// ID of the animation to play
 	byte	animationFlags; // AnimationFlags enum
+	int		animationTime;	// When did this animation start? (msec)
 
 	int		solid;			// for client side prediction, trap_linkentity sets this properly
 	int		clipFlags;		// Acts like a clipmask

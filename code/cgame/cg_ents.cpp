@@ -198,6 +198,9 @@ static void CG_General( centity_t *cent ) {
 	// convert angles to axis
 	AnglesToAxis( cent->lerpAngles, ent.axis );
 
+	if ( s1->solid != SOLID_BMODEL && s1->framerate )
+		RenderEntity::CalculateAnimation( ent, cent->currentState );
+
 	// add to refresh list
 	trap_R_AddRefEntityToScene (&ent);
 

@@ -1,6 +1,5 @@
 #pragma once
 
-typedef struct centity_s centity_t;
 class ComplexEventHandler;
 
 class Client final
@@ -14,8 +13,15 @@ public:
 	// Parses complex entity events
 	void ParseComplexEvent( int id, centity_t* cent, Vector position );
 
+	void RegisterModelConfigData( int id, const char* modelName );
+
+	std::vector<Assets::ModelAnimation>& GetAnimationsForModel( qhandle_t modelindex );
+
 private:
 	ComplexEventHandler* complexEventHandler;
+
+	// Model animation data for game models
+	std::vector<Assets::ModelAnimation> anims[MAX_MODELS];
 };
 
 extern Client* GetClient();

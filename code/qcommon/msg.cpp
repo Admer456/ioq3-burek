@@ -1029,6 +1029,7 @@ netField_t	entityStateFields[] =
 	netField_t{ NETF(framerate), 0 },
 	netField_t{ NETF(animation), 8, NF_Byte },
 	netField_t{ NETF(animationFlags), 8, NF_Byte },
+	netField_t{ NETF(animationTime), 32 },
 };
 
 /*

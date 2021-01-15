@@ -7,6 +7,8 @@ public:
 	RenderEntity( const char* modelName );
 	RenderEntity( qhandle_t modelHandle );
 
+	static void CalculateAnimation( refEntity_t& ref, entityState_t& es );
+
 	// Updates the render entity, incrementing frame counters etc.
 	void		Update( float deltaTime );
 
