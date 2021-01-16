@@ -1251,10 +1251,12 @@ void CL_KeyDownEvent( int key, unsigned time )
 	}
 
 	// console key is hardcoded, so the user can never unbind it
-	if( key == K_CONSOLE || ( keys[K_SHIFT].down && key == K_ESCAPE ) )
+	// Added the Del key so I can open the console on my Bosnian keyboard -Admer
+	// Nobody binds anything to Del anyway
+	if( key == K_CONSOLE || ( keys[K_SHIFT].down && key == K_ESCAPE ) || key == K_DEL )
 	{
-		Con_ToggleConsole_f ();
-		Key_ClearStates ();
+		Con_ToggleConsole_f();
+		Key_ClearStates();
 		return;
 	}
 
