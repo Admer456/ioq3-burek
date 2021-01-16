@@ -7,6 +7,13 @@ Client client;
 Client::Client()
 {
 	complexEventHandler = new ComplexEventHandler();
+	view = new ClientView();
+}
+
+Client::~Client()
+{
+	delete complexEventHandler;
+	delete view;
 }
 
 ClientEntities::BaseClientWeapon* Client::GetCurrentWeapon()
@@ -54,6 +61,38 @@ void Client::RegisterModelConfigData( int id, const char* modelName )
 std::vector<Assets::ModelAnimation>& Client::GetAnimationsForModel( qhandle_t modelindex )
 {
 	return anims[modelindex];
+}
+
+float Client::Time() const
+{
+	return cg.time * 0.001f;
+}
+
+bool Client::IsLocalClient( centity_t* cent )
+{
+	if ( cent->currentState.eType != ET_PLAYER )
+		return false;
+
+	return cg.clientNum == cent->currentState.clientNum;
+}
+
+void Client::ExecuteWeaponEvent( int id, centity_t* cent )
+{
+	ClientEntities::BaseClientWeapon* weapon = gWeapons[cent->currentState.weapon];
+	if ( nullptr == weapon )
+		return;
+
+	ClientEntities::BaseClientWeapon::currentPlayer = &cg_entities[cg.clientNum];
+
+	switch ( id )
+	{
+	case EV_WEAPON_PRIMARY: weapon->OnPrimaryFire(); break;
+	case EV_WEAPON_SECONDARY: weapon->OnSecondaryFire(); break;
+	case EV_WEAPON_TERTIARY: weapon->OnTertiaryFire(); break;
+	case EV_WEAPON_DRAW: weapon->OnDraw(); break;
+	case EV_WEAPON_HOLSTER: weapon->OnHolster(); break;
+	case EV_WEAPON_RELOAD: weapon->OnReload(); break;
+	}
 }
 
 Client* GetClient()

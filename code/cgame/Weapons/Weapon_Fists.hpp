@@ -15,6 +15,8 @@ namespace ClientEntities
 		void OnPrimaryFire() override;
 		void OnSecondaryFire() override;
 
+		void CheckHit();
+
 	private:
 		animHandle	animIdle{};
 		animHandle	animAttackLeft{};

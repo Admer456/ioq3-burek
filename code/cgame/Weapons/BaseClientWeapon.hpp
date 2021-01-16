@@ -8,7 +8,9 @@ namespace ClientEntities
 		struct WeaponInfo
 		{
 			const char* viewModel;
+			const char* worldModel;
 			qhandle_t viewModelHandle;
+			qhandle_t worldModelHandle;
 
 			const char* name;
 		};
@@ -35,6 +37,9 @@ namespace ClientEntities
 
 		virtual void	OnDraw() {}
 		virtual void	OnHolster() {}
+
+		// The current player who caused a weapon event
+		static centity_t* currentPlayer;
 
 	protected:
 		RenderEntity	renderEntity;

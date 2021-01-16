@@ -730,29 +730,13 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 		break;
 
 	case EV_WEAPON_PRIMARY:
-		if ( weapon ) weapon->OnPrimaryFire();
-		break;
-	
 	case EV_WEAPON_SECONDARY:
-		if ( weapon ) weapon->OnSecondaryFire();
-		break;
-
 	case EV_WEAPON_TERTIARY:
-		if ( weapon ) weapon->OnTertiaryFire();
-		break;
-
 	case EV_WEAPON_DRAW:
-		if ( weapon ) weapon->OnDraw();
-		break;
-
 	case EV_WEAPON_HOLSTER:
-		if ( weapon ) weapon->OnHolster();
-		break;
-
 	case EV_WEAPON_RELOAD:
-		if ( weapon ) weapon->OnReload();
+		Client::ExecuteWeaponEvent( event, cent );
 		break;
-
 	case EV_PLAYERUSE:
 		// Do nothing, I guess lol
 		break;
