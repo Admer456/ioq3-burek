@@ -28,6 +28,9 @@
     <Filter Include="qcommon\Util">
       <UniqueIdentifier>{55fed3f1-d04f-45b1-940a-2be9c1d07937}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\View">
+      <UniqueIdentifier>{f6bd38b1-4aa7-4f91-8572-ce3993e42317}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -89,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp">
       <Filter>qcommon\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\View\View.hpp">
+      <Filter>Sources\View</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\qcommon\Util\Utilities_Client.cpp">
       <Filter>qcommon\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\View\View.cpp">
+      <Filter>Sources\View</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

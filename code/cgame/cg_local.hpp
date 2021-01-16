@@ -190,6 +190,7 @@ struct centity_t
 #include "Weapons/WeaponFactory.hpp"
 #include "Weapons/BaseClientWeapon.hpp"
 
+#include "View/View.hpp"
 #include "Client.hpp"
 
 //======================================================================
