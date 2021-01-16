@@ -206,7 +206,7 @@ void BasePlayer::SetClient( const gclient_t* playerClient )
 	client = const_cast<gclient_t*>( playerClient );
 }
 
-const Vector& BasePlayer::GetClientViewAngle() const
+Vector BasePlayer::GetClientViewAngle() const
 {
 	return Vector( client->ps.viewangles );
 }
@@ -236,6 +236,8 @@ void BasePlayer::AddWeapon( BaseWeapon* weapon )
 	{
 		weapons[weaponID] = weapon;
 		client->ps.stats[STAT_WEAPONS] |= (1 << weaponID);
+
+		weapon->SetPlayer( this );
 	}
 }
 
@@ -274,6 +276,19 @@ void BasePlayer::SendWeaponEvent( uint32_t weaponEvent )
 	case WE_DoTertiaryAttack:	return currentWeapon->TertiaryAttack();
 	case WE_DoReload:			return currentWeapon->Reload();
 	}
+}
+
+void BasePlayer::UpdateWeapon()
+{
+	if ( client->ps.weapon < 0 || client->ps.weapon >= MAX_WEAPONS )
+		return;
+
+	currentWeapon = weapons[client->ps.weapon];
+
+	if ( nullptr == currentWeapon )
+		return;
+
+	currentWeapon->WeaponFrame();
 }
 
 void BasePlayer::ClientCommand()

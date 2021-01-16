@@ -18,7 +18,7 @@ namespace Entities
 		gclient_t*		GetClient();
 		void			SetClient( const gclient_t* playerClient );
 
-		const Vector&	GetClientViewAngle() const;
+		Vector			GetClientViewAngle() const;
 		void			SetClientViewAngle( const Vector& newAngle );
 
 	public: // Weapons
@@ -27,6 +27,7 @@ namespace Entities
 		bool			HasAnyWeapon();
 		bool			HasWeapon( int weaponID );
 		void			SendWeaponEvent( uint32_t weaponEvent );
+		void			UpdateWeapon();
 
 	protected:
 		BaseWeapon*		currentWeapon{ nullptr }; // the currently selected weapon
