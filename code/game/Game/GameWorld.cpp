@@ -751,7 +751,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 			// force the base weapon up
 			client->ps.weapon = WeaponID_Fists;
 			client->ps.weaponstate = WEAPON_READY;
-			
+
 			player->AddWeapon( gameWorld->CreateEntity<Entities::Weapon_Fists>() );
 
 			// fire the targets of the spawn point
@@ -1102,6 +1102,8 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	client->oldInteractionButtons = client->interactionButtons;
 	client->interactionButtons = ucmd->interactionButtons;
 	client->latchedInteractionButtons |= client->interactionButtons & ~client->oldInteractionButtons;
+
+	player->UpdateWeapon();
 
 	if ( client->interactionButtons & Interaction_Use )
 	{
