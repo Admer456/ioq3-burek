@@ -207,10 +207,15 @@ public:
 	void			RunClient( Entities::BasePlayer* player );
 
 private: // Private client methods, some of which will get moved to a gamemode interface eventually
+	// TODO: move to something like BasePlayer::PreThink 
 	void			ClientThinkReal( Entities::BasePlayer* player );
+	// Timer actions to decrease health if over 100 etc.
 	void			ClientTimerActions( Entities::BasePlayer* player, int msec );
+	// Touch entities nearby
 	void			ClientImpacts( Entities::BasePlayer* player, pmove_t* pm );
+	// Parse shared events
 	void			ClientEvents( Entities::BasePlayer* player, int oldEventSequence );
+	// Idle timer
 	bool			ClientInactivityTimer( Entities::BasePlayer* player );
 
 	void			SendPendingPredictableEvents( Entities::BasePlayer* player );
