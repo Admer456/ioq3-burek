@@ -73,7 +73,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 static qboolean localClient; // true if local client has been displayed
 
 
-							 /*
+/*
 =================
 CG_DrawScoreboard
 =================
@@ -95,67 +95,31 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade,
 	headx = SB_HEAD_X + (SB_RATING_WIDTH / 2);
 
 	// draw the handicap or bot skill marker (unless player has flag)
-	if ( ci->powerups & ( 1 << PW_NEUTRALFLAG ) ) {
-		if( largeFormat ) {
-			CG_DrawFlagModel( iconx, y - ( 32 - BIGCHAR_HEIGHT ) / 2, 32, 32, TEAM_FREE, qfalse );
-		}
-		else {
-			CG_DrawFlagModel( iconx, y, 16, 16, TEAM_FREE, qfalse );
-		}
-	} else if ( ci->powerups & ( 1 << PW_REDFLAG ) ) {
-		if( largeFormat ) {
-			CG_DrawFlagModel( iconx, y - ( 32 - BIGCHAR_HEIGHT ) / 2, 32, 32, TEAM_RED, qfalse );
-		}
-		else {
-			CG_DrawFlagModel( iconx, y, 16, 16, TEAM_RED, qfalse );
-		}
-	} else if ( ci->powerups & ( 1 << PW_BLUEFLAG ) ) {
-		if( largeFormat ) {
-			CG_DrawFlagModel( iconx, y - ( 32 - BIGCHAR_HEIGHT ) / 2, 32, 32, TEAM_BLUE, qfalse );
-		}
-		else {
-			CG_DrawFlagModel( iconx, y, 16, 16, TEAM_BLUE, qfalse );
-		}
-	} else {
-		if ( ci->botSkill > 0 && ci->botSkill <= 5 ) {
-			if ( cg_drawIcons.integer ) {
-				if( largeFormat ) {
-					CG_DrawPic( iconx, y - ( 32 - BIGCHAR_HEIGHT ) / 2, 32, 32, cgs.media.botSkillShaders[ ci->botSkill - 1 ] );
-				}
-				else {
-					CG_DrawPic( iconx, y, 16, 16, cgs.media.botSkillShaders[ ci->botSkill - 1 ] );
-				}
-			}
-		} else if ( ci->handicap < 100 ) {
-			Com_sprintf( string, sizeof( string ), "%i", ci->handicap );
-			if ( cgs.gametype == GT_TOURNAMENT )
-				CG_DrawSmallStringColor( iconx, y - SMALLCHAR_HEIGHT/2, string, color );
-			else
-				CG_DrawSmallStringColor( iconx, y, string, color );
-		}
 
-		// draw the wins / losses
-		if ( cgs.gametype == GT_TOURNAMENT ) {
-			Com_sprintf( string, sizeof( string ), "%i/%i", ci->wins, ci->losses );
-			if( ci->handicap < 100 && !ci->botSkill ) {
-				CG_DrawSmallStringColor( iconx, y + SMALLCHAR_HEIGHT/2, string, color );
-			}
-			else {
-				CG_DrawSmallStringColor( iconx, y, string, color );
-			}
+	if ( ci->botSkill > 0 && ci->botSkill <= 5 ) {
+
+	} else if ( ci->handicap < 100 ) {
+		Com_sprintf( string, sizeof( string ), "%i", ci->handicap );
+		if ( cgs.gametype == GT_TOURNAMENT )
+			CG_DrawSmallStringColor( iconx, y - SMALLCHAR_HEIGHT/2, string, color );
+		else
+			CG_DrawSmallStringColor( iconx, y, string, color );
+	}
+
+	// draw the wins / losses
+	if ( cgs.gametype == GT_TOURNAMENT ) {
+		Com_sprintf( string, sizeof( string ), "%i/%i", ci->wins, ci->losses );
+		if( ci->handicap < 100 && !ci->botSkill ) {
+			CG_DrawSmallStringColor( iconx, y + SMALLCHAR_HEIGHT/2, string, color );
+		}
+		else {
+			CG_DrawSmallStringColor( iconx, y, string, color );
 		}
 	}
 
 	// draw the face
 	VectorClear( headAngles );
 	headAngles[YAW] = 180;
-	if( largeFormat ) {
-		CG_DrawHead( headx, y - ( ICON_SIZE - BIGCHAR_HEIGHT ) / 2, ICON_SIZE, ICON_SIZE, 
-			score->client, headAngles );
-	}
-	else {
-		CG_DrawHead( headx, y, 16, 16, score->client, headAngles );
-	}
 
 	// draw the score line
 	if ( score->ping == -1 ) {
@@ -362,20 +326,16 @@ qboolean CG_DrawOldScoreboard( void ) {
 
 		if ( cg.teamScores[0] >= cg.teamScores[1] ) {
 			n1 = CG_TeamScoreboard( y, TEAM_RED, fade, maxClients, lineHeight );
-			CG_DrawTeamBackground( 0, y - topBorderSize, 640, n1 * lineHeight + bottomBorderSize, 0.33f, TEAM_RED );
 			y += (n1 * lineHeight) + BIGCHAR_HEIGHT;
 			maxClients -= n1;
 			n2 = CG_TeamScoreboard( y, TEAM_BLUE, fade, maxClients, lineHeight );
-			CG_DrawTeamBackground( 0, y - topBorderSize, 640, n2 * lineHeight + bottomBorderSize, 0.33f, TEAM_BLUE );
 			y += (n2 * lineHeight) + BIGCHAR_HEIGHT;
 			maxClients -= n2;
 		} else {
 			n1 = CG_TeamScoreboard( y, TEAM_BLUE, fade, maxClients, lineHeight );
-			CG_DrawTeamBackground( 0, y - topBorderSize, 640, n1 * lineHeight + bottomBorderSize, 0.33f, TEAM_BLUE );
 			y += (n1 * lineHeight) + BIGCHAR_HEIGHT;
 			maxClients -= n1;
 			n2 = CG_TeamScoreboard( y, TEAM_RED, fade, maxClients, lineHeight );
-			CG_DrawTeamBackground( 0, y - topBorderSize, 640, n2 * lineHeight + bottomBorderSize, 0.33f, TEAM_RED );
 			y += (n2 * lineHeight) + BIGCHAR_HEIGHT;
 			maxClients -= n2;
 		}

@@ -33,13 +33,15 @@ CG_BubbleTrail
 Bullets shot underwater
 ==================
 */
-void CG_BubbleTrail( vec3_t start, vec3_t end, float spacing ) {
+void CG_BubbleTrail( vec3_t start, vec3_t end, float spacing ) 
+{
 	vec3_t		move;
 	vec3_t		vec;
 	float		len;
 	int			i;
 
-	if ( cg_noProjectileTrail.integer ) {
+	if ( cg_noProjectileTrail.integer ) 
+	{
 		return;
 	}
 
@@ -53,7 +55,8 @@ void CG_BubbleTrail( vec3_t start, vec3_t end, float spacing ) {
 
 	VectorScale (vec, spacing, vec);
 
-	for ( ; i < len; i += spacing ) {
+	for ( ; i < len; i += spacing ) 
+	{
 		localEntity_t	*le;
 		refEntity_t		*re;
 
@@ -70,7 +73,7 @@ void CG_BubbleTrail( vec3_t start, vec3_t end, float spacing ) {
 		re->reType = RT_SPRITE;
 		re->rotation = 0;
 		re->radius = 3;
-		re->customShader = cgs.media.waterBubbleShader;
+		//re->customShader = cgs.media.waterBubbleShader;
 		re->shaderRGBA[0] = 0xff;
 		re->shaderRGBA[1] = 0xff;
 		re->shaderRGBA[2] = 0xff;
@@ -142,19 +145,10 @@ localEntity_t *CG_SmokePuff( const vec3_t p, const vec3_t vel,
 	VectorCopy( p, re->origin );
 	re->customShader = hShader;
 
-	// rage pro can't alpha fade, so use a different shader
-	if ( cgs.glconfig.hardwareType == GLHW_RAGEPRO ) {
-		re->customShader = cgs.media.smokePuffRageProShader;
-		re->shaderRGBA[0] = 0xff;
-		re->shaderRGBA[1] = 0xff;
-		re->shaderRGBA[2] = 0xff;
-		re->shaderRGBA[3] = 0xff;
-	} else {
-		re->shaderRGBA[0] = le->color[0] * 0xff;
-		re->shaderRGBA[1] = le->color[1] * 0xff;
-		re->shaderRGBA[2] = le->color[2] * 0xff;
-		re->shaderRGBA[3] = 0xff;
-	}
+	re->shaderRGBA[0] = le->color[0] * 0xff;
+	re->shaderRGBA[1] = le->color[1] * 0xff;
+	re->shaderRGBA[2] = le->color[2] * 0xff;
+	re->shaderRGBA[3] = 0xff;
 
 	re->reType = RT_SPRITE;
 	re->radius = le->radius;
@@ -310,10 +304,12 @@ CG_Bleed
 This is the spurt of blood when a character gets hit
 =================
 */
-void CG_Bleed( vec3_t origin, int entityNum ) {
+void CG_Bleed( vec3_t origin, int entityNum ) 
+{
 	localEntity_t	*ex;
 
-	if ( !cg_blood.integer ) {
+	if ( !cg_blood.integer ) 
+	{
 		return;
 	}
 
@@ -328,10 +324,11 @@ void CG_Bleed( vec3_t origin, int entityNum ) {
 	ex->refEntity.rotation = rand() % 360;
 	ex->refEntity.radius = 24;
 
-	ex->refEntity.customShader = cgs.media.bloodExplosionShader;
+	//ex->refEntity.customShader = cgs.media.bloodExplosionShader;
 
 	// don't show player's own blood in view
-	if ( entityNum == cg.snap->ps.clientNum ) {
+	if ( entityNum == cg.snap->ps.clientNum ) 
+	{
 		ex->refEntity.renderfx |= RF_THIRD_PERSON;
 	}
 }
@@ -389,10 +386,13 @@ void CG_GibPlayer( vec3_t playerOrigin ) {
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	if ( rand() & 1 ) {
-		CG_LaunchGib( origin, velocity, cgs.media.gibSkull );
-	} else {
-		CG_LaunchGib( origin, velocity, cgs.media.gibBrain );
+	if ( rand() & 1 ) 
+	{
+		//CG_LaunchGib( origin, velocity, cgs.media.gibSkull );
+	} 
+	else 
+	{
+		//CG_LaunchGib( origin, velocity, cgs.media.gibBrain );
 	}
 
 	// allow gibs to be turned off for speed
@@ -404,55 +404,55 @@ void CG_GibPlayer( vec3_t playerOrigin ) {
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibAbdomen );
+	//CG_LaunchGib( origin, velocity, cgs.media.gibAbdomen );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibArm );
+	//CG_LaunchGib( origin, velocity, cgs.media.gibArm );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibChest );
+	//CG_LaunchGib( origin, velocity, cgs.media.gibChest );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibFist );
+	//CG_LaunchGib( origin, velocity, cgs.media.gibFist );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibFoot );
+	//CG_LaunchGib( origin, velocity, cgs.media.gibFoot );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibForearm );
+	//CG_LaunchGib( origin, velocity, cgs.media.gibForearm );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibIntestine );
+	//CG_LaunchGib( origin, velocity, cgs.media.gibIntestine );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibLeg );
+	//CG_LaunchGib( origin, velocity, cgs.media.gibLeg );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*GIB_VELOCITY;
 	velocity[1] = crandom()*GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibLeg );
+	//CG_LaunchGib( origin, velocity, cgs.media.gibLeg );
 }
 
 /*
@@ -506,30 +506,30 @@ void CG_BigExplode( vec3_t playerOrigin ) {
 	velocity[0] = crandom()*EXP_VELOCITY;
 	velocity[1] = crandom()*EXP_VELOCITY;
 	velocity[2] = EXP_JUMP + crandom()*EXP_VELOCITY;
-	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
+	//CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*EXP_VELOCITY;
 	velocity[1] = crandom()*EXP_VELOCITY;
 	velocity[2] = EXP_JUMP + crandom()*EXP_VELOCITY;
-	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
+	//CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*EXP_VELOCITY*1.5;
 	velocity[1] = crandom()*EXP_VELOCITY*1.5;
 	velocity[2] = EXP_JUMP + crandom()*EXP_VELOCITY;
-	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
+	//CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*EXP_VELOCITY*2.0;
 	velocity[1] = crandom()*EXP_VELOCITY*2.0;
 	velocity[2] = EXP_JUMP + crandom()*EXP_VELOCITY;
-	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
+	//CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 
 	VectorCopy( playerOrigin, origin );
 	velocity[0] = crandom()*EXP_VELOCITY*2.5;
 	velocity[1] = crandom()*EXP_VELOCITY*2.5;
 	velocity[2] = EXP_JUMP + crandom()*EXP_VELOCITY;
-	CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
+	//CG_LaunchExplode( origin, velocity, cgs.media.smoke2 );
 }
 

@@ -1488,7 +1488,7 @@ CG_HasteTrail
 ===============
 */
 static void CG_HasteTrail( centity_t *cent ) {
-	localEntity_t	*smoke;
+	//localEntity_t	*smoke;
 	vec3_t			origin;
 	int				anim;
 
@@ -1508,17 +1508,17 @@ static void CG_HasteTrail( centity_t *cent ) {
 	VectorCopy( cent->lerpOrigin, origin );
 	origin[2] -= 16;
 
-	smoke = CG_SmokePuff( origin, vec3_origin, 
-				  8, 
-				  1, 1, 1, 1,
-				  500, 
-				  cg.time,
-				  0,
-				  0,
-				  cgs.media.hastePuffShader );
+	//smoke = CG_SmokePuff( origin, vec3_origin, 
+	//			  8, 
+	//			  1, 1, 1, 1,
+	//			  500, 
+	//			  cg.time,
+	//			  0,
+	//			  0,
+	//			  cgs.media.hastePuffShader );
 
 	// use the optimized local entity add
-	smoke->leType = LE_SCALE_FADE;
+	//smoke->leType = LE_SCALE_FADE;
 }
 
 /*
@@ -1546,123 +1546,6 @@ static void CG_TrailItem( centity_t *cent, qhandle_t hModel ) {
 	trap_R_AddRefEntityToScene( &ent );
 }
 
-
-/*
-===============
-CG_PlayerFlag
-===============
-*/
-static void CG_PlayerFlag( centity_t *cent, qhandle_t hSkin, refEntity_t *torso ) {
-	clientInfo_t	*ci;
-	refEntity_t	pole;
-	refEntity_t	flag;
-	vec3_t		angles, dir;
-	int			legsAnim, flagAnim, updateangles;
-	float		angle, d;
-
-	// show the flag pole model
-	memset( &pole, 0, sizeof(pole) );
-	pole.hModel = cgs.media.flagPoleModel;
-	VectorCopy( torso->lightingOrigin, pole.lightingOrigin );
-	pole.shadowPlane = torso->shadowPlane;
-	pole.renderfx = torso->renderfx;
-	CG_PositionEntityOnTag( &pole, torso, torso->hModel, "tag_flag" );
-	trap_R_AddRefEntityToScene( &pole );
-
-	// show the flag model
-	memset( &flag, 0, sizeof(flag) );
-	flag.hModel = cgs.media.flagFlapModel;
-	flag.customSkin = hSkin;
-	VectorCopy( torso->lightingOrigin, flag.lightingOrigin );
-	flag.shadowPlane = torso->shadowPlane;
-	flag.renderfx = torso->renderfx;
-
-	VectorClear(angles);
-
-	updateangles = qfalse;
-	legsAnim = cent->currentState.legsAnim & ~ANIM_TOGGLEBIT;
-	if( legsAnim == LEGS_IDLE || legsAnim == LEGS_IDLECR ) {
-		flagAnim = FLAG_STAND;
-	} else if ( legsAnim == LEGS_WALK || legsAnim == LEGS_WALKCR ) {
-		flagAnim = FLAG_STAND;
-		updateangles = qtrue;
-	} else {
-		flagAnim = FLAG_RUN;
-		updateangles = qtrue;
-	}
-
-	if ( updateangles ) {
-
-		VectorCopy( cent->currentState.pos.trDelta, dir );
-		// add gravity
-		dir[2] += 100;
-		VectorNormalize( dir );
-		d = DotProduct(pole.axis[2], dir);
-		// if there is enough movement orthogonal to the flag pole
-		if (fabs(d) < 0.9) {
-			//
-			d = DotProduct(pole.axis[0], dir);
-			if (d > 1.0f) {
-				d = 1.0f;
-			}
-			else if (d < -1.0f) {
-				d = -1.0f;
-			}
-			angle = acos(d);
-
-			d = DotProduct(pole.axis[1], dir);
-			if (d < 0) {
-				angles[YAW] = 360 - angle * 180 / M_PI;
-			}
-			else {
-				angles[YAW] = angle * 180 / M_PI;
-			}
-			if (angles[YAW] < 0)
-				angles[YAW] += 360;
-			if (angles[YAW] > 360)
-				angles[YAW] -= 360;
-
-			//vectoangles( cent->currentState.pos.trDelta, tmpangles );
-			//angles[YAW] = tmpangles[YAW] + 45 - cent->pe.torso.yawAngle;
-			// change the yaw angle
-			CG_SwingAngles( angles[YAW], 25, 90, 0.15f, &cent->pe.flag.yawAngle, &cent->pe.flag.yawing );
-		}
-
-		/*
-		d = DotProduct(pole.axis[2], dir);
-		angle = Q_acos(d);
-
-		d = DotProduct(pole.axis[1], dir);
-		if (d < 0) {
-			angle = 360 - angle * 180 / M_PI;
-		}
-		else {
-			angle = angle * 180 / M_PI;
-		}
-		if (angle > 340 && angle < 20) {
-			flagAnim = FLAG_RUNUP;
-		}
-		if (angle > 160 && angle < 200) {
-			flagAnim = FLAG_RUNDOWN;
-		}
-		*/
-	}
-
-	// set the yaw angle
-	angles[YAW] = cent->pe.flag.yawAngle;
-	// lerp the flag animation frames
-	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
-	CG_RunLerpFrame( ci, &cent->pe.flag, flagAnim, 1 );
-	flag.oldframe = cent->pe.flag.oldFrame;
-	flag.frame = cent->pe.flag.frame;
-	flag.backlerp = cent->pe.flag.backlerp;
-
-	AnglesToAxis( angles, flag.axis );
-	CG_PositionRotatedEntityOnTag( &flag, &pole, pole.hModel, "tag_flag" );
-
-	trap_R_AddRefEntityToScene( &flag );
-}
-
 /*
 ===============
 CG_PlayerPowerups
@@ -1682,44 +1565,7 @@ static void CG_PlayerPowerups( centity_t *cent, refEntity_t *torso ) {
 		trap_R_AddLightToScene( cent->lerpOrigin, 200 + (rand()&31), 0.2f, 0.2f, 1 );
 	}
 
-	// flight plays a looped sound
-	if ( powerups & ( 1 << PW_FLIGHT ) ) {
-		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flightSound );
-	}
-
 	ci = &cgs.clientinfo[ cent->currentState.clientNum ];
-	// redflag
-	if ( powerups & ( 1 << PW_REDFLAG ) ) {
-		if (ci->newAnims) {
-			CG_PlayerFlag( cent, cgs.media.redFlagFlapSkin, torso );
-		}
-		else {
-			CG_TrailItem( cent, cgs.media.redFlagModel );
-		}
-		trap_R_AddLightToScene( cent->lerpOrigin, 200 + (rand()&31), 1.0, 0.2f, 0.2f );
-	}
-
-	// blueflag
-	if ( powerups & ( 1 << PW_BLUEFLAG ) ) {
-		if (ci->newAnims){
-			CG_PlayerFlag( cent, cgs.media.blueFlagFlapSkin, torso );
-		}
-		else {
-			CG_TrailItem( cent, cgs.media.blueFlagModel );
-		}
-		trap_R_AddLightToScene( cent->lerpOrigin, 200 + (rand()&31), 0.2f, 0.2f, 1.0 );
-	}
-
-	// neutralflag
-	if ( powerups & ( 1 << PW_NEUTRALFLAG ) ) {
-		if (ci->newAnims) {
-			CG_PlayerFlag( cent, cgs.media.neutralFlagFlapSkin, torso );
-		}
-		else {
-			CG_TrailItem( cent, cgs.media.neutralFlagModel );
-		}
-		trap_R_AddLightToScene( cent->lerpOrigin, 200 + (rand()&31), 1.0, 1.0, 1.0 );
-	}
 
 	// haste leaves smoke trails
 	if ( powerups & ( 1 << PW_HASTE ) ) {
@@ -1781,36 +1627,6 @@ static void CG_PlayerSprites( centity_t *cent ) {
 		return;
 	}
 
-	if ( cent->currentState.eFlags & EF_AWARD_IMPRESSIVE ) {
-		CG_PlayerFloatSprite( cent, cgs.media.medalImpressive );
-		return;
-	}
-
-	if ( cent->currentState.eFlags & EF_AWARD_EXCELLENT ) {
-		CG_PlayerFloatSprite( cent, cgs.media.medalExcellent );
-		return;
-	}
-
-	if ( cent->currentState.eFlags & EF_AWARD_GAUNTLET ) {
-		CG_PlayerFloatSprite( cent, cgs.media.medalGauntlet );
-		return;
-	}
-
-	if ( cent->currentState.eFlags & EF_AWARD_DEFEND ) {
-		CG_PlayerFloatSprite( cent, cgs.media.medalDefend );
-		return;
-	}
-
-	if ( cent->currentState.eFlags & EF_AWARD_ASSIST ) {
-		CG_PlayerFloatSprite( cent, cgs.media.medalAssist );
-		return;
-	}
-
-	if ( cent->currentState.eFlags & EF_AWARD_CAP ) {
-		CG_PlayerFloatSprite( cent, cgs.media.medalCapture );
-		return;
-	}
-
 	team = cgs.clientinfo[ cent->currentState.clientNum ].team;
 	if ( !(cent->currentState.eFlags & EF_DEAD) && 
 		cg.snap->ps.persistant[PERS_TEAM] == team &&
@@ -1819,200 +1635,6 @@ static void CG_PlayerSprites( centity_t *cent ) {
 			CG_PlayerFloatSprite( cent, cgs.media.friendShader );
 		}
 		return;
-	}
-}
-
-/*
-===============
-CG_PlayerShadow
-
-Returns the Z component of the surface being shadowed
-
-  should it return a full plane instead of a Z?
-===============
-*/
-#define	SHADOW_DISTANCE		128
-static qboolean CG_PlayerShadow( centity_t *cent, float *shadowPlane ) {
-	vec3_t		end, mins = {-15, -15, 0}, maxs = {15, 15, 2};
-	trace_t		trace;
-	float		alpha;
-
-	*shadowPlane = 0;
-
-	if ( cg_shadows.integer == 0 ) {
-		return qfalse;
-	}
-
-	// no shadows when invisible
-	if ( cent->currentState.powerups & ( 1 << PW_INVIS ) ) {
-		return qfalse;
-	}
-
-	// send a trace down from the player to the ground
-	VectorCopy( cent->lerpOrigin, end );
-	end[2] -= SHADOW_DISTANCE;
-
-	trap_CM_BoxTrace( &trace, cent->lerpOrigin, end, mins, maxs, 0, MASK_PLAYERSOLID );
-
-	// no shadow if too high
-	if ( trace.fraction == 1.0 || trace.startsolid || trace.allsolid ) {
-		return qfalse;
-	}
-
-	*shadowPlane = trace.endpos[2] + 1;
-
-	if ( cg_shadows.integer != 1 ) {	// no mark for stencil or projection shadows
-		return qtrue;
-	}
-
-	// fade the shadow out with height
-	alpha = 1.0 - trace.fraction;
-
-	// hack / FPE - bogus planes?
-	//assert( DotProduct( trace.plane.normal, trace.plane.normal ) != 0.0f ) 
-
-	// add the mark as a temporary, so it goes directly to the renderer
-	// without taking a spot in the cg_marks array
-	CG_ImpactMark( cgs.media.shadowMarkShader, trace.endpos, trace.plane.normal, 
-		cent->pe.legs.yawAngle, alpha,alpha,alpha,1, qfalse, 24, qtrue );
-
-	return qtrue;
-}
-
-
-/*
-===============
-CG_PlayerSplash
-
-Draw a mark at the water surface
-===============
-*/
-static void CG_PlayerSplash( centity_t *cent ) {
-	vec3_t		start, end;
-	trace_t		trace;
-	int			contents;
-	polyVert_t	verts[4];
-
-	if ( !cg_shadows.integer ) {
-		return;
-	}
-
-	VectorCopy( cent->lerpOrigin, end );
-	end[2] -= 24;
-
-	// if the feet aren't in liquid, don't make a mark
-	// this won't handle moving water brushes, but they wouldn't draw right anyway...
-	contents = CG_PointContents( end, 0 );
-	if ( !( contents & ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) ) ) {
-		return;
-	}
-
-	VectorCopy( cent->lerpOrigin, start );
-	start[2] += 32;
-
-	// if the head isn't out of liquid, don't make a mark
-	contents = CG_PointContents( start, 0 );
-	if ( contents & ( CONTENTS_SOLID | CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) ) {
-		return;
-	}
-
-	// trace down to find the surface
-	trap_CM_BoxTrace( &trace, start, end, NULL, NULL, 0, ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) );
-
-	if ( trace.fraction == 1.0 ) {
-		return;
-	}
-
-	// create a mark polygon
-	VectorCopy( trace.endpos, verts[0].xyz );
-	verts[0].xyz[0] -= 32;
-	verts[0].xyz[1] -= 32;
-	verts[0].st[0] = 0;
-	verts[0].st[1] = 0;
-	verts[0].modulate[0] = 255;
-	verts[0].modulate[1] = 255;
-	verts[0].modulate[2] = 255;
-	verts[0].modulate[3] = 255;
-
-	VectorCopy( trace.endpos, verts[1].xyz );
-	verts[1].xyz[0] -= 32;
-	verts[1].xyz[1] += 32;
-	verts[1].st[0] = 0;
-	verts[1].st[1] = 1;
-	verts[1].modulate[0] = 255;
-	verts[1].modulate[1] = 255;
-	verts[1].modulate[2] = 255;
-	verts[1].modulate[3] = 255;
-
-	VectorCopy( trace.endpos, verts[2].xyz );
-	verts[2].xyz[0] += 32;
-	verts[2].xyz[1] += 32;
-	verts[2].st[0] = 1;
-	verts[2].st[1] = 1;
-	verts[2].modulate[0] = 255;
-	verts[2].modulate[1] = 255;
-	verts[2].modulate[2] = 255;
-	verts[2].modulate[3] = 255;
-
-	VectorCopy( trace.endpos, verts[3].xyz );
-	verts[3].xyz[0] += 32;
-	verts[3].xyz[1] -= 32;
-	verts[3].st[0] = 1;
-	verts[3].st[1] = 0;
-	verts[3].modulate[0] = 255;
-	verts[3].modulate[1] = 255;
-	verts[3].modulate[2] = 255;
-	verts[3].modulate[3] = 255;
-
-	trap_R_AddPolyToScene( cgs.media.wakeMarkShader, 4, verts );
-}
-
-
-
-/*
-===============
-CG_AddRefEntityWithPowerups
-
-Adds a piece with modifications or duplications for powerups
-Also called by CG_Missile for quad rockets, but nobody can tell...
-===============
-*/
-void CG_AddRefEntityWithPowerups( refEntity_t *ent, entityState_t *state, int team ) {
-
-	if ( state->powerups & ( 1 << PW_INVIS ) ) {
-		ent->customShader = cgs.media.invisShader;
-		trap_R_AddRefEntityToScene( ent );
-	} else {
-		/*
-		if ( state->eFlags & EF_KAMIKAZE ) {
-			if (team == TEAM_BLUE)
-				ent->customShader = cgs.media.blueKamikazeShader;
-			else
-				ent->customShader = cgs.media.redKamikazeShader;
-			trap_R_AddRefEntityToScene( ent );
-		}
-		else {*/
-			trap_R_AddRefEntityToScene( ent );
-		//}
-
-		if ( state->powerups & ( 1 << PW_QUAD ) )
-		{
-			if (team == TEAM_RED)
-				ent->customShader = cgs.media.redQuadShader;
-			else
-				ent->customShader = cgs.media.quadShader;
-			trap_R_AddRefEntityToScene( ent );
-		}
-		if ( state->powerups & ( 1 << PW_REGEN ) ) {
-			if ( ( ( cg.time / 100 ) % 10 ) == 1 ) {
-				ent->customShader = cgs.media.regenShader;
-				trap_R_AddRefEntityToScene( ent );
-			}
-		}
-		if ( state->powerups & ( 1 << PW_BATTLESUIT ) ) {
-			ent->customShader = cgs.media.battleSuitShader;
-			trap_R_AddRefEntityToScene( ent );
-		}
 	}
 }
 
@@ -2068,15 +1690,16 @@ int CG_LightVerts( vec3_t normal, int numVerts, polyVert_t *verts )
 CG_Player
 ===============
 */
-void CG_Player( centity_t *cent ) {
+void CG_Player( centity_t *cent ) // TODO: Render the player as a single IQM instead of three MD3's -Admer
+{
 	clientInfo_t	*ci;
 	refEntity_t		legs;
 	refEntity_t		torso;
 	refEntity_t		head;
 	int				clientNum;
 	int				renderfx;
-	qboolean		shadow;
-	float			shadowPlane;
+	//qboolean		shadow;
+	//float			shadowPlane;
 	// the client number is stored in clientNum.  It can't be derived
 	// from the entity number, because a single client may have
 	// multiple corpses on the level using the same clientinfo
@@ -2119,15 +1742,14 @@ void CG_Player( centity_t *cent ) {
 	// add the talk baloon or disconnect icon
 	CG_PlayerSprites( cent );
 
-	// add the shadow
-	shadow = CG_PlayerShadow( cent, &shadowPlane );
-
 	// add a water splash if partially in and out of water
-	CG_PlayerSplash( cent );
+	//CG_PlayerSplash( cent );
 
-	if ( cg_shadows.integer == 3 && shadow ) {
+	if ( cg_shadows.integer == 3 /*&& shadow*/ ) 
+	{
 		renderfx |= RF_SHADOW_PLANE;
 	}
+	
 	renderfx |= RF_LIGHTING_ORIGIN;			// use the same origin for all
 
 	//
@@ -2139,11 +1761,11 @@ void CG_Player( centity_t *cent ) {
 	VectorCopy( cent->lerpOrigin, legs.origin );
 
 	VectorCopy( cent->lerpOrigin, legs.lightingOrigin );
-	legs.shadowPlane = shadowPlane;
+	//legs.shadowPlane = shadowPlane;
 	legs.renderfx = renderfx;
 	VectorCopy (legs.origin, legs.oldorigin);	// don't positionally lerp at all
 
-	CG_AddRefEntityWithPowerups( &legs, &cent->currentState, ci->team );
+	trap_R_AddRefEntityToScene( &legs );
 
 	// if the model failed, allow the default nullmodel to be displayed
 	if (!legs.hModel) {
@@ -2164,10 +1786,10 @@ void CG_Player( centity_t *cent ) {
 
 	CG_PositionRotatedEntityOnTag( &torso, &legs, ci->legsModel, "tag_torso");
 
-	torso.shadowPlane = shadowPlane;
+	//torso.shadowPlane = shadowPlane;
 	torso.renderfx = renderfx;
 
-	CG_AddRefEntityWithPowerups( &torso, &cent->currentState, ci->team );
+	trap_R_AddRefEntityToScene( &torso );
 
 	//
 	// add the head
@@ -2182,10 +1804,10 @@ void CG_Player( centity_t *cent ) {
 
 	CG_PositionRotatedEntityOnTag( &head, &torso, ci->torsoModel, "tag_head");
 
-	head.shadowPlane = shadowPlane;
+	//head.shadowPlane = shadowPlane;
 	head.renderfx = renderfx;
 
-	CG_AddRefEntityWithPowerups( &head, &cent->currentState, ci->team );
+	trap_R_AddRefEntityToScene( &head );
 
 	//
 	// add the gun / barrel / flash

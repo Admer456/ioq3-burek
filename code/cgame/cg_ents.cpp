@@ -160,14 +160,16 @@ static void CG_EntityEffects( centity_t *cent ) {
 CG_General
 ==================
 */
-static void CG_General( centity_t *cent ) {
+static void CG_General( centity_t *cent ) 
+{
 	refEntity_t			ent;
 	entityState_t		*s1;
 
 	s1 = &cent->currentState;
 
 	// if set to invisible, skip
-	if (!s1->modelindex) {
+	if (!s1->modelindex) 
+	{
 		return;
 	}
 
@@ -183,15 +185,18 @@ static void CG_General( centity_t *cent ) {
 	VectorCopy( cent->lerpOrigin, ent.oldorigin);
 
 	// get the model, either as a bmodel or a modelindex
-	if ( s1->solid == SOLID_BMODEL ) {
+	if ( s1->solid == SOLID_BMODEL ) 
+	{
 		ent.hModel = cgs.inlineDrawModel[s1->modelindex];
 	}
-	else {
+	else 
+	{
 		ent.hModel = cgs.gameModels[s1->modelindex];
 	}
 
 	// player model
-	if (s1->number == cg.snap->ps.clientNum) {
+	if (s1->number == cg.snap->ps.clientNum) 
+	{
 		ent.renderfx |= RF_THIRD_PERSON;	// only draw from mirrors
 	}
 
@@ -205,7 +210,8 @@ static void CG_General( centity_t *cent ) {
 	trap_R_AddRefEntityToScene (&ent);
 
 	// add the secondary model
-	if ( s1->modelindex2 ) {
+	if ( s1->modelindex2 ) 
+	{
 		ent.skinNum = 0;
 		ent.hModel = cgs.gameModels[s1->modelindex2];
 		trap_R_AddRefEntityToScene( &ent );
@@ -385,43 +391,6 @@ static void CG_Missile( centity_t *cent ) {
 	// calculate the axis
 	VectorCopy( s1->angles, cent->lerpAngles);
 
-	//// add trails
-	//if ( weapon->missileTrailFunc ) 
-	//{
-	//	weapon->missileTrailFunc( cent, weapon );
-	//}
-/*
-	if ( cent->currentState.modelindex == TEAM_RED ) {
-		col = 1;
-	}
-	else if ( cent->currentState.modelindex == TEAM_BLUE ) {
-		col = 2;
-	}
-	else {
-		col = 0;
-	}
-
-	// add dynamic light
-	if ( weapon->missileDlight ) {
-		trap_R_AddLightToScene(cent->lerpOrigin, weapon->missileDlight, 
-			weapon->missileDlightColor[col][0], weapon->missileDlightColor[col][1], weapon->missileDlightColor[col][2] );
-	}
-*/
-	//// add dynamic light
-	//if ( weapon->missileDlight ) {
-	//	trap_R_AddLightToScene(cent->lerpOrigin, weapon->missileDlight, 
-	//		weapon->missileDlightColor[0], weapon->missileDlightColor[1], weapon->missileDlightColor[2] );
-	//}
-
-	//// add missile sound
-	//if ( weapon->missileSound ) {
-	//	vec3_t	velocity;
-	//
-	//	BG_EvaluateTrajectoryDelta( &cent->currentState.pos, cg.time, velocity );
-	//
-	//	trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, velocity, weapon->missileSound );
-	//}
-
 	// create the render entity
 	memset (&ent, 0, sizeof(ent));
 	VectorCopy( cent->lerpOrigin, ent.origin);
@@ -429,9 +398,7 @@ static void CG_Missile( centity_t *cent ) {
 
 	// flicker between two skins
 	ent.skinNum = cg.clientFrame & 1;
-	//ent.hModel = weapon->missileModel;
-	//ent.renderfx = weapon->missileRenderfx | RF_NOSHADOW;
-
+	
 	// convert direction of travel into axis
 	if ( VectorNormalize2( s1->pos.trDelta, ent.axis[0] ) == 0 ) {
 		ent.axis[0][2] = 1;
@@ -447,7 +414,8 @@ static void CG_Missile( centity_t *cent ) {
 	}
 
 	// add to refresh list, possibly with quad glow
-	CG_AddRefEntityWithPowerups( &ent, s1, TEAM_FREE );
+	//CG_AddRefEntityWithPowerups( &ent, s1, TEAM_FREE );
+	trap_R_AddRefEntityToScene( &ent );
 }
 
 /*
@@ -773,33 +741,6 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 
 /*
 ===============
-CG_TeamBase
-===============
-*/
-static void CG_TeamBase( centity_t *cent ) {
-	refEntity_t model;
-	if ( cgs.gametype == GT_CTF) {
-		// show the flag base
-		memset(&model, 0, sizeof(model));
-		model.reType = RT_MODEL;
-		VectorCopy( cent->lerpOrigin, model.lightingOrigin );
-		VectorCopy( cent->lerpOrigin, model.origin );
-		AnglesToAxis( cent->currentState.angles, model.axis );
-		if ( cent->currentState.modelindex == TEAM_RED ) {
-			model.hModel = cgs.media.redFlagBaseModel;
-		}
-		else if ( cent->currentState.modelindex == TEAM_BLUE ) {
-			model.hModel = cgs.media.blueFlagBaseModel;
-		}
-		else {
-			model.hModel = cgs.media.neutralFlagBaseModel;
-		}
-		trap_R_AddRefEntityToScene( &model );
-	}
-}
-
-/*
-===============
 CG_Sprite
 ===============
 */
@@ -859,7 +800,7 @@ static void CG_AddCEntity( centity_t *cent ) {
 	case ET_PORTAL:		CG_Portal( cent ); break;
 	case ET_SPEAKER:	CG_Speaker( cent ); break;
 	case ET_GRAPPLE:	CG_Grapple( cent ); break;
-	case ET_TEAM:		CG_TeamBase( cent ); break;
+	case ET_TEAM:		break;
 	case ET_SPRITE:		CG_Sprite( cent ); break;
 	}
 }

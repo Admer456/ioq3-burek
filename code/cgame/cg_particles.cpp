@@ -1378,14 +1378,6 @@ int CG_NewParticleArea (int num)
 
 	token = COM_Parse (&str);
 	snum = atoi (token);
-	
-	for (i=0; i<numparticles; i++)
-	{
-		if (type >= 4)
-			CG_ParticleBubble (cgs.media.waterBubbleShader, origin, origin2, turb, range, snum);
-		else
-			CG_ParticleSnow (cgs.media.waterBubbleShader, origin, origin2, turb, range, snum);
-	}
 
 	return (1);
 }
@@ -1815,7 +1807,7 @@ void CG_ParticleBloodCloud (centity_t *cent, vec3_t origin, vec3_t dir)
 		p->alphavel = 0;
 		p->roll = 0;
 
-		p->pshader = cgs.media.smokePuffShader;
+		//p->pshader = cgs.media.smokePuffShader;
 
 		p->endtime = cg.time + 350 + (crandom() * 100);
 		
@@ -1941,7 +1933,7 @@ void CG_ParticleDust (centity_t *cent, vec3_t origin, vec3_t dir)
 		p->alphavel = 0;
 		p->roll = 0;
 
-		p->pshader = cgs.media.smokePuffShader;
+		//p->pshader = cgs.media.smokePuffShader;
 
 		// RF, stay around for long enough to expand and dissipate naturally
 		if (length)

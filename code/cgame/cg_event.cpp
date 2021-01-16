@@ -333,7 +333,7 @@ static void CG_UseItem( centity_t *cent ) {
 			ci = &cgs.clientinfo[ clientNum ];
 			ci->medkitUsageTime = cg.time;
 		}
-		trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.medkitSound );
+		//trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.medkitSound );
 		break;
 	}
 
@@ -617,13 +617,13 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 			vec3_t			up = {0, 0, 1};
 
 
-			CG_SmokePuff( cent->lerpOrigin, up, 
-						  32, 
-						  1, 1, 1, 0.33f,
-						  1000, 
-						  cg.time, 0,
-						  LEF_PUFF_DONT_SCALE, 
-						  cgs.media.smokePuffShader );
+			//CG_SmokePuff( cent->lerpOrigin, up, 
+			//			  32, 
+			//			  1, 1, 1, 0.33f,
+			//			  1000, 
+			//			  cg.time, 0,
+			//			  LEF_PUFF_DONT_SCALE, 
+			//			  cgs.media.smokePuffShader );
 		}
 
 		// boing sound at origin, jump sound on player
@@ -672,7 +672,7 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 			// powerups and team items will have a separate global sound, this one
 			// will be played at prediction time
 			if ( item->giType == IT_POWERUP || item->giType == IT_TEAM) {
-				trap_S_StartSound (NULL, es->number, CHAN_AUTO,	cgs.media.n_healthSound );
+				//trap_S_StartSound (NULL, es->number, CHAN_AUTO,	cgs.media.n_healthSound );
 			} else if (item->giType == IT_PERSISTANT_POWERUP) {
 			} else {
 				trap_S_StartSound (NULL, es->number, CHAN_AUTO,	trap_S_RegisterSound( item->pickup_sound, qfalse ) );
@@ -829,33 +829,33 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 	//
 	case EV_PLAYER_TELEPORT_IN:
 		DEBUGNAME("EV_PLAYER_TELEPORT_IN");
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.teleInSound );
+		//trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.teleInSound );
 		CG_SpawnEffect( position);
 		break;
 
 	case EV_PLAYER_TELEPORT_OUT:
 		DEBUGNAME("EV_PLAYER_TELEPORT_OUT");
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.teleOutSound );
+		//trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.teleOutSound );
 		CG_SpawnEffect(  position);
 		break;
 
 	case EV_ITEM_POP:
 		DEBUGNAME("EV_ITEM_POP");
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.respawnSound );
+		//trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.respawnSound );
 		break;
 	case EV_ITEM_RESPAWN:
 		DEBUGNAME("EV_ITEM_RESPAWN");
 		cent->miscTime = cg.time;	// scale up from this
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.respawnSound );
+		//trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.respawnSound );
 		break;
 
 	case EV_GRENADE_BOUNCE:
 		DEBUGNAME("EV_GRENADE_BOUNCE");
-		if ( rand() & 1 ) {
-			trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.hgrenb1aSound );
-		} else {
-			trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.hgrenb2aSound );
-		}
+		//if ( rand() & 1 ) {
+		//	trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.hgrenb1aSound );
+		//} else {
+		//	trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.hgrenb2aSound );
+		//}
 		break;
 
 	case EV_SCOREPLUM:
@@ -869,19 +869,19 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 	case EV_MISSILE_HIT:
 		DEBUGNAME("EV_MISSILE_HIT");
 		ByteToDir( es->eventParm, dir );
-		CG_MissileHitPlayer( es->weapon, position, dir, es->otherEntityNum );
+		//CG_MissileHitPlayer( es->weapon, position, dir, es->otherEntityNum );
 		break;
 
 	case EV_MISSILE_MISS:
 		DEBUGNAME("EV_MISSILE_MISS");
 		ByteToDir( es->eventParm, dir );
-		CG_MissileHitWall( es->weapon, 0, position, dir, IMPACTSOUND_DEFAULT );
+		//CG_MissileHitWall( es->weapon, 0, position, dir, IMPACTSOUND_DEFAULT );
 		break;
 
 	case EV_MISSILE_MISS_METAL:
 		DEBUGNAME("EV_MISSILE_MISS_METAL");
 		ByteToDir( es->eventParm, dir );
-		CG_MissileHitWall( es->weapon, 0, position, dir, IMPACTSOUND_METAL );
+		//CG_MissileHitWall( es->weapon, 0, position, dir, IMPACTSOUND_METAL );
 		break;
 
 	case EV_RAILTRAIL:
@@ -896,12 +896,12 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 				VectorMA(es->origin2, 4, cg.refdef.viewaxis[1], es->origin2);
 		}
 
-		CG_RailTrail(ci, es->origin2, es->pos.trBase);
+		//CG_RailTrail(ci, es->origin2, es->pos.trBase);
 
 		// if the end was on a nomark surface, don't make an explosion
 		if ( es->eventParm != 255 ) {
 			ByteToDir( es->eventParm, dir );
-			CG_MissileHitWall( es->weapon, es->clientNum, position, dir, IMPACTSOUND_DEFAULT );
+			//CG_MissileHitWall( es->weapon, es->clientNum, position, dir, IMPACTSOUND_DEFAULT );
 		}
 		break;
 
@@ -918,7 +918,7 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 
 	case EV_SHOTGUN:
 		DEBUGNAME("EV_SHOTGUN");
-		CG_ShotgunFire( es );
+		//CG_ShotgunFire( es );
 		break;
 
 	case EV_GENERAL_SOUND:
@@ -943,83 +943,6 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 
 	case EV_GLOBAL_TEAM_SOUND:	// play from the player's head so it never diminishes
 		{
-			DEBUGNAME("EV_GLOBAL_TEAM_SOUND");
-			switch( es->eventParm ) {
-				case GTS_RED_CAPTURE: // CTF: red team captured the blue flag, 1FCTF: red team captured the neutral flag
-					if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_RED )
-						CG_AddBufferedSound( cgs.media.captureYourTeamSound );
-					else
-						CG_AddBufferedSound( cgs.media.captureOpponentSound );
-					break;
-				case GTS_BLUE_CAPTURE: // CTF: blue team captured the red flag, 1FCTF: blue team captured the neutral flag
-					if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE )
-						CG_AddBufferedSound( cgs.media.captureYourTeamSound );
-					else
-						CG_AddBufferedSound( cgs.media.captureOpponentSound );
-					break;
-				case GTS_RED_RETURN: // CTF: blue flag returned, 1FCTF: never used
-					if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_RED )
-						CG_AddBufferedSound( cgs.media.returnYourTeamSound );
-					else
-						CG_AddBufferedSound( cgs.media.returnOpponentSound );
-					//
-					CG_AddBufferedSound( cgs.media.blueFlagReturnedSound );
-					break;
-				case GTS_BLUE_RETURN: // CTF red flag returned, 1FCTF: neutral flag returned
-					if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE )
-						CG_AddBufferedSound( cgs.media.returnYourTeamSound );
-					else
-						CG_AddBufferedSound( cgs.media.returnOpponentSound );
-					//
-					CG_AddBufferedSound( cgs.media.redFlagReturnedSound );
-					break;
-
-				case GTS_RED_TAKEN: // CTF: red team took blue flag, 1FCTF: blue team took the neutral flag
-					// if this player picked up the flag then a sound is played in CG_CheckLocalSounds
-					if (cg.snap->ps.powerups[PW_BLUEFLAG] || cg.snap->ps.powerups[PW_NEUTRALFLAG]) {
-					}
-					else {
-						if (cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE) {
-							CG_AddBufferedSound( cgs.media.enemyTookYourFlagSound );
-						}
-						else if (cg.snap->ps.persistant[PERS_TEAM] == TEAM_RED) {
- 							CG_AddBufferedSound( cgs.media.yourTeamTookEnemyFlagSound );
-						}
-					}
-					break;
-				case GTS_BLUE_TAKEN: // CTF: blue team took the red flag, 1FCTF red team took the neutral flag
-					// if this player picked up the flag then a sound is played in CG_CheckLocalSounds
-					if (cg.snap->ps.powerups[PW_REDFLAG] || cg.snap->ps.powerups[PW_NEUTRALFLAG]) {
-					}
-					else {
-						if (cg.snap->ps.persistant[PERS_TEAM] == TEAM_RED) {
-							CG_AddBufferedSound( cgs.media.enemyTookYourFlagSound );
-						}
-						else if (cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE) {
-							CG_AddBufferedSound( cgs.media.yourTeamTookEnemyFlagSound );
-						}
-					}
-					break;
-
-				case GTS_REDTEAM_SCORED:
-					CG_AddBufferedSound(cgs.media.redScoredSound);
-					break;
-				case GTS_BLUETEAM_SCORED:
-					CG_AddBufferedSound(cgs.media.blueScoredSound);
-					break;
-				case GTS_REDTEAM_TOOK_LEAD:
-					CG_AddBufferedSound(cgs.media.redLeadsSound);
-					break;
-				case GTS_BLUETEAM_TOOK_LEAD:
-					CG_AddBufferedSound(cgs.media.blueLeadsSound);
-					break;
-				case GTS_TEAMS_ARE_TIED:
-					CG_AddBufferedSound( cgs.media.teamsTiedSound );
-					break;
-
-				default:
-					break;
-			}
 			break;
 		}
 
@@ -1060,7 +983,7 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 			cg.powerupActive = PW_QUAD;
 			cg.powerupTime = cg.time;
 		}
-		trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.quadSound );
+		//trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.quadSound );
 		break;
 	case EV_POWERUP_BATTLESUIT:
 		DEBUGNAME("EV_POWERUP_BATTLESUIT");
@@ -1068,7 +991,7 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 			cg.powerupActive = PW_BATTLESUIT;
 			cg.powerupTime = cg.time;
 		}
-		trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.protectSound );
+		//trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.protectSound );
 		break;
 	case EV_POWERUP_REGEN:
 		DEBUGNAME("EV_POWERUP_REGEN");
@@ -1076,7 +999,7 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 			cg.powerupActive = PW_REGEN;
 			cg.powerupTime = cg.time;
 		}
-		trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.regenSound );
+		//trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.regenSound );
 		break;
 
 	case EV_GIB_PLAYER:
@@ -1085,7 +1008,7 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 		// with the kamikaze sound, downside is that the gib sound will also
 		// not be played when someone is gibbed while just carrying the kamikaze
 		if ( !(es->eFlags & EF_KAMIKAZE) ) {
-			trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.gibSound );
+			//trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.gibSound );
 		}
 		CG_GibPlayer( cent->lerpOrigin );
 		break;
