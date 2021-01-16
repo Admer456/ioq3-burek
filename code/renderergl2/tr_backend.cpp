@@ -609,6 +609,9 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		rb_surfaceTable[ *drawSurf->surface ]( drawSurf->surface );
 	}
 
+	// Reset the projection matrix in case the weapon FOV hack was used
+	GL_SetProjectionMatrix( backEnd.viewParms.projectionMatrix );
+
 	backEnd.refdef.floatTime = originalTime;
 
 	// draw the contents of the last shader batch
