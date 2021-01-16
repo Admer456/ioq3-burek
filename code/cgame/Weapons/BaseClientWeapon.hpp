@@ -44,5 +44,6 @@ namespace ClientEntities
 		float			nextSecondary{};
 		float			nextTertiary{};
 		float			nextIdle{};
+		float			nextReload{};
 	};
 }

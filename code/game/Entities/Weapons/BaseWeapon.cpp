@@ -46,3 +46,14 @@ BasePlayer* BaseWeapon::GetPlayer()
 {
 	return player;
 }
+
+void BaseWeapon::SetPlayer( BasePlayer* player )
+{
+	this->player = player;
+}
+
+void BaseWeapon::WeaponFrame()
+{
+	if ( level.time * 0.001f > nextIdle )
+		Idle();
+}

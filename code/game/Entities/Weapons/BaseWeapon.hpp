@@ -42,7 +42,11 @@ namespace Entities
 		void			WeaponTouch( IEntity* other, trace_t* trace );
 
 		BasePlayer*		GetPlayer();
+		void			SetPlayer( BasePlayer* player );
 
+		virtual void	WeaponFrame();
+
+		virtual void	Idle() {}
 		virtual void	PrimaryAttack() {}
 		virtual void	SecondaryAttack() {}
 		virtual void	TertiaryAttack() {}
@@ -54,5 +58,12 @@ namespace Entities
 
 	protected:
 		BasePlayer*		player;
+
+		// "Timers"
+		float			nextPrimary{};
+		float			nextSecondary{};
+		float			nextTertiary{};
+		float			nextIdle{};
+		float			nextReload{};
 	};
 }
