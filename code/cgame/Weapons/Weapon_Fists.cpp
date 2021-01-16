@@ -42,7 +42,7 @@ void Weapon_Fists::OnPrimaryFire()
 
 	renderEntity.StartAnimation( animAttackLeft, true );
 
-	nextPrimary = nextSecondary = cg.time * 0.001f + 0.5f;
+	nextPrimary = nextSecondary = cg.time * 0.001f + 0.4f;
 	nextIdle = cg.time * 0.001f + renderEntity.GetAnimData( animAttackLeft ).Length();
 }
 
@@ -53,6 +53,6 @@ void Weapon_Fists::OnSecondaryFire()
 
 	renderEntity.StartAnimation( animAttackRight, true );
 
-	nextPrimary = nextSecondary = cg.time * 0.001f + 0.7f;
+	nextPrimary = nextSecondary = cg.time * 0.001f + 1.0f;
 	nextIdle = cg.time * 0.001f + renderEntity.GetAnimData( animAttackRight ).Length();
 }

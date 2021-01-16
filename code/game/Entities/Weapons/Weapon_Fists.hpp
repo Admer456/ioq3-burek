@@ -15,5 +15,9 @@ namespace Entities
 		uint16_t	GetWeaponFlags() { return WFNone; }
 
 		void		PrimaryAttack() override;
+		void		SecondaryAttack() override;
+
+	protected:
+		void		Swing( float damage );
 	};
 }
