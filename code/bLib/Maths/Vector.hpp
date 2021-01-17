@@ -218,7 +218,7 @@ public: // Operators
 
 	// This is dot product, not multiply!
 	// Revise vector maths
-	inline const float& operator* ( const Vector& operand ) const
+	inline float operator* ( const Vector& operand ) const
 	{
 		return x*operand.x + y*operand.y + z*operand.z;
 	}
