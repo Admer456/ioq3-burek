@@ -10,8 +10,7 @@ public:
 
 	// Retrieves the current weapon carried by the local player
 	ClientEntities::BaseClientWeapon* GetCurrentWeapon();
-
-	// Parses complex entity events
+	// Parses CE_ events
 	void		ParseComplexEvent( int id, centity_t* cent, Vector position );
 	// Strips the extension off modelName, and parses the respective .mcfg file
 	void		RegisterModelConfigData( int id, const char* modelName );
@@ -19,10 +18,11 @@ public:
 	std::vector<Assets::ModelAnimation>& GetAnimationsForModel( qhandle_t modelindex );
 	// Returns the current client time
 	float		Time() const;
-
-	ClientView* GetView() { return view; }
-
+	// Gets the local player's view
+	ClientView* GetView();
+	// Is this entity the local client?
 	static bool IsLocalClient( centity_t* cent );
+	// Executes a weapon event for a given predicted entity
 	static void ExecuteWeaponEvent( int id, centity_t* cent );
 
 private:

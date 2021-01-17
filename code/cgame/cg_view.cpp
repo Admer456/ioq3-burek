@@ -703,9 +703,14 @@ static int CG_CalcViewValues( void ) {
 	cg.xyspeed = sqrt( ps->velocity[0] * ps->velocity[0] +
 		ps->velocity[1] * ps->velocity[1] );
 
-
 	VectorCopy( ps->origin, cg.refdef.vieworg );
 	VectorCopy( ps->viewangles, cg.refdefViewAngles );
+
+	Vector viewPos, viewAngles;
+	GetClient()->GetView()->CalculateViewTransform( viewPos, viewAngles );
+
+	viewPos.CopyToArray( cg.refdef.vieworg );
+	viewAngles.CopyToArray( cg.refdefViewAngles );
 
 	if (cg_cameraOrbit.integer) {
 		if (cg.time > cg.nextOrbitTime) {
@@ -879,9 +884,12 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		//CG_AddVegetation();
 	}
 
-	if ( GetClient()->GetCurrentWeapon() ) 
+	if ( GetClient()->GetCurrentWeapon() )
+	{
+		ClientEntities::BaseClientWeapon::currentPlayer = &cg.predictedPlayerEntity;
 		GetClient()->GetCurrentWeapon()->WeaponFrame();
-	
+	}
+
 	CG_AddViewWeapon( &cg.predictedPlayerState );
 
 	// add buffered sounds
@@ -942,7 +950,5 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	{
 		CG_Printf( "cg.clientFrame:%i\n", cg.clientFrame );
 	}
-
-
 }
 

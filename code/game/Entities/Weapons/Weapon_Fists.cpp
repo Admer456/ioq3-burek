@@ -12,6 +12,9 @@ using namespace Entities;
 
 DefineEntityClass_NoMapSpawn( Weapon_Fists, BaseWeapon );
 
+// ===================
+// Weapon_Fists::GetWeaponInfo
+// ===================
 BaseWeapon::WeaponInfo Weapon_Fists::GetWeaponInfo()
 {
 	WeaponInfo wi;
@@ -22,6 +25,9 @@ BaseWeapon::WeaponInfo Weapon_Fists::GetWeaponInfo()
 	return wi;
 }
 
+// ===================
+// Weapon_Fists::PrimaryAttack
+// ===================
 void Weapon_Fists::PrimaryAttack()
 {
 	if ( level.time * 0.001f < nextPrimary )
@@ -31,6 +37,9 @@ void Weapon_Fists::PrimaryAttack()
 	nextPrimary = nextSecondary = level.time * 0.001f + 0.4f;
 }
 
+// ===================
+// Weapon_Fists::SecondaryAttack
+// ===================
 void Weapon_Fists::SecondaryAttack()
 {
 	if ( level.time * 0.001f < nextSecondary )
@@ -40,6 +49,9 @@ void Weapon_Fists::SecondaryAttack()
 	nextPrimary = nextSecondary = level.time * 0.001f + 1.0f;
 }
 
+// ===================
+// Weapon_Fists::Swing
+// ===================
 void Weapon_Fists::Swing( float damage )
 {
 	trace_t tr;

@@ -3,6 +3,11 @@
 
 using namespace ClientEntities;
 
+centity_t* BaseClientWeapon::currentPlayer = nullptr;
+
+// ===================
+// BaseClientWeapon::Precache
+// ===================
 void BaseClientWeapon::Precache()
 {
 	memset( &renderEntity, 0, sizeof( renderEntity ) );
@@ -13,6 +18,9 @@ void BaseClientWeapon::Precache()
 	wi.viewModelHandle = renderEntity.GetRefEntity().hModel;
 }
 
+// ===================
+// BaseClientWeapon::WeaponFrame
+// ===================
 void BaseClientWeapon::WeaponFrame()
 {
 	if ( !Client::IsLocalClient( currentPlayer ) )

@@ -4,6 +4,9 @@
 
 std::vector<EventParser*> ComplexEventHandler::parsers = std::vector<EventParser*>();
 
+// ===================
+// ComplexEventHandler::ParseComplexEvent
+// ===================
 bool ComplexEventHandler::ParseComplexEvent( int id, centity_t* cent, Vector position )
 {
 	for ( EventParser* ep : parsers )

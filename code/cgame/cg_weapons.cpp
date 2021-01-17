@@ -83,75 +83,6 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
 	angles[PITCH] += scale * fracsin * 0.01;
 }
 
-/*
-=============
-CG_AddPlayerWeapon
-
-Used for both the view weapon (ps is valid) and the world modelother character models (ps is NULL)
-The main player will have this called for BOTH cases, so effects like light and
-sound should only be done on the world model case.
-=============
-*/
-void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent, int team ) 
-{
-	refEntity_t	gun;
-	ClientEntities::BaseClientWeapon* weapon;
-	centity_t	*nonPredictedCent;
-	orientation_t	lerped;
-
-	weapon = gWeapons[cent->currentState.weapon];
-
-	if ( nullptr == weapon )
-	{
-		//CG_Printf( "CG_AddPlayerWeapon: weapon %i does not exist\n", cent->currentState.weapon );
-		return;
-	}
-
-	// add the weapon
-	gun = weapon->GetRenderEntity().GetRefEntity();
-
-	VectorCopy( parent->lightingOrigin, gun.lightingOrigin );
-	gun.shadowPlane = parent->shadowPlane;
-	gun.renderfx = parent->renderfx;
-
-	if ( !gun.hModel ) 
-	{
-		return;
-	}
-
-	// Interpolate tag position between the last and current frame
-	trap_R_LerpTag(&lerped, parent->hModel, parent->oldframe, parent->frame,
-		1.0 - parent->backlerp, "tag_weapon");
-	
-	VectorCopy(parent->origin, gun.origin);
-
-	VectorMA(gun.origin, lerped.origin[0], parent->axis[0], gun.origin);
-
-	// Make weapon appear left-handed for 2 and centered for 3
-	if(ps && cg_drawGun.integer == 2)
-		VectorMA(gun.origin, -lerped.origin[1], parent->axis[1], gun.origin);
-	else if(!ps || cg_drawGun.integer != 3)
-	       	VectorMA(gun.origin, lerped.origin[1], parent->axis[1], gun.origin);
-
-	VectorMA(gun.origin, lerped.origin[2], parent->axis[2], gun.origin);
-
-	MatrixMultiply(lerped.axis, parent->axis, gun.axis);
-	gun.backlerp = parent->backlerp;
-
-	trap_R_AddRefEntityToScene( &gun );
-
-	// make sure we aren't looking at cg.predictedPlayerEntity for LG
-	nonPredictedCent = &cg_entities[cent->currentState.number];
-
-	// if the index of the nonPredictedCent is not the same as the clientNum
-	// then this is a fake player (like on the single player podiums), so
-	// go ahead and use the cent
-	if( ( nonPredictedCent - cg_entities ) != cent->currentState.clientNum ) 
-	{
-		nonPredictedCent = cent;
-	}
-}
-
 void CG_AddWeapon( Vector weaponPos, Vector weaponAngles, playerState_t* ps, centity_t* cent )
 {
 	ClientEntities::BaseClientWeapon* weapon = nullptr;
@@ -205,7 +136,6 @@ void CG_AddViewWeapon( playerState_t *ps )
 		return;
 	}
 
-
 	// drop gun lower at higher fov
 	if ( cg_fov.integer > 90 ) 
 	{
@@ -219,7 +149,7 @@ void CG_AddViewWeapon( playerState_t *ps )
 	cent = &cg.predictedPlayerEntity;
 
 	// set up gun position
-	CG_CalculateWeaponPosition( weaponPos, weaponAngles );
+	GetClient()->GetView()->CalculateWeaponTransform( weaponPos, weaponAngles );
 
 	VectorMA( weaponPos, cg_gun_x.value, cg.refdef.viewaxis[0], weaponPos );
 	VectorMA( weaponPos, cg_gun_y.value, cg.refdef.viewaxis[1], weaponPos );

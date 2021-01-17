@@ -1809,10 +1809,8 @@ void CG_Player( centity_t *cent ) // TODO: Render the player as a single IQM ins
 
 	trap_R_AddRefEntityToScene( &head );
 
-	//
 	// add the gun / barrel / flash
-	//
-	CG_AddPlayerWeapon( &torso, NULL, cent, ci->team );
+	//CG_AddPlayerWeapon( &torso, NULL, cent, ci->team );
 
 	// add powerups floating behind the player
 	CG_PlayerPowerups( cent, &torso );

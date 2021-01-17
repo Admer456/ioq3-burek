@@ -4,18 +4,27 @@
 
 Client client;
 
+// ===================
+// Client::ctor
+// ===================
 Client::Client()
 {
 	complexEventHandler = new ComplexEventHandler();
 	view = new ClientView();
 }
 
+// ===================
+// Client::dtor
+// ===================
 Client::~Client()
 {
 	delete complexEventHandler;
 	delete view;
 }
 
+// ===================
+// Client::GetCurrentWeapon
+// ===================
 ClientEntities::BaseClientWeapon* Client::GetCurrentWeapon()
 {
 	ClientEntities::BaseClientWeapon* weapon = gWeapons[cg.snap->ps.weapon];
@@ -25,12 +34,18 @@ ClientEntities::BaseClientWeapon* Client::GetCurrentWeapon()
 	return nullptr;
 }
 
+// ===================
+// Client::ParseComplexEvent
+// ===================
 void Client::ParseComplexEvent( int id, centity_t* cent, Vector position )
 {
 	if ( !complexEventHandler->ParseComplexEvent( id, cent, position ) )
 		CG_Error( "Unknown complex event %i, from ent %i\n", id, cent->currentState.number );
 }
 
+// ===================
+// Client::RegisterModelConfigData
+// ===================
 void Client::RegisterModelConfigData( int id, const char* modelName )
 {
 	if ( nullptr == modelName )
@@ -58,24 +73,47 @@ void Client::RegisterModelConfigData( int id, const char* modelName )
 	anims[id] = Assets::ModelConfigData::GetAnimations( modelConfig.c_str() );
 }
 
+// ===================
+// Client::GetAnimationsForModel
+// ===================
 std::vector<Assets::ModelAnimation>& Client::GetAnimationsForModel( qhandle_t modelindex )
 {
 	return anims[modelindex];
 }
 
+// ===================
+// Client::Time
+// ===================
 float Client::Time() const
 {
 	return cg.time * 0.001f;
 }
 
+// ===================
+// Client::GetView
+// ===================
+ClientView* Client::GetView()
+{
+	return view;
+}
+
+// ===================
+// Client::IsLocalClient
+// ===================
 bool Client::IsLocalClient( centity_t* cent )
 {
+	if ( nullptr == cent )
+		return false;
+
 	if ( cent->currentState.eType != ET_PLAYER )
 		return false;
 
 	return cg.clientNum == cent->currentState.clientNum;
 }
 
+// ===================
+// Client::ExecuteWeaponEvent
+// ===================
 void Client::ExecuteWeaponEvent( int id, centity_t* cent )
 {
 	ClientEntities::BaseClientWeapon* weapon = gWeapons[cent->currentState.weapon];
@@ -95,6 +133,9 @@ void Client::ExecuteWeaponEvent( int id, centity_t* cent )
 	}
 }
 
+// ===================
+// GetClient
+// ===================
 Client* GetClient()
 {
 	return &client;
