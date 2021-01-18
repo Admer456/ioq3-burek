@@ -688,6 +688,22 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		re.RemapShader( (const char*)VMA(1), (const char*)VMA(2), (const char*)VMA(3) );
 		return 0;
 
+	case CG_DM_INIT:
+		S_DM_Init( (const char*)VMA( 1 ) );
+		return 0;
+
+	case CG_DM_START:
+		S_DM_Start( (const char*)VMA( 1 ) );
+		return 0;
+
+	case CG_DM_UPDATE:
+		S_DM_Update( VMF( 1 ), VMF( 2 ) );
+		return 0;
+
+	case CG_DM_PAUSE:
+		S_DM_Pause( args[1], args[2] );
+		return 0;
+
 /*
 	case CG_LOADCAMERA:
 		return loadCamera(VMA(1));

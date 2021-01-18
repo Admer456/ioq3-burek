@@ -153,6 +153,16 @@ typedef struct
 	void (*StopCapture)( void );
 	void (*MasterGain)( float gain );
 #endif
+	// BUREKTech dynamic music stuff
+	
+	// Initalises; loads the .mus file etc.
+	void (*InitDynamicMusic)( const char* musFile );
+	// Start singing boi
+	void (*StartDynamicSong)( const char* labelName );
+	// Update the currently playing song
+	void (*UpdateDynamicSong)( float volume, float speed );
+	// Pause the song or stop it
+	void (*PauseDynamicSong)( bool stop, bool shouldContinue );
 } soundInterface_t;
 
 

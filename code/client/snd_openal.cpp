@@ -1828,9 +1828,9 @@ void S_AL_RawSamples(int stream, int samples, int rate, int width, int channels,
 
 	if(entityNum < 0)
 	{
-        	// Volume
-        	S_AL_Gain (streamSources[stream], volume * s_volume->value * s_alGain->value);
-        }
+        // Volume
+        S_AL_Gain (streamSources[stream], volume * s_volume->value * s_alGain->value);
+	}
 
 	// Start stream
 	if(!streamPlaying[stream])
@@ -2439,7 +2439,7 @@ static void S_AL_SoundInfo(void)
 #endif
 }
 
-
+void S_AL_ShutdownDynamicMusic();
 
 /*
 =================
@@ -2469,6 +2469,8 @@ void S_AL_Shutdown( void )
 	}
 #endif
 
+	S_AL_ShutdownDynamicMusic();
+
 	for (i = 0; i < MAX_RAW_STREAMS; i++) {
 		streamSourceHandles[i] = -1;
 		streamPlaying[i] = qfalse;
@@ -2477,6 +2479,191 @@ void S_AL_Shutdown( void )
 
 	QAL_Shutdown();
 }
+
+// BUREKTech dynamic music stuff
+
+struct DynamicSong
+{
+	char label[32];
+	char path[128];
+	sfxHandle_t id;
+	srcHandle_t srcid;
+	src_t* src;
+};
+
+constexpr size_t NoSongsLoaded = 1 << 24;
+
+std::vector<DynamicSong> dynamicSongs;
+size_t currentSong{ NoSongsLoaded };
+
+ALuint S_AL_GetCurrentDynamicSong()
+{
+	return S_AL_SrcGet( dynamicSongs.at( currentSong ).srcid );
+}
+
+/*
+=================
+S_AL_InitDynamicMusic
+=================
+*/
+void S_AL_InitDynamicMusic( const char* file )
+{
+	char* token = nullptr;
+	char* cp = nullptr;
+	char contents[2048];
+
+	fileHandle_t f;
+	int l = Util::FileOpen( file, &f, FS_READ );
+
+	if ( l <= 0 )
+	{
+		Util::PrintDev( va( "Couldn't load dynamic music description file '%s'\n", file ), 1 );
+		return;
+	}
+
+	dynamicSongs.clear();
+	currentSong = 0;
+
+	Util::FileRead( contents, l, f );
+	contents[l] = '\0';
+	Util::FileClose( f );
+
+	cp = contents;
+
+	while ( true )
+	{
+		DynamicSong ds;
+
+		token = COM_Parse( &cp );
+		if ( !token[0] )
+			break;
+
+		strcpy( ds.label, token );
+
+		token = COM_ParseExt( &cp, qfalse );
+		if ( !token[0] )
+		{
+			Util::PrintError( va( "%s: missing path for label '%s'\n", file, ds.label ) );
+			return;
+		}
+
+		strcpy( ds.path, token );
+
+		dynamicSongs.push_back( ds );
+	}
+
+	for ( DynamicSong& ds : dynamicSongs )
+	{
+		ds.id = S_AL_RegisterSound( ds.path, qfalse );
+		ds.srcid = S_AL_SrcAlloc( alSrcPriority_t::SRCPRI_STREAM, -1, 0 );
+		ds.src = &srcList[ds.srcid];
+	}
+}
+
+/*
+=================
+S_AL_ShutdownDynamicMusic
+=================
+*/
+void S_AL_ShutdownDynamicMusic()
+{
+	dynamicSongs.clear();
+	currentSong = NoSongsLoaded;
+}
+
+void S_AL_PauseDynamicSong( bool stop, bool shouldContinue );
+
+/*
+=================
+S_AL_StartDynamicSong
+=================
+*/
+void S_AL_StartDynamicSong( const char* labelName )
+{
+	if ( currentSong == NoSongsLoaded )
+		return;
+
+	DynamicSong* song = nullptr;
+
+	currentSong = 0;
+
+	for ( DynamicSong& ds : dynamicSongs )
+	{
+		if ( !Q_stricmp( labelName, ds.label ) )
+		{
+			song = &ds;
+			break;
+		}
+		currentSong++;
+	}
+
+	if ( nullptr == song )
+		return;
+
+	srcHandle_t src = dynamicSongs.at( currentSong ).srcid;
+
+	S_AL_PauseDynamicSong( true, false );
+
+	S_AL_SrcSetup( src, dynamicSongs.at( currentSong ).id, SRCPRI_STREAM, -1, 0, qtrue );;
+
+	srcList[src].isLocked = qtrue;
+	srcList[src].isPlaying = qtrue;
+	qalSourcePlay( srcList[src].alSource );
+}
+
+/*
+=================
+S_AL_UpdateDynamicSong
+=================
+*/
+void S_AL_UpdateDynamicSong( float volume, float speed )
+{
+	if ( currentSong == NoSongsLoaded )
+		return;
+
+	ALuint source = S_AL_GetCurrentDynamicSong();
+	src_t* src = dynamicSongs.at( currentSong ).src;
+
+	qalSourcef( source, AL_PITCH, speed );
+	qalSourcef( source, AL_GAIN, volume );
+
+	src->scaleGain = volume;
+}
+
+/*
+=================
+S_AL_PauseDynamicSong
+=================
+*/
+void S_AL_PauseDynamicSong( bool stop, bool shouldContinue )
+{
+	if ( currentSong == NoSongsLoaded )
+		return;
+
+	ALuint source = S_AL_GetCurrentDynamicSong();
+	src_t* src = dynamicSongs.at( currentSong ).src;
+
+	if ( !shouldContinue && src->isPlaying )
+	{
+		src->isPlaying = qfalse;
+		
+		if ( !stop )
+		{
+			qalSourcePause( source );
+		}
+		else
+		{
+			qalSourceStop( source );
+		}
+	}
+	else if ( shouldContinue && !src->isPlaying )
+	{
+		src->isPlaying = qtrue;
+		qalSourcePlay( source );
+	}
+}
+
+// BUREKTech dynamic music stuff end
 
 #endif
 
@@ -2726,9 +2913,13 @@ qboolean S_AL_Init( soundInterface_t *si )
 	si->MasterGain = S_AL_MasterGain;
 #endif
 
+	si->InitDynamicMusic = S_AL_InitDynamicMusic;
+	si->StartDynamicSong = S_AL_StartDynamicSong;
+	si->UpdateDynamicSong = S_AL_UpdateDynamicSong;
+	si->PauseDynamicSong = S_AL_PauseDynamicSong;
+
 	return qtrue;
 #else
 	return qfalse;
 #endif
 }
-

@@ -72,6 +72,10 @@ static qboolean S_ValidSoundInterface( soundInterface_t *si )
 	if( !si->MasterGain ) return qfalse;
 #endif
 
+	if ( !si->StartDynamicSong ) return qfalse;
+	if ( !si->UpdateDynamicSong ) return qfalse;
+	if ( !si->PauseDynamicSong ) return qfalse;
+
 	return qtrue;
 }
 
@@ -327,7 +331,6 @@ void S_SoundList( void )
 	}
 }
 
-
 #ifdef USE_VOIP
 /*
 =================
@@ -390,6 +393,30 @@ void S_MasterGain( float gain )
 	}
 }
 #endif
+
+void S_DM_Init( const char* musFile )
+{
+	if ( si.InitDynamicMusic )
+		si.InitDynamicMusic( musFile );
+}
+
+void S_DM_Start( const char* label )
+{
+	if ( si.StartDynamicSong )
+		si.StartDynamicSong( label );
+}
+
+void S_DM_Update( float volume, float speed )
+{
+	if ( si.UpdateDynamicSong )
+		si.UpdateDynamicSong( volume, speed );
+}
+
+void S_DM_Pause( bool stop, bool shouldContinue )
+{
+	if ( si.PauseDynamicSong )
+		si.PauseDynamicSong( stop, shouldContinue );
+}
 
 //=============================================================================
 

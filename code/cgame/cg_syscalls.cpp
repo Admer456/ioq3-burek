@@ -447,3 +447,23 @@ qboolean trap_GetEntityToken( char *buffer, int bufferSize ) {
 qboolean trap_R_inPVS( const vec3_t p1, const vec3_t p2 ) {
 	return (qboolean)syscall( CG_R_INPVS, p1, p2 );
 }
+
+void trap_DM_Init( const char* musFile )
+{
+	syscall( CG_DM_INIT, musFile );
+}
+
+void trap_DM_Start( const char* labelName )
+{
+	syscall( CG_DM_START, labelName );
+}
+
+void trap_DM_Update( float volume, float speed )
+{
+	syscall( CG_DM_UPDATE, volume, speed );
+}
+
+void trap_DM_Pause( qboolean stop, qboolean shouldContinue )
+{
+	syscall( CG_DM_PAUSE, stop, shouldContinue );
+}

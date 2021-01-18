@@ -71,6 +71,10 @@ void SNDDMA_Activate( void );
 
 void S_UpdateBackgroundTrack( void );
 
+void S_DM_Init( const char* musFile );
+void S_DM_Start( const char* label );
+void S_DM_Update( float volume, float speed );
+void S_DM_Pause( bool stop, bool shouldContinue );
 
 #ifdef USE_VOIP
 void S_StartCapture( void );
