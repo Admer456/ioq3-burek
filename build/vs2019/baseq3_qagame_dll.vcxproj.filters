@@ -55,6 +55,9 @@
     <Filter Include="qcommon\Asset\Model">
       <UniqueIdentifier>{a4a94c46-3337-4089-85c8-22bcd2c4e28d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Entities\Audio">
+      <UniqueIdentifier>{ee07761f-a0cd-4659-b632-415f83ba2c24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -227,6 +230,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\qcommon\Util\Utilities.hpp">
       <Filter>qcommon\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Audio\AudioMusicSet.hpp">
+      <Filter>Sources\Entities\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -427,6 +433,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\qcommon\Util\Utilities_Game.cpp">
       <Filter>qcommon\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Audio\AudioMusicSet.cpp">
+      <Filter>Sources\Entities\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
