@@ -170,6 +170,11 @@ typedef enum {
 	// 1.32
 	CG_FS_SEEK, // This one's also shared
 
+	CG_DM_INIT,
+	CG_DM_START,
+	CG_DM_UPDATE,
+	CG_DM_PAUSE,
+
 /*
 	CG_LOADCAMERA,
 	CG_STARTCAMERA,

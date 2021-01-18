@@ -867,7 +867,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	// Make sure we have update values (scores)
 	CG_SetConfigValues();
 
-	CG_StartMusic();
+	GetClient()->InitDynamicMusic( cgs.mapname );
 
 	CG_LoadingString( "" );
 

@@ -134,6 +134,28 @@ void Client::ExecuteWeaponEvent( int id, centity_t* cent )
 }
 
 // ===================
+// Client::InitDynamicMusic
+// ===================
+void Client::InitDynamicMusic( const char* mapName )
+{
+	std::string musFile = mapName;
+
+	musFile = musFile.substr( 0, musFile.size() - 4 );
+	musFile += ".mus";
+
+	trap_DM_Init( musFile.c_str() );
+}
+
+// ===================
+// Client::UpdateDynamicMusic
+// ===================
+void Client::UpdateDynamicMusic( const char* label )
+{
+	trap_DM_Pause( true, false );
+	trap_DM_Start( label );
+}
+
+// ===================
 // GetClient
 // ===================
 Client* GetClient()

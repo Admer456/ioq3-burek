@@ -238,8 +238,9 @@ static void CG_ConfigStringModified( void )
 	// do something with it if necessary
 	if ( num == CS_MUSIC ) 
 	{
-		CG_StartMusic();
-	} 
+		//CG_StartMusic();
+		GetClient()->UpdateDynamicMusic( str );
+	}
 	else if ( num == CS_SERVERINFO ) 
 	{
 		CG_ParseServerinfo();
