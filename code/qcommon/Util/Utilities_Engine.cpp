@@ -28,11 +28,10 @@ void Util::PrintDev( const char* str, int level )
 	return Com_Printf( S_COLOR_WHITE );
 }
 
+qboolean FS_SV_FileExists( const char* file );
+
 int	Util::FileOpen( const char* path, fileHandle_t* f, fsMode_t mode )
 {
-	if ( !FS_FileExists( path ) )
-		return -1;
-
 	return FS_FOpenFileByMode( path, f, mode );
 }
 
