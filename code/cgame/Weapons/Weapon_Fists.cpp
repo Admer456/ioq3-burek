@@ -63,7 +63,7 @@ void Weapon_Fists::OnSecondaryFire()
 
 	if ( Client::IsLocalClient( currentPlayer ) )
 	{
-		CheckHit();
+		CheckHit( true );
 		
 		renderEntity.StartAnimation( animAttackRight, true );
 		nextPrimary = nextSecondary = cg.time * 0.001f + 1.0f;
@@ -71,7 +71,7 @@ void Weapon_Fists::OnSecondaryFire()
 	}
 }
 
-void Weapon_Fists::CheckHit()
+void Weapon_Fists::CheckHit( bool right )
 {
 	trace_t tr;
 	Vector forward;
@@ -86,5 +86,12 @@ void Weapon_Fists::CheckHit()
 	if ( tr.fraction == 1.0f )
 		return;
 
-	GetClient()->GetView()->AddShake( 10.0f, 0.5f, Vector( 2, 0, 0 ) );
+	Vector punchShake;
+
+	if ( !right )
+		punchShake = (cg.time % 2) ? Vector( 0.5, 0.5, 0 ) : Vector( -0.3, -0.65, 0 );
+	else 
+		punchShake = Vector( 0.1, 0.1, 0.8 );
+
+	GetClient()->GetView()->AddShake( 10.0f, 0.3f, punchShake );
 }
