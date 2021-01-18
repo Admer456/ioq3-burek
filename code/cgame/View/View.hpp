@@ -26,6 +26,8 @@ public:
 	void		CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles );
 	// Adds a view shake - every time a quake happens, explosions etc.
 	void		AddShake( float frequency, float duration, Vector direction );
+	// Gets the average of all shakes
+	Vector		CalculateShakeAverage() const;
 
 private:
 	ViewShake	shakes[MaxViewShakes];

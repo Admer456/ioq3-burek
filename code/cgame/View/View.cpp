@@ -13,11 +13,12 @@ Vector ClientView::ViewShake::CalculateShake() const
 	float time = GetClient()->Time();
 	
 	// This'll give us a value between 1.0 and 0.0
-	float delta = (time - timeStarted) / duration;
+	float delta = 1.0f - ((time - timeStarted) / duration);
 	Vector amplitude = direction * delta;
 
-	// Shaking goes either in sinusoidal or cosinusoidal fashion
-	v = amplitude * sin( time );
+	// Shaking goes either in sinusoidal or cosinusoidal fashion,
+	// *from* the point when the shaking started
+	v = amplitude * sin( (time - timeStarted) * frequency * (M_PI*2.0f) );
 
 	return v;
 }
@@ -56,7 +57,9 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	Vector forward, right, up;
 	Vector::AngleVectors( outAngles, &forward, &right, &up );
 	Vector velocity = cg.predictedPlayerState.velocity;
+
 	static float speed = 0.0f;
+	
 	float targetSpeed = velocity.Length2D() / 150.0f;
 	float time = GetClient()->Time();
 	bool air = cg.predictedPlayerState.groundEntityNum == ENTITYNUM_NONE;
@@ -72,8 +75,15 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	upBob *= sin( time * 16.0f );
 	sideBob *= sin( time * 8.0f );
 
+	for ( ViewShake& vs : shakes )
+		vs.Update();
+
+	Vector shake = CalculateShakeAverage();
+
+
 	outOrigin += up * upBob;
 	outOrigin += right * sideBob * 0.5f;
+	outOrigin += shake;
 }
 
 // ===================
@@ -90,6 +100,7 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	
 	static float speed = 0.0f;
 	static float airAngle = 0.0f;
+	static short air = 0;
 
 	static float dotForward = 0.0f;
 	static float dotRight = 0.0f;
@@ -103,20 +114,38 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	float targetDotRight = right * velocity.Normalized();
 	float targetDotUp = up * velocity.Normalized();
 
-	bool air = cg.predictedPlayerState.groundEntityNum == ENTITYNUM_NONE;
+	bool targetAir = cg.predictedPlayerState.groundEntityNum == ENTITYNUM_NONE;
 
-	if ( air )
+	// This is ugly :(
+	// Pls fix in BUREKTech 0.2
+	usercmd_t uc;
+	trap_GetUserCmd( trap_GetCurrentCmdNumber(), &uc );
+
+	if ( targetAir )
 	{
-		targetSpeed = 0.0f;
-		airAngle += cg.frametime * 0.001f * 5.0f;
+		air += cg.frametime;
+		if ( uc.upmove > 0 )
+			air = 255;
+	}
+	else
+	{
+		air -= cg.frametime;
+	}
+
+	air = MIN( MAX( 0, air ), 255 );
+
+	if ( air >= 128 )
+	{
+		targetSpeed = 0.2f;
+		airAngle += cg.frametime * 0.001f * 10.0f;
 	}
 	else
 	{
 		airAngle -= cg.frametime * 0.001f * 10.0f;
 	}
 
-	if ( airAngle > M_PI * 1.5f )
-		airAngle = M_PI * 1.5f;
+	if ( airAngle > M_PI * 1.25f )
+		airAngle = M_PI * 1.25f;
 	else if ( airAngle < 0.0f )
 		airAngle = 0;
 
@@ -142,6 +171,8 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	outOrigin += right * dotRight;
 	outOrigin += up * -dotUp;
 
+	outOrigin.z -= fabs( cg.refdefViewAngles[PITCH] ) / 90.0f;
+
 	outAngles.x -= airOffset;
 }
 
@@ -160,5 +191,24 @@ void ClientView::AddShake( float frequency, float duration, Vector direction )
 		vs.duration = duration;
 		vs.direction = direction;
 		vs.timeStarted = GetClient()->Time();
+		break;
 	}
+}
+
+// ===================
+// ClientView::CalculateShakeAverage
+// ===================
+Vector ClientView::CalculateShakeAverage() const
+{
+	Vector shake = Vector::Zero;
+
+	for ( const ViewShake& vs : shakes )
+	{
+		if ( !vs.active )
+			continue;
+
+		shake += vs.CalculateShake();
+	}
+
+	return shake;
 }
