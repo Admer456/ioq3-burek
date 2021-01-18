@@ -183,12 +183,12 @@ SpawnRegistry::SpawnInfo SpawnRegistry::GetRandomFurthest( const EntityClassInfo
 
 	if ( !numSpots )
 	{
-		spot = &siv.at(0);
+		engine->Print( "WARNING: Couldn't find a spawn point\n" );
 
-		if ( !spot )
-			engine->Print( "WARNING: Couldn't find a spawn point\n" );
+		SpawnInfo SI;
+		SI.spawnPointPosition = Vector::Zero;
 
-		return *spot;
+		return SI;
 	}
 
 	else
