@@ -7,8 +7,8 @@
 #include "Game/GameWorld.hpp"
 #include "../qcommon/IEngineExports.h"
 #include "Game/IGameImports.h"
-#include "Components/IComponent.hpp"
-#include "Components/SharedComponent.hpp"
+//#include "Components/IComponent.hpp"
+//#include "Components/SharedComponent.hpp"
 
 using namespace Entities;
 using namespace Components;
