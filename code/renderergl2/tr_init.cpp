@@ -567,7 +567,7 @@ const void *RB_TakeScreenshotCmd( const void *data ) {
 
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 
 	if (cmd->jpeg)
 		RB_TakeScreenshotJPEG( cmd->x, cmd->y, cmd->width, cmd->height, cmd->fileName);
@@ -882,7 +882,7 @@ const void *RB_TakeVideoFrameCmd( const void *data )
 
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 
 	cmd = (const videoFrameCommand_t *)data;
 	

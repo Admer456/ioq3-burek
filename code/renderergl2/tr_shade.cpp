@@ -1616,7 +1616,8 @@ void RB_StageIteratorGeneric( void )
 /*
 ** RB_EndSurface
 */
-void RB_EndSurface( void ) {
+void RB_EndSurface( const byte& wireframeDevLevel )
+{
 	shaderCommands_t *input;
 
 	input = &tess;
@@ -1664,7 +1665,7 @@ void RB_EndSurface( void ) {
 	//
 	// draw debugging stuff
 	//
-	if ( r_showtris->integer ) {
+	if ( r_showtris->integer & wireframeDevLevel ) {
 		DrawTris (input);
 	}
 	if ( r_shownormals->integer ) {

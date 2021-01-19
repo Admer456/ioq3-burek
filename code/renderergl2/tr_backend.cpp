@@ -707,7 +707,7 @@ void RE_StretchRaw (int x, int y, int w, int h, int cols, int rows, const byte *
 	R_IssuePendingRenderCommands();
 
 	if ( tess.numIndexes ) {
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 	}
 
 	// we definitely want to sync every frame for the cinematics
@@ -831,7 +831,7 @@ const void *RB_StretchPic ( const void *data ) {
 	shader = cmd->shader;
 	if ( shader != tess.shader ) {
 		if ( tess.numIndexes ) {
-			RB_EndSurface();
+			RB_EndSurface( 2 );
 		}
 		backEnd.currentEntity = &backEnd.entity2D;
 		RB_BeginSurface( shader, 0, 0 );
@@ -906,7 +906,7 @@ const void	*RB_DrawSurfs( const void *data ) {
 
 	// finish any 2D drawing if needed
 	if ( tess.numIndexes ) {
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 	}
 
 	cmd = (const drawSurfsCommand_t *)data;
@@ -1218,7 +1218,7 @@ const void	*RB_DrawBuffer( const void *data )
 
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 
 	if (glRefConfig.framebufferObject)
 		FBO_Bind(NULL);
@@ -1306,7 +1306,7 @@ const void *RB_ColorMask(const void *data)
 
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 
 	if (glRefConfig.framebufferObject)
 	{
@@ -1334,7 +1334,7 @@ const void *RB_ClearDepth(const void *data)
 	
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 
 	// texture swapping test
 	if (r_showImages->integer)
@@ -1377,7 +1377,7 @@ const void	*RB_SwapBuffers( const void *data ) {
 
 	// finish any 2D drawing if needed
 	if ( tess.numIndexes ) {
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 	}
 
 	// texture swapping test
@@ -1448,7 +1448,7 @@ const void *RB_CapShadowMap(const void *data)
 
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 
 	if (cmd->map != -1)
 	{
@@ -1487,7 +1487,7 @@ const void *RB_PostProcess(const void *data)
 
 	// finish any 2D drawing if needed
 	if(tess.numIndexes)
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 
 	if (!glRefConfig.framebufferObject || !r_postProcess->integer)
 	{
@@ -1704,7 +1704,7 @@ const void *RB_ExportCubemaps(const void *data)
 
 	// finish any 2D drawing if needed
 	if (tess.numIndexes)
-		RB_EndSurface();
+		RB_EndSurface( 2 );
 
 	if (!glRefConfig.framebufferObject || !tr.world || tr.numCubemaps == 0)
 	{
@@ -1812,7 +1812,7 @@ void RB_ExecuteRenderCommands( const void *data ) {
 		default:
 			// finish any 2D drawing if needed
 			if(tess.numIndexes)
-				RB_EndSurface();
+				RB_EndSurface( 2 );
 
 			// stop rendering
 			t2 = ri.Milliseconds ();
