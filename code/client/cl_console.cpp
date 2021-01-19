@@ -667,16 +667,17 @@ void Con_DrawSolidConsole( float frac ) {
 		SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
 	}
 
-	color[0] = 1;
-	color[1] = 0;
-	color[2] = 0;
-	color[3] = 1;
+	color[0] = 0.1f;
+	color[1] = 1.0f;
+	color[2] = 0.1f;
+	color[3] = 0.5f;
 	SCR_FillRect( 0, y, SCREEN_WIDTH, 2, color );
 
 
 	// draw the version number
 
-	re.SetColor( g_color_table[ColorIndex(COLOR_RED)] );
+	re.SetColor( color );
+	//re.SetColor( g_color_table[ColorIndex(COLOR_RED)] );
 
 	i = strlen( Q3_VERSION );
 
