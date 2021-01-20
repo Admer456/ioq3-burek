@@ -481,7 +481,10 @@ enum ComplexEvent
 
 	// Spawns a parametric explosion
 	// fparm: explosion radius
-	// parm: sprite material
+	// parm: material index
+	// parm2: use builtin (1, 2, 3), forces sound too
+	// vparm: direction (0,0,0 = up)
+	// sound: sound index (if 0, use random builtin)
 	CE_Explosion,
 };
 

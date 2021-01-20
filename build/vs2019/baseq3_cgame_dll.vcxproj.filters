@@ -206,5 +206,8 @@
     <ClCompile Include="..\..\code\cgame\View\View.cpp">
       <Filter>Sources\View</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Events\Explosion.cpp">
+      <Filter>Sources\Events</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

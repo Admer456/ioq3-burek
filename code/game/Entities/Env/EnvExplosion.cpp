@@ -34,10 +34,16 @@ void EnvExplosion::Explode()
 	if ( !(spawnFlags & SF_Repeatable) && exploded )
 		return;
 
+	EventData ed;
+	ed.id = CE_Explosion;
+	ed.fparm = explosionRadius;
+	ed.parm = 0;
+	ed.parm2 = 0; // use builtin explosion preset 1
+	ed.vparm = Vector( 0, 0, 1 );
+	ed.sound = 0;
+
 	// Create the explosion
-	// EV_MISSILE_HIT uses bytedirs indices as the parameter,
-	// so the 5 here means "the explosion will face upwards"
-	AddEvent( EV_MISSILE_HIT, 5 );
+	gameWorld->EmitComplexEvent( GetOrigin(), Vector::Zero, ed );
 
 	// Apply radius damage
 	if ( !(spawnFlags & SF_NoDamage) )
