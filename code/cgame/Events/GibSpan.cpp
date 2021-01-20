@@ -54,10 +54,8 @@ public:
 		return Vector( random() * max.x, random() * max.y, random() * max.z );
 	}
 
-	void Parse( centity_t* cent, Vector position )
+	void Parse( centity_t* cent, Vector position ) override
 	{
-		CG_Printf( "CE_GibSpan from %i\n", cent->currentState.number );
-
 		EventData ed( cent->currentState );
 
 		Vector mins = ed.vparm;
