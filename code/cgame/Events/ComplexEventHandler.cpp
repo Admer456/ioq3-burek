@@ -5,6 +5,17 @@
 std::vector<EventParser*> ComplexEventHandler::parsers = std::vector<EventParser*>();
 
 // ===================
+// ComplexEventHandler::RegisterAssets
+// ===================
+void ComplexEventHandler::RegisterAssets()
+{
+	for ( EventParser* ep : parsers )
+	{
+		ep->RegisterAssets();
+	}
+}
+
+// ===================
 // ComplexEventHandler::ParseComplexEvent
 // ===================
 bool ComplexEventHandler::ParseComplexEvent( int id, centity_t* cent, Vector position )

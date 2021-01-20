@@ -8,6 +8,9 @@ class ComplexEventHandler final
 {
 public:
 
+	// Registers assets for all event parsers
+	void			RegisterAssets();
+
 	// Runs through 'parsers' and if the event ID matches, it executes and returns true
 	// If it cannot find any matching parser, it returns false
 	bool			ParseComplexEvent( int id, centity_t* cent, Vector position );
@@ -27,6 +30,8 @@ public:
 		ComplexEventHandler::parsers.push_back( this );
 	}
 
+	// Precaches any media for the event
+	virtual void	RegisterAssets() {}
 	// Execute the event
 	virtual void	Parse( centity_t* cent, Vector position ) = 0;
 	// Which event to correspond to

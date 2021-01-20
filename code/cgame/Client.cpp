@@ -25,6 +25,14 @@ Client::~Client()
 // ===================
 // Client::GetCurrentWeapon
 // ===================
+void Client::Update()
+{
+
+}
+
+// ===================
+// Client::GetCurrentWeapon
+// ===================
 ClientEntities::BaseClientWeapon* Client::GetCurrentWeapon()
 {
 	ClientEntities::BaseClientWeapon* weapon = gWeapons[cg.snap->ps.weapon];
@@ -98,6 +106,14 @@ ClientView* Client::GetView()
 }
 
 // ===================
+// Client::GetEventHandler
+// ===================
+ComplexEventHandler* Client::GetEventHandler()
+{
+	return complexEventHandler;
+}
+
+// ===================
 // Client::IsLocalClient
 // ===================
 bool Client::IsLocalClient( centity_t* cent )
@@ -151,6 +167,12 @@ void Client::InitDynamicMusic( const char* mapName )
 // ===================
 void Client::UpdateDynamicMusic( const char* label )
 {
+	if ( nullptr == label )
+	{
+		trap_DM_Pause( true, true );
+		return;
+	}
+
 	trap_DM_Pause( true, false );
 	trap_DM_Start( label );
 }

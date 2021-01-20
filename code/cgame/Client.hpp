@@ -8,6 +8,9 @@ public:
 	Client();
 	~Client();
 
+	// Updates all systems for the given moment
+	void		Update();
+
 	// Retrieves the current weapon carried by the local player
 	ClientEntities::BaseClientWeapon* GetCurrentWeapon();
 	// Parses CE_ events
@@ -19,8 +22,13 @@ public:
 	std::vector<Assets::ModelAnimation>& GetAnimationsForModel( qhandle_t modelindex );
 	// Returns the current client time
 	float		Time() const;
+
+	// Subsystem getters
+
 	// Gets the local player's view
 	ClientView* GetView();
+	// Gets the handler for CE_ events
+	ComplexEventHandler* GetEventHandler();
 
 	// Is this entity the local client?
 	static bool IsLocalClient( centity_t* cent );

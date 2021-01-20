@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // cg_main.c -- initialization and primary entry point for cgame
 #include "cg_local.hpp"
+#include "Events/ComplexEventHandler.hpp"
 
 int forceModelModificationCount = -1;
 
@@ -868,6 +869,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	CG_SetConfigValues();
 
 	GetClient()->InitDynamicMusic( cgs.mapname );
+	GetClient()->GetEventHandler()->RegisterAssets();
 
 	CG_LoadingString( "" );
 
