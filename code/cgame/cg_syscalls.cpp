@@ -247,6 +247,11 @@ qhandle_t trap_R_RegisterShaderNoMip( const char *name ) {
 	return syscall( CG_R_REGISTERSHADERNOMIP, name );
 }
 
+int trap_R_AnimationLength( qhandle_t material )
+{
+	return syscall( CG_R_ANIMLENGTH, material );
+}
+
 void trap_R_RegisterFont(const char *fontName, int pointSize, fontInfo_t *font) {
 	syscall(CG_R_REGISTERFONT, fontName, pointSize, font );
 }

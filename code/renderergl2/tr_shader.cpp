@@ -3588,6 +3588,26 @@ qhandle_t RE_RegisterShaderNoMip( const char *name ) {
 
 /*
 ====================
+RE_GetAnimationLength
+
+Finds a material and checks the first phase animMap's length
+====================
+*/
+int RE_GetAnimationLength( qhandle_t material )
+{
+	shader_t* s = tr.shaders[material];
+
+	if ( s->stages[0]->bundle[0].numImageAnimations <= 1 )
+		return 16;
+
+	float speed = s->stages[0]->bundle[0].imageAnimationSpeed;
+	float count = s->stages[0]->bundle[0].numImageAnimations;
+
+	return (count / speed) * 1000;
+}
+
+/*
+====================
 R_GetShaderByHandle
 
 When a handle is passed in by another module, this range checks

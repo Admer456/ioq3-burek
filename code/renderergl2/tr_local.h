@@ -340,7 +340,7 @@ typedef struct {
 } texModInfo_t;
 
 
-#define	MAX_IMAGE_ANIMATIONS	8
+#define	MAX_IMAGE_ANIMATIONS	64
 
 typedef struct {
 	image_t			*image[MAX_IMAGE_ANIMATIONS];
@@ -1966,6 +1966,7 @@ void	RE_UploadCinematic (int w, int h, int cols, int rows, const byte *data, int
 void		RE_BeginFrame( stereoFrame_t stereoFrame );
 void		RE_BeginRegistration( glconfig_t *glconfig );
 void		RE_LoadWorldMap( const char *mapname );
+int			RE_GetAnimationLength( qhandle_t material );
 void		RE_SetWorldVisData( const byte *vis );
 qhandle_t	RE_RegisterModel( const char *name );
 qhandle_t	RE_RegisterSkin( const char *name );

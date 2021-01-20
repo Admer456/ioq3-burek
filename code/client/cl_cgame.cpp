@@ -620,7 +620,8 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
   case CG_KEY_GETKEY:
 		return Key_GetKey( (const char*)VMA(1) );
 
-
+  case CG_R_ANIMLENGTH:
+	  return re.AnimationLength( args[1] );
 
 	case CG_MEMSET:
 		Com_Memset( VMA(1), args[2], args[3] );

@@ -51,6 +51,9 @@ typedef struct {
 	qhandle_t (*RegisterShaderNoMip)( const char *name );
 	void	(*LoadWorld)( const char *name );
 
+	// Returns the animation length in msec for a given animating material
+	int		(*AnimationLength)( qhandle_t material );
+
 	// the vis data is a large enough block of data that we go to the trouble
 	// of sharing it with the clipmodel subsystem
 	void	(*SetWorldVisData)( const byte *vis );
