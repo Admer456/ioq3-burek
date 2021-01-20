@@ -364,12 +364,13 @@ void GameWorld::EmitComplexEvent( const Vector& origin, const Vector& angles, co
 	Vector anglesSnapped = angles.Snapped();
 	auto ent = CreateTempEntity( origin, ed.id );
 
-	ent->SetAngles( anglesSnapped );
 	es.number = ent->GetEntityIndex();
 	es.eType = ET_EVENTS + ed.id;
 
 	// USUALLY, I would NEVER do this, but in this case, it makes sense
 	memcpy( ent->GetState(), &es, sizeof( entityState_t ) );
+	ent->SetOrigin( origin );
+	ent->SetAngles( anglesSnapped );
 	gameImports->LinkEntity( ent );
 }
 
@@ -1249,16 +1250,8 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 				break;
 			}
 			
-			if ( event == EV_FALL_FAR ) 
-			{
-				damage = 10;
-			}
-			
-			else 
-			{
-				damage = 5;
-			}
-			
+			damage = player->GetClient()->ps.fallDamage;
+
 			//player->pain_debounce_time = level.time + 200;	// no normal pain sound
 			player->TakeDamage( nullptr, nullptr, 0, damage );
 			break;

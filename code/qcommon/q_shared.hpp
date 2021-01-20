@@ -1275,6 +1275,7 @@ typedef struct playerState_s {
 	int			pmove_framecount;
 	int			jumppad_frame;
 	int			entityEventSequence;
+	int			fallDamage;
 } playerState_t;
 
 //====================================================================									
