@@ -482,13 +482,13 @@ static void CG_AddSpriteExplosion( localEntity_t *le ) {
 		c = 1.0;	// can happen during connection problems
 	}
 
-	re.shaderRGBA[0] = 0xff;
-	re.shaderRGBA[1] = 0xff;
-	re.shaderRGBA[2] = 0xff;
-	re.shaderRGBA[3] = 0xff * c * 0.33;
+	re.shaderRGBA[0] = 0xff * le->color[0];
+	re.shaderRGBA[1] = 0xff * le->color[1];
+	re.shaderRGBA[2] = 0xff * le->color[2];
+	re.shaderRGBA[3] = 0xff * c * 0.33 * le->color[3];
 
 	re.reType = RT_SPRITE;
-	re.radius = 42 * ( 1.0 - c ) + 30;
+	re.radius = (42 * ( 1.0 - c ) + 30) + le->radius;
 
 	trap_R_AddRefEntityToScene( &re );
 
