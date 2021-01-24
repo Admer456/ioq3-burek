@@ -84,6 +84,22 @@ public:
 			sle->color[2] = direct[2];// + ambient[2];
 			sle->color[3] = 3.0f;
 		}
+
+		// Shake the local client if nearby
+		Vector viewOrigin = Vector( cg.refdef.vieworg );
+		position = cent->currentState.origin;
+		float playerDistance = (position - viewOrigin).Length();
+		float tolerance = radius * 3.333f + 1.0f;
+
+		if ( playerDistance < tolerance )
+		{
+			float shakeAmount = (1.0f - (playerDistance / tolerance)) * 15.0f;
+
+			Vector r = CRandomVector( Vector( 1, 1, 1 ) ) * shakeAmount;
+			GetClient()->GetView()->AddShake( 2.5f, 0.2f, r * -1.0f );
+			GetClient()->GetView()->AddShake( 12.0f, 0.5f, r );
+			GetClient()->GetView()->AddShake( 16.0f, 1.2f, r * 0.05f );
+		}
 	}
 
 private:
