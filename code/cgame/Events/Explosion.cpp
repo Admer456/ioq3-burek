@@ -58,8 +58,8 @@ public:
 		le = CG_MakeExplosion( cent->currentState.origin, direction, 0, sprite, spriteAnimationLength, true );
 		trap_S_StartSound( cent->currentState.origin, -1, 0, sound );
 
-		le->light = radius * 5.0f;
-		Vector( 1.0f, 0.9f, 0.5f ).CopyToArray( le->lightColor );
+		le->light = radius * 1.5f;
+		Vector( 1.0f, 0.75f, 0.25f ).CopyToArray( le->lightColor );
 
 		re = &le->refEntity;
 		le->radius = radius * 0.5f;
