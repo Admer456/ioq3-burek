@@ -796,6 +796,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 void GameWorld::ClientRespawn( Entities::BasePlayer* player )
 {
 	player->CopyToBodyQue();
+	player->takeDamage = true;
 	SpawnClient( player );
 }
 
@@ -961,12 +962,6 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	else if ( client->ps.stats[STAT_HEALTH] <= 0 ) 
 	{
 		client->ps.pm_type = PM_DEAD;
-
-		for ( int i = 0; i < GameWorld::MaxEntities; i++ )
-		{
-			if ( gEntities[i] )
-				gEntities[i]->OnPlayerDie( player->GetClient()->ps.clientNum );
-		}
 	}
 
 	else 
@@ -976,8 +971,16 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 
 	client->ps.gravity = g_gravity.value;
 
+	float speedLimit = client->ps.stats[STAT_HEALTH] / 100.0f;
+
 	// set speed
 	client->ps.speed = g_speed.value;
+
+	// speedLimit can go from 0 to 1, map that to 0.5 and 1
+	if ( speedLimit < 0.5f )
+	{
+		client->ps.speed *= (speedLimit + 0.5f);
+	}
 
 	if ( client->ps.powerups[PW_HASTE] ) 
 	{
@@ -1147,6 +1150,12 @@ void GameWorld::ClientTimerActions( Entities::BasePlayer* player, int msec )
 
 	while ( client->timeResidual >= 1000 ) {
 		client->timeResidual -= 1000;
+
+		if ( player->health < 40 && player->health >= 1 )
+		{
+			player->health++;
+			client->ps.stats[STAT_HEALTH]++;
+		}
 
 		// regenerate
 		if ( client->ps.powerups[PW_REGEN] ) {

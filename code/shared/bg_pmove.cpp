@@ -979,7 +979,7 @@ static void PM_CrashLand( void ) {
 		}
 	}
 
-	pm->ps->fallDamage = delta;
+	pm->ps->fallDamage = delta * 0.666f;
 
 	// start footstep cycle over
 	pm->ps->bobCycle = 0;

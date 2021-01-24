@@ -191,6 +191,16 @@ void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFl
 			if ( health < -999 )
 				health = -999;
 
+			client->respawnTime = level.time + 1500;
+
+			for ( int i = 0; i < GameWorld::MaxEntities; i++ )
+			{
+				if ( gEntities[i] )
+					gEntities[i]->OnPlayerDie( GetEntityIndex() );
+			}
+
+			takeDamage = false;
+
 			return;
 		}
 	}
