@@ -637,7 +637,6 @@ static void CG_DamageBlendBlob( void ) {
 		return;
 	}
 
-
 	memset( &ent, 0, sizeof( ent ) );
 	ent.reType = RT_SPRITE;
 	ent.renderfx = RF_FIRST_PERSON;
@@ -651,7 +650,7 @@ static void CG_DamageBlendBlob( void ) {
 	ent.shaderRGBA[0] = 255;
 	ent.shaderRGBA[1] = 255;
 	ent.shaderRGBA[2] = 255;
-	ent.shaderRGBA[3] = 200 * ( 1.0 - ((float)t / maxTime) );
+	ent.shaderRGBA[3] = 255 * ( 1.0 - ((float)t / maxTime) );
 	trap_R_AddRefEntityToScene( &ent );
 }
 
