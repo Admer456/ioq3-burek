@@ -80,7 +80,6 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 
 	Vector shake = CalculateShakeAverage();
 
-
 	outOrigin += up * upBob;
 	outOrigin += right * sideBob * 0.5f;
 	outOrigin += shake;
@@ -110,9 +109,9 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	float time = GetClient()->Time();
 	float airOffset = 0.0f;
 
-	float targetDotForward = forward * velocity.Normalized();
-	float targetDotRight = right * velocity.Normalized();
-	float targetDotUp = up * velocity.Normalized();
+	float targetDotForward = (forward * velocity) / 300.0f;
+	float targetDotRight = (right * velocity) / 300.0f;
+	float targetDotUp = (up * velocity) / 300.0f;
 
 	bool targetAir = cg.predictedPlayerState.groundEntityNum == ENTITYNUM_NONE;
 
@@ -163,6 +162,8 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	upBob *= sin( time * 16.0f );
 	sideBob *= sin( time * 8.0f );
 
+	Vector shake = CalculateShakeAverage();
+
 	outOrigin += up * upBob;
 	outOrigin += right * sideBob;
 	outOrigin.z += airOffset * 0.1f;
@@ -170,6 +171,8 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	outOrigin += forward * dotForward;
 	outOrigin += right * dotRight;
 	outOrigin += up * -dotUp;
+
+	outOrigin += shake * -0.1f;
 
 	outOrigin.z -= fabs( cg.refdefViewAngles[PITCH] ) / 90.0f;
 
