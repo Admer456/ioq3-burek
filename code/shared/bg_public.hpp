@@ -343,7 +343,7 @@ typedef enum {
 #define	EV_EVENT_BIT2		0x00000200
 #define	EV_EVENT_BITS		(EV_EVENT_BIT1|EV_EVENT_BIT2)
 
-#define	EVENT_VALID_MSEC	300
+#define	EVENT_VALID_MSEC	20
 
 // Handled in cg_event.cpp, CG_EntityEvent
 enum EntityEvent
