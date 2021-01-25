@@ -58,6 +58,9 @@
     <Filter Include="Sources\Entities\Audio">
       <UniqueIdentifier>{ee07761f-a0cd-4659-b632-415f83ba2c24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Entities\Logic">
+      <UniqueIdentifier>{8047da74-a7ca-407e-8731-d880cba7f3a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -233,6 +236,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\game\Entities\Audio\AudioMusicSet.hpp">
       <Filter>Sources\Entities\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Logic\LogicTimer.hpp">
+      <Filter>Sources\Entities\Logic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -436,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Audio\AudioMusicSet.cpp">
       <Filter>Sources\Entities\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Logic\LogicTimer.cpp">
+      <Filter>Sources\Entities\Logic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
