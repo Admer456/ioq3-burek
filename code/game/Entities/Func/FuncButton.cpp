@@ -67,5 +67,5 @@ void FuncButton::ButtonTouch( IEntity* other, trace_t* trace )
 
 	engine->Print( "FuncButton::ButtonTouch\n" );
 
-	ButtonUse( other, this, 0 );
+	Use( other, this, 0 );
 }
