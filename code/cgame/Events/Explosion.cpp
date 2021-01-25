@@ -41,6 +41,9 @@ public:
 		sprite = cgs.gameMaterials[sprite];
 		sound = cgs.gameSounds[sound];
 
+		if ( !radius )
+			radius = 256.0f;
+
 		if ( !ed.parm && !ed.parm2 )
 			sprite = explosionMaterials[rand() % 3];
 
@@ -65,7 +68,7 @@ public:
 		le->radius = radius * 0.5f;
 		re->rotation = 0;
 
-		for ( int i = 0; i < 5; i++ )
+		for ( int i = 0; i < ((int)radius / 24); i++ )
 		{
 			Vector r = CRandomVector( Vector( radius * 0.8f, radius * 0.8f, radius * 0.8f ) );
 			Vector p = Vector( cent->currentState.origin ) + r;
@@ -77,7 +80,7 @@ public:
 			direct /= 255.0f;
 
 			sle = CG_MakeExplosion( Vector( cent->currentState.origin ) + r, direction, 0, smokeMaterial, smokeLength, true );
-			sle->radius = radius * (0.8f + crandom()*0.4f);
+			sle->radius = radius * (0.8f + crandom()*0.6f);
 			sle->refEntity.rotation = 0;
 			sle->color[0] = direct[0];// + ambient[0];
 			sle->color[1] = direct[1];// + ambient[1];
@@ -89,11 +92,11 @@ public:
 		Vector viewOrigin = Vector( cg.refdef.vieworg );
 		position = cent->currentState.origin;
 		float playerDistance = (position - viewOrigin).Length();
-		float tolerance = radius * 3.333f + 1.0f;
+		float tolerance = radius * 5.0f + 1.0f;
 
 		if ( playerDistance < tolerance )
 		{
-			float shakeAmount = (1.0f - (playerDistance / tolerance)) * 15.0f;
+			float shakeAmount = (1.0f - (playerDistance / tolerance)) * 8.0f;
 
 			Vector r = CRandomVector( Vector( 1, 1, 1 ) ) * shakeAmount;
 			GetClient()->GetView()->AddShake( 2.5f, 0.2f, r * -1.0f );
