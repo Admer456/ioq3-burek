@@ -74,7 +74,7 @@ void BaseEntity::Think()
 		return;
 	}
 
-	if ( nextThink > (level.time * 0.001f) )
+	if ( nextThink > (level.time * 0.001f) || nextThink <= 0.0f )
 	{
 		return;
 	}
