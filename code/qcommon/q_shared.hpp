@@ -1194,7 +1194,7 @@ typedef struct {
 #define	MAX_POWERUPS			16
 #define	MAX_WEAPONS				32		
 
-#define	MAX_PS_EVENTS			8
+#define	MAX_PS_EVENTS			32
 
 #define PS_PMOVEFRAMECOUNTBITS	6
 

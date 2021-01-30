@@ -666,7 +666,8 @@ static void R_SetFarClip( void )
 			farthestCornerDistance = distance;
 		}
 	}
-	tr.viewParms.zFar = sqrt( farthestCornerDistance );
+	//tr.viewParms.zFar = sqrt( farthestCornerDistance );
+	tr.viewParms.zFar = 32768.0f;
 }
 
 /*
@@ -1670,7 +1671,7 @@ void R_GenerateDrawSurfs( void ) {
 	// we know the size of the clipping volume. Now set the rest of the projection matrix.
 	R_SetupProjectionZ (&tr.viewParms);
 
-	R_AddEntitySurfaces ();
+	R_AddEntitySurfaces();
 }
 
 /*

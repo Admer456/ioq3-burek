@@ -343,7 +343,7 @@ typedef enum {
 #define	EV_EVENT_BIT2		0x00000200
 #define	EV_EVENT_BITS		(EV_EVENT_BIT1|EV_EVENT_BIT2)
 
-#define	EVENT_VALID_MSEC	20
+#define	EVENT_VALID_MSEC	50
 
 // Handled in cg_event.cpp, CG_EntityEvent
 enum EntityEvent
@@ -745,13 +745,9 @@ typedef enum {
 	ET_BEAM,
 	ET_PORTAL,
 	ET_SPEAKER,
-	ET_PUSH_TRIGGER,
-	ET_TELEPORT_TRIGGER,
 	ET_INVISIBLE,
-	ET_GRAPPLE,				// grapple hooked on wall
-	ET_TEAM,
-	ET_BREAKABLE,
-	ET_SPRITE,
+	ET_SPRITE,				// renders a sprite
+	ET_SKY,					// used for sky domes
 
 	ET_EVENTS				// any of the EV_* events can be added freestanding
 							// by setting eType to ET_EVENTS + eventNum
