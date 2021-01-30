@@ -810,6 +810,47 @@ static void CG_PlayBufferedSounds( void ) {
 
 /*
 =================
+CG_AddSkyDome
+
+This function is a very early WiP, the skydome and material used are hardcoded
+=================
+*/
+void CG_AddSkyDome()
+{
+	qhandle_t material = trap_R_RegisterShaderNoMip( "textures/skies/remdaskytest_dome" );
+	qhandle_t model = trap_R_RegisterModel( "models/sky/skydome_unwrap.iqm" );
+	Vector pos, viewAngles;
+	refEntity_t re;
+	memset( &re, 0, sizeof( re ) );
+
+	re.hModel = model;
+	re.customShader = material;
+	AnglesToAxis( Vector::Zero, re.axis );
+	
+	pos = GetClient()->GetView()->GetViewOrigin();
+	pos.z = 0;
+	pos.CopyToArray( re.origin );
+
+	// Scale it up
+	for ( int i = 0; i < 3; i++ )
+		for ( int j = 0; j < 3; j++ )
+			re.axis[i][j] *= 16384.0f;
+
+	for ( int i = 0; i < 3; i++ )
+		re.axis[2][i] /= 2.0f;
+
+	re.nonNormalizedAxes = true;
+
+	re.reType = RT_MODEL;
+	re.renderfx = RF_NOSHADOW | RF_MINLIGHT;
+
+	re.shaderTime = 0;
+
+	trap_R_AddRefEntityToScene( &re );
+}
+
+/*
+=================
 CG_DrawActiveFrame
 
 Generates and draws a game scene and status information at the given time.
@@ -883,6 +924,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		CG_AddParticles();
 		CG_AddLocalEntities();
 		//CG_AddVegetation();
+		CG_AddSkyDome();
 	}
 
 	if ( GetClient()->GetCurrentWeapon() )
