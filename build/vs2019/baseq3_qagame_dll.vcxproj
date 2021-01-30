@@ -178,17 +178,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_chat.hpp" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_cmd.hpp" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_dmnet.hpp" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_dmq3.hpp" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_main.hpp" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_team.hpp" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\ai_vcmd.hpp" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\chars.h" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\inv.hpp" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\match.hpp" />
-    <ClInclude Include="..\..\code\game\AI\ArenaBots\syn.hpp" />
     <ClInclude Include="..\..\code\game\Components\IComponent.hpp" />
     <ClInclude Include="..\..\code\game\Components\SharedComponent.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Audio\AudioMusicSet.hpp" />
@@ -208,7 +197,6 @@
     <ClInclude Include="..\..\code\game\Entities\Func\FuncToggle.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncDoor.hpp" />
     <ClInclude Include="..\..\code\game\Entities\IEntity.hpp" />
-    <ClInclude Include="..\..\code\game\Entities\g_team.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoNotNull.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoNull.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.hpp" />
@@ -226,7 +214,6 @@
     <ClInclude Include="..\..\code\game\Game\GameWorld.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_local.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_public.hpp" />
-    <ClInclude Include="..\..\code\game\Game\g_rankings.hpp" />
     <ClInclude Include="..\..\code\game\Game\IGame.h" />
     <ClInclude Include="..\..\code\game\Game\IGameImports.h" />
     <ClInclude Include="..\..\code\qcommon\Assets\Models\ModelAnimation.hpp" />
@@ -239,13 +226,6 @@
     <ClInclude Include="..\..\code\shared\Weapons\WeaponIDs.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_chat.cpp" />
-    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_cmd.cpp" />
-    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_dmnet.cpp" />
-    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_dmq3.cpp" />
-    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_main.cpp" />
-    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_team.cpp" />
-    <ClCompile Include="..\..\code\game\AI\ArenaBots\ai_vcmd.cpp" />
     <ClCompile Include="..\..\code\game\Components\SharedComponent.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Audio\AudioMusicSet.cpp" />
     <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp" />
@@ -264,13 +244,6 @@
     <ClCompile Include="..\..\code\game\Entities\Func\FuncDynamic.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncRotating.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncToggle.cpp" />
-    <ClCompile Include="..\..\code\game\Entities\g_client.cpp" />
-    <ClCompile Include="..\..\code\game\Entities\g_misc.cpp" />
-    <ClCompile Include="..\..\code\game\Entities\g_mover.cpp" />
-    <ClCompile Include="..\..\code\game\Entities\g_spawn.cpp" />
-    <ClCompile Include="..\..\code\game\Entities\g_target.cpp" />
-    <ClCompile Include="..\..\code\game\Entities\g_team.cpp" />
-    <ClCompile Include="..\..\code\game\Entities\g_trigger.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Info\InfoNotNull.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Info\InfoNull.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.cpp" />
@@ -285,20 +258,11 @@
     <ClCompile Include="..\..\code\game\Entities\Worldspawn.cpp" />
     <ClCompile Include="..\..\code\game\Game\GameLocal.cpp" />
     <ClCompile Include="..\..\code\game\Game\GameWorld.cpp" />
-    <ClCompile Include="..\..\code\game\Game\g_active.cpp" />
-    <ClCompile Include="..\..\code\game\Game\g_arenas.cpp" />
-    <ClCompile Include="..\..\code\game\Game\g_bot.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_cmds.cpp" />
-    <ClCompile Include="..\..\code\game\Game\g_combat.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_main.cpp" />
-    <ClCompile Include="..\..\code\game\Game\g_mem.cpp" />
-    <ClCompile Include="..\..\code\game\Game\g_session.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_svcmds.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_syscalls.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_utils.cpp" />
-    <ClCompile Include="..\..\code\game\Weapons\g_items.cpp" />
-    <ClCompile Include="..\..\code\game\Weapons\g_missile.cpp" />
-    <ClCompile Include="..\..\code\game\Weapons\g_weapon.cpp" />
     <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelAnimation.cpp" />
     <ClCompile Include="..\..\code\qcommon\Assets\Models\ModelConfigData.cpp" />
     <ClCompile Include="..\..\code\qcommon\q_math.cpp" />
@@ -307,9 +271,6 @@
     <ClCompile Include="..\..\code\shared\bg_misc.cpp" />
     <ClCompile Include="..\..\code\shared\bg_pmove.cpp" />
     <ClCompile Include="..\..\code\shared\bg_slidemove.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\code\game\Game\g_syscalls.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

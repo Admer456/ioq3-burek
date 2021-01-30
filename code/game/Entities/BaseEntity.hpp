@@ -176,6 +176,7 @@ namespace Entities
 		bool			freeAfterEvent{ false };
 		bool			unlinkAfterEvent{ false };
 		bool			neverFree{ false }; // if true, FreeEntity will only unlink
+		bool			complexEvent{ false };
 
 		// Water
 		byte			waterLevel{ 0 };

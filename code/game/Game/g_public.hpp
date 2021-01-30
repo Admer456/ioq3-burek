@@ -48,7 +48,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define SVF_NOTSINGLECLIENT		0x00000800	// send entity to everyone but one client
 											// (entityShared_t->singleClient)
 
-
+enum NetworkPlow
+{
+	NetPlow_None,
+	NetPlow_ForceAll, // Same as SVF_BROADCAST
+	NetPlow_ForcePVS, // Ignore if we have a model or not, just send it if the point is visible
+	NetPlow_MAX
+};
 
 //===============================================================
 
@@ -61,6 +67,8 @@ typedef struct {
 	int			linkcount;
 
 	int			svFlags;			// SVF_NOCLIENT, SVF_BROADCAST, etc
+
+	byte		plow;				// special network override mode, forces transmitting the ent
 
 	// only send to this client when SVF_SINGLECLIENT is set	
 	// if SVF_CLIENTMASK is set, use bitmask for clients to send to (maxclients must be <= 32, up to the mod to enforce this)

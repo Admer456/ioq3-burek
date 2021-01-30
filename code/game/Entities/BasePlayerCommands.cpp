@@ -151,12 +151,13 @@ void BasePlayer::Command_LevelShot()
 	// doesn't work in single player
 	if ( g_gametype.integer == GT_SINGLE_PLAYER )
 	{
-		trap_SendServerCommand( GetEntityIndex(),
+		
+		gameImports->SendServerCommand( GetEntityIndex(),
 								"print \"Must not be in singleplayer mode for levelshot\n\"" );
 		return;
 	}
 
-	BeginIntermission();
+	//BeginIntermission();
 	gameImports->SendServerCommand( GetEntityIndex(), "clientLevelShot" );
 }
 

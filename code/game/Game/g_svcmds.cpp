@@ -24,7 +24,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // this file holds commands that can be executed by the server console, but not remote clients
 
 #include "Game/g_local.hpp"
-
+#include "../qcommon/IEngineExports.h"
+#include "Game/IGameImports.h"
 
 /*
 ==============================================================================
@@ -166,7 +167,7 @@ static void UpdateIPBans (void)
 		}
 	}
 
-	trap_Cvar_Set( "g_banIPs", iplist_final );
+	gameImports->ConsoleVariable_Set( "g_banIPs", iplist_final );
 }
 
 /*
@@ -265,12 +266,12 @@ void Svcmd_AddIP_f (void)
 {
 	char		str[MAX_TOKEN_CHARS];
 
-	if ( trap_Argc() < 2 ) {
+	if ( engine->ArgC() < 2 ) {
 		G_Printf("Usage: addip <ip-mask>\n");
 		return;
 	}
 
-	trap_Argv( 1, str, sizeof( str ) );
+	engine->ArgV( 1, str, sizeof( str ) );
 
 	AddIP( str );
 
@@ -287,12 +288,12 @@ void Svcmd_RemoveIP_f (void)
 	int			i;
 	char		str[MAX_TOKEN_CHARS];
 
-	if ( trap_Argc() < 2 ) {
+	if ( engine->ArgC() < 2 ) {
 		G_Printf("Usage: removeip <ip-mask>\n");
 		return;
 	}
 
-	trap_Argv( 1, str, sizeof( str ) );
+	engine->ArgV( 1, str, sizeof( str ) );
 
 	if (!StringToFilter (str, &f))
 		return;
@@ -351,17 +352,8 @@ void	Svcmd_EntityList_f (void) {
 		case ET_SPEAKER:
 			G_Printf("ET_SPEAKER          ");
 			break;
-		case ET_PUSH_TRIGGER:
-			G_Printf("ET_PUSH_TRIGGER     ");
-			break;
-		case ET_TELEPORT_TRIGGER:
-			G_Printf("ET_TELEPORT_TRIGGER ");
-			break;
 		case ET_INVISIBLE:
 			G_Printf("ET_INVISIBLE        ");
-			break;
-		case ET_GRAPPLE:
-			G_Printf("ET_GRAPPLE          ");
 			break;
 		default:
 			G_Printf("%3i                 ", check->s.eType);
@@ -412,34 +404,6 @@ gclient_t	*ClientForString( const char *s ) {
 	return NULL;
 }
 
-/*
-===================
-Svcmd_ForceTeam_f
-
-forceteam <player> <team>
-===================
-*/
-void	Svcmd_ForceTeam_f( void ) {
-	gclient_t	*cl;
-	char		str[MAX_TOKEN_CHARS];
-
-	if ( trap_Argc() < 3 ) {
-		G_Printf("Usage: forceteam <player> <team>\n");
-		return;
-	}
-
-	// find the player
-	trap_Argv( 1, str, sizeof( str ) );
-	cl = ClientForString( str );
-	if ( !cl ) {
-		return;
-	}
-
-	// set the team
-	trap_Argv( 2, str, sizeof( str ) );
-	SetTeam( &g_entities[cl - level.clients], str );
-}
-
 char	*ConcatArgs( int start );
 
 /*
@@ -451,35 +415,10 @@ ConsoleCommand
 qboolean	ConsoleCommand( void ) {
 	char	cmd[MAX_TOKEN_CHARS];
 
-	trap_Argv( 0, cmd, sizeof( cmd ) );
+	engine->ArgV( 0, cmd, sizeof( cmd ) );
 
 	if ( Q_stricmp (cmd, "entitylist") == 0 ) {
 		Svcmd_EntityList_f();
-		return qtrue;
-	}
-
-	if ( Q_stricmp (cmd, "forceteam") == 0 ) {
-		Svcmd_ForceTeam_f();
-		return qtrue;
-	}
-
-	if (Q_stricmp (cmd, "game_memory") == 0) {
-		Svcmd_GameMem_f();
-		return qtrue;
-	}
-
-	if (Q_stricmp (cmd, "addbot") == 0) {
-		Svcmd_AddBot_f();
-		return qtrue;
-	}
-
-	if (Q_stricmp (cmd, "botlist") == 0) {
-		Svcmd_BotList_f();
-		return qtrue;
-	}
-
-	if (Q_stricmp (cmd, "abort_podium") == 0) {
-		Svcmd_AbortPodium_f();
 		return qtrue;
 	}
 
@@ -490,21 +429,6 @@ qboolean	ConsoleCommand( void ) {
 
 	if (Q_stricmp (cmd, "removeip") == 0) {
 		Svcmd_RemoveIP_f();
-		return qtrue;
-	}
-
-	if (Q_stricmp (cmd, "listip") == 0) {
-		trap_SendConsoleCommand( EXEC_NOW, "g_banIPs\n" );
-		return qtrue;
-	}
-
-	if (g_dedicated.integer) {
-		if (Q_stricmp (cmd, "say") == 0) {
-			trap_SendServerCommand( -1, va("print \"server: %s\n\"", ConcatArgs(1) ) );
-			return qtrue;
-		}
-		// everything else will also be printed as a say command
-		trap_SendServerCommand( -1, va("print \"server: %s\n\"", ConcatArgs(0) ) );
 		return qtrue;
 	}
 

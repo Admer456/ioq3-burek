@@ -248,7 +248,7 @@ bool BaseMover::MoverPush( Vector move, Vector amove, BaseEntity** obstacle )
 	// unlink the pusher so we don't get it in the entityList
 	gameImports->UnlinkEntity( this );
 
-	listedEntities = trap_EntitiesInBox( totalMins, totalMaxs, entityList, MAX_GENTITIES );
+	listedEntities = gameImports->EntitiesInBox( totalMins, totalMaxs, entityList, MAX_GENTITIES );
 
 	// move the pusher to its final position
 	VectorAdd( GetShared()->currentOrigin, move, GetShared()->currentOrigin );

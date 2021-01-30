@@ -503,6 +503,9 @@ bool BaseEntity::IsSubclassOf( const EntityClassInfo& eci )
 
 bool BaseEntity::CheckAndClearEvents()
 {
+	if ( complexEvent )
+		return false;
+
 	if ( level.time - eventTime > EVENT_VALID_MSEC )
 	{
 		if ( shared.s.event )

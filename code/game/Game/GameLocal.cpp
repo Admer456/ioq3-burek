@@ -13,12 +13,6 @@
 #include "Entities/BaseEntity.hpp"
 #include "Entities/BasePlayer.hpp"
 
-extern void G_ShutdownGame( int restart );
-
-// g_main.cpp
-extern int QDECL SortRanks( const void* a, const void* b );
-
-extern void G_RegisterCvars( void );
 extern gclient_t g_clients[MAX_CLIENTS];
 
 extern vmCvar_t g_logfile;
@@ -129,11 +123,9 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 
 	srand( randomSeed );
 
-	G_RegisterCvars();
+	RegisterCVars();
 
 	G_ProcessIPBans();
-
-	G_InitMemory();
 
 	// set some level globals
 	memset( &level, 0, sizeof( level ) );
@@ -146,12 +138,12 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 	{
 		if ( g_logfileSync.integer ) 
 		{
-			trap_FS_FOpenFile( g_logfile.string, &level.logFile, FS_APPEND_SYNC );
+			Util::FileOpen( g_logfile.string, &level.logFile, FS_APPEND_SYNC );
 		}
 		
 		else 
 		{
-			trap_FS_FOpenFile( g_logfile.string, &level.logFile, FS_APPEND );
+			Util::FileOpen( g_logfile.string, &level.logFile, FS_APPEND );
 		}
 		
 		if ( !level.logFile ) 
@@ -163,7 +155,7 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 		{
 			char serverinfo[MAX_INFO_STRING];
 
-			trap_GetServerinfo( serverinfo, sizeof( serverinfo ) );
+			gameImports->GetServerInfo( serverinfo, sizeof( serverinfo ) );
 
 			G_LogPrintf( "------------------------------------------------------------\n" );
 			G_LogPrintf( "InitGame: %s\n", serverinfo );
@@ -175,7 +167,7 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 		G_Printf( "Not logging to disk.\n" );
 	}
 
-	G_InitWorldSession();
+	//InitWorldSession();
 
 	// initialize all entities for this game
 	memset( gEntities, 0, MAX_GENTITIES * sizeof( gEntities[0] ) );
@@ -201,7 +193,7 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 	// reserve some spots for dead player bodies
 	//InitBodyQue();
 
-	ClearRegisteredItems();
+	//ClearRegisteredItems();
 
 	// parse the key/value pairs and spawn gentities
 	gameWorld->SpawnEntities();
@@ -217,7 +209,7 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 	//	G_CheckTeamItems();
 	//}
 
-	SaveRegisteredItems();
+	//SaveRegisteredItems();
 
 	G_Printf( "-----------------------------------\n" );
 
@@ -238,7 +230,24 @@ void GameLocal::Init( int levelTime, int randomSeed, int restart )
 
 void GameLocal::Shutdown( bool restart )
 {
-	return ::G_ShutdownGame( restart );
+	Util::Print( "==== ShutdownGame ====\n" );
+
+	if ( level.logFile ) {
+		G_LogPrintf( "ShutdownGame:\n" );
+		G_LogPrintf( "------------------------------------------------------------\n" );
+		Util::FileClose( level.logFile );
+		level.logFile = 0;
+	}
+
+	// write all the client session data so we can get it back
+	//WriteSessionData();
+
+	//if ( gameImports->ConsoleVariable_GetInteger( "bot_enable" ) ) 
+	//{
+	//	BotAIShutdown( restart );
+	//}
+
+	gameWorld->Shutdown();
 }
 
 const char* GameLocal::ClientConnect( int clientNum, bool firstTime, bool isBot )
@@ -416,14 +425,14 @@ void GameLocal::ClientUserInfoChanged( int clientNum )
 	ent = gEntities[clientNum];
 	client = static_cast<Entities::BasePlayer*>(ent)->GetClient();
 
-	trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
+	gameImports->GetUserInfo( clientNum, userinfo, sizeof( userinfo ) );
 
 	// check for malformed or illegal info strings
 	if ( !Info_Validate( userinfo ) ) 
 	{
 		strcpy( userinfo, "\\name\\badinfo" );
 		// don't keep those clients and userinfo
-		trap_DropClient( clientNum, "Invalid userinfo" );
+		gameImports->DropClient( clientNum, "Invalid userinfo" );
 	}
 
 	// check the item prediction
@@ -750,7 +759,7 @@ void GameLocal::RunFrame( int levelTime )
 			G_Printf( "%4i: %s\n", i, g_entities[i].classname );
 		}
 		
-		trap_Cvar_Set( "g_listEntity", "0" );
+		gameImports->ConsoleVariable_Set( "g_listEntity", "0" );
 	}
 }
 
@@ -761,7 +770,8 @@ bool GameLocal::ConsoleCommand( void )
 
 int GameLocal::BotAI_StartFrame( int time )
 {
-	return BotAIStartFrame( time );
+	return 0;
+	//return BotAIStartFrame( time );
 }
 
 void GameLocal::FindTeams()
@@ -897,7 +907,7 @@ void GameLocal::InitSessionData( gclient_t* client, char* userInfo )
 
 		if ( value[0] || g_teamAutoJoin.integer ) 
 		{
-			SetTeam( &g_entities[client - level.clients], value );
+			//SetTeam( &g_entities[client - level.clients], value );
 		}
 	}
 	else 
@@ -941,7 +951,7 @@ void GameLocal::InitSessionData( gclient_t* client, char* userInfo )
 		sess->spectatorState = SPECTATOR_FREE;
 	}
 
-	AddTournamentQueue( client );
+	//AddTournamentQueue( client );
 
 	WriteClientSessionData( client );
 }
@@ -996,7 +1006,7 @@ void GameLocal::WriteSessionData()
 {
 	int	i;
 
-	trap_Cvar_Set( "session", va( "%i", g_gametype.integer ) );
+	gameImports->ConsoleVariable_Set( "session", va( "%i", g_gametype.integer ) );
 
 	for ( i = 0; i < level.maxclients; i++ ) 
 	{
@@ -1005,6 +1015,33 @@ void GameLocal::WriteSessionData()
 			WriteClientSessionData( &level.clients[i] );
 		}
 	}
+}
+
+void GameLocal::RegisterCVars()
+{
+	int			i;
+	cvarTable_t* cv;
+	qboolean remapped = qfalse;
+
+	for ( i = 0, cv = gameCvarTable; i < gameCvarTableSize; i++, cv++ ) {
+		gameImports->ConsoleVariable_Register( cv->vmCvar, cv->cvarName,
+							cv->defaultString, cv->cvarFlags );
+		if ( cv->vmCvar )
+			cv->modificationCount = cv->vmCvar->modificationCount;
+
+		if ( cv->teamShader ) {
+			remapped = qtrue;
+		}
+	}
+
+	// check some things
+	if ( g_gametype.integer < 0 || g_gametype.integer >= GT_MAX_GAME_TYPE ) {
+		G_Printf( "g_gametype %i is out of range, defaulting to 0\n", g_gametype.integer );
+		gameImports->ConsoleVariable_Set( "g_gametype", "0" );
+		gameImports->ConsoleVariable_Update( &g_gametype );
+	}
+
+	level.warmupModificationCount = g_warmup.modificationCount;
 }
 
 void GameLocal::UpdateCVars()
@@ -1052,12 +1089,12 @@ void GameLocal::CheckCVars()
 		lastMod = g_password.modificationCount;
 		if ( *g_password.string && Q_stricmp( g_password.string, "none" ) ) 
 		{
-			trap_Cvar_Set( "g_needpass", "1" );
+			gameImports->ConsoleVariable_Set( "g_needpass", "1" );
 		}
 		
 		else 
 		{
-			trap_Cvar_Set( "g_needpass", "0" );
+			gameImports->ConsoleVariable_Set( "g_needpass", "0" );
 		}
 	}
 }
@@ -1138,8 +1175,8 @@ void GameLocal::CalculateRanks()
 		}
 	}
 
-	qsort( level.sortedClients, level.numConnectedClients,
-		   sizeof( level.sortedClients[0] ), SortRanks );
+	//qsort( level.sortedClients, level.numConnectedClients,
+	//	   sizeof( level.sortedClients[0] ), SortRanks );
 
 	// set the rank value for all clients that are connected and not spectators
 	if ( g_gametype.integer >= GT_TEAM ) 
@@ -1196,26 +1233,26 @@ void GameLocal::CalculateRanks()
 	// set the CS_SCORES1/2 configstrings, which will be visible to everyone
 	if ( g_gametype.integer >= GT_TEAM ) 
 	{
-		trap_SetConfigstring( CS_SCORES1, va( "%i", level.teamScores[TEAM_RED] ) );
-		trap_SetConfigstring( CS_SCORES2, va( "%i", level.teamScores[TEAM_BLUE] ) );
+		gameImports->SetConfigString( CS_SCORES1, va( "%i", level.teamScores[TEAM_RED] ) );
+		gameImports->SetConfigString( CS_SCORES2, va( "%i", level.teamScores[TEAM_BLUE] ) );
 	}
 
 	else 
 	{
 		if ( level.numConnectedClients == 0 ) 
 		{
-			trap_SetConfigstring( CS_SCORES1, va( "%i", SCORE_NOT_PRESENT ) );
-			trap_SetConfigstring( CS_SCORES2, va( "%i", SCORE_NOT_PRESENT ) );
+			gameImports->SetConfigString( CS_SCORES1, va( "%i", SCORE_NOT_PRESENT ) );
+			gameImports->SetConfigString( CS_SCORES2, va( "%i", SCORE_NOT_PRESENT ) );
 		}
 		else if ( level.numConnectedClients == 1 ) 
 		{
-			trap_SetConfigstring( CS_SCORES1, va( "%i", level.clients[level.sortedClients[0]].ps.persistant[PERS_SCORE] ) );
-			trap_SetConfigstring( CS_SCORES2, va( "%i", SCORE_NOT_PRESENT ) );
+			gameImports->SetConfigString( CS_SCORES1, va( "%i", level.clients[level.sortedClients[0]].ps.persistant[PERS_SCORE] ) );
+			gameImports->SetConfigString( CS_SCORES2, va( "%i", SCORE_NOT_PRESENT ) );
 		}
 		else 
 		{
-			trap_SetConfigstring( CS_SCORES1, va( "%i", level.clients[level.sortedClients[0]].ps.persistant[PERS_SCORE] ) );
-			trap_SetConfigstring( CS_SCORES2, va( "%i", level.clients[level.sortedClients[1]].ps.persistant[PERS_SCORE] ) );
+			gameImports->SetConfigString( CS_SCORES1, va( "%i", level.clients[level.sortedClients[0]].ps.persistant[PERS_SCORE] ) );
+			gameImports->SetConfigString( CS_SCORES2, va( "%i", level.clients[level.sortedClients[1]].ps.persistant[PERS_SCORE] ) );
 		}
 	}
 
@@ -1225,7 +1262,7 @@ void GameLocal::CalculateRanks()
 	// if we are at the intermission, send the new info to everyone
 	if ( level.intermissiontime ) 
 	{
-		SendScoreboardMessageToAllClients();
+		//SendScoreboardMessageToAllClients();
 	}
 }
 
@@ -1410,8 +1447,8 @@ void GameLocal::BeginIntermission()
 	// if single player game
 	if ( g_gametype.integer == GT_SINGLE_PLAYER ) 
 	{
-		::UpdateTournamentInfo();
-		::SpawnModelsOnVictoryPads();
+		//::UpdateTournamentInfo();
+		//::SpawnModelsOnVictoryPads();
 	}
 	
 	// send the current scoring to all clients
@@ -1609,7 +1646,7 @@ void GameLocal::UpdateTournamentInfo()
 		strcat( msg, buf );
 	}
 
-	trap_SendConsoleCommand( EXEC_APPEND, msg );
+	engine->SendConsoleCommand( EXEC_APPEND, msg );
 }
 
 void GameLocal::SendScoreboardMessageToAll()
@@ -1775,7 +1812,7 @@ void GameLocal::ExitLevel()
 	char d1[MAX_STRING_CHARS];
 
 	//bot interbreeding
-	BotInterbreedEndMatch();
+	//BotInterbreedEndMatch();
 
 	// if we are running a tournement map, kick the loser to spectator status,
 	// which will automatically grab the next spectator and restart

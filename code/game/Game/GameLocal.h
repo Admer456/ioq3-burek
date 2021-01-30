@@ -31,6 +31,7 @@ private: // GameLocal-specific methods
 	void				WriteClientSessionData( gclient_t* client );
 	void				WriteSessionData();
 
+	void				RegisterCVars();
 	void				UpdateCVars();
 	void				CheckCVars();
 
