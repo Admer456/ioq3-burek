@@ -496,12 +496,6 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 		weapon = GetClient()->GetCurrentWeapon();
 	}
 
-	if ( event > EV_END )
-	{
-		GetClient()->ParseComplexEvent( event, cent, position );
-		return;
-	}
-
 	switch ( event ) 
 	{
 	//
@@ -1023,34 +1017,54 @@ CG_CheckEvents
 ==============
 */
 void CG_CheckEvents( centity_t *cent ) {
-	// check for event-only entities
-	if ( cent->currentState.eType > ET_EVENTS ) {
-		if ( cent->previousEvent ) {
-			return;	// already fired
-		}
-		// if this is a player event set the entity number of the client entity number
-		if ( cent->currentState.eFlags & EF_PLAYER_EVENT ) {
-			cent->currentState.number = cent->currentState.otherEntityNum;
-		}
 
-		cent->previousEvent = 1;
+	if ( cent->currentState.eType < CE_Start )
+	{
+		// check for event-only entities
+		if ( cent->currentState.eType > ET_EVENTS ) {
+			if ( cent->previousEvent ) {
+				return;	// already fired
+			}
+			// if this is a player event set the entity number of the client entity number
+			if ( cent->currentState.eFlags & EF_PLAYER_EVENT ) {
+				cent->currentState.number = cent->currentState.otherEntityNum;
+			}
 
+			cent->previousEvent = 1;
+
+			cent->currentState.event = cent->currentState.eType - ET_EVENTS;
+		}
+		else {
+			// check for events riding with another entity
+			if ( cent->currentState.event == cent->previousEvent ) {
+				return;
+			}
+			cent->previousEvent = cent->currentState.event;
+			if ( (cent->currentState.event & ~EV_EVENT_BITS) == 0 ) {
+				return;
+			}
+		}
+	}
+	else
+	{
+		// CE_ events are more lax, they don't need to check the extra
+		// stuff that ET_ events do
 		cent->currentState.event = cent->currentState.eType - ET_EVENTS;
-	} else {
-		// check for events riding with another entity
-		if ( cent->currentState.event == cent->previousEvent ) {
-			return;
-		}
-		cent->previousEvent = cent->currentState.event;
-		if ( ( cent->currentState.event & ~EV_EVENT_BITS ) == 0 ) {
-			return;
-		}
 	}
 
 	// calculate the position at exactly the frame time
 	BG_EvaluateTrajectory( &cent->currentState.pos, cg.snap->serverTime, cent->lerpOrigin );
 	CG_SetEntitySoundPosition( cent );
 
-	CG_EntityEvent( cent, cent->lerpOrigin );
+	if ( cent->currentState.eType < CE_Start )
+	{
+		CG_EntityEvent( cent, cent->lerpOrigin );
+	}
+	
+	else
+	{
+		GetClient()->ParseComplexEvent( cent->currentState.event, cent, cent->lerpOrigin );
+		return;
+	}
 }
 
