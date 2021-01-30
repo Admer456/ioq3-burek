@@ -67,7 +67,7 @@ void CG_BuildSolidList( void )
 		cent = &cg_entities[ snap->entities[ i ].number ];
 		ent = &cent->currentState;
 
-		if ( ent->eType == ET_ITEM || ent->eType == ET_PUSH_TRIGGER || ent->eType == ET_TELEPORT_TRIGGER ) 
+		if ( ent->eType == ET_ITEM ) 
 		{
 			cg_triggerEntities[cg_numTriggerEntities] = cent;
 			cg_numTriggerEntities++;
@@ -375,11 +375,11 @@ static void CG_TouchTriggerPrediction( void ) {
 			continue;
 		}
 
-		if ( ent->eType == ET_TELEPORT_TRIGGER ) {
-			cg.hyperspace = qtrue;
-		} else if ( ent->eType == ET_PUSH_TRIGGER ) {
-			BG_TouchJumpPad( &cg.predictedPlayerState, ent );
-		}
+		//if ( ent->eType == ET_TELEPORT_TRIGGER ) {
+		//	cg.hyperspace = qtrue;
+		//} else if ( ent->eType == ET_PUSH_TRIGGER ) {
+		//	BG_TouchJumpPad( &cg.predictedPlayerState, ent );
+		//}
 	}
 
 	// if we didn't touch a jump pad this pmove frame
