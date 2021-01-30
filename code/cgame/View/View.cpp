@@ -83,6 +83,9 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	outOrigin += up * upBob;
 	outOrigin += right * sideBob * 0.5f;
 	outOrigin += shake;
+
+	currentViewOrigin = outOrigin;
+	currentViewAngles = outAngles;
 }
 
 // ===================
@@ -109,9 +112,10 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	float time = GetClient()->Time();
 	float airOffset = 0.0f;
 
-	float targetDotForward = (forward * velocity) / 300.0f;
-	float targetDotRight = (right * velocity) / 300.0f;
-	float targetDotUp = (up * velocity) / 300.0f;
+	Vector dotVector( forward * velocity, right * velocity, up * velocity );
+	dotVector /= 320.0f;
+	if ( dotVector.Length() > 1.0f )
+		dotVector.Normalize();
 
 	bool targetAir = cg.predictedPlayerState.groundEntityNum == ENTITYNUM_NONE;
 
@@ -152,9 +156,9 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 
 	// Lerping static floats and stuff
 	speed = speed * 0.9f + targetSpeed * 0.1f;
-	dotForward = dotForward * 0.95f + targetDotForward * 0.05f;
-	dotRight = dotRight * 0.95f + targetDotRight * 0.05f;
-	dotUp = dotUp * 0.95f + targetDotUp * 0.05f;
+	dotForward = dotForward * 0.95f + dotVector.x * 0.05f;
+	dotRight = dotRight * 0.95f + dotVector.y * 0.05f;
+	dotUp = dotUp * 0.95f + dotVector.z * 0.05f;
 
 	float upBob = speed * 0.25f;
 	float sideBob = speed * 0.5f;
@@ -177,6 +181,9 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	outOrigin.z -= fabs( cg.refdefViewAngles[PITCH] ) / 90.0f;
 
 	outAngles.x -= airOffset;
+
+	currentWeaponOrigin = outOrigin;
+	currentWeaponAngles = outAngles;
 }
 
 // ===================

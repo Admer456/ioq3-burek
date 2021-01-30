@@ -29,6 +29,16 @@ public:
 	// Gets the average of all shakes
 	Vector		CalculateShakeAverage() const;
 
+	const Vector& GetViewOrigin() const { return currentViewOrigin; }
+	const Vector& GetViewAngles() const { return currentViewAngles; }
+	const Vector& GetWeaponOrigin() const { return currentWeaponOrigin; }
+	const Vector& GetWeaponAngles() const { return currentWeaponAngles; }
+
 private:
 	ViewShake	shakes[MaxViewShakes];
+
+	Vector		currentViewOrigin;
+	Vector		currentViewAngles;
+	Vector		currentWeaponOrigin;
+	Vector		currentWeaponAngles;
 };
