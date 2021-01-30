@@ -194,9 +194,23 @@ SpawnRegistry::SpawnInfo SpawnRegistry::GetRandomFurthest( const EntityClassInfo
 	else
 	{
 		// select a random spot from the spawn points furthest away
-		rnd = random() * (numSpots / 2);
+		rnd = random() * (numSpots - 1);
 
 		return *list_spot[rnd];
+	}
+}
+
+// Here I've placed two utility functions, temporarily, until we get a GameUtils.hpp thing
+namespace Util
+{
+	void Trace( trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask )
+	{
+		return gameImports->Trace( results, start, mins, maxs, end, passEntityNum, contentMask );
+	}
+
+	int PointContents( const vec3_t point, int passEntityNum )
+	{
+		return gameImports->PointContents( point, passEntityNum );
 	}
 }
 
@@ -349,6 +363,8 @@ Entities::IEntity* GameWorld::CreateTempEntity( const Vector& origin, int event 
 	// THERE SHALL BE MORE ENTITIES
 	level.num_entities++;
 
+	Util::Print( va( "num_entities %i\n", level.num_entities ) );
+
 	// let the server system know that there are more entities
 	gameImports->LocateGameData(
 		nullptr, level.num_entities, 0,
@@ -366,12 +382,15 @@ void GameWorld::EmitComplexEvent( const Vector& origin, const Vector& angles, co
 
 	es.number = ent->GetEntityIndex();
 	es.eType = ET_EVENTS + ed.id;
+	ent->GetShared()->plow = NetPlow_ForcePVS;
 
 	// USUALLY, I would NEVER do this, but in this case, it makes sense
 	memcpy( ent->GetState(), &es, sizeof( entityState_t ) );
 	ent->SetOrigin( origin );
 	ent->SetAngles( anglesSnapped );
 	gameImports->LinkEntity( ent );
+
+	Util::Print( va( "EmitComplexEvent at %i\n", es.number ) );
 }
 
 void GameWorld::FreeEntity( Entities::IEntity* ent )
@@ -430,17 +449,17 @@ void GameWorld::TouchTriggers( Entities::IEntity* ent )
 			continue;
 		}
 
-		// ignore most entities if a spectator
-		if ( player->GetClient()->sess.sessionTeam == TEAM_SPECTATOR ) 
-		{
-			if ( hit->GetState()->eType != ET_TELEPORT_TRIGGER //&&
-				 // this is ugly but adding a new ET_? type will
-				 // most likely cause network incompatibilities
-				 /*hit->touch != Touch_DoorTrigger*/ ) 
-			{
-				continue;
-			}
-		}
+		//// ignore most entities if a spectator
+		//if ( player->GetClient()->sess.sessionTeam == TEAM_SPECTATOR ) 
+		//{
+		//	if ( hit->GetState()->eType != ET_TELEPORT_TRIGGER //&&
+		//		 // this is ugly but adding a new ET_? type will
+		//		 // most likely cause network incompatibilities
+		//		 /*hit->touch != Touch_DoorTrigger*/ ) 
+		//	{
+		//		continue;
+		//	}
+		//}
 
 		// use separate code for determining if an item is picked up
 		// so you don't have to actually contact its bounding box
@@ -652,6 +671,7 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	info = FindSpawnPoint<Entities::InfoPlayerStart>( client->ps.origin, false );
 
 	info.spawnPointPosition.CopyToArray( player->GetShared()->currentOrigin );
+	spawn_origin = info.spawnPointPosition;
 
 	// Toggle the teleport bit so the client doesn't lerp
 	flags = client->ps.eFlags & (EF_TELEPORT_BIT | EF_VOTED | EF_TEAMVOTED);
@@ -905,14 +925,14 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 
 	if ( pmove_msec.integer < 8 ) 
 	{
-		trap_Cvar_Set( "pmove_msec", "8" );
-		trap_Cvar_Update( &pmove_msec );
+		gameImports->ConsoleVariable_Set( "pmove_msec", "8" );
+		gameImports->ConsoleVariable_Update( &pmove_msec );
 	}
 
 	else if ( pmove_msec.integer > 33 ) 
 	{
-		trap_Cvar_Set( "pmove_msec", "33" );
-		trap_Cvar_Update( &pmove_msec );
+		gameImports->ConsoleVariable_Set( "pmove_msec", "33" );
+		gameImports->ConsoleVariable_Update( &pmove_msec );
 	}
 
 	if ( pmove_fixed.integer || client->pers.pmoveFixed ) 
@@ -1014,8 +1034,8 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 		pm.tracemask = MASK_PLAYERSOLID;
 	}
 
-	pm.trace = trap_Trace;
-	pm.pointcontents = trap_PointContents;
+	pm.trace = Util::Trace;
+	pm.pointcontents = Util::PointContents;
 	pm.debugLevel = g_debugMove.integer;
 	pm.noFootsteps = (qboolean)((g_dmflags.integer & DF_NO_FOOTSTEPS) > 0);
 
@@ -1315,7 +1335,7 @@ void GameWorld::ClientEvents( Entities::BasePlayer* player, int oldEventSequence
 				player->GetClient()->ps.powerups[j] = 0;
 			}*/
 
-			SelectSpawnPoint( player->GetClient()->ps.origin, origin, angles, qfalse );
+			//SelectSpawnPoint( player->GetClient()->ps.origin, origin, angles, qfalse );
 			//TeleportPlayer( player, origin, angles );
 			break;
 
@@ -1354,14 +1374,14 @@ bool GameWorld::ClientInactivityTimer( Entities::BasePlayer* player )
 	{
 		if ( level.time > client->inactivityTime ) 
 		{
-			trap_DropClient( client - level.clients, "Dropped due to inactivity" );
+			gameImports->DropClient( client - level.clients, "Dropped due to inactivity" );
 			return false;
 		}
 		
 		if ( level.time > client->inactivityTime - 10000 && !client->inactivityWarning ) 
 		{
 			client->inactivityWarning = true;
-			trap_SendServerCommand( client - level.clients, "cp \"Ten seconds until inactivity drop!\n\"" );
+			gameImports->SendServerCommand( client - level.clients, "cp \"Ten seconds until inactivity drop!\n\"" );
 		}
 	}
 
@@ -1412,7 +1432,7 @@ void GameWorld::FindIntermissionPoint()
 
 	if ( !ent ) 
 	{	// the map creator forgot to put in an intermission point...
-		SelectSpawnPoint( vec3_origin, level.intermission_origin, level.intermission_angle, qfalse );
+		//SelectSpawnPoint( vec3_origin, level.intermission_origin, level.intermission_angle, qfalse );
 	}
 	else 
 	{
@@ -1492,8 +1512,8 @@ void GameWorld::SpectatorThink( Entities::BasePlayer* player )
 		pm.ps = &client->ps;
 		pm.cmd = *ucmd;
 		pm.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;	// spectators can fly through bodies
-		pm.trace = trap_Trace;
-		pm.pointcontents = trap_PointContents;
+		pm.trace = Util::Trace;
+		pm.pointcontents = Util::PointContents;
 
 		// perform a pmove
 		Pmove( &pm );
@@ -1632,7 +1652,7 @@ void GameWorld::SpectatorClientEndFrame( Entities::BasePlayer* player )
 				player->GetClient()->sess.spectatorState = SPECTATOR_FREE;
 			}
 
-			ClientBegin( player->GetClient() - level.clients );
+			//ClientBegin( player->GetEntityIndex() );
 		}
 	}
 
