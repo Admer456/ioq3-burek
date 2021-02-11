@@ -2979,7 +2979,7 @@ void RE_LoadWorldMap( const char *name ) {
 
 		if (!tr.numCubemaps)
 		{
-			R_LoadCubemapEntities("misc_cubemap");
+			R_LoadCubemapEntities("env_cubemap");
 		}
 
 		if (!tr.numCubemaps)
