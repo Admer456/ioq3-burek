@@ -363,8 +363,6 @@ Entities::IEntity* GameWorld::CreateTempEntity( const Vector& origin, int event 
 	// THERE SHALL BE MORE ENTITIES
 	level.num_entities++;
 
-	Util::Print( va( "num_entities %i\n", level.num_entities ) );
-
 	// let the server system know that there are more entities
 	gameImports->LocateGameData(
 		nullptr, level.num_entities, 0,
@@ -389,8 +387,6 @@ void GameWorld::EmitComplexEvent( const Vector& origin, const Vector& angles, co
 	ent->SetOrigin( origin );
 	ent->SetAngles( anglesSnapped );
 	gameImports->LinkEntity( ent );
-
-	Util::Print( va( "EmitComplexEvent at %i\n", es.number ) );
 }
 
 void GameWorld::FreeEntity( Entities::IEntity* ent )
@@ -772,6 +768,8 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 			// force the base weapon up
 			client->ps.weapon = WeaponID_Fists;
 			client->ps.weaponstate = WEAPON_READY;
+			client->ps.ammo[WeaponID_Pistol] = 120;
+			client->ps.ammoMag[WeaponID_Pistol] = 15;
 
 			player->AddWeapon( gameWorld->CreateEntity<Entities::Weapon_Fists>() );
 

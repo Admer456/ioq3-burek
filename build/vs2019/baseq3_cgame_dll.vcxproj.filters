@@ -96,6 +96,9 @@
     <ClInclude Include="..\..\code\cgame\View\View.hpp">
       <Filter>Sources\View</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Pistol.hpp">
+      <Filter>Sources\Weapons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -208,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\Events\Explosion.cpp">
       <Filter>Sources\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Pistol.cpp">
+      <Filter>Sources\Weapons</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

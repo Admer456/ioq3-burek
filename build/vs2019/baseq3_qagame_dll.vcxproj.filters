@@ -198,6 +198,9 @@
     <ClInclude Include="..\..\code\game\Entities\Logic\LogicTimer.hpp">
       <Filter>Sources\Entities\Logic</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Weapons\Weapon_Pistol.hpp">
+      <Filter>Sources\Entities\Weapons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -334,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Logic\LogicTimer.cpp">
       <Filter>Sources\Entities\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Pistol.cpp">
+      <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
