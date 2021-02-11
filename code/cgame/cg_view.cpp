@@ -866,8 +866,6 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	// update cvars
 	CG_UpdateCvars();
 
-	GetClient()->Update();
-
 	// if we are only updating the screen as a loading
 	// pacifier, don't even try to read snapshots
 	if ( cg.infoScreenText[0] != 0 ) 
@@ -926,6 +924,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		//CG_AddVegetation();
 		CG_AddSkyDome();
 	}
+
+	GetClient()->Update();
 
 	if ( GetClient()->GetCurrentWeapon() )
 	{
