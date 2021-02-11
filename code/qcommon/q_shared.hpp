@@ -1264,7 +1264,8 @@ typedef struct playerState_s {
 	int			stats[MAX_STATS];
 	int			persistant[MAX_PERSISTANT];	// stats that aren't cleared on death
 	int			powerups[MAX_POWERUPS];	// level.time that the powerup runs out
-	int			ammo[MAX_WEAPONS];
+	int			ammo[MAX_WEAPONS]; // how much do we have total?
+	int			ammoMag[MAX_WEAPONS]; // how much do we have in the current magazine?
 
 	int			generic1;
 	int			loopSound;
