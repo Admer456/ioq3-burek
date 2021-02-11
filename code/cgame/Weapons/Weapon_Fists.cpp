@@ -33,12 +33,12 @@ void Weapon_Fists::Precache()
 
 void Weapon_Fists::OnIdle()
 {
-	if ( !Client::IsLocalClient( currentPlayer ) )
+	if ( !Client::IsLocalClient( currentPlayer ) || GetClient()->Time() < nextIdle )
 		return;
 
 	renderEntity.StartAnimation( animIdle, true );
 
-	nextIdle = cg.time * 0.001f + renderEntity.GetAnimData( animIdle ).Length();
+	nextIdle = GetClient()->Time() + renderEntity.GetAnimData( animIdle ).Length();
 }
 
 void Weapon_Fists::OnPrimaryFire()

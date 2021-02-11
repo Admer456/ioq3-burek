@@ -6,6 +6,30 @@ using namespace ClientEntities;
 centity_t* BaseClientWeapon::currentPlayer = nullptr;
 
 // ===================
+// BaseClientWeapon::GetNextAnimTime
+// ===================
+float BaseClientWeapon::GetNextAnimTime( const animHandle& animation )
+{
+	return GetClient()->Time() + renderEntity.GetAnimData( animation ).Length();
+}
+
+// ===================
+// BaseClientWeapon::GetAmmoInMag
+// ===================
+int BaseClientWeapon::GetAmmoInMag( int id )
+{
+	return cg.predictedPlayerState.ammoMag[id];
+}
+
+// ===================
+// BaseClientWeapon::GetAmmo
+// ===================
+int BaseClientWeapon::GetAmmo( int id )
+{
+	return cg.predictedPlayerState.ammo[id];
+}
+
+// ===================
 // BaseClientWeapon::Precache
 // ===================
 void BaseClientWeapon::Precache()
@@ -28,6 +52,5 @@ void BaseClientWeapon::WeaponFrame()
 
 	renderEntity.Update( cg.frametime * 0.001f );
 
-	if ( cg.time * 0.001f > nextIdle )
-		OnIdle();
+	OnIdle();
 }

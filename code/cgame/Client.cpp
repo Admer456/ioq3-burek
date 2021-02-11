@@ -27,7 +27,23 @@ Client::~Client()
 // ===================
 void Client::Update()
 {
+	usercmd_t uc = GetUsercmd();
+	auto weapon = GetCurrentWeapon();
 
+	if ( nullptr == weapon )
+		return;
+
+	if ( uc.interactionButtons & Interaction_PrimaryAttack )
+		weapon->OnPrimaryFire();
+
+	if ( uc.interactionButtons & Interaction_SecondaryAttack )
+		weapon->OnSecondaryFire();
+
+	if ( uc.interactionButtons & Interaction_TertiaryAttack )
+		weapon->OnTertiaryFire();
+
+	if ( uc.interactionButtons & Interaction_Reload )
+		weapon->OnReload();
 }
 
 // ===================
@@ -35,6 +51,9 @@ void Client::Update()
 // ===================
 ClientEntities::BaseClientWeapon* Client::GetCurrentWeapon()
 {
+	if ( cg.snap->ps.weapon < 0 || cg.snap->ps.weapon >= MAX_WEAPONS )
+		return nullptr;
+
 	ClientEntities::BaseClientWeapon* weapon = gWeapons[cg.snap->ps.weapon];
 	if ( weapon )
 		return weapon;
@@ -95,6 +114,16 @@ std::vector<Assets::ModelAnimation>& Client::GetAnimationsForModel( qhandle_t mo
 float Client::Time() const
 {
 	return cg.time * 0.001f;
+}
+
+// ===================
+// Client::GetUsercmd
+// ===================
+usercmd_t Client::GetUsercmd() const
+{
+	usercmd_t uc;
+	trap_GetUserCmd( trap_GetCurrentCmdNumber(), &uc );
+	return uc;
 }
 
 // ===================

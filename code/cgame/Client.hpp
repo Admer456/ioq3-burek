@@ -22,6 +22,8 @@ public:
 	std::vector<Assets::ModelAnimation>& GetAnimationsForModel( qhandle_t modelindex );
 	// Returns the current client time
 	float		Time() const;
+	// Gets the latest usercmd
+	usercmd_t	GetUsercmd() const;
 
 	// Subsystem getters
 

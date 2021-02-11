@@ -17,6 +17,11 @@ namespace ClientEntities
 
 		BaseClientWeapon() = default;
 
+		float			GetNextAnimTime( const animHandle& animation );
+
+		static int		GetAmmoInMag( int id );
+		static int		GetAmmo( int id );
+
 		virtual WeaponInfo GetWeaponInfo() = 0;
 		virtual RenderEntity& GetRenderEntity()
 		{

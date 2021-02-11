@@ -7,10 +7,10 @@ namespace Entities
 	enum WeaponFlags : uint16_t
 	{
 		WFNone,
-		WFReload,
-		WFHolster,
-		WFDraw,
-		WFAkimbo
+		WFReload, // this weapon can reload
+		WFHolster, // this weapon can holster
+		WFDraw, // this weapon can draw
+		WFAkimbo // this weapon can be picked up as akimbo
 	};
 
 	enum WeaponEvent : uint16_t
@@ -30,6 +30,7 @@ namespace Entities
 	public:
 		struct WeaponInfo
 		{
+			const char* viewModel;
 			const char* worldModel;
 			int weaponID;
 		};

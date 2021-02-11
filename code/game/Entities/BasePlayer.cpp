@@ -298,6 +298,18 @@ void BasePlayer::UpdateWeapon()
 	if ( nullptr == currentWeapon )
 		return;
 
+	usercmd_t uc; 
+	gameImports->GetUsercmd( GetEntityIndex(), &uc );
+	
+	if ( uc.interactionButtons & Interaction_PrimaryAttack )
+		currentWeapon->PrimaryAttack();
+	if ( uc.interactionButtons & Interaction_SecondaryAttack )
+		currentWeapon->SecondaryAttack();
+	if ( uc.interactionButtons & Interaction_TertiaryAttack )
+		currentWeapon->TertiaryAttack();
+	if ( uc.interactionButtons & Interaction_Reload )
+		currentWeapon->Reload();
+
 	currentWeapon->WeaponFrame();
 }
 

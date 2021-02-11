@@ -1590,6 +1590,7 @@ static void PM_Weapon( void )
 		return;
 	}
 
+	/*
 	if ( pm->ps->weaponstate == WEAPON_READY )
 	{
 		// TODO: Implement weapon decls so we can have 
@@ -1630,6 +1631,7 @@ static void PM_Weapon( void )
 			return;
 		}
 	}
+	*/
 
 	// check for weapon change
 	// can't change if weapon is firing, but can change
