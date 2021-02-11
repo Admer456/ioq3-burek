@@ -15,7 +15,19 @@ class ClientView final
 		bool	active{ false };
 	};
 
-	constexpr static size_t MaxViewShakes = 16U;
+	struct ViewPunch final
+	{
+	public:
+		Vector	Calculate() const;
+		void	Update();
+
+		float	duration{ 0.0f };
+		Vector	angles{ Vector::Zero };
+		float	timeStarted{ 0.0f };
+		bool	active{ false };
+	};
+
+	constexpr static size_t MaxViewShakes = 32U;
 
 public:
 	ClientView();
@@ -28,6 +40,10 @@ public:
 	void		AddShake( float frequency, float duration, Vector direction );
 	// Gets the average of all shakes
 	Vector		CalculateShakeAverage() const;
+	// Adds a view punch - every time a weapon is fired etc.
+	void		AddPunch( float duration, Vector angles );
+	// Gets the total of all view punches
+	Vector		CalculatePunchTotal() const;
 
 	const Vector& GetViewOrigin() const { return currentViewOrigin; }
 	const Vector& GetViewAngles() const { return currentViewAngles; }
@@ -36,6 +52,7 @@ public:
 
 private:
 	ViewShake	shakes[MaxViewShakes];
+	ViewPunch	punches[MaxViewShakes];
 
 	Vector		currentViewOrigin;
 	Vector		currentViewAngles;

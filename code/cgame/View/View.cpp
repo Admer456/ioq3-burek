@@ -38,6 +38,47 @@ void ClientView::ViewShake::Update()
 	}
 }
 
+// Assumes that X is between 0 and 1
+// x = 0 -> y = 0
+// x = 0.5 -> y = 1
+// x = 1 -> y = 0
+float CosWave( float x )
+{
+	return (-1 * cos( x * 2 * M_PI ) + 1) / 2.0f;
+}
+
+// ===================
+// ViewPunch::Calculate
+// ===================
+Vector ClientView::ViewPunch::Calculate() const
+{
+	if ( !active )
+		return Vector::Zero;
+
+	Vector v;
+	float time = GetClient()->Time();
+
+	float delta = 1.0f - ((time - timeStarted) / duration);
+	float wave = CosWave( delta );
+	//float wave = CosWave( delta ) * CosWave( delta );
+	return angles * wave;
+}
+
+// ===================
+// ViewPunch::Calculate
+// ===================
+void ClientView::ViewPunch::Update()
+{
+	if ( !active )
+		return;
+
+	if ( GetClient()->Time() >= (timeStarted + duration) )
+	{
+		active = false;
+		return;
+	}
+}
+
 // ===================
 // ClientView::ctor
 // ===================
@@ -78,11 +119,17 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	for ( ViewShake& vs : shakes )
 		vs.Update();
 
+	for ( ViewPunch& vp : punches )
+		vp.Update();
+
 	Vector shake = CalculateShakeAverage();
+	Vector punch = CalculatePunchTotal();
 
 	outOrigin += up * upBob;
 	outOrigin += right * sideBob * 0.5f;
 	outOrigin += shake;
+
+	outAngles += punch;
 
 	currentViewOrigin = outOrigin;
 	currentViewAngles = outAngles;
@@ -221,4 +268,40 @@ Vector ClientView::CalculateShakeAverage() const
 	}
 
 	return shake;
+}
+
+// ===================
+// ClientView::AddPunch
+// ===================
+void ClientView::AddPunch( float duration, Vector angles )
+{
+	for ( ViewPunch& vp : punches )
+	{
+		if ( vp.active )
+			continue;
+
+		vp.active = true;
+		vp.duration = duration;
+		vp.angles = angles;
+		vp.timeStarted = GetClient()->Time();
+		break;
+	}
+}
+
+// ===================
+// ClientView::CalculatePunchTotal
+// ===================
+Vector ClientView::CalculatePunchTotal() const
+{
+	Vector punch = Vector::Zero;
+
+	for ( const ViewPunch& vp : punches )
+	{
+		if ( !vp.active )
+			continue;
+
+		punch += vp.Calculate();
+	}
+
+	return punch;
 }
