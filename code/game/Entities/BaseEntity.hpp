@@ -186,11 +186,11 @@ namespace Entities
 		float			nextThink{ 0 };
 
 		// Flags
-		int				flags{ 0 };				// FL_* variables
-		int				spawnFlags{ 0 };		// 64 bits of
-		int				spawnFlagsExtra{ 0 };	// spawnflags cuz' why not
+		int				flags{ 0 };				// FL_* flags (q_shared.hpp)
+		int				spawnFlags{ 0 };		// entity-specific SF_* flags
+		int				spawnFlagsExtra{ 0 };	// extra 32 spawnflags
 
-		BaseEntity* chain{ nullptr };		// For parenting
+		BaseEntity* 	chain{ nullptr };		// For parenting
 
 	protected:
 		virtual bool	CheckAndClearEvents();
