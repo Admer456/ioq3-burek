@@ -48,6 +48,11 @@ float	pm_spectatorfriction = 5.0f;
 
 int		c_pmove = 0;
 
+inline bool PM_IsNPC()
+{
+	return pm->ps->pm_flags & PMF_NPC;
+}
+
 /*
 ===============
 PM_AddEvent
@@ -55,6 +60,9 @@ PM_AddEvent
 ===============
 */
 void PM_AddEvent( int newEvent ) {
+	if ( pm->ps->pm_flags & PMF_NPC )
+		return;
+
 	BG_AddPredictableEventToPlayerstate( newEvent, 0, pm->ps );
 }
 
@@ -1258,7 +1266,7 @@ static void PM_CheckDuck (void)
 	pm->maxs[0] = 15;
 	pm->maxs[1] = 15;
 
-	pm->mins[2] = MINS_Z;
+	pm->mins[2] = PM_IsNPC() ? 0 : MINS_Z;
 
 	if (pm->ps->pm_type == PM_DEAD)
 	{
@@ -1276,7 +1284,7 @@ static void PM_CheckDuck (void)
 		if (pm->ps->pm_flags & PMF_DUCKED)
 		{
 			// try to stand up
-			pm->maxs[2] = 32;
+			pm->maxs[2] = PM_IsNPC() ? 64 : 32;
 			pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
 			if (!trace.allsolid)
 				pm->ps->pm_flags &= ~PMF_DUCKED;
@@ -1285,12 +1293,12 @@ static void PM_CheckDuck (void)
 
 	if (pm->ps->pm_flags & PMF_DUCKED)
 	{
-		pm->maxs[2] = 16;
+		pm->maxs[2] = PM_IsNPC() ? 32 : 16;
 		pm->ps->viewheight = CROUCH_VIEWHEIGHT;
 	}
 	else
 	{
-		pm->maxs[2] = 32;
+		pm->maxs[2] = PM_IsNPC() ? 64 : 32;
 		pm->ps->viewheight = DEFAULT_VIEWHEIGHT;
 	}
 }
@@ -1984,23 +1992,28 @@ void PmoveSingle (pmove_t *pmove) {
 		PM_AirMove();
 	}
 
-	PM_Animate();
+
+	if ( !(pmove->ps->pm_flags & PMF_NPC) )
+		PM_Animate();
 
 	// set groundentity, watertype, and waterlevel
 	PM_GroundTrace();
 	PM_SetWaterLevel();
 
 	// weapons
-	PM_Weapon();
+	if ( !(pmove->ps->pm_flags & PMF_NPC) )
+	{
+		PM_Weapon();
 
-	// torso animation
-	PM_TorsoAnimation();
+		// torso animation
+		PM_TorsoAnimation();
 
-	// footstep events / legs animations
-	PM_Footsteps();
+		// footstep events / legs animations
+		PM_Footsteps();
 
-	// entering / leaving water splashes
-	PM_WaterEvents();
+		// entering / leaving water splashes
+		PM_WaterEvents();
+	}
 
 	// snap some parts of playerstate to save network bandwidth
 	Vector velSnap = Vector( pm->ps->velocity ).Snapped();
