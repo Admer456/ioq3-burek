@@ -47,14 +47,6 @@ void Mercenary::Spawn()
 	memset( &playerState, 0, sizeof( playerState ) );
 
 	GetCurrentOrigin().CopyToArray( playerState.origin );
-
-	KeyValueLibrary kv;
-	kv.AddKeyValue( "radius", "3" );
-
-	debugSprite = gameWorld->CreateEntity<EnvSprite>();
-	debugSprite->spawnArgs = &kv;
-	debugSprite->Precache();
-	debugSprite->Spawn();
 }
 
 void Mercenary::Think()
@@ -177,8 +169,6 @@ void Mercenary::MovementLogic()
 		float dropHeight = targetHeight - heightTolerance;
 		float pitDepth;
 
-		Util::Print( va( "AI: target height: %3.2f   drop height: %3.2f\n", targetHeight, dropHeight ) );
-
 		// 12u are typical stair steps, those are easy to climb
 		if ( dropHeight < -12.0f )
 		{
@@ -189,16 +179,12 @@ void Mercenary::MovementLogic()
 
 			pitDepth = trDepth.fraction * -512.0f + 12.0f;
 
-			Util::Print( va( "AI: the pit is %3.2f u deep\n", pitDepth ) );
-
 			// There's a pit, calculate how to go away from it
 			if ( trPit.fraction == 1.0f || dropHeight <= -150.0f )
 			{
 				trace_t trPitForward;
 				trace_t trPitRight;
 				trace_t trPitLeft;
-
-				Util::Print( "AI: There's a pit, I cannot go...\n" );
 
 				Util::Trace( &trPitForward, start + forward * 40.0f, nullptr, nullptr, start + forward * 40.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
 				Util::Trace( &trPitRight, start + right * 40.0f, nullptr, nullptr, start + right * 40.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
@@ -223,16 +209,8 @@ void Mercenary::MovementLogic()
 					Util::Trace( &tr, start + Vector( 0, 0, 32 ), nullptr, nullptr, end, GetEntityIndex(), MASK_PLAYERSOLID );
 					float dotPlane = Vector( 0, 0, 1 ) * Vector( tr.plane.normal );
 
-					debugSprite->SetOrigin( end );
-					debugSprite->SetCurrentOrigin( debugSprite->GetOrigin() );
-					debugSprite->GetOrigin().CopyToArray( debugSprite->GetState()->pos.trBase );
-
 					if ( tr.fraction < 1.0f )
 					{
-						debugSprite->SetOrigin( tr.endpos );
-						debugSprite->SetCurrentOrigin( debugSprite->GetOrigin() );
-						debugSprite->GetOrigin().CopyToArray( debugSprite->GetState()->pos.trBase );
-
 						// check if the landing surface isn't too steep; a dot of 0.79 is basically about 40-ish degrees
 						// if the dot was 0, then that means it's a wall...
 						if ( dotPlane >= 0.79f )
@@ -262,10 +240,6 @@ void Mercenary::MovementLogic()
 		trace_t trObstacle;
 		Util::Trace( &trJumpCheck, start + Vector( 0, 0, 29 ), nullptr, nullptr, start + forward * 25.0f + Vector( 0, 0, 29 ), GetEntityIndex(), MASK_PLAYERSOLID );
 		Util::Trace( &trObstacle, start + Vector( 0, 0, 29 ), nullptr, nullptr, start + forward * 64.0f + Vector( 0, 0, 29 ), GetEntityIndex(), MASK_PLAYERSOLID );
-
-		debugSprite->SetOrigin( trJumpCheck.endpos );
-		debugSprite->SetCurrentOrigin( debugSprite->GetOrigin() );
-		debugSprite->GetOrigin().CopyToArray( debugSprite->GetState()->pos.trBase );
 
 		bool canJump = (trJumpCheck.fraction == 1.0f) && (trJumpCheck.entityNum == ENTITYNUM_NONE) && (trObstacle.entityNum >= ENTITYNUM_WORLD);
 

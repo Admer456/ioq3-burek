@@ -72,6 +72,5 @@ namespace Entities
 		MovementTaskState	moveTask; // what am I supposed to do in terms of movement?
 
 		BaseEntity*		targetEntity; // my target which I might follow, kill, or assist etc.
-		EnvSprite*		debugSprite;
 	};
 }
