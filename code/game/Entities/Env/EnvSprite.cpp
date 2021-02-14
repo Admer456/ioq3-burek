@@ -17,6 +17,8 @@ void EnvSprite::Spawn()
 {
 	BaseEntity::Spawn();
 
+	GetState()->pos.trType = TR_INTERPOLATE;
+
 	GetState()->eType = ET_SPRITE;
 	GetState()->modelindex = spriteHandle;
 
