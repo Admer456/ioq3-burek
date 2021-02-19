@@ -78,6 +78,18 @@ namespace Entities
 		// target
 		const char*		GetTarget() const override;
 
+		// same as gameWorld->FindByName( GetTarget() );
+		IEntity*		GetTargetEntity() const;
+
+		// target, target1, target2, target3 ... targetN
+		std::vector<IEntity*> GetTargetEntities() const;
+
+		// returns the entity which is targeting this entity
+		IEntity*		GetTargetOf() const;
+
+		// returns all entities that are targeting this one
+		std::vector<IEntity*> GetAllTargetOf() const;
+
 		// origin
 		Vector			GetOrigin() const override;
 		void			SetOrigin( const Vector& newOrigin ) override;

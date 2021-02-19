@@ -114,6 +114,89 @@ const char* BaseEntity::GetTarget() const
 	return target.c_str();
 }
 
+IEntity* BaseEntity::GetTargetEntity() const
+{
+	return gameWorld->FindByName( target.c_str() );
+}
+
+std::vector<IEntity*> BaseEntity::GetTargetEntities() const
+{
+	std::vector<IEntity*> entities;
+	IEntity* startEntity = GetTargetEntity();
+	
+	if ( nullptr != startEntity )
+	{
+		char buffer[32];
+		for ( int i = 1; i < 128; i++ )
+		{
+			snprintf( buffer, 32, "target%i", i );
+			const char* keyValue = spawnArgs->GetCString( buffer, "" );
+
+			// If the string is empty for this keyvalue, then don't check any further
+			if ( !keyValue[0] )
+			{
+				break;
+			}
+
+			IEntity* ent = gameWorld->FindByName( keyValue );
+			if ( nullptr == ent )
+			{
+				Util::PrintWarning( va( "%s.GetTargetEntities: can't find target '%s'", GetName(), keyValue ) );
+				continue;
+			}
+
+			entities.push_back( ent );
+		}
+	}
+
+	return entities;
+}
+
+IEntity* BaseEntity::GetTargetOf() const
+{
+	for ( size_t i = MAX_CLIENTS; i < level.num_entities; i++ )
+	{
+		if ( nullptr == gEntities[i] )
+			continue;
+
+		BaseEntity* ent = static_cast<BaseEntity*>(gEntities[i]);
+		auto targets = ent->GetTargetEntities();
+
+		for ( auto target : targets )
+		{
+			if ( target == this )
+			{
+				return ent;
+			}
+		}
+	}
+}
+
+std::vector<IEntity*> BaseEntity::GetAllTargetOf() const
+{
+	std::vector<IEntity*> ents;
+
+	for ( size_t i = MAX_CLIENTS; i < level.num_entities; i++ )
+	{
+		if ( nullptr == gEntities[i] )
+			continue;
+
+		BaseEntity* ent = static_cast<BaseEntity*>(gEntities[i]);
+		auto targets = ent->GetTargetEntities();
+
+		for ( auto target : targets )
+		{
+			if ( target == this )
+			{
+				ents.push_back( ent );
+				break;
+			}
+		}
+	}
+
+	return ents;
+}
+
 Vector BaseEntity::GetOrigin() const
 {
 	return Vector( shared.s.origin );
