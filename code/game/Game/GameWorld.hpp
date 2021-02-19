@@ -164,6 +164,9 @@ public:
 	// Find an entity by its classname
 	Entities::IEntity* FindByClassname( const char* className, Entities::IEntity* lastEntity = nullptr );
 
+	// Find an entity by keyvalue
+	Entities::IEntity* FindByKeyvalue( const char* name, const char* value, Entities::IEntity* lastEntity = nullptr );
+
 	// Find a random entity by its targetname
 	Entities::IEntity* FindByNameRandom( const char* entityName );
 

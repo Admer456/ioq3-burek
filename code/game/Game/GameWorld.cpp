@@ -541,6 +541,29 @@ Entities::IEntity* GameWorld::FindByClassname( const char* className, Entities::
 	return nullptr;
 }
 
+Entities::IEntity* GameWorld::FindByKeyvalue( const char* name, const char* value, Entities::IEntity* lastEntity )
+{
+	size_t index = 0;
+
+	if ( lastEntity )
+		index = lastEntity->GetEntityIndex();
+
+	for ( ; index < MaxEntities; index++ )
+	{
+		Entities::IEntity* ent = gEntities[index];
+
+		if ( nullptr == ent )
+			continue;
+
+		if ( !strcmp( static_cast<Entities::BaseEntity*>(ent)->spawnArgs->GetCString( name, "" ), value ) )
+		{
+			return ent;
+		}
+	}
+
+	return nullptr;
+}
+
 Entities::IEntity* GameWorld::FindByNameRandom( const char* entityName )
 {
 	static int seed = 0x92;
