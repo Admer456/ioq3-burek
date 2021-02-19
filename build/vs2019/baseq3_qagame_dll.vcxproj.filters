@@ -207,6 +207,12 @@
     <ClInclude Include="..\..\code\game\Entities\AI\Neander\Mercenary.hpp">
       <Filter>Sources\Entities\AI\Neander</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\AI\AI_Common.hpp">
+      <Filter>Sources\Entities\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\AI\Neander\Node.hpp">
+      <Filter>Sources\Entities\AI\Neander</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -348,6 +354,9 @@
       <Filter>Sources\Entities\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\AI\Neander\Mercenary.cpp">
+      <Filter>Sources\Entities\AI\Neander</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\AI\Neander\Node.cpp">
       <Filter>Sources\Entities\AI\Neander</Filter>
     </ClCompile>
   </ItemGroup>
