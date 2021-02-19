@@ -5,39 +5,6 @@ namespace Entities
 	class Mercenary : public BaseEntity
 	{
 	public:
-		enum DynamismState
-		{
-			FreeRoaming = 0,
-			FollowingScript
-		};
-
-		enum MovementTaskState
-		{
-			StandingStill = 0,
-			FollowingTarget,
-			RunningAwayFromTarget,
-			Roaming,
-			RunningBlindly
-		};
-
-		enum MovementState
-		{
-			Idling = 0,
-			MovingNormally,
-			JumpingOverObstacle,
-			JumpingOverPit
-		};
-
-		enum MovementSpeeds
-		{
-			Idle = 0,
-			Sneaking = 30,
-			Walking = 60,
-			Running = 90,
-			Sprinting = 127
-		};
-
-	public:
 		DeclareEntityClass();
 
 		void			Spawn() override;
@@ -69,7 +36,7 @@ namespace Entities
 		Vector			lastSeen; // where did I see my enemy last?
 
 		Vector			moveTarget; // where to walk to?
-		MovementTaskState	moveTask; // what am I supposed to do in terms of movement?
+		//MovementTaskState	moveTask; // what am I supposed to do in terms of movement?
 
 		BaseEntity*		targetEntity; // my target which I might follow, kill, or assist etc.
 	};

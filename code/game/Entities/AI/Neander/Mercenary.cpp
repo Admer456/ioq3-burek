@@ -8,10 +8,11 @@
 #include "../qcommon/IEngineExports.h"
 #include "Game/IGameImports.h"
 
-#include "Entities/Env/EnvSprite.hpp"
+#include "Entities/AI/AI_Common.hpp"
 #include "Mercenary.hpp"
 
 using namespace Entities;
+using namespace AI;
 
 DefineEntityClass( "char_mercenary", Mercenary, BaseEntity );
 
@@ -91,12 +92,6 @@ float Mercenary::SnapMovementSpeed( float speed, bool smooth )
 
 	else if ( speed > MovementSpeeds::Walking )
 		return MovementSpeeds::Running / 127.0f;
-
-	else if ( speed > MovementSpeeds::Sneaking )
-		return MovementSpeeds::Walking / 127.0f;
-
-	else if ( speed > MovementSpeeds::Idle )
-		return MovementSpeeds::Sneaking / 127.0f;
 
 	return MovementSpeeds::Idle;
 }
