@@ -267,6 +267,17 @@ void GameWorld::SpawnEntities()
 		SpawnEntity( lib );
 	}
 
+	// Execute PostSpawn for each entity
+	for ( Entities::IEntity*& ent : gEntities )
+	{
+		if ( nullptr == ent )
+		{
+			continue;
+		}
+
+		ent->PostSpawn();
+	}
+
 	level.spawning = false;
 }
 
@@ -610,6 +621,59 @@ Entities::IEntity* GameWorld::FindByClassnameRandom( const char* className )
 
 	size_t index = Q_rand( &seed ) % ents.size();
 	return gEntities[ents[index]->GetEntityIndex()]; // am a little paranoid about returning ents[index], err...
+}
+
+std::vector<Entities::IEntity*> GameWorld::EntitiesInRadius( Vector position, float radius, bool bbox, bool unlinked ) const
+{
+	std::vector<Entities::IEntity*> ents;
+	ents.reserve( 100 );
+
+	for ( int i = 0; i < level.num_entities; i++ )
+	{
+		if ( nullptr == gEntities[i] )
+			continue;
+
+		Entities::IEntity* ent = gEntities[i];
+		Vector origin = ent->GetCurrentOrigin();
+		Vector mins = origin + ent->GetMins();
+		Vector maxs = origin + ent->GetMaxs();
+
+		if ( !unlinked && !ent->GetShared()->linked )
+			continue;
+
+		if ( bbox && (ent->GetMins().Length() || ent->GetMaxs().Length()) )
+		{
+			const Vector points[8] =
+			{
+				mins,
+				Vector( mins.x, mins.y, maxs.z ),
+				Vector( mins.x, maxs.y, mins.z ),
+				Vector( mins.x, maxs.y, maxs.z ),
+				Vector( maxs.x, mins.y, mins.z ),
+				Vector( maxs.x, mins.y, maxs.z ),
+				Vector( maxs.x, maxs.y, mins.z ),
+				maxs
+			};
+
+			for ( int i = 0; i < 8; i++ )
+			{
+				if ( (position - points[i]).Length() <= radius )
+				{
+					ents.push_back( ent );
+					break;
+				}
+			}
+		}
+		else
+		{
+			if ( (position - origin).Length() <= radius )
+			{
+				ents.push_back( ent );
+			}
+		}
+	}
+
+	return ents;
 }
 
 uint32_t GameWorld::PrecacheModel( const char* name )
@@ -963,9 +1027,7 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 		//	return;
 	}
 
-	//
 	// check for exiting intermission
-	//
 	if ( level.intermissiontime ) 
 	{
 		ClientIntermissionThink( player );

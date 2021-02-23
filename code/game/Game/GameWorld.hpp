@@ -173,6 +173,12 @@ public:
 	// Find a random entity by its classname
 	Entities::IEntity* FindByClassnameRandom( const char* className );
 
+	// Retrieves all entities within a radius
+	// radius: scan radius
+	// bbox: use mins and maxs instead of origin
+	// unlinked: include entities that aren't linked into the world too
+	std::vector<Entities::IEntity*> EntitiesInRadius( Vector position, float radius, bool bbox = false, bool unlinked = false ) const;
+
 	// ------ Asset loading methods ------
 	// NOTE: if the asset is already precached, they will just return its index
 
