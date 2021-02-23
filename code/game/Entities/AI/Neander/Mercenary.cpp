@@ -9,10 +9,162 @@
 #include "Game/IGameImports.h"
 
 #include "Entities/AI/AI_Common.hpp"
+#include "Node.hpp"
 #include "Mercenary.hpp"
 
 using namespace Entities;
 using namespace AI;
+
+// MemoryFrame
+
+void MemoryFrame::Reset()
+{
+	lastSeen = Vector::Zero;
+	lastHeard = Vector::Zero;
+	flags = 0;
+	time = -1.0f;
+}
+
+// EntityMemory
+
+const EntityMemory EntityMemory::NoMemory = EntityMemory();
+
+EntityMemory::EntityMemory()
+{
+	entityIndex = ENTITYNUM_NONE;
+	relationship = Relationship::None;
+}
+
+EntityMemory::EntityMemory( BaseEntity* ent, AI::Relationship relationship )
+{
+	if ( nullptr == ent )
+		return;
+
+	entityIndex = ent->GetEntityIndex();
+	this->relationship = relationship;
+}
+
+void EntityMemory::AddFrame( const MemoryFrame& frame )
+{
+	for ( MemoryFrame& f : frames )
+	{
+		if ( f.time < 0.0f )
+		{
+			f = frame;
+			return;
+		}
+	}
+
+	// If that fails, then look for the oldest memory to wipe it out
+	float oldestTime = 99999999.0f;
+	MemoryFrame* oldest = nullptr;
+	for ( MemoryFrame& f : frames )
+	{
+		if ( f.time < oldestTime )
+		{
+			oldestTime = f.time;
+			oldest = &f;
+		}
+	}
+
+	*oldest = frame;
+}
+
+void EntityMemory::Update( const float& time )
+{
+	for ( MemoryFrame& frame : frames )
+	{
+		if ( frame.time < 0.0f )
+		{
+			continue;
+		}
+
+		// Forget after 40-ish seconds
+		if ( (time - frame.time) > 40.0f )
+		{
+			frame.Reset();
+			continue;
+		}
+	}
+
+	// Drop the awareness level if enough time has passed
+	if ( (time - lastAware) > AwarenessExpiration[awareness] )
+	{
+		lastAware = time;
+		DecreaseAwareness();
+	}
+}
+
+Vector EntityMemory::LastSeen() const
+{
+	float latestTime = 0.0f;
+	const MemoryFrame* latest = nullptr;
+
+	for ( const MemoryFrame& frame : frames )
+	{
+		if ( frame.flags & MFF_Seen && frame.time > latestTime )
+		{
+			latestTime = frame.time;
+			latest = &frame;
+		}
+	}
+
+	if ( nullptr == latest )
+		return Vector::Zero;
+
+	return latest->lastSeen;
+}
+
+Vector EntityMemory::LastHeard() const
+{
+	float latestTime = 0.0f;
+	const MemoryFrame* latest = nullptr;
+
+	for ( const MemoryFrame& frame : frames )
+	{
+		if ( frame.flags & MFF_Heard && frame.time > latestTime )
+		{
+			latestTime = frame.time;
+			latest = &frame;
+		}
+	}
+
+	if ( nullptr == latest )
+		return Vector::Zero;
+
+	return latest->lastHeard;
+}
+
+float EntityMemory::LastMemoryTime() const
+{
+	float latestTime = 0.0f;
+
+	for ( const MemoryFrame& frame : frames )
+	{
+		if ( frame.time > latestTime )
+		{
+			latestTime = frame.time;
+		}
+	}
+
+	return latestTime;
+}
+
+void EntityMemory::IncreaseAwareness( const float& time )
+{
+	if ( awareness < AI::Awareness::MaximumCertainty )
+		awareness++;
+
+	lastAware = time;
+}
+
+void EntityMemory::DecreaseAwareness()
+{
+	if ( awareness > AI::Awareness::None )
+		awareness--;
+}
+
+// Mercenary
 
 DefineEntityClass( "char_mercenary", Mercenary, BaseEntity );
 
@@ -48,16 +200,39 @@ void Mercenary::Spawn()
 	memset( &playerState, 0, sizeof( playerState ) );
 
 	GetCurrentOrigin().CopyToArray( playerState.origin );
+	moveIdeal = GetCurrentOrigin();
+	moveTarget = moveIdeal;
+
+	species = spawnArgs->GetInt( "species", AI::Species_Human );
+	faction = spawnArgs->GetInt( "species", AI::Faction_Mafia );
 }
 
 void Mercenary::Think()
 {
-	if ( nextThink <= (level.time * 0.001f) && nextThink > 0.0f )
+	const float time = level.time * 0.001f;
+
+	if ( nextThink <= time && nextThink > 0.0f )
 	{
 		if ( thinkFunction )
 			(this->*thinkFunction)();
 	}
 
+	// Scan for visible entities
+	if ( nextSightQuery <= time )
+	{
+		SightQuery();
+		nextSightQuery = time + 0.5f + crandom() * 0.1f;
+	}
+
+	if ( nextDecision <= time )
+	{
+		EvaluateSituation();
+		nextDecision = time + 0.2f + crandom() * 0.1f;
+	}
+
+	AimAtTarget();
+
+	// Lastly, move
 	Move();
 }
 
@@ -81,6 +256,54 @@ BaseEntity* Mercenary::TestEntityPosition()
 		return static_cast<BaseEntity*>(gEntities[tr.entityNum]);
 
 	return nullptr;
+}
+
+Vector Mercenary::GetHeadOffset() const
+{
+	return Vector( 0, 0, 56 );
+}
+
+AI::Relationship Mercenary::Relationship( BaseEntity* entity ) const
+{
+	if ( entity->IsSubclassOf( Mercenary::ClassInfo ) )
+	{
+		Mercenary* merc = static_cast<Mercenary*>(entity);
+		return Relationship( merc->GetSpecies(), merc->GetFaction() );
+	}
+	else if ( entity->IsClass( BasePlayer::ClassInfo ) )
+	{
+		return Relationship( Species_Human, Faction_Agency );
+	}
+	else
+	{
+		return AI::Relationship::None;
+	}
+}
+
+AI::Relationship Mercenary::Relationship( uint8_t spec, uint8_t fac ) const
+{
+	// to save some typing
+	using R = AI::Relationship;
+
+	constexpr static AI::Relationship table[Faction_MAX][Faction_MAX] =
+	{//	Faction:       None        Mafia          Criminals   Police      Agency         Aliens    Rogue
+		/*None*/     { R::Neutral, R::Neutral,    R::Neutral, R::Neutral, R::Neutral,    R::Enemy, R::Enemy },
+		/*Mafia*/    { R::Neutral, R::BestAlly,   R::Enemy,   R::Enemy,   R::WorstEnemy, R::Enemy, R::Enemy },
+		/*Criminals*/{ R::Neutral, R::Enemy,      R::Ally,    R::Enemy,   R::WorstEnemy, R::Enemy, R::Enemy },
+		/*Police*/   { R::Neutral, R::Enemy,      R::Enemy,   R::Ally,    R::Enemy,      R::Enemy, R::Enemy },
+		/*Agency*/   { R::Neutral, R::WorstEnemy, R::Enemy,   R::Enemy,   R::Ally,       R::Enemy, R::Enemy },
+		/*Aliens*/   { R::Enemy,   R::Enemy,      R::Enemy,   R::Enemy,   R::Enemy,      R::Ally,  R::Enemy },
+		/*Rogue*/    { R::Enemy,   R::Enemy,      R::Enemy,   R::Enemy,   R::Enemy,      R::Enemy, R::Enemy },
+	};//Species^
+
+	switch ( spec )
+	{
+	case Species_Object:
+	case Species_Plant:
+		return R::None;
+	}
+
+	return table[faction][fac];
 }
 
 float Mercenary::SnapMovementSpeed( float speed, bool smooth )
@@ -129,17 +352,20 @@ usercmd_t Mercenary::CalculateCmdForVelocity( Vector wishVelocity, bool canJump 
 
 void Mercenary::MovementLogic()
 {
-	if ( gEntities[0] )
-		moveTarget = gEntities[0]->GetCurrentOrigin() - Vector( 0, 0, 24 );
-
 	if ( playerState.groundEntityNum == ENTITYNUM_NONE )
 		return;
 
-	trace_t trForward, trBackward, trRight, trLeft, trUp;
-	Vector forward, right, up;
 	Vector start = GetCurrentOrigin() + Vector( 0, 0, 12 );
 	Vector wishVelocity = moveTarget - GetCurrentOrigin();
 
+	// Calculate base movement
+	usercmd_t ccmd = CalculateCmdForVelocity( wishVelocity, false );
+	int forwardMove = ccmd.forwardmove;
+	int rightMove = ccmd.rightmove;
+
+#if 0
+	trace_t trForward, trBackward, trRight, trLeft, trUp;
+	Vector forward, right, up;
 	viewAngles = wishVelocity.ToAngles();
 	viewAngles.x = 0;
 
@@ -150,8 +376,6 @@ void Mercenary::MovementLogic()
 	Util::Trace( &trRight,		start, nullptr, nullptr, start + right * 96.0f,		GetEntityIndex(), MASK_PLAYERSOLID );
 	Util::Trace( &trLeft,		start, nullptr, nullptr, start - right * 96.0f,		GetEntityIndex(), MASK_PLAYERSOLID );
 
-	// Calculate base movement
-	usercmd_t ccmd = CalculateCmdForVelocity( wishVelocity, false );
 	int forwardMove = ccmd.forwardmove - (80 * (1.0 - trForward.fraction)) + (80 * (1.0 - trBackward.fraction));
 	int rightMove = ccmd.rightmove - (80 * (1.0 - trRight.fraction)) + (80 * (1.0 - trLeft.fraction));
 
@@ -244,7 +468,8 @@ void Mercenary::MovementLogic()
 			ccmd.upmove = 127;
 		}
 	}
-	
+#endif
+
 	cmd.forwardmove = MAX( MIN( forwardMove, 127 ), -128 );
 	cmd.rightmove = MAX( MIN( rightMove, 127 ), -128 );
 	cmd.upmove = ccmd.upmove;
@@ -262,9 +487,10 @@ void Mercenary::CalculateMoveParameters()
 	playerState.commandTime = cmd.serverTime - 17;
 	playerState.gravity = g_gravity.value * 2.0f;
 
-	SetAngles( viewAngles );
-	SetCurrentAngles( viewAngles );
-	viewAngles.CopyToArray( GetState()->apos.trBase );
+	Vector bodyAngles = Vector( 0, viewAngles.y, 0 );
+	SetAngles( bodyAngles );
+	SetCurrentAngles( bodyAngles );
+	bodyAngles.CopyToArray( GetState()->apos.trBase );
 	viewAngles.CopyToArray( playerState.viewangles );
 	
 	cmd.angles[0] = ANGLE2SHORT( viewAngles.x );
@@ -301,6 +527,13 @@ void Mercenary::Move()
 	Pmove( &pm );
 
 	BG_PlayerStateToEntityState( &playerState, GetState(), false );
+
+	// Correct the body angles
+	Vector bodyAngles = Vector( 0, viewAngles.y, 0 );
+	SetAngles( bodyAngles );
+	SetCurrentAngles( bodyAngles );
+	bodyAngles.CopyToArray( GetState()->apos.trBase );
+
 	GetState()->eType = ET_GENERAL;
 
 	VectorCopy( pm.mins, GetShared()->mins );
@@ -328,4 +561,247 @@ void Mercenary::Move()
 
 	// NOTE: now copy the exact origin over otherwise clients can be snapped into solid
 	SetCurrentOrigin( playerState.origin );
+}
+
+void Mercenary::UpdatePath()
+{
+	// Step 1: get the destination and current nearest nodes
+	Node* node = Node::GetNearest( moveIdeal );
+	Node* nearest = Node::GetNearest( GetCurrentOrigin() );
+	
+	if ( nullptr == currentNode )
+		currentNode = nearest;
+
+	// Step 2: snap to the current nearest node
+	float distance = (nearest->GetCurrentOrigin() - GetCurrentOrigin()).Length();
+	if ( distance < 64.0f )
+	{
+		currentNode = nearest;
+	}
+
+	if ( nullptr == node || nullptr == nearest )
+	{	// "Automatic" pathfinding
+		moveTarget = moveIdeal;
+		Util::Print( "node and/or nearest are nullptr\n" );
+		return;
+	}
+	
+	Node* nextNode = currentNode->Next( currentNode, node );
+	if ( nullptr == nextNode )
+	{
+		Util::Print( "nextNode is nullptr\n" );
+		moveTarget = moveIdeal;
+		return;
+	}
+
+	moveTarget = nextNode->GetCurrentOrigin();
+}
+
+void Mercenary::SightQuery()
+{
+	auto entities = gameWorld->EntitiesInRadius( GetCurrentOrigin(), 1024 );
+
+	Vector forward;
+	Vector::AngleVectors( viewAngles, &forward, nullptr, nullptr );
+
+	for ( IEntity*& ent : entities )
+	{
+		// Step 0: see if it's a character of any kind
+		if ( !ent->IsSubclassOf( Mercenary::ClassInfo ) && !ent->IsClass( BasePlayer::ClassInfo ) )
+		{
+			continue;
+		}
+
+		// Step 1: determine if in FOV
+		Vector dir = (ent->GetCurrentOrigin() - GetCurrentOrigin()).Normalized();
+		float dot = forward * dir;
+
+		// Hardcoded 120-degree FOV, todo: make more customisable
+		if ( dot < 0.5f )
+		{
+			// Not visible
+			continue;
+		}
+
+		// Step 2: determine if visible, trace from head to head, todo: trace several other bodyparts too
+		Vector start = GetCurrentOrigin() + GetHeadOffset();
+		Vector end = ent->GetAverageOrigin() + ent->GetCurrentOrigin();
+		trace_t tr;
+
+		Util::Trace( &tr, start, nullptr, nullptr, end, GetEntityIndex(), MASK_SHOT );
+		if ( tr.entityNum != ent->GetEntityIndex() )
+		{
+			// Not visible
+			if ( ent->IsClass( BasePlayer::ClassInfo ) )
+			{
+				Util::PrintDev( va( "Can't see the player, blocked by some object (id %i)\n", tr.entityNum ), 2 );
+			}
+			continue;
+		}
+
+		// Step 3: determine if this is a friend or foe, "remember" them if possible
+		RegisterVisibleEntity( static_cast<BaseEntity*>( ent ) );
+	}
+}
+
+void Mercenary::RegisterVisibleEntity( BaseEntity* ent )
+{
+	AI::Relationship rel = Relationship( ent );
+
+	// If this entity is not in memory, remember it
+	if ( !IsInMemory( ent ) )
+	{
+		memories.push_back( EntityMemory( ent, rel ) );
+	}
+
+	// Get some data about the entity to remember for a while
+	MemoryFrame mf;
+	EntityMemory* em = GetMemory( ent );
+
+	// Since RegisterVisibleEntity gets called from SightQuery, 
+	// it only makes sense to set lastSeen
+	mf.lastSeen = ent->GetCurrentOrigin();
+	mf.time = level.time * 0.001f;
+	
+	em->AddFrame( mf );
+	em->Update( level.time * 0.001f );
+	em->IncreaseAwareness( level.time * 0.001f );
+}
+
+bool Mercenary::IsInMemory( BaseEntity* ent )
+{
+	for ( EntityMemory& em : memories )
+	{
+		if ( em.entityIndex == ent->GetEntityIndex() )
+			return true;
+	}
+
+	return false;
+}
+
+EntityMemory* Mercenary::GetMemory( BaseEntity* ent )
+{
+	for ( EntityMemory& em : memories )
+	{
+		if ( em.entityIndex == ent->GetEntityIndex() )
+		{
+			return &em;
+		}
+	}
+
+	return nullptr;
+}
+
+void Mercenary::EvaluateSituation()
+{
+	switch ( situation )
+	{
+	case AI::ST_Casual: Situation_Casual(); break;
+	case AI::ST_Combat: Situation_Combat(); break;
+	}
+
+	UpdatePath();
+}
+
+void Mercenary::Situation_Casual()
+{
+	// Check if there are any enemies so we can transition to combat mode
+	BaseEntity* enemy = GetEnemy();
+
+	if ( enemy )
+	{
+		situation = AI::ST_Combat;
+		targetEntity = enemy;
+		return;
+	}
+}
+
+void Mercenary::Situation_Combat()
+{
+	moveIdeal = targetEntity->GetCurrentOrigin();
+	lookTarget = targetEntity->GetCurrentOrigin();
+}
+
+BaseEntity* Mercenary::GetEnemy()
+{
+	// The most important enemy is retrieved by the following criteria:
+	// - distance (the closer the more important)
+	// - relationship (WorstEnemy > Enemy)
+	// - awareness (MaximumCertainty)
+	// - life (must be alive)
+	// - time (must be a recent enough memory)
+	
+	const float time = level.time * 0.001f;
+
+	// First, make a list of entities that match the criteria
+	std::vector<EntityMemory*> ems;
+	ems.reserve( 16U );
+
+	for ( EntityMemory& em : memories )
+	{
+		if ( !em.alive )
+			continue;
+
+		if ( (time - em.LastMemoryTime()) > 100.0f )
+			continue;
+
+		if ( em.awareness != Awareness::MaximumCertainty )
+			continue;
+
+		if ( em.relationship != Relationship::Enemy && em.relationship != Relationship::WorstEnemy )
+			continue;
+	
+		ems.push_back( &em );
+	}
+
+	bool worstEnemy = false;
+	float closest = 5000.0f;
+	EntityMemory* closestEnemy = nullptr;
+
+	for ( EntityMemory* em : ems )
+	{
+		if ( em->relationship == Relationship::WorstEnemy )
+		{
+			worstEnemy = true;
+		}
+		
+		// Skip regular enemies if we have worst enemies around
+		if ( worstEnemy && em->relationship != Relationship::WorstEnemy )
+		{
+			continue;
+		}
+
+		float distance = (em->LastSeen() - GetCurrentOrigin()).Length();
+		if ( distance < closest )
+		{
+			closest = distance;
+			closestEnemy = em;
+		}
+	}
+
+	if ( nullptr == closestEnemy )
+	{
+		return nullptr;
+	}
+
+	IEntity* ent = gEntities[closestEnemy->entityIndex];
+	if ( nullptr == ent )
+	{
+		return nullptr;
+	}
+
+	return static_cast<BaseEntity*>(ent);
+}
+
+void Mercenary::AimAtTarget()
+{
+	if ( nullptr != targetEntity )
+	{
+		lookTarget = targetEntity->GetCurrentOrigin();
+	}
+
+	Vector dir = (lookTarget - GetCurrentOrigin() + GetHeadOffset()).Normalized();
+	lookDirection = lookDirection * 0.94f + dir * 0.06f;
+	
+	viewAngles = lookDirection.ToAngles();
 }
