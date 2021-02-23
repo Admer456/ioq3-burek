@@ -8,7 +8,9 @@ namespace AI
 		Species_Human,
 		Species_Alien,
 		Species_Animal,
-		Species_Plant
+		Species_Plant,
+
+		Species_MAX
 	};
 
 	enum Faction : uint8_t
@@ -17,7 +19,12 @@ namespace AI
 		Faction_Mafia,
 		Faction_Criminals,
 		Faction_Police,
-		Faction_Agency
+		Faction_Agency,
+		Faction_Aliens, // Aliens have their own faction, but individual aliens can belong to others too
+
+		Faction_Rogue, // If I see anyone from my faction, they're my enemies too
+
+		Faction_MAX
 	};
 
 	enum class Relationship
@@ -80,7 +87,7 @@ namespace AI
 		Scared,
 	};
 
-	enum class Awareness : uint8_t
+	enum Awareness : uint8_t
 	{
 		// "Casually minding my business
 		// Returns to: Can't return lower
@@ -103,9 +110,11 @@ namespace AI
 		Certain,
 		
 		// "I KNOW YOU'RE THERE"
-		// Returns to: itself
+		// Returns to: Certain after a LONG time
 		// NPC hunts the entity of interest til death
-		MaximumCertainty
+		MaximumCertainty,
+
+		Awareness_MAX
 	};
 
 	// Types for ai_node* entities
@@ -151,5 +160,13 @@ namespace AI
 		// In the NPC's "eyes", this represents a solid, opaque wall
 		// Can't see anything through it
 		BlockVisibility
+	};
+
+	enum SituationType : uint8_t
+	{
+		ST_Casual = 0, // Doing work etc.
+		ST_Combat,
+		ST_Victory,
+		ST_Defeat,
 	};
 }
