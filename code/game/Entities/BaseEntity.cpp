@@ -27,6 +27,9 @@ void BaseEntity::Spawn()
 	shared.r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	gameImports->LinkEntity( this );
 	shared.s.pos.trType = TR_STATIONARY;
+
+	if ( !GetState()->modelindex )
+		gameImports->UnlinkEntity( this );
 }
 
 void BaseEntity::ParseKeyvalues()
@@ -116,6 +119,12 @@ const char* BaseEntity::GetTarget() const
 
 IEntity* BaseEntity::GetTargetEntity() const
 {
+	if ( !GetTarget() )
+	{
+		Util::PrintWarning( va( "%s.GetTargetEntity: target is empty!\n", GetName() ) );
+		return nullptr;
+	}
+
 	return gameWorld->FindByName( target.c_str() );
 }
 
@@ -126,6 +135,8 @@ std::vector<IEntity*> BaseEntity::GetTargetEntities() const
 	
 	if ( nullptr != startEntity )
 	{
+		entities.push_back( startEntity );
+
 		char buffer[32];
 		for ( int i = 1; i < 128; i++ )
 		{
@@ -162,9 +173,9 @@ IEntity* BaseEntity::GetTargetOf() const
 		BaseEntity* ent = static_cast<BaseEntity*>(gEntities[i]);
 		auto targets = ent->GetTargetEntities();
 
-		for ( auto target : targets )
+		for ( auto entTarget : targets )
 		{
-			if ( target == this )
+			if ( entTarget == this )
 			{
 				return ent;
 			}
@@ -184,9 +195,9 @@ std::vector<IEntity*> BaseEntity::GetAllTargetOf() const
 		BaseEntity* ent = static_cast<BaseEntity*>(gEntities[i]);
 		auto targets = ent->GetTargetEntities();
 
-		for ( auto target : targets )
+		for ( auto entTarget : targets )
 		{
-			if ( target == this )
+			if ( entTarget == this )
 			{
 				ents.push_back( ent );
 				break;
