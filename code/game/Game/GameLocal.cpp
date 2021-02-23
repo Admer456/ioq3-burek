@@ -115,6 +115,8 @@ static int gameCvarTableSize = ARRAY_LEN( gameCvarTable );
 
 void GameLocal::Init( int levelTime, int randomSeed, int restart )
 {
+	EntityClassInfo::SetupSuperClasses();
+
 	gameWorld = new GameWorld();
 
 	G_Printf( "------- Game Initialization -------\n" );

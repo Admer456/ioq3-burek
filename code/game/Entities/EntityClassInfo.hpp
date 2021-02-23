@@ -39,6 +39,7 @@ public:
 		prev = head;
 		head = this;
 
+		// Doesn't actually quite work here, so I wrote SetupSuperClasses
 		super = GetInfoByName( superClassName );
 	}
 
@@ -96,6 +97,20 @@ public:
 		}
 
 		return nullptr;
+	}
+
+	// This is called during game initialisation to properly set all superclasses
+	static void SetupSuperClasses()
+	{
+		EntityClassInfo* current = nullptr;
+		current = head;
+
+		while ( current )
+		{
+			current->super = GetInfoByName( current->superName );
+
+			current = current->prev;
+		}
 	}
 
 	EntityClassInfo* prev;
