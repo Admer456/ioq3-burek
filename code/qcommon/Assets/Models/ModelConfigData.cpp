@@ -12,9 +12,9 @@ std::vector<ModelAnimation> ModelConfigData::GetAnimations( const char* modelFil
 
 	int len = Util::FileOpen( modelFile, &file, fsMode_t::FS_READ );
 
-	if ( !len )
+	if ( len == -1 )
 	{
-		Util::PrintError( va( "Cannot find model config file\n'%s'", modelFile ) );
+		Util::PrintWarning( va( "Cannot find model config file\n'%s'", modelFile ) );
 		return std::vector<ModelAnimation>();
 	}
 
