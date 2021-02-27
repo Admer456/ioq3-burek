@@ -89,6 +89,9 @@ typedef struct {
 	int		(*MarkFragments)( int numPoints, const vec3_t *points, const vec3_t projection,
 				   int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer );
 
+	int		(*TagIndexForName)(qhandle_t model, const char* tagName);
+	const char* (*TagNameForIndex)(qhandle_t model, int tagId);
+
 	int		(*LerpTag)( orientation_t *tag,  qhandle_t model, int startFrame, int endFrame, 
 					 float frac, const char *tagName );
 	void	(*ModelBounds)( qhandle_t model, vec3_t mins, vec3_t maxs );

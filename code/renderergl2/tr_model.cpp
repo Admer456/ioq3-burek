@@ -1306,6 +1306,126 @@ mdvTag_t *R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, mdv
 	return NULL;
 }
 
+int R_TagIndexForName( qhandle_t model, const char* tagName )
+{
+	model_t* mod = R_GetModelByHandle( model );
+
+	if ( !mod->mdv[0] )
+	{
+		if ( mod->type == MOD_MDR )
+		{
+			mdrHeader_t* header = reinterpret_cast<mdrHeader_t*>(mod->modelData);
+			mdrTag_t* tag = (mdrTag_t*)((byte*)header + header->ofsTags);
+
+			for ( int i = 0; i < header->numTags; i++, tag++ )
+			{
+				if ( !strcmp( tag->name, tagName ) )
+				{
+					return i;
+				}
+			}
+		}
+
+		else if ( mod->type == MOD_IQM )
+		{
+			iqmData_t* data = reinterpret_cast<iqmData_t*>(mod->modelData);
+			char* names = data->jointNames;
+
+			for ( int i = 0; i < data->num_joints; i++ )
+			{
+				if ( !strcmp( names, tagName ) )
+				{
+					return i;
+				}
+
+				names += strlen( names ) + 1;
+			}
+		}
+	}
+	else
+	{
+		mdvModel_t* mdv = mod->mdv[0];
+		mdvTagName_t* tagNames = mdv->tagNames;
+
+		for ( int i = 0; i < mdv->numTags; i++, tagNames++ )
+		{
+			if ( !strcmp( tagNames->name, tagName ) )
+			{
+				return i;
+			}
+		}
+	}
+
+	return -1;
+}
+
+const char* R_TagNameForIndex( qhandle_t model, int tagId )
+{
+	model_t* mod = R_GetModelByHandle( model );
+
+	if ( !mod->mdv[0] )
+	{
+		if ( mod->type == MOD_MDR )
+		{
+			mdrHeader_t* header = reinterpret_cast<mdrHeader_t*>(mod->modelData);
+			mdrTag_t* tag = (mdrTag_t*)((byte*)header + header->ofsTags);
+
+			if ( header->numTags >= tagId )
+			{
+				return nullptr;
+			}
+
+			for ( int i = 0; i < header->numTags; i++, tag++ )
+			{
+				if ( tagId == i )
+				{
+					return tag->name;
+				}
+			}
+		}
+		else if ( mod->type == MOD_IQM )
+		{
+			iqmData_t* data = reinterpret_cast<iqmData_t*>( mod->modelData );
+			char* names = data->jointNames;
+
+			if ( data->num_joints >= tagId )
+			{
+				return nullptr;
+			}
+
+			for ( int i = 0; i < data->num_joints; i++ )
+			{
+				if ( tagId == i )
+				{
+					return names;
+				}
+
+				names += strlen( names ) + 1;
+			}
+		}
+	}
+	else
+	{
+		mdvModel_t* mdv = mod->mdv[0];
+		mdvTagName_t* tagName = mdv->tagNames;
+
+		if ( tagId >= mdv->numTags ) 
+		{
+			return nullptr;
+		}
+
+		for ( int i = 0; i < mdv->numTags; i++, tagName++ )
+		{
+			if ( tagId == i )
+			{
+				return tagName->name;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 /*
 ================
 R_LerpTag

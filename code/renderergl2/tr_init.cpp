@@ -1625,6 +1625,10 @@ refexport_t *GetRefAPI ( int apiVersion, refimport_t *rimp ) {
 	re.EndFrame = RE_EndFrame;
 
 	re.MarkFragments = R_MarkFragments;
+
+	re.TagIndexForName = R_TagIndexForName;
+	re.TagNameForIndex = R_TagNameForIndex;
+
 	re.LerpTag = R_LerpTag;
 	re.ModelBounds = R_ModelBounds;
 
