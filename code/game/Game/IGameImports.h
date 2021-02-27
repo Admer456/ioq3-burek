@@ -67,6 +67,27 @@ public:
 
 	virtual int				DebugPolygonCreate( int color, int numPoints, vec3_t* points ) = 0;
 	virtual void			DebugPolygonDelete( int id ) = 0;
+
+	// BUREKTech new engine functions
+	// TODO: make these work on headless servers
+
+	virtual int				TagIndexForName( qhandle_t model, const char* tagName ) = 0;
+	virtual const char*		TagNameForIndex( qhandle_t model, int tagId ) = 0;
+
+	// LerpTag - calculates the transform of a bone at a given animation moment
+	// returns: false if the tag cannot be found, true if it can
+	// tag: output transform
+	// fraction: interpolation between startFrame and endFrame, 0.0 to 1.0
+	// tagName: for skeletally-animated models, this is the joint name, otherwise it's the tag name
+	virtual bool			LerpTag( orientation_t* tag, qhandle_t model, int startFrame, int endFrame, float fraction, const char* tagName ) = 0;
+
+	// ModelBounds - retrieves the bounding box of a model
+	virtual void			ModelBounds( qhandle_t model, vec3_t outMins, vec3_t outMaxs ) = 0;
+
+	// LightForPoint - samples lighting from the lightgrid
+	// returns: false if there's no light grid data, true if there is
+	// point: the world position to sample from
+	virtual bool			LightForPoint( vec3_t point, vec3_t outAmbientLight, vec3_t outDirectLight, vec3_t outLightDirection ) = 0;
 };
 // BotLib is not here
 
