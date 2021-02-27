@@ -749,6 +749,7 @@ typedef enum {
 	ET_INVISIBLE,
 	ET_SPRITE,				// renders a sprite
 	ET_SKY,					// used for sky domes
+	ET_ATTACHMENT,			// special entity type that attaches self to tags/joints
 
 	ET_EVENTS				// any of the EV_* events can be added freestanding
 							// by setting eType to ET_EVENTS + eventNum
