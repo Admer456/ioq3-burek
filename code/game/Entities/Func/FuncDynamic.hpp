@@ -18,12 +18,8 @@ namespace Entities
 		void StartAnimation( const char* name );
 		void IdleAnimation( const char* name );
 
-		animHandle GetAnimByName( const char* name );
-
 	protected:
 		animHandle actionAnimation{};
 		animHandle idleAnimation{};
-
-		std::vector<Assets::ModelAnimation> anims;
 	};
 }

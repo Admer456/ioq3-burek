@@ -158,6 +158,11 @@ namespace Entities
 		bool			IsClass( const EntityClassInfo& eci ) override final;
 		bool			IsSubclassOf( const EntityClassInfo& eci ) override final;
 
+		// Model stuff
+		animHandle		GetAnimByName( const char* name );
+		
+		std::vector<Assets::ModelAnimation> anims;
+
 	public:
 		std::string		className;
 		std::string		targetName;

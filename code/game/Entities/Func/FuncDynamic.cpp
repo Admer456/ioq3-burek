@@ -46,6 +46,12 @@ void FuncDynamic::Spawn()
 	GetState()->animation = idleAnimation;
 	GetState()->animationFlags = AnimFlag_Loop;
 	GetState()->framerate = 1000.0f / anims[idleAnimation].frameLerp;
+
+	//Vector( 32, 32, 32 ).CopyToArray( GetShared()->maxs );
+	//Vector( -32, -32, -32 ).CopyToArray( GetShared()->mins );
+	//GetShared()->contents |= CONTENTS_SOLID;
+
+	gameImports->LinkEntity( this );
 }
 
 void FuncDynamic::Use( IEntity* activator, IEntity* caller, float value )
@@ -79,18 +85,4 @@ void FuncDynamic::StartAnimation( const char* name )
 void FuncDynamic::IdleAnimation( const char* name )
 {
 	idleAnimation = GetAnimByName( name );
-}
-
-animHandle FuncDynamic::GetAnimByName( const char* name )
-{
-	for ( Assets::ModelAnimation& anim : anims )
-	{
-		if ( !anim.name[0] )
-			continue;
-
-		if ( !strcmp( name, anim.name ) )
-			return &anim - anims.data();
-	}
-
-	return AnimHandleNotFound;
 }

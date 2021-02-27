@@ -26,7 +26,8 @@ void BaseEntity::Spawn()
 
 	shared.r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	gameImports->LinkEntity( this );
-	shared.s.pos.trType = TR_STATIONARY;
+	shared.s.pos.trType = TR_INTERPOLATE;
+	shared.s.apos.trTime = TR_INTERPOLATE;
 
 	if ( !GetState()->modelindex )
 		gameImports->UnlinkEntity( this );
@@ -51,6 +52,7 @@ void BaseEntity::ParseKeyvalues()
 	Vector keyAngles = spawnArgs->GetVector( "angles", Vector::Zero );
 	SetAngles( keyAngles );
 	SetCurrentAngles( keyAngles );
+	keyAngles.CopyToArray( shared.s.apos.trBase );
 
 	// spawnflags
 	spawnFlags = spawnArgs->GetInt( "spawnflags", 0 );
@@ -181,6 +183,8 @@ IEntity* BaseEntity::GetTargetOf() const
 			}
 		}
 	}
+
+	return nullptr;
 }
 
 std::vector<IEntity*> BaseEntity::GetAllTargetOf() const
@@ -295,6 +299,12 @@ void BaseEntity::SetModel( const char* modelPath )
 		else
 		{
 			shared.s.modelindex = gameWorld->PrecacheModel( modelPath );
+			
+			std::string modelConfig = modelPath;
+			modelConfig = modelConfig.substr( 0, modelConfig.size() - 4 );
+			modelConfig += ".mcfg";
+
+			anims = Assets::ModelConfigData::GetAnimations( modelConfig.c_str() );
 		}
 	}
 }
@@ -593,6 +603,20 @@ bool BaseEntity::IsClass( const EntityClassInfo& eci )
 bool BaseEntity::IsSubclassOf( const EntityClassInfo& eci )
 {
 	return GetClassInfo()->IsSubclassOf( eci );
+}
+
+animHandle BaseEntity::GetAnimByName( const char* name )
+{
+	for ( Assets::ModelAnimation& anim : anims )
+	{
+		if ( !anim.name[0] )
+			continue;
+
+		if ( !strcmp( name, anim.name ) )
+			return &anim - anims.data();
+	}
+
+	return AnimHandleNotFound;
 }
 
 bool BaseEntity::CheckAndClearEvents()
