@@ -1442,6 +1442,9 @@ typedef struct entityState_s {
 	int		torsoAnim;		// mask off ANIM_TOGGLEBIT
 
 	int		generic1;		// Can be used as an event parameter in some cases
+
+	// Special: for attachment entities
+	char	attachBone[16]; // Prefix with attacher_* to get the final bone name
 } entityState_t;
 
 typedef enum {
