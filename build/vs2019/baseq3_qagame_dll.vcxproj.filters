@@ -213,6 +213,21 @@
     <ClInclude Include="..\..\code\game\Entities\AI\Neander\Node.hpp">
       <Filter>Sources\Entities\AI\Neander</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\AI\Neander\NavNode.hpp">
+      <Filter>Sources\Entities\AI\Neander</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\AI\Neander\ScriptedSequence.hpp">
+      <Filter>Sources\Entities\AI\Neander</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\AI\AI_Jobs.hpp">
+      <Filter>Sources\Entities\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Base\BaseAttachment.hpp">
+      <Filter>Sources\Entities\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Func\FuncAttach.hpp">
+      <Filter>Sources\Entities\Func</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -358,6 +373,18 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\AI\Neander\Node.cpp">
       <Filter>Sources\Entities\AI\Neander</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\AI\Neander\NavNode.cpp">
+      <Filter>Sources\Entities\AI\Neander</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\AI\Neander\ScriptedSequence.cpp">
+      <Filter>Sources\Entities\AI\Neander</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Base\BaseAttachment.cpp">
+      <Filter>Sources\Entities\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Func\FuncAttach.cpp">
+      <Filter>Sources\Entities\Func</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
