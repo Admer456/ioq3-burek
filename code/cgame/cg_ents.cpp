@@ -160,7 +160,7 @@ static void CG_EntityEffects( centity_t *cent ) {
 CG_General
 ==================
 */
-static void CG_General( centity_t *cent ) 
+static void CG_General( centity_t *cent, bool attach = false ) 
 {
 	refEntity_t			ent;
 	entityState_t		*s1;
@@ -205,6 +205,44 @@ static void CG_General( centity_t *cent )
 
 	if ( s1->solid != SOLID_BMODEL && s1->framerate )
 		RenderEntity::CalculateAnimation( ent, cent->currentState );
+
+	// Attaching entities are special
+	// Attachments on attachments aren't yet supported
+	if ( attach )
+	{
+		char* boneName = cent->currentState.attachBone;
+		int tagId = cent->currentState.otherEntityNum;
+		int parentId = cent->currentState.otherEntityNum2;
+
+		// parent entity stuff
+		centity_t* parentEnt = &cg_entities[parentId];
+		qhandle_t parentModel = parentEnt->currentState.modelindex;
+		entityState_t* s2 = &parentEnt->currentState;
+
+		if ( parentEnt->currentValid ) // if the player cannot see the parent entity, then ignore
+		{
+			if ( !s2->modelindex && s2->solid != SOLID_BMODEL ) // can't attach onto brush ents YET
+			{
+				refEntity_t parent;
+				memset( &parent, 0, sizeof( parent ) );
+				parent.hModel = cgs.gameModels[s2->modelindex];
+
+				VectorCopy( parentEnt->lerpOrigin, parent.origin );
+				VectorCopy( parentEnt->lerpOrigin, parent.oldorigin );
+				AnglesToAxis( parentEnt->lerpAngles, parent.axis );
+
+				if ( s2->framerate ) // the attached entity follows its own animation thread
+					RenderEntity::CalculateAnimation( parent, parentEnt->currentState );
+
+				const char* tagName = trap_R_TagNameForIndex( parentModel, tagId );
+
+				if ( nullptr != tagName )
+					CG_PositionRotatedEntityOnTag( &ent, &parent, parent.hModel, const_cast<char*>(tagName) );
+				else
+					Util::PrintDev( va( "Cannot find joint ID %i for parent entity %i\n", tagId, parentId ), 1 );
+			}
+		}
+	}
 
 	// add to refresh list
 	trap_R_AddRefEntityToScene (&ent);
@@ -747,6 +785,7 @@ static void CG_AddCEntity( centity_t *cent ) {
 	case ET_SPEAKER:	CG_Speaker( cent ); break;
 	case ET_SPRITE:		CG_Sprite( cent ); break;
 	case ET_SKY:		break;
+	case ET_ATTACHMENT: CG_General( cent, true ); break;
 	}
 }
 
