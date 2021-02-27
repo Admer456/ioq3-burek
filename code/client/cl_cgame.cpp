@@ -587,6 +587,8 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		return 0;
 	case CG_R_LERPTAG:
 		return re.LerpTag( (orientation_t*)VMA(1), args[2], args[3], args[4], VMF(5), (const char*)VMA(6) );
+	case CG_R_TAGFORID:
+		return reinterpret_cast<int>( re.TagNameForIndex( args[1], args[2] ) );
 	case CG_GETGLCONFIG:
 		CL_GetGlconfig( (glconfig_t*)VMA(1) );
 		return 0;

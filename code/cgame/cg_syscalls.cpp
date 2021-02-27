@@ -306,6 +306,11 @@ int		trap_R_LerpTag( orientation_t *tag, clipHandle_t mod, int startFrame, int e
 	return syscall( CG_R_LERPTAG, tag, mod, startFrame, endFrame, PASSFLOAT(frac), tagName );
 }
 
+const char* trap_R_TagNameForIndex( qhandle_t model, int tagId )
+{
+	return reinterpret_cast<const char*>(syscall( CG_R_TAGFORID, model, tagId ));
+}
+
 void	trap_R_RemapShader( const char *oldShader, const char *newShader, const char *timeOffset ) {
 	syscall( CG_R_REMAP_SHADER, oldShader, newShader, timeOffset );
 }
