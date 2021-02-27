@@ -68,6 +68,12 @@ public:
 	int				DebugPolygonCreate( int color, int numPoints, vec3_t* points ) override;
 	void			DebugPolygonDelete( int id ) override;
 
+	int				TagIndexForName( qhandle_t model, const char* tagName ) override;
+	const char*		TagNameForIndex( qhandle_t model, int tagId ) override;
+	bool			LerpTag( orientation_t* tag, qhandle_t model, int startFrame, int endFrame, float fraction, const char* tagName ) override;
+	void			ModelBounds( qhandle_t model, vec3_t outMins, vec3_t outMaxs ) override;
+	bool			LightForPoint( vec3_t point, vec3_t outAmbientLight, vec3_t outDirectLight, vec3_t outLightDirection ) override;
+
 	clipHandle_t	ClipHandleForEntity( const Entities::IEntity* ent );
 	svEntity_t*		ServerEntityForEntity( Entities::IEntity* ent );
 	Entities::IEntity* EntityForServerEntity( svEntity_t* ent );

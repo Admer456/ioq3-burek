@@ -10,6 +10,11 @@
 #include "../game/Components/IComponent.hpp"
 #include "../game/Components/SharedComponent.hpp"
 
+#ifndef DEDICATED
+#include "../renderercommon/tr_public.h"
+extern	refexport_t		re;		// interface to refresh .dll
+#endif
+
 typedef struct worldSector_s {
 	int		axis;		// -1 = leaf node
 	float	dist;
@@ -507,6 +512,67 @@ int GameImportsLocal::DebugPolygonCreate( int color, int numPoints, vec3_t* poin
 void GameImportsLocal::DebugPolygonDelete( int id )
 {
 	BotImport_DebugPolygonDelete( id );
+}
+
+int GameImportsLocal::TagIndexForName( qhandle_t model, const char* tagName )
+{
+#ifndef DEDICATED
+	return re.TagIndexForName( model, tagName );
+#else 
+	return 0;
+#endif
+}
+
+const char* GameImportsLocal::TagNameForIndex( qhandle_t model, int tagId )
+{
+#ifndef DEDICATED
+	return re.TagNameForIndex( model, tagId );
+#else 
+	return nullptr;
+#endif
+}
+
+bool GameImportsLocal::LerpTag( orientation_t* tag, qhandle_t model, int startFrame, int endFrame, float fraction, const char* tagName )
+{
+#ifndef DEDICATED
+	char buffer[260];
+	GetConfigString( CS_MODELS + model, buffer, 260 );
+	qhandle_t realModel = re.RegisterModel( buffer );
+
+	return re.LerpTag( tag, realModel, startFrame, endFrame, fraction, tagName ) == qtrue;
+#else
+	return false;
+#endif
+}
+
+void GameImportsLocal::ModelBounds( qhandle_t model, vec3_t outMins, vec3_t outMaxs )
+{
+#ifndef DEDICATED
+	char buffer[260];
+	GetConfigString( CS_MODELS + model, buffer, 260 );
+	qhandle_t realModel = re.RegisterModel( buffer );
+
+	return re.ModelBounds( realModel, outMins, outMaxs );
+#else
+	outMins[0] = 0;
+	outMins[1] = 0;
+	outMins[2] = 0;
+
+	outMaxs[0] = 0;
+	outMaxs[1] = 0;
+	outMaxs[2] = 0;
+
+	return;
+#endif
+}
+
+bool GameImportsLocal::LightForPoint( vec3_t point, vec3_t outAmbientLight, vec3_t outDirectLight, vec3_t outLightDirection )
+{
+#ifndef DEDICATED
+	return re.LightForPoint( point, outAmbientLight, outDirectLight, outLightDirection ) == qtrue;
+#else
+	return false;
+#endif
 }
 
 clipHandle_t GameImportsLocal::ClipHandleForEntity( const IEntity* ent )
