@@ -45,7 +45,7 @@ void RenderEntity::CalculateAnimation( refEntity_t& ref, entityState_t& es )
 	{
 		if ( calcFrame >= ma.numFrames )
 		{
-			calcFrame = ((int)calcFrame & ma.numFrames) + (calcFrame - (int)calcFrame);
+			calcFrame -= (((int)calcFrame) / ma.numFrames) * ma.numFrames;
 		}
 	}
 	else if ( calcFrame > ma.numFrames )
