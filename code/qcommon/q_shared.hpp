@@ -178,6 +178,8 @@ typedef int intptr_t;
 #include <ctype.h>
 #include <limits.h>
 
+#include "Maths/Vector.hpp"
+
 #ifdef _MSC_VER
   #include <io.h>
 
@@ -1375,7 +1377,57 @@ enum trType_t
 	TR_LINEAR,
 	TR_LINEAR_STOP,
 	TR_SINE,					// value = base + sin( time / duration ) * delta
-	TR_GRAVITY
+	TR_GRAVITY,
+	TR_AXIAL					// apos only - rotate by forward & up axes, not Euler angles
+};
+
+// Tightly packed and optimised axial orientation
+// You can extract forward, up and right vectors from this,
+// but they're networked as shorts
+class TightOrientation
+{
+public:
+	constexpr static float Factor = 32767.0f;
+
+	inline Vector GetForward() const
+	{
+		return Vector(
+			forward[0] / Factor,
+			forward[1] / Factor,
+			forward[2] / Factor
+		).Normalized();
+	}
+
+	inline Vector GetUp() const
+	{
+		return Vector(
+			up[0] / Factor,
+			up[1] / Factor,
+			up[2] / Factor
+		).Normalized();
+	}
+
+	inline Vector GetRight() const
+	{
+		return GetForward().CrossProduct( GetUp() );
+	}
+
+	void SetForward( const Vector& v )
+	{
+		forward[0] = v.x * Factor;
+		forward[1] = v.y * Factor;
+		forward[2] = v.z * Factor;
+	}
+
+	void SetUp( const Vector& v )
+	{
+		up[0] = v.x * Factor;
+		up[1] = v.y * Factor;
+		up[2] = v.z * Factor;
+	}
+
+	signed short forward[3];
+	signed short up[3];
 };
 
 struct trajectory_t
@@ -1385,6 +1437,10 @@ struct trajectory_t
 	int		trDuration;			// if non 0, trTime + trDuration = stop time
 	vec3_t	trBase;
 	vec3_t	trDelta;			// velocity, etc
+
+	// Used by apos only!!!
+	// This is used so we can attach stuff onto bones/joints/tags
+	TightOrientation axialOrientation;
 };
 
 // entityState_t is the information conveyed from the server
@@ -1444,7 +1500,7 @@ typedef struct entityState_s {
 	int		generic1;		// Can be used as an event parameter in some cases
 
 	// Special: for attachment entities
-	char	attachBone[16]; // Prefix with attacher_* to get the final bone name
+	char	attachBone[16]; // e.g. attacher_1
 } entityState_t;
 
 typedef enum {

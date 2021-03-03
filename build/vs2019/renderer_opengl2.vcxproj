@@ -100,7 +100,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;_WIN32;WIN32;USE_INTERNAL_JPEG;USE_RENDERER_DLOPEN;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\code\SDL2\include;..\..\code\libcurl;..\..\code\AL;..\..\code\zlib;..\..\code\jpeg-8c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\code\SDL2\include;..\..\code\libcurl;..\..\code\AL;..\..\code\zlib;..\..\code\jpeg-8c;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -121,7 +121,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;_WIN64;__WIN64__;_WIN32;WIN32;USE_INTERNAL_JPEG;USE_RENDERER_DLOPEN;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\code\SDL2\include;..\..\code\libcurl;..\..\code\AL;..\..\code\zlib;..\..\code\jpeg-8c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\code\SDL2\include;..\..\code\libcurl;..\..\code\AL;..\..\code\zlib;..\..\code\jpeg-8c;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -143,7 +143,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;_WIN32;WIN32;USE_INTERNAL_JPEG;USE_RENDERER_DLOPEN;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\code\SDL2\include;..\..\code\libcurl;..\..\code\AL;..\..\code\zlib;..\..\code\jpeg-8c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\code\SDL2\include;..\..\code\libcurl;..\..\code\AL;..\..\code\zlib;..\..\code\jpeg-8c;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -160,7 +160,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;_WIN64;__WIN64__;_WIN32;WIN32;USE_INTERNAL_JPEG;USE_RENDERER_DLOPEN;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\code\SDL2\include;..\..\code\libcurl;..\..\code\AL;..\..\code\zlib;..\..\code\jpeg-8c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\code\SDL2\include;..\..\code\libcurl;..\..\code\AL;..\..\code\zlib;..\..\code\jpeg-8c;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/wd"4267" %(AdditionalOptions)</AdditionalOptions>
