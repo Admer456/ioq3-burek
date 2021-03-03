@@ -53,16 +53,28 @@ void FuncAttach::Think()
 
 	gameImports->LerpTag( &tag, attachTo->GetState()->modelindex, startFrame, endFrame, fraction, boneName );
 
-	Vector axis( tag.axis[0] );
-	axis = axis.ToAngles();
+	/*
+	tag.axis[0] -> bone's local down
+	tag.axis[1] -> bone's local forward
+	tag.axis[2] -> bone's local right
+	*/
 
-	attached->SetAngles( attachTo->GetAngles() + axis );
-	attached->SetCurrentAngles( attachTo->GetCurrentAngles() + axis );
-	(attachTo->GetCurrentAngles() + axis).CopyToArray( attached->GetState()->apos.trBase );
+	TightOrientation& to = attached->GetState()->apos.axialOrientation;
+	Vector forward = tag.axis[1];
+	Vector up = Vector(tag.axis[0]) * (attached->GetState()->solid == SOLID_BMODEL ? 1.0f : -1.0f);
+	Vector origin = Vector( tag.origin ) + attachTo->GetCurrentOrigin();
 
-	attached->SetOrigin( attachTo->GetOrigin() + tag.origin );
-	attached->SetCurrentOrigin( attachTo->GetCurrentOrigin() + tag.origin );
-	(attachTo->GetCurrentOrigin() + tag.origin).CopyToArray( attached->GetState()->pos.trBase );
+	to.SetForward( forward );
+	to.SetUp( up );
+
+	attached->SetAngles( Vector::Zero );
+	attached->SetCurrentAngles( Vector::Zero );
+
+	attached->SetOrigin( origin );
+	attached->SetCurrentOrigin( origin );
+	VectorCopy( origin, attached->GetState()->pos.trBase );
+
+	gameImports->LinkEntity( attached );
 }
 
 void FuncAttach::Use( IEntity* activator, IEntity* caller, float value )

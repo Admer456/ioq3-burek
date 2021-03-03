@@ -154,6 +154,20 @@ static void CG_EntityEffects( centity_t *cent ) {
 
 }
 
+static void CG_AxialOrientation( refEntity_t& re, const TightOrientation& orientation )
+{
+	if ( orientation.forward[0] == 0 && orientation.forward[1] == 0 && orientation.forward[2] == 0 )
+		return;
+
+	Vector forward, right, up;
+	forward = orientation.GetForward();
+	right = orientation.GetRight();
+	up = orientation.GetUp();
+
+	forward.CopyToArray( re.axis[0] );
+	right.CopyToArray( re.axis[1] );
+	up.CopyToArray( re.axis[2] );
+}
 
 /*
 ==================
@@ -206,41 +220,26 @@ static void CG_General( centity_t *cent, bool attach = false )
 	if ( s1->solid != SOLID_BMODEL && s1->framerate )
 		RenderEntity::CalculateAnimation( ent, cent->currentState );
 
+	CG_AxialOrientation( ent, cent->currentState.apos.axialOrientation );
+
 	// Attaching entities are special
 	// Attachments on attachments aren't yet supported
 	if ( attach )
 	{
-		char* boneName = cent->currentState.attachBone;
-		int tagId = cent->currentState.otherEntityNum;
-		int parentId = cent->currentState.otherEntityNum2;
+		int parentIndex = cent->currentState.otherEntityNum2;
+		centity_t* parentEnt = &cg_entities[parentIndex];
 
-		// parent entity stuff
-		centity_t* parentEnt = &cg_entities[parentId];
-		qhandle_t parentModel = parentEnt->currentState.modelindex;
-		entityState_t* s2 = &parentEnt->currentState;
-
-		if ( parentEnt->currentValid ) // if the player cannot see the parent entity, then ignore
+		if ( parentEnt->currentValid )
 		{
-			if ( !s2->modelindex && s2->solid != SOLID_BMODEL ) // can't attach onto brush ents YET
-			{
-				refEntity_t parent;
-				memset( &parent, 0, sizeof( parent ) );
-				parent.hModel = cgs.gameModels[s2->modelindex];
+			qhandle_t modelIndex = parentEnt->currentState.modelindex;
+			refEntity_t parent;
+			memset( &parent, 0, sizeof( parent ) );
 
-				VectorCopy( parentEnt->lerpOrigin, parent.origin );
-				VectorCopy( parentEnt->lerpOrigin, parent.oldorigin );
-				AnglesToAxis( parentEnt->lerpAngles, parent.axis );
+			VectorCopy( parentEnt->lerpOrigin, parent.origin );
+			AnglesToAxis( parentEnt->lerpAngles, parent.axis );
+			parent.hModel = modelIndex;
 
-				if ( s2->framerate ) // the attached entity follows its own animation thread
-					RenderEntity::CalculateAnimation( parent, parentEnt->currentState );
-
-				const char* tagName = trap_R_TagNameForIndex( parentModel, tagId );
-
-				if ( nullptr != tagName )
-					CG_PositionRotatedEntityOnTag( &ent, &parent, parent.hModel, const_cast<char*>(tagName) );
-				else
-					Util::PrintDev( va( "Cannot find joint ID %i for parent entity %i\n", tagId, parentId ), 1 );
-			}
+			CG_PositionRotatedEntityOnTag( &ent, &parent, modelIndex, cent->currentState.attachBone );
 		}
 	}
 
@@ -371,6 +370,8 @@ static void CG_Item( centity_t *cent ) {
 		ent.nonNormalizedAxes = qtrue;
 	}
 
+	CG_AxialOrientation( ent, cent->currentState.apos.axialOrientation );
+
 	// add to refresh list
 	trap_R_AddRefEntityToScene(&ent);
 
@@ -484,10 +485,12 @@ static void CG_Mover( centity_t *cent )
 	{
 		ent.hModel = cgs.inlineDrawModel[s1->modelindex];
 	} 
-	else 
+	else
 	{
 		ent.hModel = cgs.gameModels[s1->modelindex];
 	}
+
+	CG_AxialOrientation( ent, cent->currentState.apos.axialOrientation );
 
 	// add to refresh list
 	trap_R_AddRefEntityToScene(&ent);
@@ -682,6 +685,21 @@ static void CG_InterpolateEntityPosition( centity_t *cent ) {
 	cent->lerpAngles[1] = LerpAngle( current[1], next[1], f );
 	cent->lerpAngles[2] = LerpAngle( current[2], next[2], f );
 
+	Vector currentAxis[3];
+	Vector nextAxis[3];
+
+	currentAxis[0] = cent->currentState.apos.axialOrientation.GetForward();
+	currentAxis[1] = cent->currentState.apos.axialOrientation.GetRight();
+	currentAxis[2] = cent->currentState.apos.axialOrientation.GetUp();
+
+	nextAxis[0] = cent->nextState.apos.axialOrientation.GetForward();
+	nextAxis[1] = cent->nextState.apos.axialOrientation.GetRight();
+	nextAxis[2] = cent->nextState.apos.axialOrientation.GetUp();
+
+	for ( int i = 0; i < 3; i++ )
+	{
+		cent->lerpAxis[i] = currentAxis[i] + f * (nextAxis[i] - currentAxis[i]);
+	}
 }
 
 /*

@@ -1030,6 +1030,17 @@ netField_t	entityStateFields[] =
 	netField_t{ NETF(animation), 8, NF_Byte },
 	netField_t{ NETF(animationFlags), 8, NF_Byte },
 	netField_t{ NETF(animationTime), 32 },
+
+	// axialOrientation
+	netField_t{ NETF(apos.axialOrientation.forward[0]), 32, NF_Long }, // will encompass forward[0] and forward[1]
+	netField_t{ NETF(apos.axialOrientation.forward[2]), 32, NF_Long }, // forward[2] and up[0]
+	netField_t{ NETF(apos.axialOrientation.up[1]), 32, NF_Long }, // up[1] and up[2]
+
+	// attachBome
+	netField_t{ NETF(attachBone[0]), 32, NF_Long },
+	netField_t{ NETF(attachBone[4]), 32, NF_Long },
+	netField_t{ NETF(attachBone[8]), 32, NF_Long },
+	netField_t{ NETF(attachBone[12]), 32, NF_Long }
 };
 
 /*

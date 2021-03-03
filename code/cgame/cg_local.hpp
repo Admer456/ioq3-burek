@@ -184,6 +184,7 @@ struct centity_t
 	// exact interpolated position of entity on this frame
 	vec3_t			lerpOrigin;
 	vec3_t			lerpAngles;
+	Vector			lerpAxis[3];
 };
 
 #include "RenderEntity.hpp"

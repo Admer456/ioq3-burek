@@ -125,14 +125,19 @@ void BaseAttachment::UpdateAttachmentTransform()
 
 	gameImports->LerpTag( &tag, parent->GetState()->modelindex, startFrame, endFrame, fraction, shared.s.attachBone );
 
-	Vector axis( tag.axis[0] );
-	axis = axis.ToAngles();
+	/*
+	tag.axis[0] -> bone's local down
+	tag.axis[1] -> bone's local forward
+	tag.axis[2] -> bone's local right
+	*/
 
-	SetAngles( parent->GetAngles() + axis );
-	SetCurrentAngles( parent->GetCurrentAngles() + axis );
-	(parent->GetCurrentAngles() + axis).CopyToArray( GetState()->apos.trBase );
+	TightOrientation& to = GetState()->apos.axialOrientation;
+	Vector forward = tag.axis[1];
+	Vector up = Vector( tag.axis[2] ) * -1.0f;
 
-	SetOrigin( parent->GetOrigin() + tag.origin );
-	SetCurrentOrigin( parent->GetCurrentOrigin() + tag.origin );
-	(parent->GetCurrentOrigin() + tag.origin).CopyToArray( GetState()->pos.trBase );
+	to.SetForward( forward );
+	to.SetUp( up );
+
+	SetAngles( Vector::Zero );
+	SetCurrentAngles( Vector::Zero );
 }
