@@ -1,6 +1,6 @@
 #include "Vector.hpp"
 
-constexpr float MPi = 3.14159f;
+constexpr float MPi = 3.14159265358979323846f;	// matches value in gcc v2 math.h
 
 const Vector Vector::Zero = Vector( 0, 0, 0 );
 
@@ -77,7 +77,6 @@ inline const Vector& Vector::RotatedAboutAxis( const Vector& axis, float angle )
 
 	return cosV + K + cross;
 }
-
 
 inline const Vector& Vector::ProjectedOnPlane( const Vector& normal )
 {

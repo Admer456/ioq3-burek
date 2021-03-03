@@ -55,13 +55,20 @@ public: // Utilities
 	Vector ToAngles( bool flipPitch = false ) const;
 
 	// A cross product. What is there to say?
-	inline const Vector& CrossProduct( const Vector& op ) const
+	inline Vector CrossProduct( const Vector& op ) const
 	{
 		return Vector(
 			(y * op.z - z * op.y),
 			(z * op.x - x * op.z),
 			(x * op.y - y * op.x)
 		);
+	}
+
+	// Returns an angle between this vector and op
+	inline float AngleBetween( const Vector& op ) const
+	{
+		float cosPhi = (*this * op) / (Length() * op.Length());
+		return acosf( cosPhi ) * 180.0f / 3.14159265358979323846f;
 	}
 
 	// Returns a rotated vector around an axis
