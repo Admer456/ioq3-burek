@@ -21,6 +21,7 @@ void FuncBreakable::Spawn()
 	// Grab the current model index, so we can
 	// use it again if this entity respawns
 	currentModel = GetState()->modelindex;
+	gameImports->LinkEntity( this );
 }
 
 void FuncBreakable::Precache()
@@ -64,7 +65,9 @@ void FuncBreakable::TakeDamage( IEntity* attacker, IEntity* inflictor, int damag
 void FuncBreakable::Break()
 {
 	SetModel( nullptr );
+	UseTargets( this );
 	gameImports->UnlinkEntity( this );
+	GetState()->solid = 0;
 
 	EventData ed;
 
