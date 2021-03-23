@@ -1380,8 +1380,7 @@ enum trType_t
 	TR_LINEAR,
 	TR_LINEAR_STOP,
 	TR_SINE,					// value = base + sin( time / duration ) * delta
-	TR_GRAVITY,
-	TR_AXIAL					// apos only - rotate by forward & up axes, not Euler angles
+	TR_GRAVITY
 };
 
 // Tightly packed and optimised axial orientation
