@@ -164,9 +164,12 @@ static void CG_AxialOrientation( refEntity_t& re, const TightOrientation& orient
 	right = orientation.GetRight();
 	up = orientation.GetUp();
 
-	forward.CopyToArray( re.axis[0] );
-	right.CopyToArray( re.axis[1] );
-	up.CopyToArray( re.axis[2] );
+	re.axis[0] << forward;
+	re.axis[1] << right;
+	re.axis[2] << up;
+	//forward.CopyToArray( re.axis[0] );
+	//right.CopyToArray( re.axis[1] );
+	//up.CopyToArray( re.axis[2] );
 }
 
 /*

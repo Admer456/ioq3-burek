@@ -668,7 +668,8 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	// Find a spawn point
 	info = FindSpawnPoint<Entities::InfoPlayerStart>( client->ps.origin, false );
 
-	info.spawnPointPosition.CopyToArray( player->GetShared()->currentOrigin );
+	player->GetShared()->currentOrigin << info.spawnPointPosition;
+	//info.spawnPointPosition.CopyToArray( player->GetShared()->currentOrigin );
 	spawn_origin = info.spawnPointPosition;
 
 	// Toggle the teleport bit so the client doesn't lerp
@@ -741,7 +742,8 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	player->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + 25;
 
 	player->SetOrigin( spawn_origin );
-	VectorCopy( spawn_origin, client->ps.origin );
+	//VectorCopy( spawn_origin, client->ps.origin );
+	client->ps.origin << spawn_origin;
 
 	// the respawned flag will be cleared after the attack and jump keys come up
 	client->ps.pm_flags |= PMF_RESPAWNED;
@@ -1093,8 +1095,10 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 	// Unset it
 	player->SetOrigin( Vector::Zero );
 
-	amax.CopyToArray( player->GetShared()->absmax );
-	amin.CopyToArray( player->GetShared()->absmin );
+	player->GetShared()->absmax << amax;
+	player->GetShared()->absmin << amin;
+	//amax.CopyToArray( player->GetShared()->absmax );
+	//amin.CopyToArray( player->GetShared()->absmin );
 
 	if ( !player->GetClient()->noclip ) 
 	{

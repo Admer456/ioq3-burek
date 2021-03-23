@@ -708,8 +708,10 @@ static int CG_CalcViewValues( void ) {
 	Vector viewPos, viewAngles;
 	GetClient()->GetView()->CalculateViewTransform( viewPos, viewAngles );
 
-	viewPos.CopyToArray( cg.refdef.vieworg );
-	viewAngles.CopyToArray( cg.refdefViewAngles );
+	cg.refdef.vieworg << viewPos;
+	cg.refdefViewAngles << viewAngles;
+	//viewPos.CopyToArray( cg.refdef.vieworg );
+	//viewAngles.CopyToArray( cg.refdefViewAngles );
 
 	if (cg_cameraOrbit.integer) {
 		if (cg.time > cg.nextOrbitTime) {

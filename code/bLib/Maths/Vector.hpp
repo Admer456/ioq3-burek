@@ -262,3 +262,9 @@ inline Vector operator* ( float operand, const Vector& vector )
 { 
 	return vector * operand; 
 }
+
+// Support for "assigning" to vec3_t
+inline void operator<< ( float operand[3], const Vector& vector )
+{
+	vector.CopyToArray( operand );
+}
