@@ -2,6 +2,10 @@
 
 namespace Entities
 {
+	class IEntity;
+	class BaseEntity;
+	class BaseAttachment;
+
 	enum MemoryFrameFlags
 	{
 		MFF_None = 0,
@@ -64,6 +68,25 @@ namespace Entities
 
 	class Mercenary : public BaseEntity
 	{
+	public:
+		// Constants
+
+		enum HeadVariant
+		{
+			Head_Normal,
+			Head_Angry,
+			Head_Dead,
+			Head_DeadBloody
+		};
+
+		constexpr static const char* HeadVariantStrings[] =
+		{
+			"normal",
+			"angry",
+			"dead",
+			"dead_bloody",
+		};
+
 	public:
 		DeclareEntityClass();
 
@@ -144,6 +167,12 @@ namespace Entities
 
 		BaseEntity*		targetEntity{ nullptr }; // my target which I might follow, kill, or assist etc.
 	
+		BaseAttachment* headAttachment{ nullptr }; // Head model attachment
+		uint8_t			headVariant{ Head_Normal };
+
+		BaseAttachment* weaponAttachment{ nullptr }; // The visual entity that gets attached to the hand bone
+		uint8_t			weaponAmmo{ 0 }; // How many bullets are currently loaded?
+
 		// The state which determines what the NPC is allowed to do
 		AI::DynamismState dynamism{ AI::DynamismState::FreeWill };
 
