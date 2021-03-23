@@ -56,6 +56,9 @@ void Client::Update()
 		if ( uc.interactionButtons & Interaction_Reload )
 			weapon->OnReload();
 	}
+
+	// If the game is paused, pause the music too
+	trap_DM_Pause( false, !IsPaused() );
 }
 
 // ===================
