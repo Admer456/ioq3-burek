@@ -1036,7 +1036,7 @@ netField_t	entityStateFields[] =
 	netField_t{ NETF(apos.axialOrientation.forward[2]), 32, NF_Long }, // forward[2] and up[0]
 	netField_t{ NETF(apos.axialOrientation.up[1]), 32, NF_Long }, // up[1] and up[2]
 
-	// attachBome
+	// attachBone
 	netField_t{ NETF(attachBone[0]), 32, NF_Long },
 	netField_t{ NETF(attachBone[4]), 32, NF_Long },
 	netField_t{ NETF(attachBone[8]), 32, NF_Long },
