@@ -946,9 +946,9 @@ static void PM_CrashLand( void ) {
 	delta = vel + t * acc;
 	delta = delta*delta * 0.0001;
 
-	// ducking while falling doubles damage
+	// ducking while falling reduces damage
 	if ( pm->ps->pm_flags & PMF_DUCKED ) {
-		delta *= 2;
+		delta *= 0.6f;
 	}
 
 	// never take falling damage if completely underwater
@@ -1244,15 +1244,18 @@ static void PM_CheckDuck (void)
 {
 	trace_t	trace;
 
-	if ( pm->ps->powerups[PW_INVULNERABILITY] ) {
-		if ( pm->ps->pm_flags & PMF_INVULEXPAND ) {
+	if ( pm->ps->powerups[PW_INVULNERABILITY] ) 
+	{
+		if ( pm->ps->pm_flags & PMF_INVULEXPAND ) 
+		{
 			// invulnerability sphere has a 42 units radius
 			VectorSet( pm->mins, -42, -42, -42 );
 			VectorSet( pm->maxs, 42, 42, 42 );
 		}
-		else {
-			VectorSet( pm->mins, -15, -15, MINS_Z );
-			VectorSet( pm->maxs, 15, 15, 16 );
+		else 
+		{
+			VectorCopy( HumanHullMaxs, pm->maxs );
+			VectorCopy( HumanHullMins, pm->mins );
 		}
 		pm->ps->pm_flags |= PMF_DUCKED;
 		pm->ps->viewheight = CROUCH_VIEWHEIGHT;
@@ -1260,13 +1263,13 @@ static void PM_CheckDuck (void)
 	}
 	pm->ps->pm_flags &= ~PMF_INVULEXPAND;
 
-	pm->mins[0] = -15;
-	pm->mins[1] = -15;
+	pm->mins[0] = HumanHullMins[0];
+	pm->mins[1] = HumanHullMins[1];
 
-	pm->maxs[0] = 15;
-	pm->maxs[1] = 15;
+	pm->maxs[0] = HumanHullMaxs[0];
+	pm->maxs[1] = HumanHullMaxs[1];
 
-	pm->mins[2] = PM_IsNPC() ? 0 : MINS_Z;
+	pm->mins[2] = PM_IsNPC() ? 0 : HumanHullMins[0];
 
 	if (pm->ps->pm_type == PM_DEAD)
 	{
@@ -1284,7 +1287,7 @@ static void PM_CheckDuck (void)
 		if (pm->ps->pm_flags & PMF_DUCKED)
 		{
 			// try to stand up
-			pm->maxs[2] = PM_IsNPC() ? 64 : 32;
+			pm->maxs[2] = PM_IsNPC() ? 72 : HumanHullMaxs[2];
 			pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
 			if (!trace.allsolid)
 				pm->ps->pm_flags &= ~PMF_DUCKED;
@@ -1293,12 +1296,12 @@ static void PM_CheckDuck (void)
 
 	if (pm->ps->pm_flags & PMF_DUCKED)
 	{
-		pm->maxs[2] = PM_IsNPC() ? 32 : 16;
+		pm->maxs[2] = PM_IsNPC() ? 40 : HumanCrouchMaxs[2];
 		pm->ps->viewheight = CROUCH_VIEWHEIGHT;
 	}
 	else
 	{
-		pm->maxs[2] = PM_IsNPC() ? 64 : 32;
+		pm->maxs[2] = PM_IsNPC() ? 72 : HumanHullMaxs[2];
 		pm->ps->viewheight = DEFAULT_VIEWHEIGHT;
 	}
 }

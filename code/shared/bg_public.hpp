@@ -50,10 +50,39 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define	VOTE_TIME			30000	// 30 seconds before vote times out
 
-#define	MINS_Z				-24
-#define	DEFAULT_VIEWHEIGHT	26
-#define CROUCH_VIEWHEIGHT	12
+#define	MINS_Z				-36
+#define	DEFAULT_VIEWHEIGHT	48 // 62 units above floor
+#define CROUCH_VIEWHEIGHT	20 // 38 units above floor 
 #define	DEAD_VIEWHEIGHT		-16
+
+// The human hull is 30x30x72
+constexpr float HumanHullMaxs[3] = 
+{ 
+	15.0f, 
+	15.0f, 
+	36.0f 
+};
+
+constexpr float HumanHullMins[3] =
+{
+	-HumanHullMaxs[0],
+	-HumanHullMaxs[1],
+	MINS_Z
+};
+
+constexpr float HumanCrouchMaxs[3] =
+{
+	HumanHullMaxs[0],
+	HumanHullMaxs[1],
+	4
+};
+
+constexpr float HumanCrouchMins[3] =
+{
+	-HumanCrouchMaxs[0],
+	-HumanCrouchMaxs[1],
+	MINS_Z
+};
 
 //
 // config strings are a general means of communicating variable length strings

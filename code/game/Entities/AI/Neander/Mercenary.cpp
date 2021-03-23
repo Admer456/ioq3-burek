@@ -169,7 +169,7 @@ void EntityMemory::DecreaseAwareness()
 DefineEntityClass( "char_mercenary", Mercenary, BaseEntity );
 
 const Vector humanMins = Vector( -15, -15, 0 );
-const Vector humanMaxs = Vector( 15, 15, 64 );
+const Vector humanMaxs = Vector( 15, 15, 72 );
 
 // Here I've placed two utility functions, temporarily, until we get a GameUtils.hpp thing
 namespace Util

@@ -17,9 +17,8 @@
 GameWorld* gameWorld;
 
 // Temporarily copied here from g_client.cpp
-static vec3_t	playerMins = { -15, -15, -24 };
-static vec3_t	playerMaxs = { 15, 15, 32 };
-
+static const float*	playerMins = HumanHullMins;
+static const float*	playerMaxs = HumanHullMaxs;
 
 SpawnRegistry::SpawnRegistry()
 {
