@@ -193,9 +193,6 @@ typedef enum {
 
 #define	MAXTOUCH	32
 
-#ifdef __CPP
-ExternCStart
-#endif
 typedef struct {
 	// state (in / out)
 	playerState_t	*ps;
@@ -233,9 +230,6 @@ typedef struct {
 // if a full pmove isn't done on the client, you can just update the angles
 void PM_UpdateViewAngles( playerState_t *ps, const usercmd_t *cmd );
 void Pmove (pmove_t *pmove);
-#ifdef __CPP
-ExternCEnd
-#endif
 
 //===================================================================================
 
@@ -730,9 +724,6 @@ typedef struct gitem_s {
 	char		*sounds;		// string of all sounds this item will use
 } gitem_t;
 
-#ifdef __CPP
-ExternCStart
-#endif
 // included in both the game dll and the client
 extern	gitem_t	bg_itemlist[];
 extern	int		bg_numItems;
@@ -744,9 +735,6 @@ gitem_t	*BG_FindItemForHoldable( holdable_t pw );
 #define	ITEM_INDEX(x) ((x)-bg_itemlist)
 
 qboolean	BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const playerState_t *ps );
-#ifdef __CPP
-ExternCEnd
-#endif
 
 // g_dmflags->integer flags
 #define	DF_NO_FALLING			8
@@ -785,9 +773,6 @@ typedef enum {
 							// this avoids having to set eFlags and eventNum
 } entityType_t;
 
-#ifdef __CPP
-ExternCStart
-#endif
 void	BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result );
 void	BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t result );
 
@@ -799,9 +784,6 @@ void	BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean 
 void	BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s, int time, qboolean snap );
 
 qboolean	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime );
-#ifdef __CPP
-ExternCEnd
-#endif
 
 #define ARENAS_PER_TIER		4
 #define MAX_ARENAS			1024

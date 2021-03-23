@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __Q_SHARED_H
 #define __Q_SHARED_H
 
+// Scroll down to line 518 for an explanation why this is necessary
 #ifdef __cplusplus
 #define ExternCStart extern "C" {
 #define ExternCEnd }
@@ -512,6 +513,8 @@ int Q_isnan(float x);
 #define	nanmask (255<<23)
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
 
+// These are defined in some .asm files, so
+// they HAVE TO BE extern "C", else we'll get linker errors
 #ifdef __CPP
 ExternCStart
 #endif

@@ -863,9 +863,6 @@ extern	vmCvar_t		cg_oldRocket;
 extern	vmCvar_t		cg_oldPlasma;
 extern	vmCvar_t		cg_trueLightning;
 
-#ifdef __CPP
-ExternCStart
-#endif
 //
 // cg_main.c
 //
@@ -1115,9 +1112,6 @@ void CG_ShaderStateChanged(void);
 void CG_Respawn( void );
 void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops );
 void CG_CheckChangedPredictableEvents( playerState_t *ps );
-#ifdef __CPP
-ExternCEnd
-#endif
 
 //===============================================
 
