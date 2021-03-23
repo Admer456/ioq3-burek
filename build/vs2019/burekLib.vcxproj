@@ -156,9 +156,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\code\bLib\Collections\KeyValueLibrary.cpp" />
     <ClCompile Include="..\..\code\bLib\Maths\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\code\bLib\Collections\KeyValueLibrary.hpp" />
     <ClInclude Include="..\..\code\bLib\Maths\Vector.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

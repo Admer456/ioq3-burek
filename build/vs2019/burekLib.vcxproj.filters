@@ -8,15 +8,24 @@
     <Filter Include="Source Files\Maths">
       <UniqueIdentifier>{b14e249a-ed8a-40ec-8976-7278e1bb9236}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Containers">
+      <UniqueIdentifier>{dfbc6ba9-b12c-46ae-8d6d-79ecb703a3b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\bLib\Maths\Vector.cpp">
       <Filter>Source Files\Maths</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\code\bLib\Collections\KeyValueLibrary.cpp">
+      <Filter>Source Files\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\bLib\Maths\Vector.hpp">
       <Filter>Source Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\bLib\Collections\KeyValueLibrary.hpp">
+      <Filter>Source Files\Containers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
