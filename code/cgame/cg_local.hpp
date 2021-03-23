@@ -1320,6 +1320,7 @@ void	trap_DM_Init( const char* musFile );
 void	trap_DM_Start( const char* labelName );
 void	trap_DM_Update( float volume, float speed );
 void	trap_DM_Pause( qboolean stop, qboolean shouldContinue );
+bool	trap_IsPaused();
 
 void	CG_ClearParticles (void);
 void	CG_AddParticles (void);

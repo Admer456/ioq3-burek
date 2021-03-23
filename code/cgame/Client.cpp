@@ -127,6 +127,14 @@ usercmd_t Client::GetUsercmd() const
 }
 
 // ===================
+// Client::IsPaused
+// ===================
+bool Client::IsPaused()
+{
+	return trap_IsPaused();
+}
+
+// ===================
 // Client::GetView
 // ===================
 ClientView* Client::GetView()

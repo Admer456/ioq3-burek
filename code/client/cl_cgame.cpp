@@ -707,6 +707,9 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		S_DM_Pause( args[1], args[2] );
 		return 0;
 
+	case CG_ISPAUSED:
+		return (cl_paused->integer && sv_paused->integer) ? 1 : 0;
+
 /*
 	case CG_LOADCAMERA:
 		return loadCamera(VMA(1));

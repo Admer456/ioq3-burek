@@ -477,3 +477,8 @@ void trap_DM_Pause( qboolean stop, qboolean shouldContinue )
 {
 	syscall( CG_DM_PAUSE, stop, shouldContinue );
 }
+
+bool trap_IsPaused()
+{
+	return syscall( CG_ISPAUSED );
+}

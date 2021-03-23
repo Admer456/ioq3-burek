@@ -24,6 +24,8 @@ public:
 	float		Time() const;
 	// Gets the latest usercmd
 	usercmd_t	GetUsercmd() const;
+	// Is the client currently paused?
+	bool		IsPaused();
 
 	// Subsystem getters
 
