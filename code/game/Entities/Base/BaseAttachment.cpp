@@ -61,6 +61,8 @@ void BaseAttachment::Spawn()
 {
 	BaseEntity::Spawn();
 
+	GetState()->eType = ET_ATTACHMENT;
+
 	GetState()->pos.trType = TR_INTERPOLATE;
 	GetState()->apos.trType = TR_INTERPOLATE;
 }
@@ -81,9 +83,14 @@ void BaseAttachment::PostSpawn()
 
 void BaseAttachment::Think()
 {
+	if ( simple && nextThink < level.time * 0.001f )
+		return;
+
 	UpdateAttachmentTransform();
 
 	BaseEntity::Think();
+
+	nextThink = level.time*0.001f + 2.0f;
 }
 
 void BaseAttachment::AttachTo( IEntity* parent, const char* targetBone )
@@ -117,6 +124,18 @@ void BaseAttachment::UpdateAttachmentTransform()
 {
 	orientation_t tag;
 	IEntity* parent = gEntities[shared.s.otherEntityNum2];
+
+	if ( nullptr == parent )
+	{
+		return;
+	}
+
+	if ( simple )
+	{
+		SetCurrentOrigin( parent->GetCurrentOrigin().Snapped() );
+
+		return;
+	}
 
 	int startFrame, endFrame;
 	float fraction;

@@ -22,6 +22,8 @@ namespace Entities
 
 		const char* GetBoneName() const;
 
+		bool		simple{ false };
+
 	protected:
 		void		UpdateAttachmentTransform();
 	};
