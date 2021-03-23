@@ -28,22 +28,41 @@ Client::~Client()
 void Client::Update()
 {
 	usercmd_t uc = GetUsercmd();
+
 	auto weapon = GetCurrentWeapon();
 
-	if ( nullptr == weapon )
-		return;
+	if ( weapon )
+	{
+		if ( uc.interactionButtons & Interaction_PrimaryAttack )
+			weapon->OnPrimaryFire();
 
-	if ( uc.interactionButtons & Interaction_PrimaryAttack )
-		weapon->OnPrimaryFire();
+		if ( uc.interactionButtons & Interaction_SecondaryAttack )
+			weapon->OnSecondaryFire();
 
-	if ( uc.interactionButtons & Interaction_SecondaryAttack )
-		weapon->OnSecondaryFire();
+		if ( uc.interactionButtons & Interaction_TertiaryAttack )
+			weapon->OnTertiaryFire();
 
-	if ( uc.interactionButtons & Interaction_TertiaryAttack )
-		weapon->OnTertiaryFire();
+		if ( uc.interactionButtons & Interaction_Reload )
+			weapon->OnReload();
+	}
+}
 
-	if ( uc.interactionButtons & Interaction_Reload )
-		weapon->OnReload();
+// ===================
+// Client::PreReload
+// ===================
+void Client::PreReload()
+{
+
+}
+
+// ===================
+// Client::PostReload
+// ===================
+void Client::PostReload()
+{
+
+	GetClient()->InitDynamicMusic( cgs.mapname );
+	GetClient()->GetEventHandler()->RegisterAssets();
 }
 
 // ===================

@@ -10,7 +10,11 @@ public:
 
 	// Updates all systems for the given moment
 	void		Update();
-
+	// Called BEFORE every level change or subsystem restart
+	void		PreReload();
+	// Called AFTER every level change or subsystem restart
+	void		PostReload();
+	
 	// Retrieves the current weapon carried by the local player
 	ClientEntities::BaseClientWeapon* GetCurrentWeapon();
 	// Parses CE_ events

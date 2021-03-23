@@ -868,8 +868,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	// Make sure we have update values (scores)
 	CG_SetConfigValues();
 
-	GetClient()->InitDynamicMusic( cgs.mapname );
-	GetClient()->GetEventHandler()->RegisterAssets();
+	GetClient()->PostReload();
 
 	CG_LoadingString( "" );
 
@@ -888,6 +887,8 @@ Called before every level change or subsystem restart
 void CG_Shutdown( void ) {
 	// some mods may need to do cleanup work here,
 	// like closing files or archiving session data
+
+	GetClient()->PreReload();
 }
 
 /*
