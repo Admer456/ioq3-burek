@@ -336,12 +336,15 @@ void BaseEntity::UseTargets( IEntity* activator )
 
 void BaseEntity::UseTargets( IEntity* activator, const char* targetKey )
 {
-	const char* name = spawnArgs->GetCString( targetKey, "" );
+	const char* name = spawnArgs->GetCString( targetKey, nullptr );
 
 	IEntity* ent = nullptr;
 
 	while ( ent = gameWorld->FindByName( name, ent ) )
 	{
+		if ( ent == this )
+			continue;
+
 		ent->Use( activator, this, 0 );
 	}
 }

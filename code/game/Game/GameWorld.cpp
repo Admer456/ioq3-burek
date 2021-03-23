@@ -421,6 +421,9 @@ Entities::IEntity* GameWorld::FindByName( const char* entityName, Entities::IEnt
 {
 	size_t index = 0;
 
+	if ( nullptr == entityName )
+		return nullptr;
+
 	if ( lastEntity )
 		index = lastEntity->GetEntityIndex()+1;
 
@@ -447,6 +450,9 @@ Entities::IEntity* GameWorld::FindByClassname( const char* className, Entities::
 {
 	size_t index = 0;
 
+	if ( nullptr == className )
+		return nullptr;
+
 	if ( lastEntity )
 		index = lastEntity->GetEntityIndex();
 
@@ -470,6 +476,9 @@ Entities::IEntity* GameWorld::FindByKeyvalue( const char* name, const char* valu
 {
 	size_t index = 0;
 
+	if ( nullptr == name || nullptr == value )
+		return nullptr;
+
 	if ( lastEntity )
 		index = lastEntity->GetEntityIndex();
 
@@ -492,6 +501,9 @@ Entities::IEntity* GameWorld::FindByKeyvalue( const char* name, const char* valu
 Entities::IEntity* GameWorld::FindByNameRandom( const char* entityName )
 {
 	static int seed = 0x92;
+
+	if ( nullptr == entityName )
+		return nullptr;
 
 	std::vector<Entities::IEntity*> ents;
 	ents.reserve( 8U );
