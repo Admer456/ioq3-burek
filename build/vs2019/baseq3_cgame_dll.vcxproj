@@ -188,6 +188,8 @@
     <ClInclude Include="..\..\code\cgame\IClientGame.h" />
     <ClInclude Include="..\..\code\cgame\IClientGameImports.h" />
     <ClInclude Include="..\..\code\cgame\RenderEntity.hpp" />
+    <ClInclude Include="..\..\code\cgame\Vegetation\VegetationInstance.hpp" />
+    <ClInclude Include="..\..\code\cgame\Vegetation\VegetationSystem.hpp" />
     <ClInclude Include="..\..\code\cgame\View\View.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\BaseClientWeapon.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\WeaponFactory.hpp" />
@@ -229,6 +231,8 @@
     <ClCompile Include="..\..\code\cgame\Events\Explosion.cpp" />
     <ClCompile Include="..\..\code\cgame\Events\GibSpan.cpp" />
     <ClCompile Include="..\..\code\cgame\RenderEntity.cpp" />
+    <ClCompile Include="..\..\code\cgame\Vegetation\VegetationInstance.cpp" />
+    <ClCompile Include="..\..\code\cgame\Vegetation\VegetationSystem.cpp" />
     <ClCompile Include="..\..\code\cgame\View\View.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\BaseClientWeapon.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\WeaponFactory.cpp" />

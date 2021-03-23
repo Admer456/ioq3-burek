@@ -31,6 +31,9 @@
     <Filter Include="Sources\View">
       <UniqueIdentifier>{f6bd38b1-4aa7-4f91-8572-ce3993e42317}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Vegetation">
+      <UniqueIdentifier>{35d47988-bea1-42c6-8f60-50a776d8974f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -98,6 +101,12 @@
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\Weapons\Weapon_Pistol.hpp">
       <Filter>Sources\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Vegetation\VegetationSystem.hpp">
+      <Filter>Sources\Vegetation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\Vegetation\VegetationInstance.hpp">
+      <Filter>Sources\Vegetation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +223,12 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\Weapons\Weapon_Pistol.cpp">
       <Filter>Sources\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Vegetation\VegetationSystem.cpp">
+      <Filter>Sources\Vegetation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Vegetation\VegetationInstance.cpp">
+      <Filter>Sources\Vegetation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #pragma once
 
 class ComplexEventHandler;
+class VegetationSystem;
 
 class Client final
 {
@@ -37,6 +38,8 @@ public:
 	ClientView* GetView();
 	// Gets the handler for CE_ events
 	ComplexEventHandler* GetEventHandler();
+	// Gets the vegetation system
+	VegetationSystem* GetVegetationSystem();
 
 	// Is this entity the local client?
 	static bool IsLocalClient( centity_t* cent );
@@ -52,6 +55,7 @@ public:
 private:
 	ComplexEventHandler* complexEventHandler{ nullptr };
 	ClientView* view{ nullptr };
+	VegetationSystem* vegetationSystem{ nullptr };
 
 	// Model animation data for game models
 	std::vector<Assets::ModelAnimation> anims[MAX_MODELS];

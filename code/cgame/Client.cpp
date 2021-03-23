@@ -1,5 +1,8 @@
 #include "cg_local.hpp"
 #include "Events/ComplexEventHandler.hpp"
+#include "Collections/KeyValueLibrary.hpp"
+#include "Vegetation/VegetationInstance.hpp"
+#include "Vegetation/VegetationSystem.hpp"
 #include <string>
 
 Client client;
@@ -11,6 +14,7 @@ Client::Client()
 {
 	complexEventHandler = new ComplexEventHandler();
 	view = new ClientView();
+	vegetationSystem = new VegetationSystem();
 }
 
 // ===================
@@ -20,6 +24,7 @@ Client::~Client()
 {
 	delete complexEventHandler;
 	delete view;
+	delete vegetationSystem;
 }
 
 // ===================
@@ -27,6 +32,12 @@ Client::~Client()
 // ===================
 void Client::Update()
 {
+	if ( vegetationSystem )
+	{
+		vegetationSystem->Update();
+		vegetationSystem->Render();
+	}
+
 	usercmd_t uc = GetUsercmd();
 
 	auto weapon = GetCurrentWeapon();
@@ -60,6 +71,7 @@ void Client::PreReload()
 // ===================
 void Client::PostReload()
 {
+	vegetationSystem->Reload();
 
 	GetClient()->InitDynamicMusic( cgs.mapname );
 	GetClient()->GetEventHandler()->RegisterAssets();
@@ -167,6 +179,14 @@ ClientView* Client::GetView()
 ComplexEventHandler* Client::GetEventHandler()
 {
 	return complexEventHandler;
+}
+
+// ===================
+// Client::GetVegetationSystem
+// ===================
+VegetationSystem* Client::GetVegetationSystem()
+{
+	return vegetationSystem;
 }
 
 // ===================
