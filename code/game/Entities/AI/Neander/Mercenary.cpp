@@ -618,8 +618,7 @@ void Mercenary::SightQuery()
 
 		// Hardcoded 120-degree FOV, todo: make more customisable
 		if ( dot < 0.5f )
-		{
-			// Not visible
+		{	// Not visible
 			continue;
 		}
 
@@ -630,12 +629,7 @@ void Mercenary::SightQuery()
 
 		Util::Trace( &tr, start, nullptr, nullptr, end, GetEntityIndex(), MASK_SHOT );
 		if ( tr.entityNum != ent->GetEntityIndex() )
-		{
-			// Not visible
-			if ( ent->IsClass( BasePlayer::ClassInfo ) )
-			{
-				Util::PrintDev( va( "Can't see the player, blocked by some object (id %i)\n", tr.entityNum ), 2 );
-			}
+		{	// Not visible
 			continue;
 		}
 

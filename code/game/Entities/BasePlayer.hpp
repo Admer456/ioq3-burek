@@ -5,6 +5,7 @@ namespace Entities
 	class IEntity;
 	class BaseEntity;
 	class BaseWeapon;
+
 	class BasePlayer : public BaseEntity
 	{
 	public:

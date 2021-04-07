@@ -87,7 +87,6 @@ void BaseAttachment::Think()
 		return;
 
 	UpdateAttachmentTransform();
-
 	BaseEntity::Think();
 
 	nextThink = level.time*0.001f + 2.0f;

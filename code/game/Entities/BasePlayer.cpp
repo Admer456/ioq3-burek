@@ -16,8 +16,7 @@ DefineEntityClass_NoMapSpawn( BasePlayer, BaseEntity );
 
 void BasePlayer::Spawn()
 {
-	//GetState()->clipFlags |= ClipFlag_HasOriginBrush;
-	//GetShared()->svFlags |= SVF_USE_CURRENT_ORIGIN;
+	// Do nothing
 }
 
 void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFlags, float damageDealt )

@@ -28,7 +28,7 @@ Client::~Client()
 }
 
 // ===================
-// Client::GetCurrentWeapon
+// Client::Update
 // ===================
 void Client::Update()
 {
