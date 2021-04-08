@@ -453,6 +453,12 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 		}
 
 	}
+
+	// Show how many visible entities the server has sent to the client
+	if ( sv_showVisibleEntities->integer )
+	{	
+		Util::Print( va( "Transmitting %i entities to client %i\n", eNums->numSnapshotEntities, frame->ps.clientNum ) );
+	}
 }
 
 /*
