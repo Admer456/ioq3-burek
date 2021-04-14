@@ -14,13 +14,17 @@ public:
 	void		Clear();
 	void		Render();
 
+	static float CalculateWindPhase( const Vector& position );
+
 	bool		active{ false };
 
 private:
 	Vector		instancePosition{ Vector::Zero };
 	Vector		instancePVSPosition{ Vector::Zero };
+	float		instanceScale{ 1.0f };
 	Vector		instanceAxis[3];
 	float		maxDistance{ 1024.0f };
 	float		windFactor{ 0.0f };
+	float		windPhase{ 0.0f };
 	refEntity_t re;
 };

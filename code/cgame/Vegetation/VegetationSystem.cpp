@@ -40,12 +40,24 @@ void VegetationSystem::Reload()
 			Vector angles = lib.GetVector( "angles", Vector::Zero );
 			const char* model = lib.GetCString( "model", "" );
 			qhandle_t modelid = trap_R_RegisterModel( model );
-			float scale = lib.GetFloat( "scale", 1.0f );
-			float distance = lib.GetFloat( "distance", 1024.0f );
-			float wind = lib.GetFloat( "wind", 0.0f );
+			float scale = lib.GetFloat( "scale", -1.0f );
+			float distance = lib.GetFloat( "distance", 6000.0f );
+			float wind = lib.GetFloat( "wind", 16.0f );
 
-			if ( angles == Vector::Zero )
+			if ( angles == Vector::Zero ) 
+			{
 				angles.y = lib.GetFloat( "angle", 0.0f );
+
+				if ( angles.y == -1.0f )
+				{
+					angles.y = random() * 359.999f;
+				}
+			}
+
+			if ( scale < 0.0f )
+			{
+				scale = 0.8f + (random() * -scale * 0.5f);
+			}
 
 			if ( model != 0 )
 			{
