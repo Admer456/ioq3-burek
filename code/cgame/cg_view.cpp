@@ -819,27 +819,29 @@ This function is a very early WiP, the skydome and material used are hardcoded
 */
 void CG_AddSkyDome()
 {
+	static Vector angles = Vector::Zero;
+
 	qhandle_t material = trap_R_RegisterShaderNoMip( "textures/skies/remdaskytest_dome" );
-	qhandle_t model = trap_R_RegisterModel( "models/sky/skydome_unwrap.iqm" );
+	qhandle_t model = trap_R_RegisterModel( "models/sky/skydome_unwrap2.iqm" );
 	Vector pos, viewAngles;
 	refEntity_t re;
 	memset( &re, 0, sizeof( re ) );
 
 	re.hModel = model;
 	re.customShader = material;
-	AnglesToAxis( Vector::Zero, re.axis );
+	AnglesToAxis( angles, re.axis );
 	
 	pos = GetClient()->GetView()->GetViewOrigin();
 	pos.z = 0;
-	pos.CopyToArray( re.origin );
-
+	pos << re.origin;
+	
 	// Scale it up
 	for ( int i = 0; i < 3; i++ )
 		for ( int j = 0; j < 3; j++ )
 			re.axis[i][j] *= 16384.0f;
 
-	for ( int i = 0; i < 3; i++ )
-		re.axis[2][i] /= 2.0f;
+	// Rotate it
+	angles.y = GetClient()->Time() / 3.0f;
 
 	re.nonNormalizedAxes = true;
 
