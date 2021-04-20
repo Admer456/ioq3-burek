@@ -102,7 +102,8 @@ void Main_MenuEvent (void* ptr, int event) {
 
 	switch( ((menucommon_s*)ptr)->id ) {
 	case ID_SINGLEPLAYER:
-		UI_SPLevelMenu();
+		//UI_SPLevelMenu();
+		trap_Cmd_ExecuteText( EXEC_APPEND, "devmap sewers;" ); // Cirkuz 33 thesis demo
 		break;
 
 	case ID_MULTIPLAYER:
@@ -128,6 +129,10 @@ void Main_MenuEvent (void* ptr, int event) {
 	case ID_TEAMARENA:
 		trap_Cvar_Set( "fs_game", BASETA);
 		trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
+		break;
+
+	case ID_HELP:
+		//UI_HelpMenu();
 		break;
 
 	case ID_EXIT:
