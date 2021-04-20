@@ -16,6 +16,11 @@ public:
 	// Called AFTER every level change or subsystem restart
 	void		PostReload();
 	
+	// Before all HUD elements are drawn
+	void		PreDraw2D();
+	// After all HUD elements have been drawn
+	void		PostDraw2D();
+
 	// Retrieves the current weapon carried by the local player
 	ClientEntities::BaseClientWeapon* GetCurrentWeapon();
 	// Parses CE_ events

@@ -81,6 +81,59 @@ void Client::PostReload()
 }
 
 // ===================
+// Client::PreDraw2D
+// ===================
+void Client::PreDraw2D()
+{
+	static float waterFade = 0.0f;
+	float waterFadeTarget = 0.0f;
+
+	if ( view->IsInWater() )
+	{
+		waterFadeTarget = 1.0f;
+	}
+
+	if ( waterFade > 0.005f )
+	{
+		qhandle_t waterShader = trap_R_RegisterShaderNoMip( "postproc/underwater" );
+
+		float xofs = (cg.refdefViewAngles[YAW] + 180.0f) / -360.0f;
+		float yofs = cg.refdefViewAngles[PITCH] * 0.016f;
+		float inverseWaterFade = (1.0f - waterFade);
+
+		float waterColour[4] = 
+		{ 
+			inverseWaterFade * 0.8f + 0.2f, // the colours will get darker as waterFade is higher 
+			inverseWaterFade * 0.6f + 0.4f, // and red will be the darkest of the three
+			inverseWaterFade * 0.45f + 0.55f, 
+			1.0f 
+		};
+		
+		trap_R_SetColor( waterColour );
+		trap_R_DrawStretchPic( 0, 0, cg.refdef.width, cg.refdef.height,
+							   0.0f + xofs, 0.0f + yofs, 1.0f + xofs, 1.0f + yofs,
+							   waterShader );
+	}
+
+	if ( waterFadeTarget == 1.0f && waterFade < 1.0f )
+		waterFade += cg.frametime / 200.0f;
+	
+	if ( waterFadeTarget == 0.0f && waterFade > 0.001f )
+		waterFade -= cg.frametime / 600.0f;
+
+	if ( waterFade < 0.0f ) waterFade = 0.0f;
+	if ( waterFade > 1.0f ) waterFade = 1.0f;
+}
+
+// ===================
+// Client::PostDraw2D
+// ===================
+void Client::PostDraw2D()
+{
+
+}
+
+// ===================
 // Client::GetCurrentWeapon
 // ===================
 ClientEntities::BaseClientWeapon* Client::GetCurrentWeapon()

@@ -1346,6 +1346,8 @@ CG_Draw2D
 */
 static void CG_Draw2D(stereoFrame_t stereoFrame)
 {
+	GetClient()->PreDraw2D();
+
 	// if we are taking a levelshot for the menu, don't draw anything
 	if ( cg.levelShot ) {
 		return;
@@ -1401,6 +1403,8 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 	if ( !cg.scoreBoardShowing) {
 		CG_DrawCenterString();
 	}
+
+	GetClient()->PostDraw2D();
 }
 
 

@@ -95,20 +95,26 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	outOrigin = cg.refdef.vieworg;
 	outAngles = cg.refdefViewAngles;
 
+	// Base vars
 	Vector forward, right, up;
 	Vector::AngleVectors( outAngles, &forward, &right, &up );
 	Vector velocity = cg.predictedPlayerState.velocity;
-
-	static float speed = 0.0f;
-	
-	float targetSpeed = velocity.Length2D() / 150.0f;
 	float time = GetClient()->Time();
 	bool air = cg.predictedPlayerState.groundEntityNum == ENTITYNUM_NONE;
+
+	// Static vars
+	static float speed = 0.0f;
+	static float waterWobble = 0.0f;
+
+	float targetSpeed = velocity.Length2D() / 150.0f;
+	float waterWobbleTarget = IsInWater() ? 1.0f : 0.0f;
 
 	if ( air )
 		targetSpeed = 0.0f;
 
+	// Interpolations
 	speed = speed * 0.9f + targetSpeed * 0.1f;
+	waterWobble = waterWobble * 0.9f + waterWobbleTarget * 0.1f;
 
 	float upBob = speed;
 	float sideBob = upBob * 1.5f;
@@ -130,6 +136,7 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	outOrigin += shake;
 
 	outAngles += punch;
+	outAngles.z += sin( time * 1.5f ) * waterWobble * 3.0f;
 
 	currentViewOrigin = outOrigin;
 	currentViewAngles = outAngles;
@@ -304,4 +311,16 @@ Vector ClientView::CalculatePunchTotal() const
 	}
 
 	return punch;
+}
+
+// ===================
+// ClientView::IsInWater
+// 
+// Todo: check different water levels, maybe...?
+// ===================
+bool ClientView::IsInWater() const
+{
+	// It seems that the view origin resets, so hack around it
+	Vector actualViewOrigin = GetViewOrigin() + Vector( 0, 0, HumanHullMaxs[2] + 8.0f );
+	return CG_PointContents( actualViewOrigin, cg.predictedPlayerState.clientNum ) & (CONTENTS_WATER | CONTENTS_LAVA | CONTENTS_SLIME);
 }

@@ -44,6 +44,8 @@ public:
 	void		AddPunch( float duration, Vector angles );
 	// Gets the total of all view punches
 	Vector		CalculatePunchTotal() const;
+	// Is the player's view currently under water?
+	bool		IsInWater() const;
 
 	const Vector& GetViewOrigin() const { return currentViewOrigin; }
 	const Vector& GetViewAngles() const { return currentViewAngles; }
