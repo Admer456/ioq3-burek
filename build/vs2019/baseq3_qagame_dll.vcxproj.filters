@@ -228,6 +228,9 @@
     <ClInclude Include="..\..\code\game\Entities\Func\FuncAttach.hpp">
       <Filter>Sources\Entities\Func</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Audio\AudioAmbient.hpp">
+      <Filter>Sources\Entities\Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -385,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Func\FuncAttach.cpp">
       <Filter>Sources\Entities\Func</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Audio\AudioAmbient.cpp">
+      <Filter>Sources\Entities\Audio</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

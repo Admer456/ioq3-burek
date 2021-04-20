@@ -186,6 +186,7 @@
     <ClInclude Include="..\..\code\game\Entities\AI\Neander\NavNode.hpp" />
     <ClInclude Include="..\..\code\game\Entities\AI\Neander\Node.hpp" />
     <ClInclude Include="..\..\code\game\Entities\AI\Neander\ScriptedSequence.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Audio\AudioAmbient.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Audio\AudioMusicSet.hpp" />
     <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp" />
     <ClInclude Include="..\..\code\game\Entities\BasePlayer.hpp" />
@@ -240,6 +241,7 @@
     <ClCompile Include="..\..\code\game\Entities\AI\Neander\NavNode.cpp" />
     <ClCompile Include="..\..\code\game\Entities\AI\Neander\Node.cpp" />
     <ClCompile Include="..\..\code\game\Entities\AI\Neander\ScriptedSequence.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Audio\AudioAmbient.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Audio\AudioMusicSet.cpp" />
     <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp" />
     <ClCompile Include="..\..\code\game\Entities\BasePlayer.cpp" />
