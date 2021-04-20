@@ -326,7 +326,7 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 			continue;
 
 		// never send entities that aren't linked in
-		if ( !ent->r.linked ) 
+		if ( !ent->r.linked && ent->r.plow == NetPlow_None ) 
 		{
 			continue;
 		}
@@ -375,7 +375,7 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 		}
 
 		// broadcast entities are always sent
-		if ( ent->r.svFlags & SVF_BROADCAST ) 
+		if ( ent->r.svFlags & SVF_BROADCAST || ent->r.plow == NetPlow_ForceAll ) 
 		{
 			SV_AddEntToSnapshot( svEnt, ent, eNums );
 			continue;
@@ -395,42 +395,45 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 
 		bitvector = clientpvs;
 
-		// check individual leafs
-		if ( !svEnt->numClusters ) 
+		if ( ent->r.plow == NetPlow_None )
 		{
-			continue;
-		}
-		l = 0;
-		for ( i=0 ; i < svEnt->numClusters ; i++ ) 
-		{
-			l = svEnt->clusternums[i];
-			if ( bitvector[l >> 3] & (1 << (l&7) ) ) 
-			{
-				break;
-			}
-		}
-
-		// if we haven't found it to be visible,
-		// check overflow clusters that coudln't be stored
-		if ( i == svEnt->numClusters ) 
-		{
-			if ( svEnt->lastCluster ) 
-			{
-				for ( ; l <= svEnt->lastCluster ; l++ ) 
-				{
-					if ( bitvector[l >> 3] & (1 << (l&7) ) ) 
-					{
-						break;
-					}
-				}
-				if ( l == svEnt->lastCluster ) 
-				{
-					continue;	// not visible
-				}
-			} 
-			else 
+			// check individual leafs
+			if ( !svEnt->numClusters )
 			{
 				continue;
+			}
+			l = 0;
+			for ( i = 0; i < svEnt->numClusters; i++ )
+			{
+				l = svEnt->clusternums[i];
+				if ( bitvector[l >> 3] & (1 << (l & 7)) )
+				{
+					break;
+				}
+			}
+
+			// if we haven't found it to be visible,
+			// check overflow clusters that coudln't be stored
+			if ( i == svEnt->numClusters )
+			{
+				if ( svEnt->lastCluster )
+				{
+					for ( ; l <= svEnt->lastCluster; l++ )
+					{
+						if ( bitvector[l >> 3] & (1 << (l & 7)) )
+						{
+							break;
+						}
+					}
+					if ( l == svEnt->lastCluster )
+					{
+						continue;	// not visible
+					}
+				}
+				else
+				{
+					continue;
+				}
 			}
 		}
 
