@@ -103,6 +103,7 @@ void Main_MenuEvent (void* ptr, int event) {
 	switch( ((menucommon_s*)ptr)->id ) {
 	case ID_SINGLEPLAYER:
 		//UI_SPLevelMenu();
+		trap_Cvar_Set( "sv_pure", "0" );
 		trap_Cmd_ExecuteText( EXEC_APPEND, "devmap sewers;" ); // Cirkuz 33 thesis demo
 		break;
 
