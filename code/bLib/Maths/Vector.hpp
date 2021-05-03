@@ -97,7 +97,7 @@ public: // Utilities
 	// The "mod" parameter adds some sorta bias to the reflection:
 	// If mod is higher, then the reflection angle is closer to the normal vector,
 	// otherwise if it's lower, then the reflection is more perpendicular to the normal vector
-	inline const Vector& Reflect( const Vector& normal, float mod = 2.0f ) const
+	inline Vector Reflect( const Vector& normal, float mod = 2.0f ) const
 	{
 		float dot = *this * normal;
 		Vector projected = (normal * (mod * dot));
