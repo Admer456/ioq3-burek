@@ -555,6 +555,7 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 			// smooth landing z changes
 			cg.landChange = -16;
 			cg.landTime = cg.time;
+			GetClient()->GetView()->AddShake( 8.0f, 0.8f, Vector( 0, 0, 6 ) );
 		}
 		break;
 	case EV_FALL_FAR:
@@ -565,6 +566,8 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 			// smooth landing z changes
 			cg.landChange = -24;
 			cg.landTime = cg.time;
+
+			GetClient()->GetView()->AddShake( 10.0f, 1.2f, Vector( 0, 0, 12 ) );
 		}
 		break;
 
@@ -901,11 +904,12 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
 
 	case EV_GENERAL_SOUND:
 		DEBUGNAME("EV_GENERAL_SOUND");
+
 		if ( cgs.gameSounds[ es->eventParm ] ) {
-			trap_S_StartSound (NULL, es->number, CHAN_VOICE, cgs.gameSounds[ es->eventParm ] );
+			trap_S_StartSound (es->origin, es->number, CHAN_AUTO, cgs.gameSounds[ es->eventParm ] );
 		} else {
 			s = CG_ConfigString( CS_SOUNDS + es->eventParm );
-			trap_S_StartSound (NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, s ) );
+			trap_S_StartSound (es->origin, es->number, CHAN_AUTO, CG_CustomSound( es->number, s ) );
 		}
 		break;
 
@@ -1018,7 +1022,7 @@ CG_CheckEvents
 */
 void CG_CheckEvents( centity_t *cent ) {
 
-	if ( cent->currentState.eType < CE_Start )
+	if ( cent->currentState.eType < CE_Start || (cent->currentState.eType & EV_EVENT_BITS) )
 	{
 		// check for event-only entities
 		if ( cent->currentState.eType > ET_EVENTS ) {
@@ -1056,7 +1060,7 @@ void CG_CheckEvents( centity_t *cent ) {
 	BG_EvaluateTrajectory( &cent->currentState.pos, cg.snap->serverTime, cent->lerpOrigin );
 	CG_SetEntitySoundPosition( cent );
 
-	if ( cent->currentState.eType < CE_Start )
+	if ( cent->currentState.eType < CE_Start || (cent->currentState.eType & EV_EVENT_BITS) )
 	{
 		CG_EntityEvent( cent, cent->lerpOrigin );
 	}
