@@ -16,6 +16,11 @@ namespace Entities
 	public:
 		DeclareEntityClass();
 
+		// Universal object flags
+		static constexpr uint32_t OF_None = 0U;
+		static constexpr uint32_t OF_ImpulseUse = 1 << 0U; // will be used once, can't be used again til the player releases E
+		static constexpr uint32_t OF_ContinousUse = 1 << 1U; // will be used as long as the player is holding down E
+		
 		virtual void	Spawn() override; // Gets called *while* entities are spawning
 		virtual void	PostSpawn() override { return; } // Gets called after all entities have spawned
 
@@ -35,6 +40,8 @@ namespace Entities
 		virtual void	OnClientDisconnect( int clientNum ) { return; } // Called when the client disconnects
 
 		virtual void	OnPlayerDie( int clientNum ) { return; } // Called when a player dies
+
+		virtual uint32_t ObjectFlags() override { return OF_None; }
 
 		// All entities have an entity index
 		unsigned int	GetEntityIndex() const
