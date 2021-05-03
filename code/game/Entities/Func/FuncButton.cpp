@@ -30,7 +30,7 @@ void FuncButton::Spawn()
 void FuncButton::Precache()
 {
 	const char* soundFile = spawnArgs->GetCString( "sound", "sound/buttons/default.wav" );
-	buttonSound = G_SoundIndex( const_cast<char*>(soundFile) );
+	buttonSound = gameWorld->PrecacheSound( soundFile );
 }
 
 void FuncButton::ButtonThink()

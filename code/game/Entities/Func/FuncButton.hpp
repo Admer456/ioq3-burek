@@ -22,6 +22,8 @@ namespace Entities
 		void		Spawn() override;
 		void		Precache() override;
 
+		uint32_t	ObjectFlags() override { return OF_ImpulseUse; }
+
 		void		ButtonThink();
 		void		ButtonUse( IEntity* activator, IEntity* caller, float value );
 		void		ButtonTouch( IEntity* other, trace_t* trace );

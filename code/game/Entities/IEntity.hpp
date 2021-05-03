@@ -43,6 +43,8 @@ namespace Entities
 
 		virtual void				OnPlayerDie( int clientNum ) = 0; // Called when a player dies
 
+		virtual uint32_t			ObjectFlags() = 0;
+
 		// All entities have an entity index
 		virtual unsigned int		GetEntityIndex() const = 0;
 		virtual void				SetEntityIndex( const size_t& index ) = 0;
