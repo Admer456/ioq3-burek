@@ -27,13 +27,13 @@ char	*cg_customSoundNames[MAX_CUSTOM_SOUNDS] = {
 	"*death1.wav",
 	"*death2.wav",
 	"*death3.wav",
-	"*jump1.wav",
-	"*pain25_1.wav",
-	"*pain50_1.wav",
-	"*pain75_1.wav",
-	"*pain100_1.wav",
-	"*falling1.wav",
-	"*gasp.wav",
+	"*jump1.wav",	// HUH
+	"*pain25_1.wav", // hardest pain
+	"*pain50_1.wav", // hard pain
+	"*pain75_1.wav", // medium pain
+	"*pain100_1.wav", // light pain
+	"*falling1.wav", // AAAAAAAAaaaaaaaaaaaaaaaaaa...
+	"*gasp.wav",	// desperately gasping for air, straight out of water
 	"*drown.wav",
 	"*fall1.wav",
 	"*taunt.wav"
@@ -701,13 +701,15 @@ static void CG_LoadClientInfo( int clientNum, clientInfo_t *ci ) {
 			break;
 		}
 		ci->sounds[i] = 0;
-		// if the model didn't load use the sounds of the default model
-		if (modelloaded) {
-			ci->sounds[i] = trap_S_RegisterSound( va("sound/player/%s/%s", dir, s + 1), qfalse );
-		}
-		if ( !ci->sounds[i] ) {
-			ci->sounds[i] = trap_S_RegisterSound( va("sound/player/%s/%s", fallback, s + 1), qfalse );
-		}
+		//// if the model didn't load use the sounds of the default model
+		//if (modelloaded) {
+		//	ci->sounds[i] = trap_S_RegisterSound( va("sound/player/%s/%s", dir, s + 1), qfalse );
+		//}
+		//if ( !ci->sounds[i] ) {
+		//	ci->sounds[i] = trap_S_RegisterSound( va("sound/player/%s/%s", fallback, s + 1), qfalse );
+		//}
+
+		ci->sounds[i] = trap_S_RegisterSound( va( "sound/player/%s", s + 1U ), false );
 	}
 
 	ci->deferred = qfalse;
