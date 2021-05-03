@@ -74,5 +74,5 @@ void Weapon_Fists::Swing( float damage )
 	if ( nullptr == ent )
 		return;
 
-	ent->TakeDamage( this, this, 0, damage );
+	ent->TakeDamage( player, player, 0, damage );
 }

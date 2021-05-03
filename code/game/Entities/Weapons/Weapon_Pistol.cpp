@@ -53,14 +53,16 @@ void Weapon_Pistol::PrimaryAttack()
 	if ( ammoMag <= 0 )
 	{
 		ammoMag = 0; // just in case it somehow becomes negative
-		return;
+		nextPrimary = level.time * 0.001f + 0.1f;
+	}
+	else
+	{
+		ammoMag--;
+		Shoot();
+		nextPrimary = level.time * 0.001f;
 	}
 
-	ammoMag--;
-
-	Shoot();
-
-	nextPrimary = nextSecondary = nextIdle = nextReload = level.time * 0.001f;
+	nextSecondary = nextIdle = nextReload = nextPrimary;
 }
 
 // ===================
@@ -119,14 +121,6 @@ void Weapon_Pistol::Shoot()
 	if ( tr.fraction == 1.0f )
 		return;
 
-	Vector hitPoint = tr.endpos;
-	EventData ed;
-	ed.id = CE_Explosion;
-	ed.fparm = 8.0f;
-	ed.parm2 = 1;
-	ed.vparm = Vector::Zero;
-	gameWorld->EmitComplexEvent( hitPoint, Vector::Zero, ed );
-
 	if ( tr.entityNum >= ENTITYNUM_MAX_NORMAL )
 		return;
 
@@ -134,5 +128,5 @@ void Weapon_Pistol::Shoot()
 	if ( nullptr == ent )
 		return;
 
-	ent->TakeDamage( this, this, 0, 40.0f );
+	ent->TakeDamage( player, player, 0, 40.0f );
 }
