@@ -3,6 +3,7 @@
 class ComplexEventHandler;
 class VegetationSystem;
 class LightManager;
+class ParticleManager;
 
 class Client final
 {
@@ -48,6 +49,8 @@ public:
 	VegetationSystem* GetVegetationSystem();
 	// Gets the light manager
 	LightManager* GetLightManager();
+	// Gets the particle manager
+	ParticleManager* GetParticleManager();
 
 	// Is this entity the local client?
 	static bool IsLocalClient( centity_t* cent );
@@ -65,6 +68,7 @@ private:
 	ClientView* view{ nullptr };
 	VegetationSystem* vegetationSystem{ nullptr };
 	LightManager* lightManager{ nullptr };
+	ParticleManager* particleManager{ nullptr };
 
 	// Model animation data for game models
 	std::vector<Assets::ModelAnimation> anims[MAX_MODELS];

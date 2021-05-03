@@ -2,6 +2,7 @@
 #include "View/View.hpp"
 #include "../shared/Weapons/WeaponIDs.hpp"
 #include "View/LightManager.hpp"
+#include "View/ParticleManager.hpp"
 
 #include "Weapon_Pistol.hpp"
 
@@ -33,6 +34,11 @@ void Weapon_Pistol::Precache()
 	animAttackToEmpty = renderEntity.GetAnimByName( "shot_toempty" );
 	animReload = renderEntity.GetAnimByName( "reload" );
 	animReloadTactical = renderEntity.GetAnimByName( "reload_tactical" );
+
+	soundShoot = trap_S_RegisterSound( "sound/weapons/glockshot.wav", false );
+	soundShootEmpty = trap_S_RegisterSound( "sound/weapons/empty.wav", false );
+
+	muzzleFlashSprite = trap_R_RegisterShaderNoMip( "sprites/muzzleflash1" );
 
 	renderEntity.StartAnimation( animIdle, true );
 	nextIdle = GetNextAnimTime( animIdle );
@@ -72,20 +78,27 @@ void Weapon_Pistol::OnPrimaryFire()
 
 	int ammoMag = GetAmmoInMag( WeaponID_Pistol );
 	animHandle anim = animAttack[0];
+	sfxHandle_t sound = soundShoot;
+	LightManager* lightManager = GetClient()->GetLightManager();
+	ParticleManager* particleManager = GetClient()->GetParticleManager();
 
 	if ( ammoMag > 1 )
 	{
 		anim = animAttack[ammoMag % 3];
+		
 	}
 	else if ( ammoMag == 1 )
 	{
 		anim = animAttackToEmpty;
-		nextPrimary = GetNextAnimTime( anim );
 	}
 	else
 	{
 		anim = animAttackEmpty;
+		sound = soundShootEmpty;
+		nextPrimary = GetClient()->Time() + 0.1f;
 	}
+
+	trap_S_StartLocalSound( sound, CHAN_WEAPON );
 
 	if ( anim != animAttackEmpty )
 	{
@@ -99,6 +112,8 @@ void Weapon_Pistol::OnPrimaryFire()
 
 		Light shootLight = Light( lightOrigin, Vector( 1.0f, 0.85f, 0.63f ) * 0.02f, 300.0f, 0.08f );
 		lightManager->AddLight( shootLight );
+
+		particleManager->AddParticle<Particles::BaseParticle>( muzzleFlashSprite, muzzleOrigin, 3.0f, 0.02f );
 	}
 
 	renderEntity.StartAnimation( anim, true );

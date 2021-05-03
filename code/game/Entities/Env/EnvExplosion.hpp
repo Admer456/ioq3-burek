@@ -14,6 +14,7 @@ namespace Entities
 		constexpr static int SF_NoDamage = 1 << 1;
 
 		void Spawn() override;
+		void Precache() override;
 
 		void Use( IEntity* activator, IEntity* caller, float value ) override;
 
@@ -26,6 +27,8 @@ namespace Entities
 		bool exploded{ false };
 		float explosionDamage{ 0.0f };
 		float explosionRadius{ 0.0f };
+
+		sfxHandle_t explosionSound{ 0U };
 
 		// TODO: move to BaseEntity
 		BaseEntity* activator{ nullptr };

@@ -1,47 +1,26 @@
 #include "cg_local.hpp"
 #include "ComplexEventHandler.hpp"
+#include "View/ParticleManager.hpp"
+#include "View/Particles/BaseGib.hpp"
 
 class GibSpan : public EventParser
 {
 public:
 	GibSpan( int ev );
 
-	void LaunchGib( Vector origin, Vector velocity, qhandle_t model )
+	void RegisterAssets() override
 	{
-		localEntity_t* le;
-		refEntity_t* re;
+		for ( int i = 0; i < Material_Max * 3; i++ )
+		{
+			sounds[i] = trap_S_RegisterSound( GibSounds[i], false );
+		}
+	}
 
-		le = CG_AllocLocalEntity();
-		re = &le->refEntity;
+	void LaunchGib( Vector origin, Vector velocity, qhandle_t model, int materialType, sfxHandle_t sound = 0 )
+	{
+		using namespace Particles;
 
-		le->leType = LE_FRAGMENT;
-		le->leFlags = LEF_TUMBLE;
-		le->startTime = cg.time;
-		le->endTime = le->startTime + 30000 + random() * 10000;
-
-		origin.CopyToArray( re->origin );
-		origin.CopyToArray( le->pos.trBase );
-
-		Vector randomAngles = CRandomVector( Vector( 180, 180, 180 ) );
-		AnglesToAxis( randomAngles, re->axis );
-
-		re->hModel = model;
-
-		le->pos.trType = TR_GRAVITY;
-		velocity.CopyToArray( le->pos.trDelta );
-		le->pos.trTime = cg.time;
-
-		le->angles.trType = TR_LINEAR;
-		le->angles.trTime = cg.time + random() * 2000;
-		le->angles.trDelta[0] = crandom() * 180.0f;
-		le->angles.trDelta[1] = crandom() * 180.0f;
-		le->angles.trDelta[2] = crandom() * 180.0f;
-
-		le->bounceFactor = 0.6f;
-
-		float randomScale = 2.0f + crandom()*1.5f;
-
-		re->radius = randomScale;
+		BaseGib::CreateGib( model, origin, velocity, materialType, sound );
 	}
 
 	Vector CRandomVector( Vector max )
@@ -60,10 +39,18 @@ public:
 
 		Vector mins = ed.vparm;
 		Vector maxs = ed.vparm2;
+
+		// Shrinks the mixs and maxs by 15%
+		Vector centre = (mins + maxs) / 2.0f;
+		Vector bboxExtent = (maxs - centre) * 0.85f;
+		mins = centre - bboxExtent;
+		maxs = centre + bboxExtent;
+
 		Vector delta = maxs - mins;
 
 		int gibs = ed.parm;
 		int gibModelVariation = ed.parm2;
+		int materialType = ed.parm4;
 
 		Vector angles = Vector( ed.fparm, ed.fparm2, 0 );
 		Vector direction;
@@ -80,20 +67,42 @@ public:
 
 			if ( intensity >= 0.0f )
 			{
-				directionRandomised = direction + CRandomVector( Vector( 0.2, 0.2, 0.2 ) );
+				directionRandomised = direction + CRandomVector( Vector( 0.6, 0.6, 0.9 ) );
 				directionRandomised *= intensity;
 			}
 			else
 			{
-				directionRandomised = CRandomVector( Vector( 1, 1, 1 ) );
+				directionRandomised = CRandomVector( Vector( 1, 1, 2 ) );
 				directionRandomised *= -intensity;
 			}
 
 			qhandle_t model = ed.model + (rand() % gibModelVariation);
 
-			LaunchGib( pos, directionRandomised, cgs.gameModels[model] );
+			LaunchGib( pos, directionRandomised, cgs.gameModels[model], materialType, sounds[materialType*3 + rand()%3] );
 		}
 	}
+
+private:
+	constexpr static const char* GibSounds[Material_Max * 3]
+	{
+		"sound/debris/glass_gib1.wav",
+		"sound/debris/glass_gib2.wav",
+		"sound/debris/glass_gib3.wav",
+
+		"sound/debris/wood_gib1.wav",
+		"sound/debris/wood_gib2.wav",
+		"sound/debris/wood_gib3.wav",
+
+		"sound/debris/concrete_gib1.wav",
+		"sound/debris/concrete_gib2.wav",
+		"sound/debris/concrete_gib3.wav",
+
+		"sound/debris/metal_gib1.wav",
+		"sound/debris/metal_gib2.wav",
+		"sound/debris/metal_gib3.wav"
+	};
+
+	sfxHandle_t sounds[Material_Max * 3];
 };
 
 RegisterEventParser( CE_GibSpan, GibSpan );

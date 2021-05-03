@@ -22,6 +22,11 @@ void EnvExplosion::Spawn()
 	spawnFlags = spawnArgs->GetInt( "spawnflags", 0 );
 }
 
+void EnvExplosion::Precache()
+{
+	explosionSound = gameWorld->PrecacheSound( "sound/debris/explode1.wav" );
+}
+
 void EnvExplosion::Use( IEntity* activator, IEntity* caller, float value )
 {
 	this->activator = static_cast<BaseEntity*>( activator );
@@ -40,7 +45,7 @@ void EnvExplosion::Explode()
 	ed.parm = 0;
 	ed.parm2 = 0; // use builtin explosion preset 1
 	ed.vparm = Vector( 0, 0, 1 );
-	ed.sound = 0;
+	ed.sound = explosionSound;
 
 	// Create the explosion
 	gameWorld->EmitComplexEvent( GetOrigin(), Vector::Zero, ed );

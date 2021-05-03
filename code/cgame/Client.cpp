@@ -4,7 +4,10 @@
 #include "Vegetation/VegetationInstance.hpp"
 #include "Vegetation/VegetationSystem.hpp"
 #include "View/LightManager.hpp"
+#include "View/ParticleManager.hpp"
 #include <string>
+
+#include "Times/Timer.hpp"
 
 Client client;
 
@@ -17,6 +20,7 @@ Client::Client()
 	view = new ClientView();
 	vegetationSystem = new VegetationSystem();
 	lightManager = new LightManager();
+	particleManager = new ParticleManager();
 }
 
 // ===================
@@ -28,6 +32,7 @@ Client::~Client()
 	delete view;
 	delete vegetationSystem;
 	delete lightManager;
+	delete particleManager;
 }
 
 // ===================
@@ -65,6 +70,20 @@ void Client::Update()
 		lightManager->Update();
 		lightManager->Render();
 	}
+
+	if ( particleManager )
+	{
+		Timer timer;
+
+		particleManager->Update();
+		float time1 = timer.GetElapsedAndReset( Timer::Milliseconds ); // 26812
+
+		particleManager->Render();
+		float time2 = timer.GetElapsed( Timer::Milliseconds );
+		
+		//CG_Printf( S_COLOR_YELLOW "Physics time: %3.4f ms, render entity submission time: %3.4f ms\n" S_COLOR_WHITE, time1, time2 );
+	}
+
 	// If the game is paused, pause the music too
 	trap_DM_Pause( false, !IsPaused() );
 }
@@ -260,6 +279,15 @@ LightManager* Client::GetLightManager()
 {
 	return lightManager;
 }
+
+// ===================
+// Client::GetParticleManager
+// ===================
+ParticleManager* Client::GetParticleManager()
+{
+	return particleManager;
+}
+
 // ===================
 // Client::IsLocalClient
 // ===================

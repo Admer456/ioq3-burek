@@ -46,19 +46,23 @@ namespace Entities
 			"models/gibs/metal3.iqm",
 		};
 
-		constexpr static const char* BreakSounds[Material_Max * 2]
+		constexpr static const char* BreakSounds[Material_Max * 3]
 		{
-			"sound/gibs/glass1.wav",
-			"sound/gibs/glass2.wav",
+			"sound/debris/glass_bust1.wav",
+			"sound/debris/glass_bust2.wav",
+			"sound/debris/glass_bust3.wav",
 
-			"sound/gibs/wood1.wav",
-			"sound/gibs/wood2.wav",
+			"sound/debris/wood_bust1.wav",
+			"sound/debris/wood_bust2.wav",
+			"sound/debris/wood_bust3.wav",
 
-			"sound/gibs/concrete1.wav",
-			"sound/gibs/concrete2.wav",
+			"sound/debris/concrete_bust1.wav",
+			"sound/debris/concrete_bust2.wav",
+			"sound/debris/concrete_bust3.wav",
 
-			"sound/gibs/metal1.wav",
-			"sound/gibs/metal2.wav"
+			"sound/debris/metal_bust1.wav",
+			"sound/debris/metal_bust2.wav"
+			"sound/debris/metal_bust3.wav"
 		};
 
 		void		Spawn() override;
@@ -74,7 +78,7 @@ namespace Entities
 		byte		materialType{};
 
 		qhandle_t	gibModels[3];
-		qhandle_t	sounds[2];
+		qhandle_t	sounds[3];
 
 		qhandle_t	currentModel{};
 	};

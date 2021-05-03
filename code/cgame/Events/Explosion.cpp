@@ -1,5 +1,6 @@
 #include "cg_local.hpp"
 #include "ComplexEventHandler.hpp"
+#include "View/ParticleManager.hpp"
 
 class Explosion final : public EventParser
 {
@@ -15,9 +16,9 @@ public:
 		smokeMaterial = trap_R_RegisterShader( "sprites/smoke1" );
 		smokeLength = trap_R_AnimationLength( smokeMaterial );
 
-		explosionSounds[0] = trap_S_RegisterSound( "sound/debris/explo1.wav", false );
-		explosionSounds[1] = trap_S_RegisterSound( "sound/debris/explo2.wav", false );
-		explosionSounds[2] = trap_S_RegisterSound( "sound/debris/explo3.wav", false );
+		explosionSounds[0] = trap_S_RegisterSound( "sound/debris/explode1.wav", false );
+		explosionSounds[1] = trap_S_RegisterSound( "sound/debris/explode2.wav", false );
+		explosionSounds[2] = trap_S_RegisterSound( "sound/debris/explode3.wav", false );
 	}
 
 	Vector CRandomVector( Vector max )
@@ -59,7 +60,9 @@ public:
 		int spriteAnimationLength = trap_R_AnimationLength( sprite );
 
 		le = CG_MakeExplosion( cent->currentState.origin, direction, 0, sprite, spriteAnimationLength, true );
-		trap_S_StartSound( cent->currentState.origin, -1, 0, sound );
+		trap_S_StartSound( cent->currentState.origin, 0, CHAN_AUTO, sound );
+		trap_S_StartSound( cent->currentState.origin, 0, CHAN_AUTO, sound );
+		trap_S_StartSound( cent->currentState.origin, 0, CHAN_AUTO, sound ); // Megahack: make the explosion sound 3x louder
 
 		le->light = radius * 1.5f;
 		Vector( 1.0f, 0.75f, 0.25f ).CopyToArray( le->lightColor );
@@ -68,7 +71,7 @@ public:
 		le->radius = radius * 0.5f;
 		re->rotation = 0;
 
-		for ( int i = 0; i < ((int)radius / 24); i++ )
+		for ( int i = 0; i < ((int)radius / 12); i++ )
 		{
 			Vector r = CRandomVector( Vector( radius * 0.8f, radius * 0.8f, radius * 0.8f ) );
 			Vector p = Vector( cent->currentState.origin ) + r;
@@ -103,6 +106,10 @@ public:
 			GetClient()->GetView()->AddShake( 12.0f, 0.5f, r );
 			GetClient()->GetView()->AddShake( 16.0f, 1.2f, r * 0.05f );
 		}
+
+		// Affect any nearby particles with a force
+		auto force = ParticleManager::ParticleForce( Vector( cent->currentState.origin ) - Vector( 0, 0, radius * 0.333f ), 35.0f * radius, 0.3f, 2.0f, 0.05f );
+		GetClient()->GetParticleManager()->AddForce( force );
 	}
 
 private:

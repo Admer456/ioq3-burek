@@ -496,6 +496,7 @@ enum ComplexEvent
 	// parm: number of gibs
 	// parm2: number of different gib models
 	// parm3: type (0 = model, 1 = sprite) [UNUSED]
+	// parm4: material type (used to determine gib sounds)
 	// fparm: pitch
 	// fparm2: yaw
 	// fparm3: force (<0 = random, >=0 = in this direction)

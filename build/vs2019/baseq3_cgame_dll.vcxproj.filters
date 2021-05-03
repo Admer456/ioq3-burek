@@ -34,6 +34,9 @@
     <Filter Include="Sources\Vegetation">
       <UniqueIdentifier>{35d47988-bea1-42c6-8f60-50a776d8974f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\View\Particles">
+      <UniqueIdentifier>{f414cff8-5055-4183-a221-ec9435530275}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -110,6 +113,15 @@
     </ClInclude>
     <ClInclude Include="..\..\code\cgame\View\LightManager.hpp">
       <Filter>Sources\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\View\ParticleManager.hpp">
+      <Filter>Sources\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\View\Particles\BaseParticle.hpp">
+      <Filter>Sources\View\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\View\Particles\BaseGib.hpp">
+      <Filter>Sources\View\Particles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +247,15 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\View\LightManager.cpp">
       <Filter>Sources\View</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\View\ParticleManager.cpp">
+      <Filter>Sources\View</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\View\Particles\BaseParticle.cpp">
+      <Filter>Sources\View\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\View\Particles\BaseGib.cpp">
+      <Filter>Sources\View\Particles</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

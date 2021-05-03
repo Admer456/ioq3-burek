@@ -34,6 +34,7 @@ void FuncBreakable::Precache()
 
 	sounds[0] = gameWorld->PrecacheSound( BreakSounds[materialType*3] );
 	sounds[1] = gameWorld->PrecacheSound( BreakSounds[materialType*3+1] );
+	sounds[2] = gameWorld->PrecacheSound( BreakSounds[materialType*3+2] );
 }
 
 void FuncBreakable::Use( IEntity* activator, IEntity* caller, float value )
@@ -80,10 +81,18 @@ void FuncBreakable::Break()
 	ed.fparm2 = gibDirection.ToAngles().y; // yaw
 	ed.fparm3 = spawnArgs->GetFloat( "force", -100.0f ); // force -100.0f = random dir at intensity 100
 
-	ed.vparm = GetCurrentOrigin() + GetMins() + Vector(3,3,3);
-	ed.vparm2 = GetCurrentOrigin() + GetMaxs() - Vector(3,3,3);
+	ed.vparm = GetCurrentOrigin() + GetMins() + Vector(4,4,4);
+	ed.vparm2 = GetCurrentOrigin() + GetMaxs() - Vector(4,4,4);
 
 	ed.model = gibModels[0];
+	ed.parm4 = materialType;
 
-	gameWorld->EmitComplexEvent( GetOrigin(), GetAngles(), ed );
+	// Spawn gibs
+	gameWorld
+		->EmitComplexEvent( GetCurrentOrigin() + GetAverageOrigin(), GetAngles(), ed );
+
+	// Emit a "bust" sound
+	gameWorld
+		->CreateTempEntity( GetCurrentOrigin() + GetAverageOrigin(), EV_GENERAL_SOUND )
+		->GetState()->eventParm = sounds[rand() % 3];
 }

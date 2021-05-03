@@ -25,6 +25,11 @@ namespace ClientEntities
 		animHandle	animReload{};
 		animHandle	animReloadTactical{};
 
+		sfxHandle_t soundShoot{};
+		sfxHandle_t soundShootEmpty{};
+
+		qhandle_t	muzzleFlashSprite{};
+
 		bool		fireHeld{ false };
 	};
 }
