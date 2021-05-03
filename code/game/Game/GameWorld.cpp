@@ -280,8 +280,10 @@ Entities::IEntity* GameWorld::CreateTempEntity( const Vector& origin, int event 
 	//ent->className = "tempEntity";
 	ent->eventTime = level.time;
 	ent->freeAfterEvent = true;
-	Macro_SnapVector( snapped ); // save network bandwidth
+	snapped.Snap(); // save network bandwidth
 	ent->SetOrigin( snapped );
+	ent->SetCurrentOrigin( snapped );
+	ent->GetShared()->plow = NetPlow_ForceAll;
 
 	gameImports->LinkEntity( ent );
 
@@ -772,6 +774,8 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 	// set default animations
 	client->ps.torsoAnim = TORSO_STAND;
 	client->ps.legsAnim = LEGS_IDLE;
+
+	player->ClearWeapons( true );
 
 	if ( !level.intermissiontime ) 
 	{

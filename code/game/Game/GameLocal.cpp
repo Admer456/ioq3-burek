@@ -619,6 +619,8 @@ void GameLocal::ClientDisconnect( int clientNum )
 	ent->GetClient()->ps.persistant[PERS_TEAM] = TEAM_FREE;
 	ent->GetClient()->sess.sessionTeam = TEAM_FREE;
 
+	ent->Remove();
+
 	gameImports->SetConfigString( CS_PLAYERS + clientNum, "" );
 
 	CalculateRanks();

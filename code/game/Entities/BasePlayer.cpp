@@ -269,6 +269,7 @@ bool BasePlayer::HasAnyWeapon()
 bool BasePlayer::HasWeapon( int weaponID )
 {
 	return weapons[weaponID] != nullptr;
+	//return client->ps.stats[STAT_WEAPONS] & (1 << weaponID);
 }
 
 void BasePlayer::SendWeaponEvent( uint32_t weaponEvent )
@@ -310,6 +311,24 @@ void BasePlayer::UpdateWeapon()
 		currentWeapon->Reload();
 
 	currentWeapon->WeaponFrame();
+}
+
+void BasePlayer::ClearWeapons( bool deleteAllWeapons )
+{
+	currentWeapon = nullptr;
+	client->ps.weapon = 0;
+
+	if ( deleteAllWeapons )
+	{
+		for ( BaseWeapon*& weapon : weapons )
+		{
+			if ( nullptr != weapon )
+			{
+				weapon->Remove();
+				weapon = nullptr;
+			}
+		}
+	}
 }
 
 void BasePlayer::ClientCommand()
@@ -451,9 +470,21 @@ void BasePlayer::PlayerUse()
 	if ( tr.entityNum < MAX_CLIENTS || tr.entityNum >= ENTITYNUM_MAX_NORMAL )
 		return;
 
+	IEntity* ent = gEntities[tr.entityNum];
+
 	// Use the entity
-	if ( gEntities[tr.entityNum] )
-		gEntities[tr.entityNum]->Use( this, this, 0 );
+	if ( nullptr != ent )
+	{
+		if ( ent->ObjectFlags() & OF_ImpulseUse && isUsing && !wasUsing )
+		{
+			ent->Use( this, this, 0 );
+		}
+
+		if ( ent->ObjectFlags() & OF_ContinousUse && isUsing )
+		{
+			ent->Use( this, this, 0 );
+		}
+	}
 }
 
 Vector BasePlayer::GetViewOrigin()

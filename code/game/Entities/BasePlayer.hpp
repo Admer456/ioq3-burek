@@ -29,6 +29,7 @@ namespace Entities
 		bool			HasWeapon( int weaponID );
 		void			SendWeaponEvent( uint32_t weaponEvent );
 		void			UpdateWeapon();
+		void			ClearWeapons( bool deleteAllWeapons = false );
 
 	protected:
 		BaseWeapon*		currentWeapon{ nullptr }; // the currently selected weapon
