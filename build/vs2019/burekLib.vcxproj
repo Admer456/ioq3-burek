@@ -158,10 +158,12 @@
   <ItemGroup>
     <ClCompile Include="..\..\code\bLib\Collections\KeyValueLibrary.cpp" />
     <ClCompile Include="..\..\code\bLib\Maths\Vector.cpp" />
+    <ClCompile Include="..\..\code\bLib\Times\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\bLib\Collections\KeyValueLibrary.hpp" />
     <ClInclude Include="..\..\code\bLib\Maths\Vector.hpp" />
+    <ClInclude Include="..\..\code\bLib\Times\Timer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

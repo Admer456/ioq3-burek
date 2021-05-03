@@ -11,6 +11,9 @@
     <Filter Include="Source Files\Containers">
       <UniqueIdentifier>{dfbc6ba9-b12c-46ae-8d6d-79ecb703a3b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Times">
+      <UniqueIdentifier>{8853a9ab-5096-4317-9246-bb9adfcbd477}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\bLib\Maths\Vector.cpp">
@@ -19,6 +22,9 @@
     <ClCompile Include="..\..\code\bLib\Collections\KeyValueLibrary.cpp">
       <Filter>Source Files\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\code\bLib\Times\Timer.cpp">
+      <Filter>Source Files\Times</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\bLib\Maths\Vector.hpp">
@@ -26,6 +32,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\bLib\Collections\KeyValueLibrary.hpp">
       <Filter>Source Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\bLib\Times\Timer.hpp">
+      <Filter>Source Files\Times</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
