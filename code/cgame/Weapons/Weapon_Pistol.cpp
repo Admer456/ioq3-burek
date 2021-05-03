@@ -1,6 +1,7 @@
 #include "cg_local.hpp"
 #include "View/View.hpp"
 #include "../shared/Weapons/WeaponIDs.hpp"
+#include "View/LightManager.hpp"
 
 #include "Weapon_Pistol.hpp"
 
@@ -87,7 +88,18 @@ void Weapon_Pistol::OnPrimaryFire()
 	}
 
 	if ( anim != animAttackEmpty )
+	{
 		GetClient()->GetView()->AddPunch( 0.25f, Vector( -1.5f, -0.7f, 0.5f ) );
+
+		ClientView* view = GetClient()->GetView();
+		Vector forward, right, up;
+		Vector::AngleVectors( view->GetViewAngles(), &forward, &right, &up );
+		Vector lightOrigin = view->GetViewOrigin() + forward * 1.0f;
+		Vector muzzleOrigin = view->GetViewOrigin() + forward * 20.0f + right * 8.0f - up * 4.5f;
+
+		Light shootLight = Light( lightOrigin, Vector( 1.0f, 0.85f, 0.63f ) * 0.02f, 300.0f, 0.08f );
+		lightManager->AddLight( shootLight );
+	}
 
 	renderEntity.StartAnimation( anim, true );
 	nextIdle = nextReload = GetNextAnimTime( anim );

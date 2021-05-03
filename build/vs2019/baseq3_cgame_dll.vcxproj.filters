@@ -108,6 +108,9 @@
     <ClInclude Include="..\..\code\cgame\Vegetation\VegetationInstance.hpp">
       <Filter>Sources\Vegetation</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\cgame\View\LightManager.hpp">
+      <Filter>Sources\View</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -229,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\Vegetation\VegetationInstance.cpp">
       <Filter>Sources\Vegetation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\View\LightManager.cpp">
+      <Filter>Sources\View</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

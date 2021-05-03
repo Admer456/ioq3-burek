@@ -3,6 +3,7 @@
 #include "Collections/KeyValueLibrary.hpp"
 #include "Vegetation/VegetationInstance.hpp"
 #include "Vegetation/VegetationSystem.hpp"
+#include "View/LightManager.hpp"
 #include <string>
 
 Client client;
@@ -15,6 +16,7 @@ Client::Client()
 	complexEventHandler = new ComplexEventHandler();
 	view = new ClientView();
 	vegetationSystem = new VegetationSystem();
+	lightManager = new LightManager();
 }
 
 // ===================
@@ -25,6 +27,7 @@ Client::~Client()
 	delete complexEventHandler;
 	delete view;
 	delete vegetationSystem;
+	delete lightManager;
 }
 
 // ===================
@@ -57,6 +60,11 @@ void Client::Update()
 			weapon->OnReload();
 	}
 
+	if ( lightManager )
+	{
+		lightManager->Update();
+		lightManager->Render();
+	}
 	// If the game is paused, pause the music too
 	trap_DM_Pause( false, !IsPaused() );
 }
@@ -245,6 +253,13 @@ VegetationSystem* Client::GetVegetationSystem()
 	return vegetationSystem;
 }
 
+// ===================
+// Client::GetLightManager
+// ===================
+LightManager* Client::GetLightManager()
+{
+	return lightManager;
+}
 // ===================
 // Client::IsLocalClient
 // ===================
