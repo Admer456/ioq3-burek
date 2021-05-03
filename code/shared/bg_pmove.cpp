@@ -515,7 +515,9 @@ static void PM_WaterMove( void ) {
 		for (i=0 ; i<3 ; i++)
 			wishvel[i] = scale * pml.forward[i]*pm->cmd.forwardmove + scale * pml.right[i]*pm->cmd.rightmove;
 
-		wishvel[2] += scale * pm->cmd.upmove;
+		// Crouching underwater gets us stuck, so ignore crouching
+		if ( pm->cmd.upmove > 0 )
+			wishvel[2] += scale * pm->cmd.upmove;
 	}
 
 	VectorCopy (wishvel, wishdir);
@@ -1269,7 +1271,7 @@ static void PM_CheckDuck (void)
 	pm->maxs[0] = HumanHullMaxs[0];
 	pm->maxs[1] = HumanHullMaxs[1];
 
-	pm->mins[2] = PM_IsNPC() ? 0 : HumanHullMins[0];
+	//pm->mins[2] = PM_IsNPC() ? 0 : HumanHullMins[2];
 
 	if (pm->ps->pm_type == PM_DEAD)
 	{
@@ -1288,6 +1290,7 @@ static void PM_CheckDuck (void)
 		{
 			// try to stand up
 			pm->maxs[2] = PM_IsNPC() ? 72 : HumanHullMaxs[2];
+			pm->mins[2] = PM_IsNPC() ? 0 : HumanCrouchMins[2];
 			pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
 			if (!trace.allsolid)
 				pm->ps->pm_flags &= ~PMF_DUCKED;
@@ -1297,11 +1300,13 @@ static void PM_CheckDuck (void)
 	if (pm->ps->pm_flags & PMF_DUCKED)
 	{
 		pm->maxs[2] = PM_IsNPC() ? 40 : HumanCrouchMaxs[2];
+		pm->mins[2] = PM_IsNPC() ? 0 : HumanCrouchMins[2];
 		pm->ps->viewheight = CROUCH_VIEWHEIGHT;
 	}
 	else
 	{
 		pm->maxs[2] = PM_IsNPC() ? 72 : HumanHullMaxs[2];
+		pm->mins[2] = PM_IsNPC() ? 0 : HumanHullMins[2];
 		pm->ps->viewheight = DEFAULT_VIEWHEIGHT;
 	}
 }

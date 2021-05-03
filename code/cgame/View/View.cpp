@@ -138,6 +138,9 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	outAngles += punch;
 	outAngles.z += sin( time * 1.5f ) * waterWobble * 3.0f;
 
+	// add view height
+	outOrigin.z += cg.predictedPlayerState.viewheight;
+
 	currentViewOrigin = outOrigin;
 	currentViewAngles = outAngles;
 }
@@ -320,7 +323,5 @@ Vector ClientView::CalculatePunchTotal() const
 // ===================
 bool ClientView::IsInWater() const
 {
-	// It seems that the view origin resets, so hack around it
-	Vector actualViewOrigin = GetViewOrigin() + Vector( 0, 0, HumanHullMaxs[2] + 8.0f );
-	return CG_PointContents( actualViewOrigin, cg.predictedPlayerState.clientNum ) & (CONTENTS_WATER | CONTENTS_LAVA | CONTENTS_SLIME);
+	return CG_PointContents( GetViewOrigin(), cg.predictedPlayerState.clientNum ) & (CONTENTS_WATER | CONTENTS_LAVA | CONTENTS_SLIME);
 }

@@ -51,16 +51,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	VOTE_TIME			30000	// 30 seconds before vote times out
 
 #define	MINS_Z				-36
-#define	DEFAULT_VIEWHEIGHT	48 // 62 units above floor
-#define CROUCH_VIEWHEIGHT	20 // 38 units above floor 
+#define	DEFAULT_VIEWHEIGHT	32 // 68 units above floor
+#define CROUCH_VIEWHEIGHT	6 // 32 units above floor 
 #define	DEAD_VIEWHEIGHT		-16
 
-// The human hull is 30x30x72
+// The human hull is 30x30x71
 constexpr float HumanHullMaxs[3] = 
 { 
 	15.0f, 
 	15.0f, 
-	36.0f 
+	35.0f 
 };
 
 constexpr float HumanHullMins[3] =
@@ -70,18 +70,19 @@ constexpr float HumanHullMins[3] =
 	MINS_Z
 };
 
+// The crouching hull is 30x30x48, with a stepping offset of 10 units
 constexpr float HumanCrouchMaxs[3] =
 {
 	HumanHullMaxs[0],
 	HumanHullMaxs[1],
-	4
+	10
 };
 
 constexpr float HumanCrouchMins[3] =
 {
 	-HumanCrouchMaxs[0],
 	-HumanCrouchMaxs[1],
-	MINS_Z
+	MINS_Z + 10
 };
 
 //
