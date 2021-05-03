@@ -85,6 +85,9 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
 
 void CG_AddWeapon( Vector weaponPos, Vector weaponAngles, playerState_t* ps, centity_t* cent )
 {
+	const Vector indicatorRed = Vector( 255.0f, 0.0f, 0.0f );
+	const Vector indicatorGreen = Vector( 0.0f, 255.0f, 0.0f );
+
 	ClientEntities::BaseClientWeapon* weapon = nullptr;
 	weapon = GetClient()->GetCurrentWeapon();
 
@@ -92,14 +95,26 @@ void CG_AddWeapon( Vector weaponPos, Vector weaponAngles, playerState_t* ps, cen
 		return;
 
 	RenderEntity& gun = weapon->GetRenderEntity();
+	refEntity_t& re = gun.GetRefEntity();
 
 	gun.origin = weaponPos;
 	gun.angles = weaponAngles;
 
-	gun.GetRefEntity().renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_WEAPONFOV;
+	re.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_WEAPONFOV;
 
 	// Update the position and angles, don't update frames
 	gun.Update( 0.0f );
+
+	// Update the health indicator on the watch
+	float health = ps->stats[STAT_HEALTH];
+	float maxHealth = ps->stats[STAT_MAX_HEALTH];
+	float healthFraction = health / maxHealth;
+
+	healthFraction = MAX( 0.0f, MIN( healthFraction, 1.0f ) );
+	healthFraction = healthFraction * healthFraction;
+
+	for ( int i = 0; i < 3; i++ )
+		re.shaderRGBA[i] = indicatorGreen[i] * healthFraction + indicatorRed[i] * (1.0f - healthFraction);
 
 	trap_R_AddRefEntityToScene( &gun.GetRefEntity() );
 }
