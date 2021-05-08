@@ -11,6 +11,9 @@ bin*
 !build/**/*.vcxproj*
 !build/**/*.sln
 
+# bLib static libs
+libs/bLib/
+
 # Default
 ###################
 Makefile.local
