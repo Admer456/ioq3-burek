@@ -81,45 +81,72 @@ static long generateHashValue( const char *fname ) {
 	return hash;
 }
 
+void GL_TextureMode( const uint32_t& mode, image_t* image )
+{
+	gl_filter_min = modes[mode].minimize;
+	gl_filter_max = modes[mode].maximize;
+
+	if ( nullptr == image )
+		return;
+
+	if ( image->flags & IMGFLAG_MIPMAP )
+	{
+		qglTextureParameterfEXT( image->texnum, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min );
+		qglTextureParameterfEXT( image->texnum, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max );
+	}
+	else
+	{
+		qglTextureParameterfEXT( image->texnum, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max );
+		qglTextureParameterfEXT( image->texnum, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max );
+	}
+}
+
+void GL_TextureMode( const uint32_t& mode )
+{
+	image_t* glt;
+
+	gl_filter_min = modes[mode].minimize;
+	gl_filter_max = modes[mode].maximize;
+
+	// change all the existing mipmap texture objects
+	for ( int i = 0; i < tr.numImages; i++ ) {
+		glt = tr.images[i];
+		if ( glt->flags & IMGFLAG_MIPMAP && !(glt->flags & IMGFLAG_CUBEMAP) ) {
+			qglTextureParameterfEXT( glt->texnum, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min );
+			qglTextureParameterfEXT( glt->texnum, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max );
+		}
+	}
+}
+
 /*
 ===============
 GL_TextureMode
 ===============
 */
 void GL_TextureMode( const char *string ) {
-	int		i;
-	image_t	*glt;
-
+	uint32_t i;
+	
 	for ( i=0 ; i< 6 ; i++ ) {
 		if ( !Q_stricmp( modes[i].name, string ) ) {
 			break;
 		}
 	}
 
+	// LOL this game of mine would never run on a Voodoo
+	
 	// hack to prevent trilinear from being set on voodoo,
 	// because their driver freaks...
-	if ( i == 5 && glConfig.hardwareType == GLHW_3DFX_2D3D ) {
-		ri.Printf( PRINT_ALL, "Refusing to set trilinear on a voodoo.\n" );
-		i = 3;
-	}
+	//if ( i == 5 && glConfig.hardwareType == GLHW_3DFX_2D3D ) {
+	//	ri.Printf( PRINT_ALL, "Refusing to set trilinear on a voodoo.\n" );
+	//	i = 3;
+	//}
 
-
-	if ( i == 6 ) {
+	if ( i == 6U ) {
 		ri.Printf (PRINT_ALL, "bad filter name\n");
 		return;
 	}
 
-	gl_filter_min = modes[i].minimize;
-	gl_filter_max = modes[i].maximize;
-
-	// change all the existing mipmap texture objects
-	for ( i = 0 ; i < tr.numImages ; i++ ) {
-		glt = tr.images[ i ];
-		if ( glt->flags & IMGFLAG_MIPMAP && !(glt->flags & IMGFLAG_CUBEMAP)) {
-			qglTextureParameterfEXT(glt->texnum, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-			qglTextureParameterfEXT(glt->texnum, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-		}
-	}
+	GL_TextureMode( i );
 }
 
 /*

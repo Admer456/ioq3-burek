@@ -1917,6 +1917,8 @@ void R_RotateForEntity( const trRefEntity_t *ent, const viewParms_t *viewParms, 
 */
 void	GL_BindToTMU( image_t *image, int tmu );
 void	GL_SetDefaultState (void);
+void	GL_TextureMode( const uint32_t& mode, image_t* image );
+void	GL_TextureMode( const uint32_t& mode );
 void	GL_TextureMode( const char *string );
 void	GL_CheckErrs( char *file, int line );
 #define GL_CheckErrors(...) GL_CheckErrs(__FILE__, __LINE__)

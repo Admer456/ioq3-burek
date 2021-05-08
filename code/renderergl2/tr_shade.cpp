@@ -1004,6 +1004,16 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 			break;
 		}
 
+		// Admer: env mapped surfaces should never be filtered 
+		// with nearest neighbour because it looks ugly
+		// Cubemaps also, so they will be filtered with GL_LINEAR_MIPMAP_LINEAR
+		if ( pStage->bundle[0].tcGen == TCGEN_ENVIRONMENT_MAPPED 
+			 || pStage->bundle[0].image[0]->flags & IMGFLAG_CUBEMAP )
+		{
+			GL_TextureMode( 5U, pStage->bundle[0].image[0] );
+		}
+		// Admer end
+
 		if (backEnd.depthFill)
 		{
 			if (pStage->glslShaderGroup == tr.lightallShader)
@@ -1388,7 +1398,6 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 			break;
 	}
 }
-
 
 static void RB_RenderShadowmap( shaderCommands_t *input )
 {
