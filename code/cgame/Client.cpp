@@ -48,6 +48,8 @@ void Client::Update()
 
 	usercmd_t uc = GetUsercmd();
 
+	SetMouseXY( uc.mouse[0], uc.mouse[1] );
+
 	auto weapon = GetCurrentWeapon();
 
 	if ( weapon )
@@ -246,6 +248,23 @@ usercmd_t Client::GetUsercmd() const
 bool Client::IsPaused()
 {
 	return trap_IsPaused();
+}
+
+// ===================
+// Client::GetMouseXY
+// ===================
+Vector Client::GetMouseXY()
+{
+	return mouseCoordinates;
+}
+
+// ===================
+// Client::SetMouseXY
+// ===================
+void Client::SetMouseXY( int x, int y )
+{
+	mouseCoordinates.x = x;
+	mouseCoordinates.y = y;
 }
 
 // ===================

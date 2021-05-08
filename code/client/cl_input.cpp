@@ -473,6 +473,9 @@ void CL_MouseMove(usercmd_t *cmd)
 	mx *= cl.cgameSensitivity;
 	my *= cl.cgameSensitivity;
 
+	cmd->mouse[0] = mx;
+	cmd->mouse[1] = my;
+
 	// add mouse X/Y movement to cmd
 	if(in_strafe.active)
 		cmd->rightmove = ClampChar(cmd->rightmove + m_side->value * mx);

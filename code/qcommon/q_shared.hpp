@@ -1334,6 +1334,9 @@ typedef struct usercmd_s {
 	short			interactionButtons; // special-purpose buttons; 16 bits: primary attack, secondary, tertiary, use etc.
 	byte			weapon;				// weapon 
 	signed char		forwardmove, rightmove, upmove;
+
+	// Clientside only
+	float			mouse[2];
 } usercmd_t;
 
 //===================================================================

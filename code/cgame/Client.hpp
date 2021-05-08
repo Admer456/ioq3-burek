@@ -38,6 +38,9 @@ public:
 	usercmd_t	GetUsercmd() const;
 	// Is the client currently paused?
 	bool		IsPaused();
+	// Mouse coordinates
+	Vector				GetMouseXY();
+	void				SetMouseXY( int x, int y );
 
 	// Subsystem getters
 
@@ -69,6 +72,8 @@ private:
 	VegetationSystem* vegetationSystem{ nullptr };
 	LightManager* lightManager{ nullptr };
 	ParticleManager* particleManager{ nullptr };
+
+	Vector				mouseCoordinates{ Vector::Zero };
 
 	// Model animation data for game models
 	std::vector<Assets::ModelAnimation> anims[MAX_MODELS];
