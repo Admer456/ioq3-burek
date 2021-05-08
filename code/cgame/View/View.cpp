@@ -95,6 +95,9 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	outOrigin = cg.refdef.vieworg;
 	outAngles = cg.refdefViewAngles;
 
+	viewOriginOffset = Vector::Zero;
+	viewAnglesOffset = Vector::Zero;
+
 	// Base vars
 	Vector forward, right, up;
 	Vector::AngleVectors( outAngles, &forward, &right, &up );
@@ -140,6 +143,9 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 
 	// add view height
 	outOrigin.z += cg.predictedPlayerState.viewheight;
+
+	viewOriginOffset = outOrigin - currentViewOrigin;
+	viewAnglesOffset = outAngles - currentViewAngles;
 
 	currentViewOrigin = outOrigin;
 	currentViewAngles = outAngles;
@@ -238,6 +244,9 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	outOrigin.z -= fabs( cg.refdefViewAngles[PITCH] ) / 90.0f;
 
 	outAngles.x -= airOffset;
+
+	weaponOriginOffset = outOrigin - currentWeaponOrigin;
+	weaponAnglesOffset = outAngles - currentWeaponAngles;
 
 	currentWeaponOrigin = outOrigin;
 	currentWeaponAngles = outAngles;

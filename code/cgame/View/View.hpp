@@ -52,6 +52,11 @@ public:
 	const Vector& GetWeaponOrigin() const { return currentWeaponOrigin; }
 	const Vector& GetWeaponAngles() const { return currentWeaponAngles; }
 
+	const Vector& GetViewOriginOffset() const { return viewOriginOffset; }
+	const Vector& GetViewAnglesOffset() const { return viewAnglesOffset; }
+	const Vector& GetWeaponOriginOffset() const { return weaponOriginOffset; }
+	const Vector& GetWeaponAnglesOffset() const { return weaponAnglesOffset; }
+
 private:
 	ViewShake	shakes[MaxViewShakes];
 	ViewPunch	punches[MaxViewShakes];
@@ -60,4 +65,9 @@ private:
 	Vector		currentViewAngles;
 	Vector		currentWeaponOrigin;
 	Vector		currentWeaponAngles;
+
+	Vector		viewOriginOffset;
+	Vector		viewAnglesOffset;
+	Vector		weaponOriginOffset;
+	Vector		weaponAnglesOffset;
 };
