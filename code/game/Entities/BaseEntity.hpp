@@ -220,7 +220,7 @@ namespace Entities
 		virtual bool	CheckAndClearEvents();
 
 	protected:
-		unsigned int	entityIndex{ EntityIndexNotSet };
+		uint32_t		entityIndex{ EntityIndexNotSet };
 
 		sharedEntity_t	shared;
 	};

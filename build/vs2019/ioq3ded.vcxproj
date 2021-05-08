@@ -128,7 +128,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;_WIN64;__WIN64__;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;__CPP;NDEBUG;_WIN64;__WIN64__;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\code\zlib;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -184,7 +184,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;_WIN64;__WIN64__;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;__CPP;_DEBUG;_WIN64;__WIN64__;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\code\zlib;..\..\code\bLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -374,8 +374,8 @@
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64 /c /D idx64 /Zi /Fo"$(IntDir)/%(Filename).asm.obj" "%(Identity)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ml64 /c /D idx64 /Zi /Fo"$(IntDir)/%(Filename).asm.obj" "%(Identity)"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">obj/x64/Release/ioq3ded/vm_x86_64.asm.obj</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">obj/x64/Debug/ioq3ded/vm_x86_64.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">obj/$(PlatformTarget).$(Configuration)/ioquake3/vm_x86_64.asm.obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">obj/$(PlatformTarget).$(Configuration)/ioquake3/vm_x86_64.asm.obj</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Assembling...</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assembling...</Message>
     </CustomBuild>

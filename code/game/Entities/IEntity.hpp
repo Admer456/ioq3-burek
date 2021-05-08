@@ -49,7 +49,7 @@ namespace Entities
 		virtual unsigned int		GetEntityIndex() const = 0;
 		virtual void				SetEntityIndex( const size_t& index ) = 0;
 
-		constexpr static size_t		EntityIndexNotSet = 1 << 31U;
+		constexpr static uint32_t	EntityIndexNotSet = 1 << 31U;
 
 	public: // Modular function utilities. I know they're a little bit ugly, but they work
 		template<typename function>

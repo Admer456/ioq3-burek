@@ -1710,7 +1710,9 @@ This function is called directly by the generated code
 */
 
 #if defined(_MSC_VER) && defined(idx64)
+ExternCStart
 extern uint8_t qvmcall64(int *programStack, int *opStack, intptr_t *instructionPointers, byte *dataBase);
+ExternCEnd
 #endif
 
 int VM_CallCompiled(vm_t *vm, int *args)

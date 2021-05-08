@@ -756,7 +756,7 @@ class netField_t
 {
 public:
 	char*		name;
-	uint32_t	offset;
+	size_t		offset;
 	int			bits; // 0 = float
 	int			fieldType{ NF_Long };
 
@@ -767,8 +767,8 @@ public:
 	{
 		switch ( fieldType )
 		{
-		case NF_Long: return BuildChangeVector_impl<int>( from, to, lc, i );
-		case NF_Short: return BuildChangeVector_impl<short>( from, to, lc, i );
+		case NF_Long: return BuildChangeVector_impl<int32_t>( from, to, lc, i );
+		case NF_Short: return BuildChangeVector_impl<int16_t>( from, to, lc, i );
 		case NF_Byte: return BuildChangeVector_impl<byte>( from, to, lc, i );
 		}
 	}
@@ -792,8 +792,8 @@ public:
 	{
 		switch ( fieldType )
 		{
-		case NF_Long: return WriteDeltaEntity_impl<int>( msg, from, to );
-		case NF_Short: return WriteDeltaEntity_impl<short>( msg, from, to );
+		case NF_Long: return WriteDeltaEntity_impl<int32_t>( msg, from, to );
+		case NF_Short: return WriteDeltaEntity_impl<int16_t>( msg, from, to );
 		case NF_Byte: return WriteDeltaEntity_impl<byte>( msg, from, to );
 		}
 	}
@@ -865,8 +865,8 @@ public:
 	{
 		switch ( fieldType )
 		{
-		case NF_Long: return ReadDeltaEntity_impl<int>( msg, from, to );
-		case NF_Short: return ReadDeltaEntity_impl<short>( msg, from, to );
+		case NF_Long: return ReadDeltaEntity_impl<int32_t>( msg, from, to );
+		case NF_Short: return ReadDeltaEntity_impl<int16_t>( msg, from, to );
 		case NF_Byte: return ReadDeltaEntity_impl<byte>( msg, from, to );
 		}
 	}
@@ -929,8 +929,8 @@ public:
 	{
 		switch ( fieldType )
 		{
-		case NF_Long: return NoChange_impl<int>( from, to );
-		case NF_Short: return NoChange_impl<short>( from, to );
+		case NF_Long: return NoChange_impl<int32_t>( from, to );
+		case NF_Short: return NoChange_impl<int16_t>( from, to );
 		case NF_Byte: return NoChange_impl<byte>( from, to );
 		}
 	}
@@ -943,7 +943,6 @@ public:
 		// no change
 		*toF = *fromF;
 	}
-
 };
 
 // using the stringizing operator to save typing...
