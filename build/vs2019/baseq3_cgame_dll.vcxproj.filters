@@ -263,5 +263,8 @@
     <ClCompile Include="..\..\code\cgame\View\Particles\Smoke.cpp">
       <Filter>Sources\View\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Events\Decal.cpp">
+      <Filter>Sources\Events</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

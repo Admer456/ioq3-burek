@@ -512,6 +512,13 @@ enum ComplexEvent
 	// vparm: direction (0,0,0 = up)
 	// sound: sound index (if 0, use random builtin)
 	CE_Explosion,
+
+	// Spawns a decal on a surface
+	// model: material/decal
+	// vparm: direction of projection
+	// fparm: orientation/rotation
+	// fparm2: radius
+	CE_Decal,
 };
 
 // Used by CE_ "complex entity events"

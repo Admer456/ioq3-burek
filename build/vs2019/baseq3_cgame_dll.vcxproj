@@ -233,6 +233,7 @@
     <ClCompile Include="..\..\code\cgame\cg_weapons.cpp" />
     <ClCompile Include="..\..\code\cgame\Client.cpp" />
     <ClCompile Include="..\..\code\cgame\Events\ComplexEventHandler.cpp" />
+    <ClCompile Include="..\..\code\cgame\Events\Decal.cpp" />
     <ClCompile Include="..\..\code\cgame\Events\Explosion.cpp" />
     <ClCompile Include="..\..\code\cgame\Events\GibSpan.cpp" />
     <ClCompile Include="..\..\code\cgame\RenderEntity.cpp" />
