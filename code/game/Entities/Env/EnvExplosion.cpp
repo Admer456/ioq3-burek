@@ -63,11 +63,11 @@ void EnvExplosion::RadiusDamage( float damageAmount, float radius )
 {
 	int ents[GameWorld::MaxEntities];
 	int entNum{ 0 };
-
-	Vector mins = GetOrigin() - Vector( radius, radius, radius );
-	Vector maxs = GetOrigin() + Vector( radius, radius, radius );
-
+	trace_t tr;
 	IEntity* ent{ nullptr };
+
+	Vector mins = GetCurrentOrigin() - Vector( radius, radius, radius );
+	Vector maxs = GetCurrentOrigin() + Vector( radius, radius, radius );
 
 	entNum = gameImports->EntitiesInBox( mins, maxs, ents, GameWorld::MaxEntities );
 
@@ -93,6 +93,20 @@ void EnvExplosion::RadiusDamage( float damageAmount, float radius )
 
 		// Calculate linear damage
 		float damage = damageAmount * (1.0f - (length / radius));
+
+		// If it's a point entity, check if it's obstructed by some cover
+		if ( !ent->GetShared()->bmodel )
+		{
+			// TODO: determine *how much* the entity is in cover by randomly 
+			// spreading multiple tracelines and averaging their results
+			gameImports->Trace( &tr, GetCurrentOrigin(), Vector::Zero, Vector::Zero, pos, ent->GetEntityIndex(), MASK_SHOT );
+
+			// Decrease the damage by 20x if behind cover
+			if ( tr.fraction != 1.0f )
+			{	
+				damage *= 0.05f;
+			}
+		}
 
 		// Bang
 		ent->TakeDamage( activator, this, 0, damage );
