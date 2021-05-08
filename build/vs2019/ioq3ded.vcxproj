@@ -106,6 +106,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -135,6 +136,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;NDEBUG;_WIN64;__WIN64__;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -161,6 +163,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -186,6 +189,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_DEBUG;_WIN64;__WIN64__;_WINSOCK_DEPRECATED_NO_WARNINGS;DEDICATED;BOTLIB;USE_VOIP;USE_LOCAL_HEADERS;STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
