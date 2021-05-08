@@ -236,6 +236,7 @@
     <ClCompile Include="..\..\code\cgame\Events\Decal.cpp" />
     <ClCompile Include="..\..\code\cgame\Events\Explosion.cpp" />
     <ClCompile Include="..\..\code\cgame\Events\GibSpan.cpp" />
+    <ClCompile Include="..\..\code\cgame\Events\SmokePuff.cpp" />
     <ClCompile Include="..\..\code\cgame\RenderEntity.cpp" />
     <ClCompile Include="..\..\code\cgame\Vegetation\VegetationInstance.cpp" />
     <ClCompile Include="..\..\code\cgame\Vegetation\VegetationSystem.cpp" />

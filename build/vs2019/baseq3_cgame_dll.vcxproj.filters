@@ -266,5 +266,8 @@
     <ClCompile Include="..\..\code\cgame\Events\Decal.cpp">
       <Filter>Sources\Events</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Events\SmokePuff.cpp">
+      <Filter>Sources\Events</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

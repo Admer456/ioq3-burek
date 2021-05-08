@@ -519,6 +519,12 @@ enum ComplexEvent
 	// fparm: orientation/rotation
 	// fparm2: radius
 	CE_Decal,
+
+	// Spawns a smoke puff, commonly used for bullet holes
+	// vparm: direction
+	// fparm: speed
+	// fparm2: scale
+	CE_SmokePuff,
 };
 
 // Used by CE_ "complex entity events"
