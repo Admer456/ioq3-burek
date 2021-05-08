@@ -368,10 +368,10 @@ static void CG_DrawUpperRight( stereoFrame_t stereoFrame )
 	{
 		y = CG_DrawFPS( y );
 	}
-	if ( cg_drawTimer.integer ) 
-	{
-		y = CG_DrawTimer( y );
-	}
+	//if ( cg_drawTimer.integer ) 
+	//{
+	//	y = CG_DrawTimer( y );
+	//}
 }
 
 /*
@@ -981,7 +981,7 @@ static void CG_ScanForCrosshairEntity( void ) {
 	int			content;
 
 	VectorCopy( cg.refdef.vieworg, start );
-	VectorMA( start, 131072, cg.refdef.viewaxis[0], end );
+	VectorMA( start, 256, cg.refdef.viewaxis[0], end );
 
 	CG_Trace( &trace, start, vec3_origin, vec3_origin, end, 
 		cg.snap->ps.clientNum, CONTENTS_SOLID|CONTENTS_BODY );
@@ -1375,13 +1375,13 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 		// don't draw any status if dead or the scoreboard is being explicitly shown
 		if ( !cg.showScores && cg.snap->ps.stats[STAT_HEALTH] > 0 ) 
 		{
-			CG_DrawStatusBar();
+			//CG_DrawStatusBar();
 
-			if( stereoFrame == STEREO_CENTER )
-				CG_DrawCrosshair();
+			//if( stereoFrame == STEREO_CENTER )
+			//	CG_DrawCrosshair();
 
 			CG_DrawCrosshairNames();
-			CG_DrawWeaponSelect();
+			//CG_DrawWeaponSelect();
 		}
 	}
 
@@ -1392,7 +1392,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 
 	CG_DrawUpperRight(stereoFrame);
 
-	CG_DrawLowerLeft();
+	//CG_DrawLowerLeft();
 
 	if ( !CG_DrawFollow() ) {
 		CG_DrawWarmup();
