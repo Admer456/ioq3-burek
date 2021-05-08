@@ -3,6 +3,7 @@
 constexpr float MPi = 3.14159265358979323846f;	// matches value in gcc v2 math.h
 
 const Vector Vector::Zero = Vector( 0, 0, 0 );
+const Vector Vector::Identity = Vector( 1, 1, 1 );
 
 Vector Vector::Normalized() const
 {

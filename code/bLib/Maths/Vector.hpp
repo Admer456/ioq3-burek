@@ -252,6 +252,7 @@ public: // Operators
 
 public: // Some constants
 	static const Vector Zero;
+	static const Vector Identity;
 
 public: // Actual variables
 	float x, y, z;
