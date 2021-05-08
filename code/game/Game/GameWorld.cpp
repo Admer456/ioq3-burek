@@ -307,6 +307,7 @@ void GameWorld::EmitComplexEvent( const Vector& origin, const Vector& angles, co
 
 	es.number = ent->GetEntityIndex();
 	es.eType = ET_EVENTS + ed.id;
+	es.complexEvent = 1U;
 	ent->GetShared()->plow = NetPlow_ForcePVS;
 
 	// USUALLY, I would NEVER do this, but in this case, it makes sense

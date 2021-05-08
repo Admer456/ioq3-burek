@@ -515,6 +515,8 @@ enum ComplexEvent
 };
 
 // Used by CE_ "complex entity events"
+// They're encoded in entityState_t, but go through a special protocol
+// to use less bandwidth (approx. 500 bytes vs. 80)
 struct EventData
 {
 	EventData() = default;
@@ -525,10 +527,10 @@ struct EventData
 
 	int16_t		id{ EV_NONE }; // encoded as event
 
-	int			parm{ 0 }; // encoded as eventParm
-	int			parm2{ 0 }; // encoded as generic1
-	int			parm3{ 0 }; // encoded as otherEntityNum
-	int			parm4{ 0 }; // encoded as otherEntityNum2
+	int			parm{ 0 }; // encoded as eventParm, 24 bits
+	int			parm2{ 0 }; // encoded as generic1, 16 bits
+	int			parm3{ 0 }; // encoded as otherEntityNum, 16 bits
+	int			parm4{ 0 }; // encoded as otherEntityNum2, 16 bits
 
 	float		fparm{ 0.0f }; // encoded as origin2[0]
 	float		fparm2{ 0.0f }; // encoded as origin2[1]
@@ -538,8 +540,8 @@ struct EventData
 	Vector		vparm{ Vector::Zero }; // encoded as state.apos.trBase
 	Vector		vparm2{ Vector::Zero }; // encoded as state.apos.trDelta
 
-	uint16_t	model; // encoded as modelindex
-	uint16_t	sound; // encoded as loopSound
+	uint16_t	model; // encoded as modelindex, 8 bits
+	uint16_t	sound; // encoded as loopSound, 8 bits
 };
 
 constexpr size_t EventDataSize = sizeof( EventData );

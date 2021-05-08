@@ -978,6 +978,7 @@ netField_t	entityStateFields[] =
 	// event stuff
 	netField_t{ NETF(event), 10 },
 	netField_t{ NETF(eventParm), 16 },
+	netField_t{ NETF(complexEvent), 1 },
 	netField_t{ NETF(generic1), 10 },	// Sound ents can use generic1 to store a sound index,
 	netField_t{ NETF(eType), 10 },		// so I increased generic1 bits from 8 to 10, to have 1024 sounds -Admer
 	netField_t{ NETF(eFlags), 19 },
@@ -1043,6 +1044,44 @@ netField_t	entityStateFields[] =
 	netField_t{ NETF(attachBone[12]), 32, NF_Long }
 };
 
+// About 80 bytes, MUCH better than encoding the entire entityState_t
+netField_t complexEventFields[] =
+{
+	// Base vars
+	netField_t{ NETF( eType ), 10 },
+
+	netField_t{ NETF( origin[0] ), 0 },
+	netField_t{ NETF( origin[1] ), 0 },
+	netField_t{ NETF( origin[2] ), 0 },
+
+	netField_t{ NETF( angles[0] ), 0 },
+	netField_t{ NETF( angles[1] ), 0 },
+	netField_t{ NETF( angles[2] ), 0 },
+
+	netField_t{ NETF( event ), 10 },
+	netField_t{ NETF( eventParm ), 24 }, // parm
+	netField_t{ NETF( generic1 ), 16 }, // parm2
+	netField_t{ NETF( otherEntityNum ), 16 }, // parm3
+	netField_t{ NETF( otherEntityNum2 ), 16 }, // parm4
+	netField_t{ NETF( origin2[0] ), 0 }, // fparm
+	netField_t{ NETF( origin2[1] ), 0 }, // fparm2
+	netField_t{ NETF( origin2[2] ), 0 }, // fparm3
+	netField_t{ NETF( framerate ), 0 }, // fparm4
+
+	// vparm
+	netField_t{ NETF( apos.trBase[0] ), 0 },
+	netField_t{ NETF( apos.trBase[1] ), 0 },
+	netField_t{ NETF( apos.trBase[2] ), 0 },
+
+	// vparm2
+	netField_t{ NETF( apos.trDelta[0] ), 0 },
+	netField_t{ NETF( apos.trDelta[1] ), 0 },
+	netField_t{ NETF( apos.trDelta[2] ), 0 },
+
+	netField_t{ NETF( modelindex ), 8 }, // model
+	netField_t{ NETF( loopSound ), 8 } // sound
+};
+
 /*
 ==================
 MSG_WriteDeltaEntity
@@ -1058,7 +1097,8 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 {
 	int			i, lc;
 	int			numFields;
-	netField_t	*field;
+	netField_t* fields = entityStateFields;
+	netField_t* field;
 	//int			trunc;
 	//float		fullFloat;
 	//int			*fromF, *toF;
@@ -1071,6 +1111,15 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 	//// if this assert fails, someone added a field to the entityState_t
 	//// struct without updating the message fields
 	//assert( numFields + 1 == sizeof( *from )/4 );
+
+	if ( nullptr != from )
+	{
+		if ( from->complexEvent )
+		{
+			fields = complexEventFields;
+			numFields = ARRAY_LEN( complexEventFields );
+		}
+	}
 
 	// a NULL to is a delta remove message
 	if ( to == NULL ) {
@@ -1089,7 +1138,7 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 
 	lc = 0;
 	// build the change vector as bytes so it is endien independent
-	for ( i = 0, field = entityStateFields ; i < numFields ; i++, field++ ) 
+	for ( i = 0, field = fields ; i < numFields ; i++, field++ ) 
 	{
 		field->BuildChangeVector( from, to, lc, i );
 	}
@@ -1116,7 +1165,7 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 
 	oldsize += numFields;
 
-	for ( i = 0, field = entityStateFields ; i < lc ; i++, field++ ) 
+	for ( i = 0, field = fields ; i < lc ; i++, field++ ) 
 	{
 		field->WriteDeltaEntity( msg, from, to );
 	}
@@ -1138,6 +1187,7 @@ void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to, in
 {
 	int			i, lc;
 	int			numFields;
+	netField_t* fields = entityStateFields;
 	netField_t	*field;
 	//int			*fromF, *toF;
 	int			print;
@@ -1181,6 +1231,12 @@ void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to, in
 	numFields = ARRAY_LEN( entityStateFields );
 	lc = MSG_ReadByte(msg);
 
+	if ( from->complexEvent )
+	{
+		fields = complexEventFields;
+		numFields = ARRAY_LEN( complexEventFields );
+	}
+
 	if ( lc > numFields || lc < 0 ) 
 	{
 		Com_Error( ERR_DROP, "invalid entityState field count" );
@@ -1200,11 +1256,11 @@ void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to, in
 
 	to->number = number;
 
-	for ( i = 0, field = entityStateFields ; i < lc ; i++, field++ ) 
+	for ( i = 0, field = fields ; i < lc ; i++, field++ ) 
 	{
 		field->ReadDeltaEntity( msg, from, to );
 	}
-	for ( i = lc, field = &entityStateFields[lc] ; i < numFields ; i++, field++ ) 
+	for ( i = lc, field = &fields[lc] ; i < numFields ; i++, field++ ) 
 	{
 		field->NoChange( from, to ); 
 	}

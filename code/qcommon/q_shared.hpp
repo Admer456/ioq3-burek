@@ -1495,6 +1495,7 @@ typedef struct entityState_s {
 
 	int		event;			// impulse events -- muzzle flashes, footsteps, etc
 	int		eventParm;
+	byte	complexEvent;	// is actually a "bool", don't touch, only used for networking
 
 	// for players
 	int		powerups;		// bit flags
