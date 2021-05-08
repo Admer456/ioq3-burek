@@ -674,6 +674,8 @@ typedef struct {
 	sfxHandle_t watrInSound;
 	sfxHandle_t watrOutSound;
 	sfxHandle_t watrUnSound;
+
+	qhandle_t	glowShellMaterial;
 } cgMedia_t;
 
 

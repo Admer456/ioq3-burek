@@ -1448,6 +1448,14 @@ struct trajectory_t
 	TightOrientation axialOrientation;
 };
 
+struct EffectFlags
+{
+	static constexpr uint32_t Fire = 1 << 0U; // the entity emits fire and flames
+	static constexpr uint32_t Frame = 1 << 1U; // Deus Ex 1-style frame drawn around the entity
+	static constexpr uint32_t Bubbles = 1 << 2U; // entity emits bubbles (only works underwater)
+	static constexpr uint32_t GlowShell = 1 << 3U; // environment-mapped additive shell around the entity
+};
+
 // entityState_t is the information conveyed from the server
 // in an update message about entities that the client will
 // need to render in some way
@@ -1496,6 +1504,8 @@ typedef struct entityState_s {
 	int		event;			// impulse events -- muzzle flashes, footsteps, etc
 	int		eventParm;
 	byte	complexEvent;	// is actually a "bool", don't touch, only used for networking
+
+	int		effectFlags;	// clientside visual effects
 
 	// for players
 	int		powerups;		// bit flags

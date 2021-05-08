@@ -1023,7 +1023,10 @@ netField_t	entityStateFields[] =
 	// time
 	netField_t{ NETF(time), 32 },
 	netField_t{ NETF(time2), 32 },
+
+	// effects
 	netField_t{ NETF(constantLight), 32 },
+	netField_t{ NETF(effectFlags), 8 }, // We don't have many right now, so this may increase in the future
 
 	// animation stuff
 	netField_t{ NETF(frame), 16 },

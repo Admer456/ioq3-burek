@@ -137,7 +137,6 @@ static void CG_EntityEffects( centity_t *cent ) {
 		}
 	}
 
-
 	// constant light glow
 	if(cent->currentState.constantLight)
 	{
@@ -151,7 +150,6 @@ static void CG_EntityEffects( centity_t *cent ) {
 		i = (float) ((cl >> 24) & 0xFF) * 4.0;
 		trap_R_AddLightToScene(cent->lerpOrigin, i, r, g, b);
 	}
-
 }
 
 static void CG_AxialOrientation( refEntity_t& re, const TightOrientation& orientation )
@@ -249,11 +247,20 @@ static void CG_General( centity_t *cent, bool attach = false )
 	// add to refresh list
 	trap_R_AddRefEntityToScene (&ent);
 
+	// Entity effects
+	if ( cent->currentState.effectFlags & EffectFlags::GlowShell )
+	{
+		ent.customShader = cgs.media.glowShellMaterial;
+
+		trap_R_AddRefEntityToScene( &ent );
+	}
+
 	// add the secondary model
 	if ( s1->modelindex2 ) 
 	{
 		ent.skinNum = 0;
 		ent.hModel = cgs.gameModels[s1->modelindex2];
+		ent.customShader = 0;
 		trap_R_AddRefEntityToScene( &ent );
 	}
 }
