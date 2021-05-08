@@ -58,6 +58,8 @@ public:
 		return forces;
 	}
 
+	void	MemoryUsage();
+
 	void	Update();
 	void	Render();
 

@@ -102,9 +102,9 @@ void Client::PreReload()
 void Client::PostReload()
 {
 	vegetationSystem->Reload();
-
-	GetClient()->InitDynamicMusic( cgs.mapname );
-	GetClient()->GetEventHandler()->RegisterAssets();
+	InitDynamicMusic( cgs.mapname );
+	complexEventHandler->RegisterAssets();
+	particleManager->MemoryUsage();
 }
 
 // ===================

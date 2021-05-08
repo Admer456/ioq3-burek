@@ -90,6 +90,17 @@ uint32_t ParticleManager::AddForce( ParticleManager::ParticleForce& force )
 	return 1 << 31U;
 }
 
+void ParticleManager::MemoryUsage()
+{
+	constexpr int sizeOfParticle = sizeof( Particles::BaseParticle );
+	constexpr int sizeOfParticleArray = sizeof( particles );
+
+	CG_Printf( "** ParticleManager **\n" );
+	CG_Printf( "** Particle size: %4.3f kB\n", sizeOfParticle / 1024.0f );
+	CG_Printf( "** Particle array count: %i particles\n", MaxParticles );
+	CG_Printf( "** Particle array size: %4.3f MB\n", sizeOfParticleArray / 1024.0f / 1024.0f );
+}
+
 void ParticleManager::Update()
 {
 	static int forceUpdateCounter = 0;
