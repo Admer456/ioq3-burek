@@ -39,9 +39,17 @@ void Weapon_Pistol::Precache()
 	soundShootEmpty = trap_S_RegisterSound( "sound/weapons/empty.wav", false );
 
 	muzzleFlashSprite = trap_R_RegisterShaderNoMip( "sprites/muzzleflash1" );
+	laserDotSprite = trap_R_RegisterShaderNoMip( "sprites/laserdot" );
 
 	renderEntity.StartAnimation( animIdle, true );
 	nextIdle = GetNextAnimTime( animIdle );
+
+	memset( &laser, 0, sizeof( laser ) );
+
+	laser.reType = RT_SPRITE;
+	laser.customShader = laserDotSprite;
+	laser.hModel = laserDotSprite;
+	laser.radius = 3.0f;
 }
 
 void Weapon_Pistol::OnIdle()
@@ -64,6 +72,11 @@ void Weapon_Pistol::OnIdle()
 		renderEntity.StartAnimation( anim, true );
 		nextIdle = GetNextAnimTime( anim );
 	}
+
+	Vector viewOrigin = GetClient()->GetView()->GetViewOrigin();
+	Vector laserDirection = CalculateLaserDotDirection();
+
+	AddLaserDot( viewOrigin, laserDirection, 0 );
 }
 
 void Weapon_Pistol::OnPrimaryFire()
@@ -100,13 +113,18 @@ void Weapon_Pistol::OnPrimaryFire()
 
 	trap_S_StartLocalSound( sound, CHAN_WEAPON );
 
+	ClientView* view = GetClient()->GetView();
+	Vector forward, right, up;
+	Vector::AngleVectors( view->GetViewAngles(), &forward, &right, &up );
+
 	if ( anim != animAttackEmpty )
 	{
-		GetClient()->GetView()->AddPunch( 0.25f, Vector( -1.5f, -0.7f, 0.5f ) );
+		view->AddPunch( 0.12f, Vector( -0.9f,  0.0f, 0.0f ) );
+		view->AddPunch( 0.27f, Vector(  0.2f,  0.4f,-0.1f ) );
+		view->AddPunch( 0.35f, Vector(  0.0f, -0.1f, 0.2f ) );
 
-		ClientView* view = GetClient()->GetView();
-		Vector forward, right, up;
-		Vector::AngleVectors( view->GetViewAngles(), &forward, &right, &up );
+		view->AddShake( 8.0f, 0.125f * 4.0f, forward * -0.5f );
+
 		Vector lightOrigin = view->GetViewOrigin() + forward * 1.0f;
 		Vector muzzleOrigin = view->GetViewOrigin() + forward * 20.0f + right * 8.0f - up * 4.5f;
 
@@ -129,5 +147,92 @@ void Weapon_Pistol::OnReload()
 	animHandle anim = (ammoMag >= 1) ? animReloadTactical : animReload;
 
 	renderEntity.StartAnimation( anim, true );
-	nextReload = nextIdle = nextPrimary = GetNextAnimTime( anim ) - 0.2f;
+	nextReload = nextIdle = nextPrimary = GetClient()->Time() + 2.66f;
+
+	GetClient()->GetView()->AddPunch( 2.5f, Vector( -1.0f, 1.0f, 0.0f ) );
+	GetClient()->GetView()->AddShake( 0.5f, 1.0f, Vector( 0.0f, 0.0f, -4.0f ) );
+}
+
+Vector Weapon_Pistol::CalculateLaserDotDirection()
+{
+	ClientView* cv = GetClient()->GetView();
+	Vector forward, right, up;
+	Vector::AngleVectors( cv->GetViewAngles(), &forward, &right, &up );
+
+	const float speed = Vector( cg.predictedPlayerState.velocity ).Length();
+
+	animHandle currentAnimation = renderEntity.GetCurrentAnimation();
+
+	// Idle rocking of the laser dot
+	static Vector smoothRandom = Vector::Zero;
+	Vector randomDirection = Vector( crandom(), crandom(), crandom() ) * 0.007f;
+	smoothRandom = smoothRandom * 0.8f + randomDirection * 0.2f;
+
+	forward += smoothRandom;
+
+	// If not idling, then fiddle with the laser's origin by animation
+	if ( currentAnimation != animIdle && currentAnimation != animIdleEmpty )
+	{
+		orientation_t orient;
+		int currentFrame = renderEntity.GetRefEntity().oldframe;
+		int nextFrame = renderEntity.GetRefEntity().frame;
+		int frameLerp = renderEntity.GetRefEntity().backlerp;
+
+		trap_R_LerpTag( &orient, renderEntity.GetRefEntity().hModel, currentFrame, nextFrame, frameLerp, "gunSlide" );
+
+		Vector boneForward = orient.axis[1];
+
+		forward += boneForward.z * up;
+		forward += -boneForward.y * right;
+
+		forward.Normalize();
+	}
+
+	static Vector blendDeltaViewWeapon = Vector::Zero;
+	Vector deltaViewWeapon = cv->GetWeaponOriginOffset();
+	deltaViewWeapon.z *= -1.0f;
+
+	blendDeltaViewWeapon = blendDeltaViewWeapon * 0.7f + deltaViewWeapon * 0.3f;
+
+	forward += blendDeltaViewWeapon * 0.04f;
+
+	return forward;
+}
+
+void Weapon_Pistol::AddLaserDot( const Vector& startPosition, const Vector& direction, const int& bounce )
+{
+	if ( bounce > 5 )
+	{
+		return;
+	}
+
+	trace_t tr;
+	CG_Trace( &tr, startPosition, Vector::Zero, Vector::Zero, startPosition + direction * 2048.0f, cg.clientNum, MASK_SHOT | MASK_OPAQUE );
+
+	Vector laserPosition = Vector( tr.endpos ) - direction * laser.radius * 1.5f;
+	laser.origin << laserPosition;
+
+	// Further bounces = smaller intensity
+	if ( bounce )
+	{
+		laser.radius = 3.0f / (1.0f + bounce * 0.6f);
+	}
+	else
+	{
+		laser.radius = 3.0f;
+	}
+
+	// DO NOT add it on a sky surface
+	if ( ~tr.surfaceFlags & SURF_SKY )
+	{
+		trap_R_AddRefEntityToScene( &laser );
+		trap_R_AddAdditiveLightToScene( laserPosition, 6.0f * laser.radius, 1.0f, 0.0f, 0.0f );
+
+		// Reflect on glass & mirrors
+		if ( tr.surfaceFlags & SURF_GLASS )
+		{
+			Vector bouncedDirection = direction.Reflect( tr.plane.normal );
+			AddLaserDot( laserPosition, bouncedDirection, bounce + 1 );
+		}
+	}
 }
