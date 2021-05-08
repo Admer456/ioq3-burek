@@ -22,7 +22,7 @@ namespace Entities
 
 	private:
 		float		spriteRadius{};
-		byte		spriteOpacity{};
+		float		spriteOpacity{};
 		uint32_t	spriteHandle{};
 		bool		spriteState{ true };
 	};

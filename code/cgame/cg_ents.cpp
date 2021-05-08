@@ -755,7 +755,8 @@ CG_Sprite
 static void CG_Sprite( centity_t* cent )
 {
 	refEntity_t spr;
-	
+	float alpha = cent->currentState.origin2[1];
+
 	memset( &spr, 0, sizeof( spr ) );
 
 	spr.reType = RT_SPRITE;
@@ -765,10 +766,10 @@ static void CG_Sprite( centity_t* cent )
 
 	spr.customShader = cgs.gameMaterials[cent->currentState.modelindex];
 	spr.radius = cent->currentState.origin2[0];
-	spr.shaderRGBA[0] = 0xff;
-	spr.shaderRGBA[1] = 0xff;
-	spr.shaderRGBA[2] = 0xff;
-	spr.shaderRGBA[3] = 0xff * cent->currentState.origin2[1];
+	spr.shaderRGBA[0] = 255.0f * cent->currentState.angles2[0] * alpha;
+	spr.shaderRGBA[1] = 255.0f * cent->currentState.angles2[1] * alpha;
+	spr.shaderRGBA[2] = 255.0f * cent->currentState.angles2[2] * alpha;
+	spr.shaderRGBA[3] = 255U;
 
 	trap_R_AddRefEntityToScene( &spr );
 }

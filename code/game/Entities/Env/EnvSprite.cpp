@@ -22,6 +22,8 @@ void EnvSprite::Spawn()
 	GetState()->eType = ET_SPRITE;
 	GetState()->modelindex = spriteHandle;
 
+	gameImports->LinkEntity( this );
+
 	SetUse( &EnvSprite::SpriteUse );
 
 	if ( spawnFlags & SF_StartOff )
@@ -30,9 +32,21 @@ void EnvSprite::Spawn()
 	}
 
 	// Sprite scale and opacity encoded in state origin2
+	// Tint colour is encoded in state angles2
 	// I know, it's bad, but I don't wanna add new stuff to entityState_t yet
 	GetState()->origin2[0] = spriteRadius = spawnArgs->GetFloat( "radius", 64.0f );
-	GetState()->origin2[1] = spriteOpacity = spawnArgs->GetInt( "opacity", 255 );
+	GetState()->origin2[1] = spriteOpacity = spawnArgs->GetFloat( "opacity", 1.0f );
+	GetState()->angles2 << spawnArgs->GetVector( "color", Vector::Identity );
+
+	// The mapper must've input a range from 0 to 255
+	if ( spriteOpacity > 1.01f )
+	{
+		if ( spriteOpacity > 255.0f )
+			spriteOpacity = 255.0f;
+
+		spriteOpacity /= 255.0f;
+		GetState()->origin[1] = spriteOpacity;
+	}
 }
 
 void EnvSprite::Precache()
