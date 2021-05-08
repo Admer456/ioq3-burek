@@ -194,6 +194,7 @@
     <ClInclude Include="..\..\code\cgame\View\ParticleManager.hpp" />
     <ClInclude Include="..\..\code\cgame\View\Particles\BaseGib.hpp" />
     <ClInclude Include="..\..\code\cgame\View\Particles\BaseParticle.hpp" />
+    <ClInclude Include="..\..\code\cgame\View\Particles\Smoke.hpp" />
     <ClInclude Include="..\..\code\cgame\View\View.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\BaseClientWeapon.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\WeaponFactory.hpp" />
@@ -241,6 +242,7 @@
     <ClCompile Include="..\..\code\cgame\View\ParticleManager.cpp" />
     <ClCompile Include="..\..\code\cgame\View\Particles\BaseGib.cpp" />
     <ClCompile Include="..\..\code\cgame\View\Particles\BaseParticle.cpp" />
+    <ClCompile Include="..\..\code\cgame\View\Particles\Smoke.cpp" />
     <ClCompile Include="..\..\code\cgame\View\View.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\BaseClientWeapon.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\WeaponFactory.cpp" />

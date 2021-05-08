@@ -42,7 +42,12 @@ namespace Particles
 		float				particleStart{ 0.0f };
 		float				particleLife{ 1.0f };
 		float				particleInactivityTimer{ 0.0f };
+		float				particleGenericTimer{ 0.0f };
 		uint32_t			particleFlags{ 0U };
+
+		Vector				particleColour{ Vector::Identity };
+		Vector				particleTintColour{ Vector::Identity };
+		Vector				particleTargetColour{ Vector::Identity };
 
 		Vector				particleGroundNormal{ Vector::Zero };
 		sfxHandle_t			particleFrictionSound{ 0U };

@@ -123,6 +123,9 @@
     <ClInclude Include="..\..\code\cgame\View\Particles\BaseGib.hpp">
       <Filter>Sources\View\Particles</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\cgame\View\Particles\Smoke.hpp">
+      <Filter>Sources\View\Particles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -255,6 +258,9 @@
       <Filter>Sources\View\Particles</Filter>
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\View\Particles\BaseGib.cpp">
+      <Filter>Sources\View\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\View\Particles\Smoke.cpp">
       <Filter>Sources\View\Particles</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,6 +2,7 @@
 #include "ComplexEventHandler.hpp"
 #include "View/ParticleManager.hpp"
 #include "View/Particles/BaseGib.hpp"
+#include "View/Particles/Smoke.hpp"
 
 class GibSpan : public EventParser
 {
@@ -78,7 +79,18 @@ public:
 
 			qhandle_t model = ed.model + (rand() % gibModelVariation);
 
-			LaunchGib( pos, directionRandomised, cgs.gameModels[model], materialType, sounds[materialType*3 + rand()%3] );
+			LaunchGib( pos, directionRandomised, cgs.gameModels[model], materialType, sounds[materialType * 3 + rand() % 3] );
+
+			if ( i % 4 == 0 && materialType == Material_Concrete || materialType == Material_Wood )
+			{
+				Particles::Smoke::CreateSmoke( cgs.media.smokeSprites[rand() % 3],
+											   pos, Vector( directionRandomised.x, directionRandomised.y, 0.0f ) * 0.3f,
+											   Vector::Identity,
+											   0.25f + random() * 0.45f, // scale
+											   0.5f + random() * 3.5f, // fade in time
+											   1.5f + random() * 3.5f, // fade out time
+											   9.1f + crandom() * 7.0f ); // life
+			}
 		}
 	}
 

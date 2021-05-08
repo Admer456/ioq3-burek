@@ -808,6 +808,9 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	cgs.media.charsetPropGlow	= trap_R_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
 	cgs.media.charsetPropB		= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
 
+	cgs.media.smokeSprites[0]	= trap_R_RegisterShaderNoMip( "sprites/staticsmoke1" );
+	cgs.media.smokeSprites[1]	= trap_R_RegisterShaderNoMip( "sprites/staticsmoke1a" );
+	cgs.media.smokeSprites[2]	= trap_R_RegisterShaderNoMip( "sprites/staticsmoke1b" );
 
 	cgs.media.glowShellMaterial = trap_R_RegisterShader( "textures/glowShell" );
 
