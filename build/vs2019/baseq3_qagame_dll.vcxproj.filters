@@ -231,6 +231,9 @@
     <ClInclude Include="..\..\code\game\Entities\Audio\AudioAmbient.hpp">
       <Filter>Sources\Entities\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Env\EnvMirror.hpp">
+      <Filter>Sources\Entities\Env</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -391,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Audio\AudioAmbient.cpp">
       <Filter>Sources\Entities\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Env\EnvMirror.cpp">
+      <Filter>Sources\Entities\Env</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

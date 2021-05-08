@@ -195,6 +195,7 @@
     <ClInclude Include="..\..\code\game\Entities\Base\BaseTrigger.hpp" />
     <ClInclude Include="..\..\code\game\Entities\EntityClassInfo.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Env\EnvExplosion.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Env\EnvMirror.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Env\EnvSprite.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncAttach.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Func\FuncBobbing.hpp" />
@@ -251,6 +252,7 @@
     <ClCompile Include="..\..\code\game\Entities\Base\BaseTrigger.cpp" />
     <ClCompile Include="..\..\code\game\Entities\EntityClassInfo.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Env\EnvExplosion.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Env\EnvMirror.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Env\EnvSprite.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncAttach.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Func\FuncBobbing.cpp" />
