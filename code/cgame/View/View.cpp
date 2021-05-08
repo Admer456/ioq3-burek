@@ -159,6 +159,11 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	outOrigin = cg.refdef.vieworg;
 	outAngles = cg.refdefViewAngles;
 
+	const float frameTime = cg.frametime * 0.001f;
+
+	static Vector blendMouseCoords = Vector::Zero;
+	Vector mouseCoords = GetClient()->GetMouseXY() * 0.008f;
+
 	Vector forward, right, up;
 	Vector::AngleVectors( outAngles, &forward, &right, &up );
 	Vector velocity = cg.predictedPlayerState.velocity;
@@ -229,7 +234,14 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	upBob *= sin( time * 16.0f );
 	sideBob *= sin( time * 8.0f );
 
+	Vector deltaMouseCoords = mouseCoords - blendMouseCoords;
+	float deltaMouseLength = deltaMouseCoords.Length();
+	blendMouseCoords += deltaMouseCoords * frameTime * 4.0f;
+
 	Vector shake = CalculateShakeAverage();
+
+	outOrigin += right * blendMouseCoords.x * 0.25f;
+	outOrigin += up * -blendMouseCoords.y;
 
 	outOrigin += up * upBob;
 	outOrigin += right * sideBob;
@@ -244,6 +256,12 @@ void ClientView::CalculateWeaponTransform( Vector& outOrigin, Vector& outAngles 
 	outOrigin.z -= fabs( cg.refdefViewAngles[PITCH] ) / 90.0f;
 
 	outAngles.x -= airOffset;
+
+	outAngles.z += dotRight * -4.0f;
+	outAngles.z += blendMouseCoords.x * 15.0f;
+
+	if ( outAngles.z > 15.0f ) outAngles.z = 15.0f;
+	if ( outAngles.z < -15.0f ) outAngles.z = -15.0f;
 
 	weaponOriginOffset = outOrigin - currentWeaponOrigin;
 	weaponAnglesOffset = outAngles - currentWeaponAngles;
