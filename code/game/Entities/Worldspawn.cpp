@@ -25,4 +25,6 @@ void Worldspawn::Spawn()
 
 	bool enableBreath = spawnArgs->GetBool( "enableBreath", false );
 	gameImports->ConsoleVariable_Set( "g_enableBreath", va( "%d", (int)enableBreath ) );
+
+	GetState()->solid = SOLID_BMODEL;
 }
