@@ -791,7 +791,10 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 			client->ps.ammo[WeaponID_Pistol] = 120;
 			client->ps.ammoMag[WeaponID_Pistol] = 15;
 
-			player->AddWeapon( gameWorld->CreateEntity<Entities::Weapon_Fists>() );
+			Entities::BaseWeapon* startingWeapon = gameWorld->CreateEntity<Entities::Weapon_Fists>();
+			startingWeapon->Precache();
+
+			player->AddWeapon( startingWeapon );
 
 			// fire the targets of the spawn point
 			if ( info.entityId != ENTITYNUM_NONE && gEntities[info.entityId] )
