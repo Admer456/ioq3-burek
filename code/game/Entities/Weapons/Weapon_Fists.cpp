@@ -26,6 +26,21 @@ BaseWeapon::WeaponInfo Weapon_Fists::GetWeaponInfo()
 }
 
 // ===================
+// Weapon_Fists::Precache
+// ===================
+void Weapon_Fists::Precache()
+{
+	BaseWeapon::Precache();
+
+	PunchSounds[0] = gameWorld->PrecacheSound( "sound/weapons/fist1.wav" );
+	PunchSounds[1] = gameWorld->PrecacheSound( "sound/weapons/fist2.wav" );
+	PunchSounds[2] = gameWorld->PrecacheSound( "sound/weapons/fist3.wav" );
+	PunchSounds[3] = gameWorld->PrecacheSound( "sound/weapons/fistblock1.wav" );
+	PunchSounds[4] = gameWorld->PrecacheSound( "sound/weapons/fistblock2.wav" );
+	PunchSounds[5] = gameWorld->PrecacheSound( "sound/weapons/fistblock3.wav" );
+}
+
+// ===================
 // Weapon_Fists::PrimaryAttack
 // ===================
 void Weapon_Fists::PrimaryAttack()
@@ -67,8 +82,15 @@ void Weapon_Fists::Swing( float damage )
 	if ( tr.fraction == 1.0f )
 		return;
 
+	IEntity* temp = gameWorld->CreateTempEntity( tr.endpos, EV_GENERAL_SOUND );
+
 	if ( tr.entityNum >= ENTITYNUM_MAX_NORMAL )
+	{
+		temp->GetState()->eventParm = PunchSounds[3 + rand() % 3];
 		return;
+	}
+
+	temp->GetState()->eventParm = PunchSounds[rand() % 3];
 
 	IEntity* ent = gEntities[tr.entityNum];
 	if ( nullptr == ent )
