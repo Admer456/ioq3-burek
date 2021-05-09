@@ -1311,6 +1311,7 @@ netField_t	playerStateFields[] =
 { PSF(torsoAnim), 8 },
 { PSF(movementDir), 4 },
 { PSF(events[0]), 8 },
+{ PSF(weaponFlags), 8 },
 { PSF(legsAnim), 8 },
 { PSF(events[1]), 8 },
 { PSF(pm_flags), 16 },

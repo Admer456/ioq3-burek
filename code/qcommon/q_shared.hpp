@@ -1203,6 +1203,11 @@ typedef struct {
 
 #define PS_PMOVEFRAMECOUNTBITS	6
 
+struct PlayerWeaponFlags
+{
+	static constexpr uint32_t PistolLaser = 1 << 0U;
+};
+
 // playerState_t is the information needed by both the client and server
 // to predict player motion and actions
 // nothing outside of pmove should modify these, or some degree of prediction error
@@ -1256,6 +1261,7 @@ typedef struct playerState_s {
 	int			clientNum;		// ranges from 0 to MAX_CLIENTS-1
 	int			weapon;			// copied to entityState_t->weapon
 	int			weaponstate;
+	int			weaponFlags;	// Weapon_Pistol's laser toggle, for example
 
 	vec3_t		viewangles;		// for fixed views
 	int			viewheight;
