@@ -393,7 +393,7 @@ typedef struct {
 
 	waveForm_t		rgbWave;
 	colorGen_t		rgbGen;
-
+	
 	waveForm_t		alphaWave;
 	alphaGen_t		alphaGen;
 
@@ -458,6 +458,7 @@ typedef struct shader_s {
 
 	int			surfaceFlags;			// if explicitlyDefined, this will have SURF_* flags
 	int			contentFlags;
+	byte		shaderRenderMask;		// see refEntity_t's shaderRenderMask
 
 	qboolean	entityMergable;			// merge across entites optimizable (smoke, blood)
 

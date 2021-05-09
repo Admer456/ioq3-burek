@@ -493,6 +493,16 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		if (backEnd.depthFill && shader && shader->sort != SS_OPAQUE)
 			continue;
 
+		// Admer: render masks for materials
+		if ( shader != nullptr )
+		{
+			if ( backEnd.currentEntity->e.shaderRenderMask & shader->shaderRenderMask )
+			{
+				continue;
+			}
+		}
+		// Admer end
+
 		//
 		// change the modelview matrix if needed
 		//

@@ -2018,6 +2018,20 @@ static qboolean ParseShader( char **text )
 			ParseSort( text );
 			continue;
 		}
+		// renderMask
+		else if ( !Q_stricmp( token, "renderMask" ) )
+		{
+			token = COM_ParseExt( text, false );
+			
+			if ( !token[0] )
+			{
+				ri.Printf( PRINT_WARNING, "WARNING: missing parameter for renderMask in shader '%s'", shader.name );
+				continue;
+			}
+
+			shader.shaderRenderMask = atoi( token );
+			continue;
+		}
 		else
 		{
 			ri.Printf( PRINT_WARNING, "WARNING: unknown general shader parameter '%s' in '%s'\n", token, shader.name );
