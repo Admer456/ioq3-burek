@@ -40,6 +40,9 @@ void Weapon_Pistol::Precache()
 	BulletHoleDecals[3] = gameWorld->PrecacheMaterial( "decals/bullethole_glass1" );
 	BulletHoleDecals[4] = gameWorld->PrecacheMaterial( "decals/bullethole_glass2" );
 	BulletHoleDecals[5] = gameWorld->PrecacheMaterial( "decals/bullethole_glass3" );
+
+	LaserSounds[LaserOn] = gameWorld->PrecacheSound( "sound/weapons/laseron.wav" );
+	LaserSounds[LaserOff] = gameWorld->PrecacheSound( "sound/weapons/laseroff.wav" );
 }
 
 // ===================
@@ -79,6 +82,34 @@ void Weapon_Pistol::PrimaryAttack()
 	}
 
 	nextSecondary = nextIdle = nextReload = nextPrimary;
+}
+
+// ===================
+// Weapon_Pistol::SecondaryAttack
+// ===================
+void Weapon_Pistol::SecondaryAttack()
+{
+	if ( level.time * 0.001f < nextSecondary )
+		return;
+
+	playerState_t& ps = player->GetClient()->ps;
+	IEntity* temp = gameWorld->CreateTempEntity( ps.origin, EV_GENERAL_SOUND );
+	
+	if ( ps.weaponFlags & PlayerWeaponFlags::PistolLaser )
+	{	// It's about to be turned off
+		temp->GetState()->eventParm = LaserSounds[LaserOff];
+	}
+	else
+	{	// It's about to be turned on
+		temp->GetState()->eventParm = LaserSounds[LaserOn];
+	}
+
+	temp->GetShared()->svFlags |= SVF_NOTSINGLECLIENT;
+	temp->GetShared()->singleClient = ps.clientNum;
+
+	ps.weaponFlags ^= PlayerWeaponFlags::PistolLaser;
+
+	nextSecondary = level.time * 0.001f + 0.5f;
 }
 
 // ===================

@@ -18,9 +18,17 @@ namespace Entities
 
 		void		Idle() override;
 		void		PrimaryAttack() override;
+		void		SecondaryAttack() override;
 		void		Reload() override;
 
 		static inline qhandle_t BulletHoleDecals[6] = {};
+		static inline sfxHandle_t LaserSounds[2] = {};
+
+		enum LaserSounds
+		{
+			LaserOn,
+			LaserOff
+		};
 
 	private:
 		void		Shoot();

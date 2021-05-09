@@ -29,8 +29,11 @@ namespace ClientEntities
 		animHandle	animReload{};
 		animHandle	animReloadTactical{};
 
-		sfxHandle_t soundShoot{};
+		sfxHandle_t soundShoot[3]{};
 		sfxHandle_t soundShootEmpty{};
+
+		sfxHandle_t soundLaserOn{};
+		sfxHandle_t soundLaserOff{};
 
 		qhandle_t	muzzleFlashSprite{};
 		qhandle_t	laserDotSprite{};

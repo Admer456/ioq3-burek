@@ -35,8 +35,13 @@ void Weapon_Pistol::Precache()
 	animReload = renderEntity.GetAnimByName( "reload" );
 	animReloadTactical = renderEntity.GetAnimByName( "reload_tactical" );
 
-	soundShoot = trap_S_RegisterSound( "sound/weapons/glockshot.wav", false );
+	soundShoot[0] = trap_S_RegisterSound( "sound/weapons/pistol_shot1.wav", false );
+	soundShoot[1] = trap_S_RegisterSound( "sound/weapons/pistol_shot2.wav", false );
+	soundShoot[2] = trap_S_RegisterSound( "sound/weapons/pistol_shot3.wav", false );
 	soundShootEmpty = trap_S_RegisterSound( "sound/weapons/empty.wav", false );
+
+	soundLaserOn = trap_S_RegisterSound( "sound/weapons/laseron.wav", false );
+	soundLaserOff = trap_S_RegisterSound( "sound/weapons/laseroff.wav", false );
 
 	muzzleFlashSprite = trap_R_RegisterShaderNoMip( "sprites/muzzleflash1" );
 	laserDotSprite = trap_R_RegisterShaderNoMip( "sprites/laserdot" );
@@ -54,6 +59,9 @@ void Weapon_Pistol::Precache()
 
 void Weapon_Pistol::OnIdle()
 {
+	static bool laserOn = false;
+	bool laserCurrentlyOn = (cg.predictedPlayerState.weaponFlags & PlayerWeaponFlags::PistolLaser) != 0;
+
 	usercmd_t uc = GetClient()->GetUsercmd();
 	animHandle anim = animIdle;
 
@@ -76,7 +84,29 @@ void Weapon_Pistol::OnIdle()
 	Vector viewOrigin = GetClient()->GetView()->GetViewOrigin();
 	Vector laserDirection = CalculateLaserDotDirection();
 
-	AddLaserDot( viewOrigin, laserDirection, 0 );
+	// Laser turn on
+	if ( laserCurrentlyOn && !laserOn )
+	{
+		laserOn = true;
+		trap_S_StartLocalSound( soundLaserOn, CHAN_AUTO );
+	}
+	// Laser turn off
+	else if ( !laserCurrentlyOn && laserOn )
+	{
+		laserOn = false;
+		trap_S_StartLocalSound( soundLaserOff, CHAN_AUTO );
+	}
+
+	// Affect the render entity on the viewmodel and add a laser dot
+	if ( laserCurrentlyOn && laserOn )
+	{
+		AddLaserDot( viewOrigin, laserDirection, 0 );
+		renderEntity.GetRefEntity().shaderRenderMask = 0;
+	}
+	else
+	{
+		renderEntity.GetRefEntity().shaderRenderMask = 1;
+	}
 }
 
 void Weapon_Pistol::OnPrimaryFire()
@@ -91,7 +121,7 @@ void Weapon_Pistol::OnPrimaryFire()
 
 	int ammoMag = GetAmmoInMag( WeaponID_Pistol );
 	animHandle anim = animAttack[0];
-	sfxHandle_t sound = soundShoot;
+	sfxHandle_t sound = soundShoot[rand() % 3];
 	LightManager* lightManager = GetClient()->GetLightManager();
 	ParticleManager* particleManager = GetClient()->GetParticleManager();
 
