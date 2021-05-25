@@ -866,6 +866,10 @@ extern	vmCvar_t		cg_oldRocket;
 extern	vmCvar_t		cg_oldPlasma;
 extern	vmCvar_t		cg_trueLightning;
 
+extern vmCvar_t			cg_profileVegetation;
+extern vmCvar_t			cg_profileParticles;
+extern vmCvar_t			cg_profileLights;
+
 //
 // cg_main.c
 //

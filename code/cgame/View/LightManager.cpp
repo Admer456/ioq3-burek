@@ -1,5 +1,6 @@
 #include "cg_local.hpp"
 #include "LightManager.hpp"
+#include "Times/Timer.hpp"
 
 Light::Light()
 {
@@ -68,16 +69,44 @@ void LightManager::AddLight( const Light& light )
 
 void LightManager::Update()
 {
+	Timer profileTimer( false );
+	float profileTime{ 0.0f };
+
+	if ( cg_profileLights.integer )
+	{
+		profileTimer.Reset();
+	}
+
 	for ( auto& l : lights )
 	{
 		l.Update();
+	}
+
+	if ( cg_profileLights.integer )
+	{
+		profileTime = profileTimer.GetElapsed( Timer::Milliseconds );
+		CG_Printf( "LightManager::Update %3.3f ms\n", profileTime );
 	}
 }
 
 void LightManager::Render()
 {
+	Timer profileTimer( false );
+	float profileTime{ 0.0f };
+
+	if ( cg_profileLights.integer )
+	{
+		profileTimer.Reset();
+	}
+
 	for ( auto& l : lights )
 	{
 		l.Render();
+	}
+
+	if ( cg_profileLights.integer )
+	{
+		profileTime = profileTimer.GetElapsed( Timer::Milliseconds );
+		CG_Printf( "LightManager::Render %3.3f ms\n", profileTime );
 	}
 }
