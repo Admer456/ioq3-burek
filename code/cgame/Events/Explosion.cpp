@@ -1,6 +1,8 @@
 #include "cg_local.hpp"
 #include "ComplexEventHandler.hpp"
 #include "View/ParticleManager.hpp"
+#include "View/Particles/BaseGib.hpp"
+#include "View/Particles/Smoke.hpp"
 
 class Explosion final : public EventParser
 {
@@ -71,24 +73,34 @@ public:
 		le->radius = radius * 0.5f;
 		re->rotation = 0;
 
-		for ( int i = 0; i < ((int)radius / 12); i++ )
+		for ( int i = 0; i < ((int)radius / 24); i++ )
 		{
-			Vector r = CRandomVector( Vector( radius * 0.8f, radius * 0.8f, radius * 0.8f ) );
-			Vector p = Vector( cent->currentState.origin ) + r;
+			Vector r = CRandomVector( Vector( radius * 0.6f, radius * 0.6f, radius * 0.6f ) );
+			Vector randomisedOrigin = Vector( cent->currentState.origin ) + r;
+			
+			/*
 			Vector ambient, direct, dir;
-
 			trap_R_LightForPoint( p, ambient, direct, dir );
 			
 			ambient /= 255.0f;
 			direct /= 255.0f;
 
-			sle = CG_MakeExplosion( Vector( cent->currentState.origin ) + r, direction, 0, smokeMaterial, smokeLength, true );
+			sle = CG_MakeExplosion( randomisedOrigin, direction, 0, smokeMaterial, smokeLength, true );
 			sle->radius = radius * (0.8f + crandom()*0.6f);
 			sle->refEntity.rotation = 0;
 			sle->color[0] = direct[0];// + ambient[0];
 			sle->color[1] = direct[1];// + ambient[1];
 			sle->color[2] = direct[2];// + ambient[2];
 			sle->color[3] = 3.0f;
+			*/
+
+			Particles::Smoke::CreateSmoke( cgs.media.smokeSprites[rand() % 3], // material
+										   randomisedOrigin, Vector::Zero, // origin and velocity
+										   Vector::Identity * 0.7f,// tint colour
+										   1.5f + random() * 0.5f, // scale
+										   0.5f + random() * 0.5f, // fade in time
+										   5.0f + random() * 2.5f, // fade out time
+										   10.0f + random() * 5.0f ); // life
 		}
 
 		// Shake the local client if nearby

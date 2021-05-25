@@ -196,8 +196,11 @@
     <ClInclude Include="..\..\code\cgame\Vegetation\VegetationSystem.hpp" />
     <ClInclude Include="..\..\code\cgame\View\LightManager.hpp" />
     <ClInclude Include="..\..\code\cgame\View\ParticleManager.hpp" />
+    <ClInclude Include="..\..\code\cgame\View\Particles\Airplane.hpp" />
     <ClInclude Include="..\..\code\cgame\View\Particles\BaseGib.hpp" />
     <ClInclude Include="..\..\code\cgame\View\Particles\BaseParticle.hpp" />
+    <ClInclude Include="..\..\code\cgame\View\Particles\Bird.hpp" />
+    <ClInclude Include="..\..\code\cgame\View\Particles\Puddle.hpp" />
     <ClInclude Include="..\..\code\cgame\View\Particles\Smoke.hpp" />
     <ClInclude Include="..\..\code\cgame\View\View.hpp" />
     <ClInclude Include="..\..\code\cgame\Weapons\BaseClientWeapon.hpp" />
@@ -236,6 +239,8 @@
     <ClCompile Include="..\..\code\cgame\cg_view.cpp" />
     <ClCompile Include="..\..\code\cgame\cg_weapons.cpp" />
     <ClCompile Include="..\..\code\cgame\Client.cpp" />
+    <ClCompile Include="..\..\code\cgame\Events\BloodPuddle.cpp" />
+    <ClCompile Include="..\..\code\cgame\Events\BloodPuff.cpp" />
     <ClCompile Include="..\..\code\cgame\Events\ComplexEventHandler.cpp" />
     <ClCompile Include="..\..\code\cgame\Events\Decal.cpp" />
     <ClCompile Include="..\..\code\cgame\Events\Explosion.cpp" />
@@ -246,8 +251,11 @@
     <ClCompile Include="..\..\code\cgame\Vegetation\VegetationSystem.cpp" />
     <ClCompile Include="..\..\code\cgame\View\LightManager.cpp" />
     <ClCompile Include="..\..\code\cgame\View\ParticleManager.cpp" />
+    <ClCompile Include="..\..\code\cgame\View\Particles\Airplane.cpp" />
     <ClCompile Include="..\..\code\cgame\View\Particles\BaseGib.cpp" />
     <ClCompile Include="..\..\code\cgame\View\Particles\BaseParticle.cpp" />
+    <ClCompile Include="..\..\code\cgame\View\Particles\Bird.cpp" />
+    <ClCompile Include="..\..\code\cgame\View\Particles\Puddle.cpp" />
     <ClCompile Include="..\..\code\cgame\View\Particles\Smoke.cpp" />
     <ClCompile Include="..\..\code\cgame\View\View.cpp" />
     <ClCompile Include="..\..\code\cgame\Weapons\BaseClientWeapon.cpp" />

@@ -20,7 +20,7 @@ public:
 		Seconds, Milliseconds, Microseconds
 	};
 
-	Timer();
+	Timer( bool startNow = true );
 	~Timer() = default;
 
 	double GetElapsed( const TimeUnit& tu = Seconds ) const;

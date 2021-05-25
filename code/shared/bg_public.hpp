@@ -525,6 +525,15 @@ enum ComplexEvent
 	// fparm: speed
 	// fparm2: scale
 	CE_SmokePuff,
+
+	// Spawns a blood puff
+	// no params
+	CE_BloodPuff,
+
+	// Spawns a blood puddle. Automatically traces against the ground
+	// to figure out where to spawn it
+	// no params
+	CE_BloodPuddle
 };
 
 // Used by CE_ "complex entity events"

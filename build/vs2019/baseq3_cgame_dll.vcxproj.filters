@@ -126,6 +126,15 @@
     <ClInclude Include="..\..\code\cgame\View\Particles\Smoke.hpp">
       <Filter>Sources\View\Particles</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\cgame\View\Particles\Bird.hpp">
+      <Filter>Sources\View\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\View\Particles\Airplane.hpp">
+      <Filter>Sources\View\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\cgame\View\Particles\Puddle.hpp">
+      <Filter>Sources\View\Particles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -268,6 +277,21 @@
     </ClCompile>
     <ClCompile Include="..\..\code\cgame\Events\SmokePuff.cpp">
       <Filter>Sources\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\View\Particles\Bird.cpp">
+      <Filter>Sources\View\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\View\Particles\Airplane.cpp">
+      <Filter>Sources\View\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Events\BloodPuff.cpp">
+      <Filter>Sources\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\Events\BloodPuddle.cpp">
+      <Filter>Sources\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\cgame\View\Particles\Puddle.cpp">
+      <Filter>Sources\View\Particles</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

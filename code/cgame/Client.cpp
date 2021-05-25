@@ -5,6 +5,7 @@
 #include "Vegetation/VegetationSystem.hpp"
 #include "View/LightManager.hpp"
 #include "View/ParticleManager.hpp"
+#include "View/Particles/Airplane.hpp"
 #include <string>
 
 #include "Times/Timer.hpp"
@@ -40,18 +41,20 @@ Client::~Client()
 // ===================
 void Client::Update()
 {
+	// Special for Cirkuz 33: airplane spawning
+	// TODO: maybe a map property or a clientside entity?
+	static float airplaneTimer = 5.0f;
+
+	usercmd_t uc = GetUsercmd();
+	SetMouseXY( uc.mouse[0], uc.mouse[1] );
+
 	if ( vegetationSystem )
 	{
 		vegetationSystem->Update();
 		vegetationSystem->Render();
 	}
 
-	usercmd_t uc = GetUsercmd();
-
-	SetMouseXY( uc.mouse[0], uc.mouse[1] );
-
 	auto weapon = GetCurrentWeapon();
-
 	if ( weapon )
 	{
 		if ( uc.interactionButtons & Interaction_PrimaryAttack )
@@ -75,15 +78,15 @@ void Client::Update()
 
 	if ( particleManager )
 	{
-		Timer timer;
+		if ( Time() > airplaneTimer )
+		{
+			Vector viewOrigin = GetView()->GetViewOrigin();
+			Particles::Airplane::CreateAirplane( viewOrigin + Vector( crandom() * 1000.0f, 0, 16000.0f + crandom() * 1200.0f ), random() * 360.0f );
+			airplaneTimer = Time() + 120.0f + random() * 60.0f;
+		}
 
 		particleManager->Update();
-		float time1 = timer.GetElapsedAndReset( Timer::Milliseconds ); // 26812
-
 		particleManager->Render();
-		float time2 = timer.GetElapsed( Timer::Milliseconds );
-		
-		//CG_Printf( S_COLOR_YELLOW "Physics time: %3.4f ms, render entity submission time: %3.4f ms\n" S_COLOR_WHITE, time1, time2 );
 	}
 
 	// If the game is paused, pause the music too
@@ -367,7 +370,12 @@ void Client::UpdateDynamicMusic( const char* label )
 		return;
 	}
 
-	trap_DM_Pause( true, false );
+	// If the previous song was ambient, then pause that before playing the new one
+	if ( Q_stricmp( label, "ambient" ) )
+	{
+		trap_DM_Pause( true, false );
+	}
+
 	trap_DM_Start( label );
 }
 

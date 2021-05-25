@@ -1,6 +1,8 @@
 #include "cg_local.hpp"
 #include "Particles/BaseParticle.hpp"
 #include "ParticleManager.hpp"
+#include "Times/Timer.hpp"
+
 
 ParticleManager::ParticleForce::ParticleForce( Vector origin, float force, float falloff, float turbulence, float life )
 {
@@ -95,7 +97,7 @@ void ParticleManager::MemoryUsage()
 	constexpr int sizeOfParticle = sizeof( Particles::BaseParticle );
 	constexpr int sizeOfParticleArray = sizeof( particles );
 
-	CG_Printf( "** ParticleManager **\n" );
+	CG_Printf( "   ParticleManager::MemoryUsage\n" );
 	CG_Printf( "** Particle size: %4.3f kB\n", sizeOfParticle / 1024.0f );
 	CG_Printf( "** Particle array count: %i particles\n", MaxParticles );
 	CG_Printf( "** Particle array size: %4.3f MB\n", sizeOfParticleArray / 1024.0f / 1024.0f );
@@ -105,6 +107,14 @@ void ParticleManager::Update()
 {
 	static int forceUpdateCounter = 0;
 	const float time = GetClient()->Time();
+
+	Timer profileTimer( false );
+	float profileTime{ 0.0f };
+
+	if ( cg_profileParticles.integer )
+	{
+		profileTimer.Reset();
+	}
 
 	// Update forces
 	for ( auto& f : forces )
@@ -134,12 +144,24 @@ void ParticleManager::Update()
 		}
 	}
 
-	//CG_Printf( "PARTICLE COUNT: %i\n", particleCount );
+	if ( cg_profileParticles.integer )
+	{
+		profileTime = profileTimer.GetElapsed( Timer::Milliseconds );
+		CG_Printf( "ParticleManager::Update %3.3f ms with %i particles\n", profileTime, particleCount );
+	}
 }
 
 void ParticleManager::Render()
 {
 	const float time = GetClient()->Time();
+
+	Timer profileTimer( false );
+	float profileTime{ 0.0f };
+
+	if ( cg_profileParticles.integer )
+	{
+		profileTimer.Reset();
+	}
 
 	for ( auto& p : particles )
 	{
@@ -147,5 +169,11 @@ void ParticleManager::Render()
 		{
 			p.Render( time );
 		}
+	}
+
+	if ( cg_profileParticles.integer )
+	{
+		profileTime = profileTimer.GetElapsed( Timer::Milliseconds );
+		CG_Printf( "ParticleManager::Render %3.3f ms\n", profileTime );
 	}
 }

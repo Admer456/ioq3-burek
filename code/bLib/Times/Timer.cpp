@@ -2,9 +2,12 @@
 
 using namespace std::chrono;
 
-Timer::Timer()
+Timer::Timer( bool startNow )
 {
-	Reset();
+	if ( startNow )
+	{
+		Reset();
+	}
 }
 
 double Timer::GetElapsed( const TimeUnit& tu ) const

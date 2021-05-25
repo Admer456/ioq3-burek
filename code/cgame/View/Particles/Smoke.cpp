@@ -6,7 +6,7 @@ using namespace Particles;
 
 void Smoke::CreateSmoke( qhandle_t smokeSprite, Vector origin, Vector velocity, 
 						 Vector tintColour, float scale, float fadeInTime, 
-						 float fadeOutTime, float life, bool expensiveCollision )
+						 float fadeOutTime, float life, bool expensiveCollision, bool sky )
 {
 	ParticleManager* pm = GetClient()->GetParticleManager();
 
@@ -22,9 +22,16 @@ void Smoke::CreateSmoke( qhandle_t smokeSprite, Vector origin, Vector velocity,
 		particle.particleFlags |= SmokeFlag_FadingIn;
 	}
 
+	if ( sky )
+	{
+		particle.particleFlags |= SmokeFlag_Sky;
+	}
+
 	particle.particleVelocity = velocity;
 	particle.particleAngularVelocity.z = crandom() * 360.0f;
 
+	particle.particleColour = tintColour;
+	particle.particleTargetColour = tintColour;
 	particle.particleTintColour = tintColour;
 }
 
@@ -44,15 +51,24 @@ void Smoke::ParticleUpdate( BaseParticle* self, const float& time )
 	self->particleOrigin += self->particleVelocity * frameTime;
 	self->particleAngles.z += self->particleAngularVelocity.z * frameTime;
 
-	// Smaller smoke will go up quicker, really big smoke will go down
-	float gravityFactor = 1.0f - 0.333f * self->particleScale;
-	gravityFactor = gravityFactor * gravityFactor * gravityFactor;
+	// Sky smoke doesn't fall back
+	if ( ~self->particleFlags & SmokeFlag_Sky )
+	{
+		// Smaller smoke will go up quicker, really big smoke will go down
+		float gravityFactor = 1.0f - 0.333f * self->particleScale;
+		gravityFactor = gravityFactor * gravityFactor * gravityFactor;
 
-	self->particleVelocity.z += 10.0f * frameTime * gravityFactor;
+		self->particleVelocity.z += 10.0f * frameTime * gravityFactor;
+	}
 
 	self->particleVelocity -= self->particleVelocity * frameTime * 0.4f;
 	self->particleAngularVelocity.z -= self->particleAngularVelocity.z * frameTime * 0.7f;
 	self->particleScale += frameTime * 0.15f;
+
+	if ( self->particleFlags & SmokeFlag_Sky )
+	{
+		self->particleScale += frameTime * 0.85f;
+	}
 
 	if ( self->particleFlags & SmokeFlag_FadingIn )
 	{
@@ -86,7 +102,12 @@ void Smoke::ParticleRender( BaseParticle* self, const float& time )
 
 	self->particleGenericTimer += cg.frametime * 0.001f;
 
-	if ( self->particleGenericTimer > 0.25f )
+	if ( self->particleFlags & SmokeFlag_Sky )
+	{
+		self->particleColour = Vector::Identity * 255.0f;
+		self->particleTargetColour = Vector::Identity * 255.0f;
+	}
+	else if ( self->particleGenericTimer > 0.25f )
 	{
 		Vector directLight, ambientLight, lightDir;
 		trap_R_LightForPoint( self->particleOrigin, ambientLight, directLight, lightDir );

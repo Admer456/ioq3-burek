@@ -2,6 +2,8 @@
 
 // Yes, gibs are particles. Deal with it
 
+// Should've followed the DRY principle, but alas, life is hard
+// and I got a competition to finish a game prototype for
 enum BreakMaterialTypes
 {
 	Material_Glass,
