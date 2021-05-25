@@ -159,7 +159,7 @@ void CG_DrawInformation( void ) {
 	sysInfo = CG_ConfigString( CS_SYSTEMINFO );
 
 	s = Info_ValueForKey( info, "mapname" );
-	levelshot = trap_R_RegisterShaderNoMip( va( "levelshots/%s.tga", s ) );
+	levelshot = trap_R_RegisterShaderNoMip( va( "levelshots/%s.png", s ) );
 	if ( !levelshot ) {
 		levelshot = trap_R_RegisterShaderNoMip( "menu/art/unknownmap" );
 	}
@@ -171,7 +171,7 @@ void CG_DrawInformation( void ) {
 	trap_R_DrawStretchPic( 0, 0, cgs.glconfig.vidWidth, cgs.glconfig.vidHeight, 0, 0, 2.5, 2, detail );
 
 	// draw the icons of things as they are loaded
-	CG_DrawLoadingIcons();
+	//CG_DrawLoadingIcons();
 
 	// the first 150 rows are reserved for the client connection
 	// screen to write into
@@ -258,28 +258,28 @@ void CG_DrawInformation( void ) {
 		UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, colorWhite );
 	y += PROP_HEIGHT;
 		
-	value = atoi( Info_ValueForKey( info, "timelimit" ) );
-	if ( value ) {
-		UI_DrawProportionalString( 320, y, va( "timelimit %i", value ),
-			UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, colorWhite );
-		y += PROP_HEIGHT;
-	}
+	//value = atoi( Info_ValueForKey( info, "timelimit" ) );
+	//if ( value ) {
+	//	UI_DrawProportionalString( 320, y, va( "timelimit %i", value ),
+	//		UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, colorWhite );
+	//	y += PROP_HEIGHT;
+	//}
 
-	if (cgs.gametype < GT_CTF ) {
-		value = atoi( Info_ValueForKey( info, "fraglimit" ) );
-		if ( value ) {
-			UI_DrawProportionalString( 320, y, va( "fraglimit %i", value ),
-				UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, colorWhite );
-			y += PROP_HEIGHT;
-		}
-	}
+	//if (cgs.gametype < GT_CTF ) {
+	//	value = atoi( Info_ValueForKey( info, "fraglimit" ) );
+	//	if ( value ) {
+	//		UI_DrawProportionalString( 320, y, va( "fraglimit %i", value ),
+	//			UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, colorWhite );
+	//		y += PROP_HEIGHT;
+	//	}
+	//}
 
-	if (cgs.gametype >= GT_CTF) {
-		value = atoi( Info_ValueForKey( info, "capturelimit" ) );
-		if ( value ) {
-			UI_DrawProportionalString( 320, y, va( "capturelimit %i", value ),
-				UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, colorWhite );
-		}
-	}
+	//if (cgs.gametype >= GT_CTF) {
+	//	value = atoi( Info_ValueForKey( info, "capturelimit" ) );
+	//	if ( value ) {
+	//		UI_DrawProportionalString( 320, y, va( "capturelimit %i", value ),
+	//			UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, colorWhite );
+	//	}
+	//}
 }
 

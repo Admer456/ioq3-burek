@@ -1399,10 +1399,10 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 	}
 
 	// don't draw center string if scoreboard is up
-	cg.scoreBoardShowing = CG_DrawScoreboard();
-	if ( !cg.scoreBoardShowing) {
-		CG_DrawCenterString();
-	}
+	//cg.scoreBoardShowing = CG_DrawScoreboard();
+	//if ( !cg.scoreBoardShowing) {
+	//	CG_DrawCenterString();
+	//}
 
 	GetClient()->PostDraw2D();
 }

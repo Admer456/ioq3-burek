@@ -331,6 +331,7 @@ static void CG_OffsetFirstPersonView( void ) {
 	origin = cg.refdef.vieworg;
 	angles = cg.refdefViewAngles;
 
+	/*
 	// if dead, fix the angle and don't add any kick
 	if ( cg.snap->ps.stats[STAT_HEALTH] <= 0 ) {
 		angles[ROLL] = 40;
@@ -339,6 +340,7 @@ static void CG_OffsetFirstPersonView( void ) {
 		origin[2] += cg.predictedPlayerState.viewheight;
 		return;
 	}
+	*/
 
 	// add angles based on damage kick
 	if ( cg.damageTime ) {
@@ -824,10 +826,6 @@ void CG_AddSkyDome()
 	re.customShader = material;
 	AnglesToAxis( angles, re.axis );
 	
-	pos = GetClient()->GetView()->GetViewOrigin();
-	pos.z = 0;
-	pos << re.origin;
-	
 	// Scale it up
 	for ( int i = 0; i < 3; i++ )
 		for ( int j = 0; j < 3; j++ )
@@ -900,7 +898,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	// decide on third person view
 	cg.renderingThirdPerson = (qboolean)(cg.snap->ps.persistant[PERS_TEAM] != TEAM_SPECTATOR
-							&& (cg_thirdPerson.integer || (cg.snap->ps.stats[STAT_HEALTH] <= 0)));
+							&& (cg_thirdPerson.integer /*|| (cg.snap->ps.stats[STAT_HEALTH] <= 0)*/));
 
 	// build cg.refdef
 	inwater = CG_CalcViewValues();

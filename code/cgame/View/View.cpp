@@ -109,6 +109,8 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	static float speed = 0.0f;
 	static float waterWobble = 0.0f;
 
+	static float deadTime = 0.0f;
+
 	float targetSpeed = velocity.Length2D() / 150.0f;
 	float waterWobbleTarget = IsInWater() ? 1.0f : 0.0f;
 
@@ -125,6 +127,15 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 	upBob *= sin( time * 16.0f );
 	sideBob *= sin( time * 8.0f );
 
+	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 && deadTime < 5.0f )
+	{
+		deadTime += cg.frametime * 0.001f;
+	}
+	else if ( cg.predictedPlayerState.stats[STAT_HEALTH] > 0 )
+	{
+		deadTime = 0.0f;
+	}
+
 	for ( ViewShake& vs : shakes )
 		vs.Update();
 
@@ -140,6 +151,12 @@ void ClientView::CalculateViewTransform( Vector& outOrigin, Vector& outAngles )
 
 	outAngles += punch;
 	outAngles.z += sin( time * 1.5f ) * waterWobble * 3.0f;
+	
+	if ( deadTime )
+	{
+		outAngles.x = -deadTime * 20.0f;
+		outAngles.z = deadTime * 2.5f;
+	}
 
 	// add view height
 	outOrigin.z += cg.predictedPlayerState.viewheight;
