@@ -675,10 +675,38 @@ typedef struct {
 	sfxHandle_t watrOutSound;
 	sfxHandle_t watrUnSound;
 
+	qhandle_t	quadModel;
+
+	qhandle_t	bloodPuff;
+	qhandle_t	bloodPuddle;
+
 	qhandle_t	smokeSprites[3];
 	qhandle_t	glowShellMaterial;
+
+	qhandle_t	headModels[6];
+	qhandle_t	accessoryModels[4];
 } cgMedia_t;
 
+enum HeadAddon : uint8_t
+{
+	Accessory_Hair,
+	Accessory_Hat,
+	Accessory_Cap,
+	Accessory_Sunglasses
+};
+
+enum HeadVariant : uint8_t
+{
+	Head_Normal,
+	Head_Dead
+};
+
+enum HeadShape : uint8_t
+{
+	HeadShape_Plump,
+	HeadShape_Normal,
+	HeadShape_Chad
+};
 
 // The client game static (cgs) structure hold everything
 // loaded or calculated from the gamestate.  It will NOT

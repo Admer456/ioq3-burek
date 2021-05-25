@@ -70,21 +70,17 @@ namespace Entities
 	{
 	public:
 		// Constants
-
-		enum HeadVariant
+		enum HeadVariant : uint8_t
 		{
 			Head_Normal,
-			Head_Angry,
-			Head_Dead,
-			Head_DeadBloody
+			Head_Dead
 		};
 
-		constexpr static const char* HeadVariantStrings[] =
+		enum HeadShape : uint8_t
 		{
-			"normal",
-			"angry",
-			"dead",
-			"dead_bloody",
+			HeadShape_Plump,
+			HeadShape_Normal,
+			HeadShape_Chad
 		};
 
 	public:
@@ -93,7 +89,14 @@ namespace Entities
 		void			Spawn() override;
 		void			Think() override;
 
+		void			Precache() override;
+
+		void			TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) override;
+		void			Die( IEntity* killer ) override;
+
 		BaseEntity*		TestEntityPosition() override;
+
+		static void		ShotAlert( BaseEntity* ent, Vector origin, float radius );
 
 	public:
 		Vector			GetHeadOffset() const;
@@ -101,8 +104,68 @@ namespace Entities
 		uint8_t			GetSpecies() const { return species; }
 		uint8_t			GetFaction() const { return faction; }
 
+		void			SetWeapon( int weaponId );
+		int				GetWeapon();
+
+		int				GetWeaponAmmo( int weaponId );
+
+		// Limits:
+		// headNumber: 0 to 4
+		// headState: 0 to 4
+		// weaponInventory: 0 to 4
+		// currentWeapon: 0 to 1
+		void			EncodeRenderData();
+
 		AI::Relationship Relationship( BaseEntity* entity ) const;
 		AI::Relationship Relationship( uint8_t spec, uint8_t fac ) const;
+
+	protected:
+		// Animation stuff
+		void			SetupAnimations();
+		void			EvaluateAnimation();
+		void			PlayAnimation( animHandle animation, int flags );
+
+		float			animTimer{ 0.0f };
+		enum
+		{
+			Anim_WalkForward,
+			Anim_WalkForwardGun,
+			Anim_WalkBackward,
+			Anim_WalkBackwardGun,
+
+			Anim_RunForward,
+			Anim_RunForwardGun,
+			Anim_RunBackward,
+			Anim_RunBackwardGun,
+
+			Anim_Idle,
+			Anim_IdleGun,
+
+			Anim_DeathFront,
+			Anim_DeathBack,
+
+			Anim_Max
+		};
+
+		animHandle		humanAnims[Anim_Max];
+		float			deathTime{ 0.0f };
+
+		static inline sfxHandle_t PainSounds[4]{};
+		static inline int PainSoundCounter{ 0 };
+
+		static inline sfxHandle_t NoticeSounds[3]{};
+		static inline int NoticeSoundCounter{ 0 };
+		
+		static inline sfxHandle_t DetectSounds[3]{};
+		static inline int DetectSoundCounter{ 0 };
+		
+		static inline sfxHandle_t IdleSounds[7]{};
+		static inline int IdleSoundCounter{ 0 };
+
+		float			idleSoundTimer{ 0.0f };
+		float			painSoundTimer{ 0.0f };
+
+		bool			didBleed{ false };
 
 	protected:
 		// Movement functions
@@ -135,6 +198,7 @@ namespace Entities
 		// Decision making, shall we go into combat mode, who to attack first etc.
 		void			EvaluateSituation();
 		
+	protected:
 		// Situations
 		void			Situation_Casual();
 		void			Situation_Combat();
@@ -146,10 +210,20 @@ namespace Entities
 		// Called in Think
 		void			AimAtTarget();
 
+		bool			CanHit( Vector direction );
+
+		void			Attack( Vector direction );
+		void			AttackFists( Vector direction );
+		void			AttackPistol( Vector direction );
+		void			AddBulletHole( Vector planeNormal, Vector bulletDirection, Vector origin, bool glass );
+
+		float			nextAttack{ 0.0f };
+
 	protected:
 		// timers
 		float			nextSightQuery{ 0.0f };
 		float			nextDecision{ 0.0f };
+		float			nextIdleMove{ 0.0f };
 
 		// friends'n'foes
 		std::vector<EntityMemory> memories;
@@ -167,11 +241,17 @@ namespace Entities
 
 		BaseEntity*		targetEntity{ nullptr }; // my target which I might follow, kill, or assist etc.
 	
-		BaseAttachment* headAttachment{ nullptr }; // Head model attachment
-		uint8_t			headVariant{ Head_Normal };
-
-		BaseAttachment* weaponAttachment{ nullptr }; // The visual entity that gets attached to the hand bone
-		uint8_t			weaponAmmo{ 0 }; // How many bullets are currently loaded?
+		// Some render data is encoded into time2
+		// Head model: 2 bits
+		// Head state: 2 bits
+		// Weapon inventory: 2 bits
+		// Currently equipped weapon: 1 bit
+		uint8_t			headNumber{ HeadShape_Normal };
+		uint8_t			headState{ Head_Normal };
+		uint8_t			weaponInventory{};
+		uint8_t			currentWeapon{ 0U };
+		uint8_t			weaponAmmo{ 15U };
+		uint16_t		accessory{};
 
 		// The state which determines what the NPC is allowed to do
 		AI::DynamismState dynamism{ AI::DynamismState::FreeWill };

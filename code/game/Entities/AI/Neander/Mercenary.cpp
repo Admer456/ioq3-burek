@@ -8,12 +8,20 @@
 #include "../qcommon/IEngineExports.h"
 #include "Game/IGameImports.h"
 
+#include "Game/GameMusic.hpp"
+
 #include "Entities/AI/AI_Common.hpp"
 #include "Node.hpp"
 #include "Mercenary.hpp"
 
+#include "../shared/Weapons/WeaponIDs.hpp"
+#include "Entities/Weapons/BaseWeapon.hpp"
+#include "Entities/Weapons/Weapon_Pistol.hpp"
+
 using namespace Entities;
 using namespace AI;
+
+extern vmCvar_t g_violence;
 
 // MemoryFrame
 
@@ -196,6 +204,8 @@ void Mercenary::Spawn()
 
 	gameImports->LinkEntity( this );
 
+	GetState()->eType = ET_CHARACTER;
+
 	memset( &cmd, 0, sizeof( cmd ) );
 	memset( &playerState, 0, sizeof( playerState ) );
 
@@ -204,7 +214,23 @@ void Mercenary::Spawn()
 	moveTarget = moveIdeal;
 
 	species = spawnArgs->GetInt( "species", AI::Species_Human );
-	faction = spawnArgs->GetInt( "species", AI::Faction_Mafia );
+	faction = spawnArgs->GetInt( "faction", AI::Faction_Mafia );
+
+	// Appearance
+	accessory = spawnArgs->GetInt( "accessory", ActorClientBits::Hair | ActorClientBits::Sunglasses );
+
+	// Head number
+	headNumber = spawnArgs->GetInt( "head", HeadShape_Normal );
+
+	// Start with the pistol by default, with a full mag
+	weaponAmmo = 15;
+	int weapon = spawnArgs->GetInt( "weapon", WeaponID_Pistol );
+	
+	weaponInventory |= 1 << WeaponID_Fists; // always have fists
+	SetWeapon( weapon );
+
+	SetupAnimations();
+	PlayAnimation( humanAnims[Anim_Idle], AnimFlag_ForceStart | AnimFlag_Loop );
 }
 
 void Mercenary::Think()
@@ -217,23 +243,114 @@ void Mercenary::Think()
 			(this->*thinkFunction)();
 	}
 
-	// Scan for visible entities
-	if ( nextSightQuery <= time )
-	{
-		SightQuery();
-		nextSightQuery = time + 0.5f + crandom() * 0.1f;
-	}
+	EncodeRenderData();
 
-	if ( nextDecision <= time )
+	if ( health > 0 )
 	{
-		EvaluateSituation();
-		nextDecision = time + 0.2f + crandom() * 0.1f;
-	}
+		// Scan for visible entities
+		if ( nextSightQuery <= time )
+		{
+			SightQuery();
+			nextSightQuery = time + 0.3f + crandom() * 0.2f;
+		}
 
-	AimAtTarget();
+		if ( nextDecision <= time )
+		{
+			EvaluateSituation();
+			nextDecision = time + 0.1f + crandom() * 0.1f;
+		}
+
+		AimAtTarget();
+	}
 
 	// Lastly, move
 	Move();
+
+	EvaluateAnimation();
+}
+
+void Mercenary::Precache()
+{
+	PainSounds[0] = gameWorld->PrecacheSound( "sound/humans/pain1.wav" );
+	PainSounds[1] = gameWorld->PrecacheSound( "sound/humans/pain2.wav" );
+	PainSounds[2] = gameWorld->PrecacheSound( "sound/humans/pain5.wav" );
+	PainSounds[3] = gameWorld->PrecacheSound( "sound/humans/pain6.wav" );
+
+	NoticeSounds[0] = gameWorld->PrecacheSound( "sound/humans/notice1.wav" );
+	NoticeSounds[1] = gameWorld->PrecacheSound( "sound/humans/notice2.wav" );
+	NoticeSounds[2] = gameWorld->PrecacheSound( "sound/humans/notice3.wav" );
+
+	DetectSounds[0] = gameWorld->PrecacheSound( "sound/humans/detect1.wav" );
+	DetectSounds[1] = gameWorld->PrecacheSound( "sound/humans/detect2.wav" );
+	DetectSounds[2] = gameWorld->PrecacheSound( "sound/humans/detect3.wav" );
+
+	IdleSounds[0] = gameWorld->PrecacheSound( "sound/humans/idle1.wav" );
+	IdleSounds[1] = gameWorld->PrecacheSound( "sound/humans/idle2.wav" );
+	IdleSounds[2] = gameWorld->PrecacheSound( "sound/humans/idle3.wav" );
+	IdleSounds[3] = gameWorld->PrecacheSound( "sound/humans/idle4.wav" );
+	IdleSounds[4] = gameWorld->PrecacheSound( "sound/humans/idle5.wav" );
+	IdleSounds[5] = gameWorld->PrecacheSound( "sound/humans/idle6.wav" );
+	IdleSounds[6] = gameWorld->PrecacheSound( "sound/humans/idle7.wav" );
+}
+
+void Mercenary::TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage )
+{
+	if ( health <= 0 )
+		return;
+
+	health -= damage;
+
+	RegisterVisibleEntity( static_cast<BaseEntity*>( attacker ) );
+
+	if ( painSoundTimer < level.time * 0.001f )
+	{
+		// Kids huh
+		if ( g_violence.integer )
+		{
+			// Play pain sound
+			gameWorld
+				->CreateTempEntity( GetCurrentOrigin(), EV_GENERAL_SOUND )
+				->GetState()->eventParm = PainSounds[PainSoundCounter++ % 4];
+
+		}
+		
+		painSoundTimer = level.time * 0.001f + 0.5f;
+	}
+
+	if ( health <= 0 )
+	{
+		animHandle deathAnimation = humanAnims[Anim_DeathBack];
+
+		Vector attackDirection = inflictor->GetCurrentOrigin() + inflictor->GetAverageOrigin();
+		attackDirection -= playerState.origin;
+		attackDirection.Normalize();
+
+		float dot = attackDirection * lookDirection;
+		if ( dot < 0 )
+			deathAnimation = humanAnims[Anim_DeathFront];
+
+		Die( attacker );
+		PlayAnimation( deathAnimation, AnimFlag_ForceStart );
+	}
+}
+
+void Mercenary::Die( IEntity* killer )
+{
+	GetState()->solid = 0;
+	GetShared()->contents = CONTENTS_CORPSE;
+
+	headState = Head_Dead;
+	currentWeapon = WeaponID_Fists;
+
+	// Drop a pistol somewhere
+	if ( weaponInventory & WeaponID_Pistol )
+	{
+		weaponInventory = 1 << WeaponID_Fists;
+	}
+
+	GameMusic::ToAmbient();
+
+	// Play death sound
 }
 
 BaseEntity* Mercenary::TestEntityPosition()
@@ -258,10 +375,84 @@ BaseEntity* Mercenary::TestEntityPosition()
 	return nullptr;
 }
 
+void Mercenary::ShotAlert( BaseEntity* ent, Vector origin, float radius )
+{
+	int ents[GameWorld::MaxEntities];
+	int entNum{ 0 };
+	IEntity* entity{ nullptr };
+
+	Vector mins = origin - Vector( radius, radius, radius / 2.0f );
+	Vector maxs = origin + Vector( radius, radius, radius / 2.0f );
+
+	entNum = gameImports->EntitiesInBox( mins, maxs, ents, GameWorld::MaxEntities );
+
+	for ( int i = 0; i < entNum; i++ )
+	{
+		entity = gEntities[ents[i]];
+		if ( nullptr == ent )
+			continue;
+
+		if ( !entity->IsClass( Mercenary::ClassInfo ) )
+			continue;
+
+		Mercenary* merc = static_cast<Mercenary*>(entity);
+
+		if ( merc->situation != ST_Combat )
+		{
+			merc->moveIdeal = origin;
+			merc->lookTarget = origin;
+
+			merc->RegisterVisibleEntity( ent );
+		}
+	}
+}
+
 Vector Mercenary::GetHeadOffset() const
 {
 	return Vector( 0, 0, DEFAULT_VIEWHEIGHT );
 }
+
+void Mercenary::SetWeapon( int weaponId )
+{
+	currentWeapon = weaponId;
+	weaponInventory |= (1 << weaponId);
+}
+
+int Mercenary::GetWeapon()
+{
+	return currentWeapon;
+}
+
+int Mercenary::GetWeaponAmmo( int weaponId )
+{	// We're getting ammo from the magazine, not the total ammo
+	return weaponAmmo;
+}
+
+void Mercenary::EncodeRenderData()
+{
+	using Flags = ActorClientBits;
+
+	int& encode = GetState()->time2;
+	encode = 0;
+
+	if ( headNumber == HeadShape_Plump )	encode |= Flags::Head1;
+	if ( headNumber == HeadShape_Normal )	encode |= Flags::Head2;
+	if ( headNumber == HeadShape_Chad )		encode |= Flags::Head3;
+
+	if ( weaponInventory & 1 << WeaponID_Pistol )
+	{
+		if ( currentWeapon == WeaponID_Pistol ) 
+			encode |= Flags::ShowPistol;
+		else 
+			encode |= Flags::ShowPistolHolstered;
+	}
+
+	if ( headState == Head_Dead && g_violence.integer ) encode |= Flags::Dead;
+
+	if ( accessory ) encode |= accessory;
+
+//	Vector deltaAngles = viewAngles - GetCurrentAngles();
+//	GetState()->angles2 << deltaAngles;
 }
 
 AI::Relationship Mercenary::Relationship( BaseEntity* entity ) const
@@ -307,6 +498,101 @@ AI::Relationship Mercenary::Relationship( uint8_t spec, uint8_t fac ) const
 	return table[faction][fac];
 }
 
+void Mercenary::SetupAnimations()
+{
+	humanAnims[Anim_WalkForward] = GetAnimByName( "walk_fr" );
+	humanAnims[Anim_WalkForward] = GetAnimByName( "walk_frgun" );
+	humanAnims[Anim_WalkForward] = GetAnimByName( "walk_bk" );
+	humanAnims[Anim_WalkForward] = GetAnimByName( "walk_bkgun" );
+
+	humanAnims[Anim_RunForward] = GetAnimByName( "run_fr" );
+	humanAnims[Anim_RunForward] = GetAnimByName( "run_frgun" );
+	humanAnims[Anim_RunBackward] = GetAnimByName( "run_bk" );
+	humanAnims[Anim_RunBackward] = GetAnimByName( "run_bkgun" );
+	
+	humanAnims[Anim_DeathFront] = GetAnimByName( "death_front" ); // the character is killed from behind, so he falls forward
+	humanAnims[Anim_DeathBack] = GetAnimByName( "death_back" );
+	
+	humanAnims[Anim_Idle] = GetAnimByName( "idle" );
+	humanAnims[Anim_IdleGun] = GetAnimByName( "idle_gun" );
+}
+
+void Mercenary::EvaluateAnimation()
+{
+	animHandle animation = humanAnims[Anim_Idle];
+
+	const animHandle& currentAnim = GetState()->animation;
+	float time = level.time * 0.001f;
+
+	if ( health > 0 )
+	{
+		int move = sqrt( cmd.forwardmove*cmd.forwardmove + cmd.rightmove*cmd.rightmove );
+
+		if ( cmd.forwardmove < -50 ) animation = humanAnims[Anim_RunBackward];
+		if ( cmd.forwardmove < -15 ) animation = humanAnims[Anim_WalkBackward];
+		if ( move > 15 ) animation = humanAnims[Anim_WalkForward];
+		if ( move > 60 ) animation = humanAnims[Anim_RunForward];
+	
+		if ( situation == ST_Combat )
+			animation++; // enable "gun" animations
+
+		if ( currentAnim != animation )
+			PlayAnimation( animation, AnimFlag_Loop );
+	}
+
+	else
+	{
+		if ( (currentAnim == humanAnims[Anim_DeathFront] || currentAnim == humanAnims[Anim_DeathBack])
+			 && animTimer < time )
+		{
+			PlayAnimation( currentAnim, AnimFlag_ForceStart | AnimFlag_Manual );
+			GetState()->frame = 119;
+
+			if ( !didBleed )
+			{
+				didBleed = true;
+				Vector bleedSpot = playerState.origin;
+				Vector forward;
+				Vector::AngleVectors( viewAngles, &forward, nullptr, nullptr );
+
+				if ( currentAnim == humanAnims[Anim_DeathFront] )
+				{
+					bleedSpot += forward * 52.0f;
+				}
+				else
+				{
+					bleedSpot -= forward * 52.0f;
+				}
+
+				if ( g_violence.integer )
+				{
+					gameWorld->EmitComplexEvent( bleedSpot, Vector::Zero, CE_BloodPuddle );
+				}
+			}
+		}
+
+		// animDeathFront and animDeathBack are played from Die()
+
+		//PlayAnimation( animation, AnimFlag_Loop );
+	}
+}
+
+void Mercenary::PlayAnimation( animHandle animation, int flags )
+{
+	if ( animation == AnimHandleNotFound )
+		return;
+
+	GetState()->animation = animation;
+	GetState()->animationFlags = flags;
+
+	if ( flags & AnimFlag_ForceStart )
+		GetState()->animationTime = level.time;
+	
+	GetState()->framerate = 1000.0f / anims[animation].frameLerp;
+
+	animTimer = level.time * 0.001f + anims[animation].Length();
+}
+
 float Mercenary::SnapMovementSpeed( float speed, bool smooth )
 {
 	speed *= 127.0f;
@@ -348,6 +634,13 @@ usercmd_t Mercenary::CalculateCmdForVelocity( Vector wishVelocity, bool canJump 
 	rcmd.forwardmove = dotF * 127;
 	rcmd.rightmove = dotR * 127;
 
+	if ( health <= 0 )
+	{
+		rcmd.upmove = 0;
+		rcmd.rightmove = 0;
+		rcmd.forwardmove = 0;
+	}
+
 	return rcmd;
 }
 
@@ -364,110 +657,115 @@ void Mercenary::MovementLogic()
 	int forwardMove = ccmd.forwardmove;
 	int rightMove = ccmd.rightmove;
 
-#if 0
-	trace_t trForward, trBackward, trRight, trLeft, trUp;
-	Vector forward, right, up;
-	viewAngles = wishVelocity.ToAngles();
-	viewAngles.x = 0;
+#if 1
 
-	// Shoot 4 rays to determine how close we are to a wall
-	Vector::AngleVectors( GetAngles(), &forward, &right, &up );
-	Util::Trace( &trForward,	start, nullptr, nullptr, start + forward * 96.0f,	GetEntityIndex(), MASK_PLAYERSOLID );
-	Util::Trace( &trBackward,	start, nullptr, nullptr, start - forward * 96.0f,	GetEntityIndex(), MASK_PLAYERSOLID );
-	Util::Trace( &trRight,		start, nullptr, nullptr, start + right * 96.0f,		GetEntityIndex(), MASK_PLAYERSOLID );
-	Util::Trace( &trLeft,		start, nullptr, nullptr, start - right * 96.0f,		GetEntityIndex(), MASK_PLAYERSOLID );
-
-	int forwardMove = ccmd.forwardmove - (80 * (1.0 - trForward.fraction)) + (80 * (1.0 - trBackward.fraction));
-	int rightMove = ccmd.rightmove - (80 * (1.0 - trRight.fraction)) + (80 * (1.0 - trLeft.fraction));
-
+	if ( health > 0 )
 	{
-		// Check if there's a pit
-		trace_t trPit;
-		trace_t trDepth;
-		float heightTolerance = 40.0f;
-		float targetHeight = wishVelocity.z;
-		float dropHeight = targetHeight - heightTolerance;
-		float pitDepth;
+		trace_t trForward, trBackward, trRight, trLeft, trUp;
+		Vector forward, right, up;
+		//viewAngles = wishVelocity.ToAngles();
+		//viewAngles.x = 0;
 
-		// 12u are typical stair steps, those are easy to climb
-		if ( dropHeight < -12.0f )
+		// Shoot 4 rays to determine how close we are to a wall
+		Vector::AngleVectors( GetAngles(), &forward, &right, &up );
+		Util::Trace( &trForward, start, nullptr, nullptr, start + forward * 96.0f, GetEntityIndex(), MASK_PLAYERSOLID );
+		Util::Trace( &trBackward, start, nullptr, nullptr, start - forward * 96.0f, GetEntityIndex(), MASK_PLAYERSOLID );
+		Util::Trace( &trRight, start, nullptr, nullptr, start + right * 96.0f, GetEntityIndex(), MASK_PLAYERSOLID );
+		Util::Trace( &trLeft, start, nullptr, nullptr, start - right * 96.0f, GetEntityIndex(), MASK_PLAYERSOLID );
+
+		forwardMove = ccmd.forwardmove - (80 * (1.0 - trForward.fraction)) + (80 * (1.0 - trBackward.fraction));
+		rightMove = ccmd.rightmove - (80 * (1.0 - trRight.fraction)) + (80 * (1.0 - trLeft.fraction));
+
 		{
-			Vector velocityDir = wishVelocity.Normalized();
-			velocityDir.z = 0;
-			Util::Trace( &trPit, start + velocityDir * 64.0f, nullptr, nullptr, start + velocityDir * 64.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
-			Util::Trace( &trDepth, start + velocityDir * 64.0f, nullptr, nullptr, start + velocity * 64.0f + Vector( 0, 0, -512.0f ), GetEntityIndex(), MASK_PLAYERSOLID );
+			// Check if there's a pit
+			trace_t trPit;
+			trace_t trDepth;
+			float heightTolerance = 40.0f;
+			float targetHeight = wishVelocity.z;
+			float dropHeight = targetHeight - heightTolerance;
+			float pitDepth;
 
-			pitDepth = trDepth.fraction * -512.0f + 12.0f;
-
-			// There's a pit, calculate how to go away from it
-			if ( trPit.fraction == 1.0f || dropHeight <= -150.0f )
+			// 12u are typical stair steps, those are easy to climb
+			if ( dropHeight < -12.0f )
 			{
-				trace_t trPitForward;
-				trace_t trPitRight;
-				trace_t trPitLeft;
+				Vector velocityDir = wishVelocity.Normalized();
+				velocityDir.z = 0;
+				Util::Trace( &trPit, start + velocityDir * 64.0f, nullptr, nullptr, start + velocityDir * 64.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
+				Util::Trace( &trDepth, start + velocityDir * 64.0f, nullptr, nullptr, start + velocity * 64.0f + Vector( 0, 0, -512.0f ), GetEntityIndex(), MASK_PLAYERSOLID );
 
-				Util::Trace( &trPitForward, start + forward * 40.0f, nullptr, nullptr, start + forward * 40.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
-				Util::Trace( &trPitRight, start + right * 40.0f, nullptr, nullptr, start + right * 40.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
-				Util::Trace( &trPitLeft, start + right * -40.0f, nullptr, nullptr, start + right * -40.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
-						
-				// if the pit is deeper than 40u (the maximum height for obstacle jumping), then jump over it
-				if ( pitDepth < (-heightTolerance - 5.0f) )
+				pitDepth = trDepth.fraction * -512.0f + 12.0f;
+
+				// There's a pit, calculate how to go away from it
+				if ( trPit.fraction == 1.0f || dropHeight <= -150.0f )
 				{
-					// If fraction is 1, that means there's a pit
-					// So -225 is gonna be enough to go back
-					// Backwards isn't accounted for, cuz' you don't have eyes on your back
-					forwardMove -= 225 * trPitForward.fraction;
-					rightMove -= 255 * trPitRight.fraction;
-					rightMove += 255 * trPitLeft.fraction;
-				}
+					trace_t trPitForward;
+					trace_t trPitRight;
+					trace_t trPitLeft;
 
-				// Check if we can jump over a pit
-				{
-					trace_t tr;
-					Vector end = start + (forward * 192.0f) + Vector( 0, 0, -16 );
+					Util::Trace( &trPitForward, start + forward * 40.0f, nullptr, nullptr, start + forward * 40.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
+					Util::Trace( &trPitRight, start + right * 40.0f, nullptr, nullptr, start + right * 40.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
+					Util::Trace( &trPitLeft, start + right * -40.0f, nullptr, nullptr, start + right * -40.0f + Vector( 0, 0, dropHeight ), GetEntityIndex(), MASK_PLAYERSOLID );
 
-					Util::Trace( &tr, start + Vector( 0, 0, 32 ), nullptr, nullptr, end, GetEntityIndex(), MASK_PLAYERSOLID );
-					float dotPlane = Vector( 0, 0, 1 ) * Vector( tr.plane.normal );
-
-					if ( tr.fraction < 1.0f )
+					// if the pit is deeper than 40u (the maximum height for obstacle jumping), then jump over it
+					if ( pitDepth < (-heightTolerance - 5.0f) )
 					{
-						// check if the landing surface isn't too steep; a dot of 0.79 is basically about 40-ish degrees
-						// if the dot was 0, then that means it's a wall...
-						if ( dotPlane >= 0.79f )
-						{
-							// JUMP!!!
-							forwardMove = 127;
-							rightMove /= 4;
-							ccmd.upmove = 127;
-							wishVelocity *= 4.0f;
-
-							Vector jump = wishVelocity.Normalized();
-							jump *= 300;
-							jump.z = 350;
-
-							jump.CopyToArray( playerState.velocity );
-						}
+						// If fraction is 1, that means there's a pit
+						// So -225 is gonna be enough to go back
+						// Backwards isn't accounted for, cuz' you don't have eyes on your back
+						forwardMove -= 225 * trPitForward.fraction;
+						rightMove -= 255 * trPitRight.fraction;
+						rightMove += 255 * trPitLeft.fraction;
 					}
+
+					// Check if we can jump over a pit
+					/*
+					{
+						trace_t tr;
+						Vector end = start + (forward * 192.0f) + Vector( 0, 0, -16 );
+
+						Util::Trace( &tr, start + Vector( 0, 0, 32 ), nullptr, nullptr, end, GetEntityIndex(), MASK_PLAYERSOLID );
+						float dotPlane = Vector( 0, 0, 1 ) * Vector( tr.plane.normal );
+
+						if ( tr.fraction < 1.0f )
+						{
+							// check if the landing surface isn't too steep; a dot of 0.79 is basically about 40-ish degrees
+							// if the dot was 0, then that means it's a wall...
+							if ( dotPlane >= 0.79f )
+							{
+								// JUMP!!!
+								forwardMove = 127;
+								rightMove /= 4;
+								ccmd.upmove = 127;
+								wishVelocity *= 4.0f;
+
+								Vector jump = wishVelocity.Normalized();
+								jump *= 300;
+								jump.z = 350;
+
+								jump.CopyToArray( playerState.velocity );
+							}
+						}
+					}*/
 				}
 			}
 		}
-	}
 
-	// Check if we can jump over an obstacle
-	if ( ccmd.forwardmove && trForward.fraction < 0.35f )
-	{
-		trace_t trJumpCheck;
-		trace_t trObstacle;
-		Util::Trace( &trJumpCheck, start + Vector( 0, 0, 29 ), nullptr, nullptr, start + forward * 25.0f + Vector( 0, 0, 29 ), GetEntityIndex(), MASK_PLAYERSOLID );
-		Util::Trace( &trObstacle, start + Vector( 0, 0, 29 ), nullptr, nullptr, start + forward * 64.0f + Vector( 0, 0, 29 ), GetEntityIndex(), MASK_PLAYERSOLID );
-
-		bool canJump = (trJumpCheck.fraction == 1.0f) && (trJumpCheck.entityNum == ENTITYNUM_NONE) && (trObstacle.entityNum >= ENTITYNUM_WORLD);
-
-		if ( canJump )
-		{
-			forwardMove = 127;
-			ccmd.upmove = 127;
-		}
+		// Check if we can jump over an obstacle
+		//if ( ccmd.forwardmove && trForward.fraction < 0.35f )
+		//{
+		//	trace_t trJumpCheck;
+		//	trace_t trObstacle;
+		//	Util::Trace( &trJumpCheck, start + Vector( 0, 0, 29 ), nullptr, nullptr, start + forward * 25.0f + Vector( 0, 0, 29 ), GetEntityIndex(), MASK_PLAYERSOLID );
+		//	Util::Trace( &trObstacle, start + Vector( 0, 0, 29 ), nullptr, nullptr, start + forward * 64.0f + Vector( 0, 0, 29 ), GetEntityIndex(), MASK_PLAYERSOLID );
+		//
+		//	bool canJump = (trJumpCheck.fraction == 1.0f) && (trJumpCheck.entityNum == ENTITYNUM_NONE) && (trObstacle.entityNum >= ENTITYNUM_WORLD);
+		//
+		//	if ( canJump )
+		//	{
+		//		forwardMove = 127;
+		//		ccmd.upmove = 127;
+		//	}
+		//}
 	}
 #endif
 
@@ -535,7 +833,7 @@ void Mercenary::Move()
 	SetCurrentAngles( bodyAngles );
 	bodyAngles.CopyToArray( GetState()->apos.trBase );
 
-	GetState()->eType = ET_GENERAL;
+	GetState()->eType = ET_CHARACTER;
 
 	VectorCopy( pm.mins, GetShared()->mins );
 	VectorCopy( pm.maxs, GetShared()->maxs );
@@ -562,10 +860,19 @@ void Mercenary::Move()
 
 	// NOTE: now copy the exact origin over otherwise clients can be snapped into solid
 	SetCurrentOrigin( playerState.origin );
+
+	if ( health <= 0 )
+	{
+		GetShared()->mins << Vector::Zero;
+		GetShared()->maxs << Vector::Zero;
+		GetShared()->contents = 0;
+		GetState()->solid = 0;
+	}
 }
 
 void Mercenary::UpdatePath()
 {
+#if 0
 	// Step 1: get the destination and current nearest nodes
 	Node* node = Node::GetNearest( moveIdeal );
 	Node* nearest = Node::GetNearest( GetCurrentOrigin() );
@@ -583,19 +890,22 @@ void Mercenary::UpdatePath()
 	if ( nullptr == node || nullptr == nearest )
 	{	// "Automatic" pathfinding
 		moveTarget = moveIdeal;
-		Util::Print( "node and/or nearest are nullptr\n" );
+		Util::PrintDev( "node and/or nearest are nullptr\n" );
 		return;
 	}
 	
 	Node* nextNode = currentNode->Next( currentNode, node );
 	if ( nullptr == nextNode )
 	{
-		Util::Print( "nextNode is nullptr\n" );
+		Util::PrintDev( "nextNode is nullptr\n" );
 		moveTarget = moveIdeal;
 		return;
 	}
 
 	moveTarget = nextNode->GetCurrentOrigin();
+#else
+	moveTarget = moveIdeal;
+#endif
 }
 
 void Mercenary::SightQuery()
@@ -634,6 +944,11 @@ void Mercenary::SightQuery()
 			continue;
 		}
 
+		if ( ent->GetFlags() & FL_NOTARGET )
+		{	// Someone is noclipping or using notarget
+			continue;
+		}
+
 		// Step 3: determine if this is a friend or foe, "remember" them if possible
 		RegisterVisibleEntity( static_cast<BaseEntity*>( ent ) );
 	}
@@ -660,7 +975,23 @@ void Mercenary::RegisterVisibleEntity( BaseEntity* ent )
 	
 	em->AddFrame( mf );
 	em->Update( level.time * 0.001f );
+
+	bool wasNotAware = (em->awareness == Awareness::None);
 	em->IncreaseAwareness( level.time * 0.001f );
+
+	if ( wasNotAware 
+		 && em->awareness == Awareness::Imagining 
+		 && ent->IsClass( BasePlayer::ClassInfo ) )
+	{
+		if ( rand() % 2 )
+		{
+			gameWorld
+				->CreateTempEntity( GetCurrentOrigin(), EV_GENERAL_SOUND )
+				->GetState()->eventParm = NoticeSounds[NoticeSoundCounter++ % 3];
+		}
+
+		lookTarget = mf.lastSeen;
+	}
 }
 
 bool Mercenary::IsInMemory( BaseEntity* ent )
@@ -707,14 +1038,80 @@ void Mercenary::Situation_Casual()
 	{
 		situation = AI::ST_Combat;
 		targetEntity = enemy;
+
+		// Obligatory "I see you" voices
+		gameWorld
+			->CreateTempEntity( GetCurrentOrigin(), EV_GENERAL_SOUND )
+			->GetState()->eventParm = DetectSounds[DetectSoundCounter++ % 3];
+
+		ShotAlert( enemy, GetCurrentOrigin(), 700.0f );
+
 		return;
+	}
+
+	// Idle chatter... bleh
+	if ( idleSoundTimer < level.time * 0.001f )
+	{
+		idleSoundTimer = level.time * 0.001f + 40.0f + random() * 50.0f;
+
+		gameWorld
+			->CreateTempEntity( GetCurrentOrigin(), EV_GENERAL_SOUND )
+			->GetState()->eventParm = IdleSounds[IdleSoundCounter++ % 7];
+	}
+
+	if ( nextIdleMove < level.time * 0.001f )
+	{
+		// Pick a random movement direction
+		trace_t tr;
+		Vector start = playerState.origin;
+		start.z -= 15.0f;
+
+		Vector dir = Vector( crandom(), crandom(), 0 ) * 512.0f;
+		Vector end = start + dir;
+
+		Vector bbox( 15, 15, 15 );
+
+		gameImports->Trace( &tr, start, bbox * -1.0f, bbox, end, GetEntityIndex(), MASK_SOLID );
+
+		float fraction = tr.fraction;
+		Vector endPos = tr.endpos;
+
+		end = start - dir;
+
+		gameImports->Trace( &tr, start, bbox * -1.0f, bbox, end, GetEntityIndex(), MASK_SOLID );
+
+		if ( tr.fraction < fraction )
+		{
+			moveIdeal = endPos;
+		}
+		else
+		{
+			moveIdeal = tr.endpos;
+		}
+
+		lookTarget = moveIdeal;
+
+		nextIdleMove = level.time * 0.001f + 10.0f + random() * 5.0f;
 	}
 }
 
 void Mercenary::Situation_Combat()
 {
+	GameMusic::ToAction();
+
 	moveIdeal = targetEntity->GetCurrentOrigin();
-	lookTarget = targetEntity->GetCurrentOrigin();
+	lookTarget = targetEntity->GetCurrentOrigin() - Vector(0,0,16);
+
+	Vector hardLookDirection = (lookTarget - GetCurrentOrigin() /*+ GetHeadOffset()*/).Normalized();
+	float dot = hardLookDirection * lookDirection;
+
+	if ( dot > 0.9f )
+	{
+		if ( CanHit( lookDirection ) )
+		{
+			Attack( lookDirection );
+		}
+	}
 }
 
 BaseEntity* Mercenary::GetEnemy()
@@ -795,8 +1192,142 @@ void Mercenary::AimAtTarget()
 		lookTarget = targetEntity->GetCurrentOrigin();
 	}
 
-	Vector dir = (lookTarget - GetCurrentOrigin() + GetHeadOffset()).Normalized();
-	lookDirection = lookDirection * 0.94f + dir * 0.06f;
+	Vector dir = (lookTarget - GetCurrentOrigin() /*+ GetHeadOffset()*/).Normalized();
+	lookDirection = lookDirection * 0.91f + dir * 0.09f;
 	
 	viewAngles = lookDirection.ToAngles();
+}
+
+bool Mercenary::CanHit( Vector direction )
+{
+	trace_t tr;
+
+	Vector targetOrigin = targetEntity->GetCurrentOrigin();
+	Vector start = GetCurrentOrigin() + GetHeadOffset() * 0.6f;
+
+	Util::Trace( &tr, start, nullptr, nullptr, targetOrigin, GetEntityIndex(), MASK_SHOT );
+
+	if ( tr.entityNum != targetEntity->GetEntityIndex() )
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void Mercenary::Attack( Vector direction )
+{
+	if ( level.time * 0.001f < nextAttack )
+	{
+		return;
+	}
+
+	if ( currentWeapon == WeaponID_Fists )
+	{
+		AttackFists( direction );
+	}
+	else if ( currentWeapon == WeaponID_Pistol )
+	{
+		AttackPistol( direction );
+	}
+}
+
+void Mercenary::AttackFists( Vector direction )
+{
+	nextAttack = level.time * 0.001f + 2.5f;
+}
+
+void Mercenary::AttackPistol( Vector direction )
+{
+	if ( GetWeaponAmmo( WeaponID_Pistol ) == 0 )
+	{
+		// reload
+		weaponAmmo = 15;
+		nextAttack = level.time * 0.001f + 2.0f;
+		return;
+	}
+
+	// shoot
+	trace_t tr;
+	Vector randomVector = Vector( crandom(), crandom(), crandom() ) * 0.01f;
+	Vector forward = direction;
+	
+	Vector start, end;
+	start = GetCurrentOrigin() + GetHeadOffset();
+	end = start + (forward + randomVector) * 4096.0f;
+
+	gameImports->Trace( &tr, start, nullptr, nullptr, end, GetEntityIndex(), MASK_SHOT );
+
+	if ( tr.entityNum == ENTITYNUM_NONE || tr.fraction == 1.0f )
+		return;
+
+	IEntity* ent = gEntities[tr.entityNum];
+	if ( nullptr == ent )
+		return;
+
+	float bulletDamage = 20.0f;
+
+	// Damage the entity if applicable
+	ent->TakeDamage( this, this, DamageFlags::Bullet, bulletDamage );
+
+	// Add a bullet hole if it's a brush or worldspawn
+	if ( (ent->GetState()->solid == SOLID_BMODEL) || (ent->GetEntityIndex() == ENTITYNUM_WORLD) )
+	{
+		bool isGlass = (tr.surfaceFlags & SURF_GLASS) ? true : false;
+
+		// Offset the bullet hole position slightly away from the surface, 0.25u is enough
+		Vector bulletHoleOrigin = Vector( tr.endpos ) - forward * 0.25f;
+
+		if ( ~tr.surfaceFlags & SURF_SKY )
+		{
+			AddBulletHole( tr.plane.normal, forward, bulletHoleOrigin, isGlass );
+		}
+	}
+
+	// Play sound
+	gameWorld->CreateTempEntity( GetCurrentOrigin(), EV_GENERAL_SOUND )
+		->GetState()->eventParm = Weapon_Pistol::ShootSounds[rand() % 3];
+
+	weaponAmmo--;
+
+	nextAttack = level.time * 0.001f + 0.5f + crandom() * 1.0f;
+}
+
+void Mercenary::AddBulletHole( Vector planeNormal, Vector bulletDirection, Vector origin, bool glass )
+{
+	// Bullet hole decal
+	{
+		EventData ed;
+		ed.id = CE_Decal;
+
+		// This could've been a one-liner, but it'd be even more cryptic to read
+		// Ahem: ed.model = BulletHoleDecals[(rand() % 3) + (glass ? 3 : 0)];
+		if ( glass )
+		{
+			ed.model = Weapon_Pistol::BulletHoleDecals[3 + rand() % 3];
+		}
+		else
+		{
+			ed.model = Weapon_Pistol::BulletHoleDecals[rand() % 3];
+		}
+
+		ed.vparm = planeNormal.Normalized();
+		ed.fparm = random() * 360.0f;
+		ed.fparm2 = glass ? 24.0f : 6.0f;
+
+		gameWorld->EmitComplexEvent( origin, Vector::Zero, ed );
+	}
+
+	// Smoke from the bullet hole
+	if ( !glass )
+	{
+		EventData ed;
+		ed.id = CE_SmokePuff;
+
+		ed.vparm = -1.0f * bulletDirection;
+		ed.fparm = 40.0f;
+		ed.fparm2 = 0.6f;
+
+		gameWorld->EmitComplexEvent( origin - bulletDirection * 1.5f, Vector::Zero, ed );
+	}
 }

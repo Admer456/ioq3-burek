@@ -642,7 +642,7 @@ static void CG_RegisterGraphics( void )
 		// Precache weapon
 		weapon->Precache();
 
-		CG_Printf( "Registered gun '%s', viewmodel '%s'", weapon->GetWeaponInfo().name, weapon->GetWeaponInfo().viewModel );
+		CG_Printf( "Registered gun '%s', viewmodel '%s'\n", weapon->GetWeaponInfo().name, weapon->GetWeaponInfo().viewModel );
 
 		weaponFactory = weaponFactory->prev;
 	}
@@ -785,6 +785,16 @@ void CG_StartMusic( void ) {
 	trap_S_StartBackgroundTrack( parm1, parm2 );
 }
 
+static const char* HeadModels[6] =
+{
+	"models/characters/head1.iqm",
+	"models/characters/head1_dead.iqm",
+	"models/characters/head2.iqm",
+	"models/characters/head2_dead.iqm",
+	"models/characters/head3.iqm",
+	"models/characters/head3_dead.iqm"
+};
+
 /*
 =================
 CG_Init
@@ -815,11 +825,24 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	cgs.media.charsetPropGlow	= trap_R_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
 	cgs.media.charsetPropB		= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
 
+	cgs.media.quadModel			= trap_R_RegisterModel( "models/quad.iqm" );
+
+	cgs.media.bloodPuff			= trap_R_RegisterShaderNoMip( "sprites/blood_puff" );
+	cgs.media.bloodPuddle		= trap_R_RegisterShader( "sprites/blood_puddle" );
+
 	cgs.media.smokeSprites[0]	= trap_R_RegisterShaderNoMip( "sprites/staticsmoke1" );
 	cgs.media.smokeSprites[1]	= trap_R_RegisterShaderNoMip( "sprites/staticsmoke1a" );
 	cgs.media.smokeSprites[2]	= trap_R_RegisterShaderNoMip( "sprites/staticsmoke1b" );
 
 	cgs.media.glowShellMaterial = trap_R_RegisterShader( "textures/glowShell" );
+
+	for ( int i = 0; i < 6; i++ )
+		cgs.media.headModels[i] = trap_R_RegisterModel( HeadModels[i] );
+
+	cgs.media.accessoryModels[Accessory_Hair] = trap_R_RegisterModel( "models/characters/hair.iqm" );
+	cgs.media.accessoryModels[Accessory_Hat] = trap_R_RegisterModel( "models/characters/hat.iqm" );
+	cgs.media.accessoryModels[Accessory_Cap] = trap_R_RegisterModel( "models/characters/cap.iqm" );
+	cgs.media.accessoryModels[Accessory_Sunglasses] = trap_R_RegisterModel( "models/characters/sunglasses.iqm" );
 
 	CG_RegisterCvars();
 

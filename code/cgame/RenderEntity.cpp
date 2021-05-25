@@ -33,7 +33,7 @@ void RenderEntity::CalculateAnimation( refEntity_t& ref, entityState_t& es )
 
 	if ( flags & AnimFlag_Manual )
 	{
-		ref.frame = frame;
+		ref.frame = ma.firstFrame + frame;
 		ref.oldframe = 0;
 		ref.backlerp = 0.0f;
 		return;
@@ -67,11 +67,16 @@ void RenderEntity::Update( float deltaTime )
 		{
 			float framerate = 1000.0f / MAX( 1, anims[currentAnim].frameLerp );
 			currentFrame += deltaTime * framerate;
-		}
 
-		ref.oldframe = currentFrame + anims[currentAnim].firstFrame;
-		ref.frame = ref.oldframe + 1;
-		ref.backlerp = 1.0f - (currentFrame - (int)currentFrame);
+			ref.oldframe = currentFrame + anims[currentAnim].firstFrame;
+			ref.frame = ref.oldframe + 1;
+			ref.backlerp = 1.0f - (currentFrame - (int)currentFrame);
+
+			if ( ref.frame > (anims[currentAnim].firstFrame + anims[currentAnim].numFrames) )
+			{
+				ref.frame = ref.oldframe;
+			}
+		}
 	}
 
 	origin.CopyToArray( ref.origin );

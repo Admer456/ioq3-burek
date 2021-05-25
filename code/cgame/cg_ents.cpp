@@ -781,6 +781,161 @@ static void CG_Sprite( centity_t* cent )
 	trap_R_AddRefEntityToScene( &spr );
 }
 
+#include "../shared/Weapons/WeaponIDs.hpp"
+
+/*
+===============
+CG_Character
+===============
+*/
+static void CG_Character( centity_t* cent )
+{
+	using Flags = ActorClientBits;
+
+	refEntity_t	ent;
+	entityState_t* s1;
+
+	s1 = &cent->currentState;
+
+	// if set to invisible, skip
+	if ( !s1->modelindex )
+	{
+		return;
+	}
+
+	int headNumber{ 0 }, headState{ 0 };
+	int encodedStuff = s1->time2;
+	Vector lookDirection = s1->angles2;
+
+	if ( encodedStuff & Flags::Head1 ) headNumber = 0;
+	if ( encodedStuff & Flags::Head2 ) headNumber = 1;
+	if ( encodedStuff & Flags::Head3 ) headNumber = 2;
+
+	if ( encodedStuff & Flags::Dead ) headState = 1;
+
+	memset( &ent, 0, sizeof( ent ) );
+
+	// set frame
+
+	ent.frame = s1->frame;
+	ent.oldframe = ent.frame;
+	ent.backlerp = 0;
+
+	VectorCopy( cent->lerpOrigin, ent.origin );
+	VectorCopy( cent->lerpOrigin, ent.oldorigin );
+
+	// get the model, either as a bmodel or a modelindex
+	if ( s1->solid == SOLID_BMODEL )
+	{
+		ent.hModel = cgs.inlineDrawModel[s1->modelindex];
+	}
+	else
+	{
+		ent.hModel = cgs.gameModels[s1->modelindex];
+	}
+
+	// convert angles to axis
+	AnglesToAxis( cent->lerpAngles, ent.axis );
+
+	if ( s1->solid != SOLID_BMODEL && s1->framerate )
+		RenderEntity::CalculateAnimation( ent, cent->currentState );
+
+	CG_AxialOrientation( ent, cent->currentState.apos.axialOrientation );
+
+	// add to refresh list
+	trap_R_AddRefEntityToScene( &ent );
+
+	// Entity effects
+	if ( cent->currentState.effectFlags & EffectFlags::GlowShell )
+	{
+		ent.customShader = cgs.media.glowShellMaterial;
+		trap_R_AddRefEntityToScene( &ent );
+	}
+
+	// add the head mode
+	{
+		refEntity_t head;
+		memcpy( &head, &ent, sizeof( head ) );
+		AxisClear( head.axis );
+
+		// So that the head doesn't end up getting rotated wrongly
+		// Man, I should've just made a monolithic model lol
+		Vector correctedRotation = Vector( 0, 0, -90 );
+		
+		head.hModel = cgs.media.headModels[headNumber * 2 + headState];
+
+		AnglesToAxis( correctedRotation, head.axis );
+		CG_PositionRotatedEntityOnTag( &head, &ent, ent.hModel, "Head" );
+		
+		trap_R_AddRefEntityToScene( &head );
+
+		if ( encodedStuff & Flags::Hat )
+		{
+			head.hModel = cgs.media.accessoryModels[Accessory_Hat];
+			trap_R_AddRefEntityToScene( &head );
+		}
+
+		if ( encodedStuff & Flags::Hair )
+		{
+			head.hModel = cgs.media.accessoryModels[Accessory_Hair];
+			trap_R_AddRefEntityToScene( &head );
+		}
+
+		if ( encodedStuff & Flags::Cap )
+		{
+			head.hModel = cgs.media.accessoryModels[Accessory_Cap];
+			trap_R_AddRefEntityToScene( &head );
+		}
+
+		if ( encodedStuff & Flags::Sunglasses )
+		{
+			head.hModel = cgs.media.accessoryModels[Accessory_Sunglasses];
+			trap_R_AddRefEntityToScene( &head );
+		}
+	}
+
+	// add the weapon model
+	// fists are 0, any other weapon is 1+
+	if ( encodedStuff & (Flags::ShowPistol | Flags::ShowPistolHolstered) )
+	{
+		refEntity_t weapon;
+		memcpy( &weapon, &ent, sizeof( weapon ) );
+		AxisClear( weapon.axis );
+
+		Vector correctedRotation;
+
+		if ( encodedStuff & Flags::ShowPistol )
+			correctedRotation = Vector( 0, 90, -90 );
+		else
+			correctedRotation = Vector( 0, 90, 0 );
+
+		AnglesToAxis( correctedRotation, weapon.axis );
+
+		weapon.hModel = gWeapons[WeaponID_Pistol]->GetWeaponInfo().worldModelHandle;
+		char* boneName = (encodedStuff & Flags::ShowPistol) ? "RWrist" : "Holster";
+		CG_PositionRotatedEntityOnTag( &weapon, &ent, ent.hModel, boneName );
+
+		float time = GetClient()->Time();
+
+		Vector origin = weapon.origin;
+
+		if ( encodedStuff & Flags::ShowPistol )
+		{
+			origin += Vector( weapon.axis[0] ) * 5.6f;
+			origin += Vector( weapon.axis[1] ) * -2.4f;
+			origin += Vector( weapon.axis[2] ) * 0.4f;
+		}
+		else
+		{
+			origin += Vector( weapon.axis[2] ) * -0.5f;
+		}
+
+		weapon.origin << origin;
+
+		trap_R_AddRefEntityToScene( &weapon );
+	}
+}
+
 /*
 ===============
 CG_AddCEntity
@@ -815,6 +970,7 @@ static void CG_AddCEntity( centity_t *cent ) {
 	case ET_SPRITE:		CG_Sprite( cent ); break;
 	case ET_SKY:		break;
 	case ET_ATTACHMENT: CG_General( cent, true ); break;
+	case ET_CHARACTER:	CG_Character( cent ); break;
 	}
 }
 
