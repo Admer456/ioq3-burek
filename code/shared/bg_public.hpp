@@ -53,7 +53,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	MINS_Z				-36
 #define	DEFAULT_VIEWHEIGHT	32 // 68 units above floor
 #define CROUCH_VIEWHEIGHT	6 // 32 units above floor 
-#define	DEAD_VIEWHEIGHT		-16
+#define	DEAD_VIEWHEIGHT		0 // 26 units above floor
 
 // The human hull is 30x30x71
 constexpr float HumanHullMaxs[3] = 

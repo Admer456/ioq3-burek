@@ -1289,8 +1289,8 @@ static void PM_CheckDuck (void)
 		if (pm->ps->pm_flags & PMF_DUCKED)
 		{
 			// try to stand up
-			pm->maxs[2] = PM_IsNPC() ? 72 : HumanHullMaxs[2];
-			pm->mins[2] = PM_IsNPC() ? 0 : HumanCrouchMins[2];
+			pm->maxs[2] = HumanHullMaxs[2];
+			pm->mins[2] = HumanCrouchMins[2];
 			pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
 			if (!trace.allsolid)
 				pm->ps->pm_flags &= ~PMF_DUCKED;
@@ -1299,14 +1299,14 @@ static void PM_CheckDuck (void)
 
 	if (pm->ps->pm_flags & PMF_DUCKED)
 	{
-		pm->maxs[2] = PM_IsNPC() ? 40 : HumanCrouchMaxs[2];
-		pm->mins[2] = PM_IsNPC() ? 0 : HumanCrouchMins[2];
+		pm->maxs[2] = HumanCrouchMaxs[2];
+		pm->mins[2] = HumanCrouchMins[2];
 		pm->ps->viewheight = CROUCH_VIEWHEIGHT;
 	}
 	else
 	{
-		pm->maxs[2] = PM_IsNPC() ? 72 : HumanHullMaxs[2];
-		pm->mins[2] = PM_IsNPC() ? 0 : HumanHullMins[2];
+		pm->maxs[2] = HumanHullMaxs[2];
+		pm->mins[2] = HumanHullMins[2];
 		pm->ps->viewheight = DEFAULT_VIEWHEIGHT;
 	}
 }
@@ -1501,8 +1501,6 @@ static void PM_FinishWeaponChange( void )
 	{
 		weapon = WeaponID_None;
 	}
-
-	Com_Printf( "FinishWeaponChange: Weapon id %i\n", weapon );
 
 	pm->ps->weapon = weapon;
 	pm->ps->weaponstate = WEAPON_RAISING;

@@ -168,8 +168,8 @@ void EntityMemory::DecreaseAwareness()
 
 DefineEntityClass( "char_mercenary", Mercenary, BaseEntity );
 
-const Vector humanMins = Vector( -15, -15, 0 );
-const Vector humanMaxs = Vector( 15, 15, 72 );
+const Vector humanMins = HumanHullMins;
+const Vector humanMaxs = HumanHullMaxs;
 
 // Here I've placed two utility functions, temporarily, until we get a GameUtils.hpp thing
 namespace Util
@@ -260,7 +260,8 @@ BaseEntity* Mercenary::TestEntityPosition()
 
 Vector Mercenary::GetHeadOffset() const
 {
-	return Vector( 0, 0, 56 );
+	return Vector( 0, 0, DEFAULT_VIEWHEIGHT );
+}
 }
 
 AI::Relationship Mercenary::Relationship( BaseEntity* entity ) const
