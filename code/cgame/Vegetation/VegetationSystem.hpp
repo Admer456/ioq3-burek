@@ -25,6 +25,9 @@ public:
 private:
 	bool		ParseKeyvalues();
 
+	void		ParseGeneric( KeyValueLibrary& lib );
+	void		ParseSprayer( KeyValueLibrary& lib );
+
 	VegetationInstance instances[MaxVegetationInstances];
 	std::vector<KeyValueLibrary> libraries;
 };
