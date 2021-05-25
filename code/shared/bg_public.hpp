@@ -146,6 +146,22 @@ typedef enum {
 
 typedef enum { GENDER_MALE, GENDER_FEMALE, GENDER_NEUTER } gender_t;
 
+struct ActorClientBits
+{
+	static constexpr uint32_t Head1 = 1 << 0U;
+	static constexpr uint32_t Head2 = 1 << 1U;
+	static constexpr uint32_t Head3 = 1 << 2U;
+	static constexpr uint32_t Dead = 1 << 3U;
+
+	static constexpr uint32_t ShowPistol = 1 << 4U;
+	static constexpr uint32_t ShowPistolHolstered = 1 << 5U;
+
+	static constexpr uint32_t Hat = 1 << 6U;
+	static constexpr uint32_t Sunglasses = 1 << 7U;
+	static constexpr uint32_t Cap = 1 << 8U;
+	static constexpr uint32_t Hair = 1 << 9U;
+};
+
 /*
 ===================================================================================
 
@@ -795,6 +811,7 @@ typedef enum {
 	ET_SPRITE,				// renders a sprite
 	ET_SKY,					// used for sky domes
 	ET_ATTACHMENT,			// special entity type that attaches self to tags/joints
+	ET_CHARACTER,			// special entity type for non-player character entities
 
 	ET_EVENTS				// any of the EV_* events can be added freestanding
 							// by setting eType to ET_EVENTS + eventNum
