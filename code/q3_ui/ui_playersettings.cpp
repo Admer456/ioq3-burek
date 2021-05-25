@@ -460,19 +460,19 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.item_null.width			= 640;
 	s_playersettings.item_null.height			= 480;
 
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.banner );
+	//Menu_AddItem( &s_playersettings.menu, &s_playersettings.banner );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.framel );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.framer );
 
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.name );
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.handicap );
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.effects );
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.model );
+	//Menu_AddItem( &s_playersettings.menu, &s_playersettings.handicap );
+	//Menu_AddItem( &s_playersettings.menu, &s_playersettings.effects );
+	//Menu_AddItem( &s_playersettings.menu, &s_playersettings.model );
 	Menu_AddItem( &s_playersettings.menu, &s_playersettings.back );
 
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.player );
+	//Menu_AddItem( &s_playersettings.menu, &s_playersettings.player );
 
-	Menu_AddItem( &s_playersettings.menu, &s_playersettings.item_null );
+	//Menu_AddItem( &s_playersettings.menu, &s_playersettings.item_null );
 
 	PlayerSettings_SetMenuItems();
 }

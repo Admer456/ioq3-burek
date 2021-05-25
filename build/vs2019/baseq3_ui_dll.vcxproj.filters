@@ -176,5 +176,11 @@
     <ClCompile Include="..\..\code\qcommon\Util\Utilities_UI.cpp">
       <Filter>qcommon\Util</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\code\q3_ui\ui_help.cpp">
+      <Filter>q3_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\q3_ui\ui_campaign.cpp">
+      <Filter>q3_ui</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

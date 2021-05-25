@@ -197,9 +197,9 @@ static bind_t g_bindings[] =
 	{"+lookdown", 		"look down",		ID_LOOKDOWN,	K_DEL,			-1,		-1, -1},
 	{"+mlook", 			"mouse look",		ID_MOUSELOOK,	'/',			-1,		-1, -1},
 	{"centerview", 		"center view",		ID_CENTERVIEW,	K_END,			-1,		-1, -1},
-	{"+attack1", 		"prim. attack",		ID_ATTACK1,		K_MOUSE1,		-1,		-1, -1},
-	{"+attack2", 		"sec. attack",		ID_ATTACK2,		K_MOUSE2,		-1,		-1, -1},
-	{"+attack3", 		"ter. attack",		ID_ATTACK3,		K_MOUSE3,		-1,		-1, -1},
+	{"+attack1", 		"prim. attack",		ID_ATTACK1,		K_MOUSE1,		-1,		K_MOUSE1, -1},
+	{"+attack2", 		"sec. attack",		ID_ATTACK2,		K_MOUSE2,		-1,		K_MOUSE2, -1},
+	{"+attack3", 		"ter. attack",		ID_ATTACK3,		K_MOUSE3,		-1,		K_MOUSE3, -1},
 	{"+use",			"use",				ID_USE,			'e',			-1,		-1, -1},
 	{"+reload",			"reload",			ID_RELOAD,		'r',			-1,		-1, -1},
 	{"weapprev",		"prev weapon",		ID_WEAPPREV,	'[',			-1,		-1, -1},
@@ -1265,7 +1265,7 @@ static void Controls_MenuInit( void )
 	s_controls.name.style			= UI_CENTER;
 	s_controls.name.color			= text_color_normal;
 
-	Menu_AddItem( &s_controls.menu, &s_controls.banner );
+	//Menu_AddItem( &s_controls.menu, &s_controls.banner );
 	Menu_AddItem( &s_controls.menu, &s_controls.framel );
 	Menu_AddItem( &s_controls.menu, &s_controls.framer );
 	Menu_AddItem( &s_controls.menu, &s_controls.name );

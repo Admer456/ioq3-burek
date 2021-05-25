@@ -227,7 +227,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.back.height				= 64;
 	networkOptionsInfo.back.focuspic			= ART_BACK1;
 
-	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.banner );
+	//Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.banner );
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.framel );
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.framer );
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.graphics );

@@ -326,6 +326,16 @@ extern void UI_UpdateCvars( void );
 extern void UI_CreditMenu( void );
 
 //
+// ui_campaign.cpp
+//
+extern void UI_CampaignMenu();
+
+//
+// ui_help.cpp
+//
+extern void UI_HelpMenu();
+
+//
 // ui_ingame.c
 //
 extern void InGame_Cache( void );

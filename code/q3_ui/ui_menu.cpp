@@ -45,6 +45,11 @@ MAIN MENU
 #define MAIN_BANNER_MODEL				"models/mapobjects/banner/banner5.md3"
 #define MAIN_MENU_VERTICAL_SPACING		34
 
+// from ui_help.cpp
+// Load this when the game starts so we don't have to wait later
+#define ART_HELP_ENG		"menu/art/help_eng"
+#define ART_HELP_BOS		"menu/art/help_bos"
+
 #define MAIN_MENU_HORIZONTAL_START 65
 
 typedef struct {
@@ -104,10 +109,11 @@ void Main_MenuEvent (void* ptr, int event) {
 	case ID_SINGLEPLAYER:
 		//UI_SPLevelMenu();
 		trap_Cvar_Set( "sv_pure", "0" );
-		trap_Cmd_ExecuteText( EXEC_APPEND, "devmap sewers;" ); // Cirkuz 33 thesis demo
+		UI_CampaignMenu();
 		break;
 
 	case ID_MULTIPLAYER:
+		trap_Cvar_Set( "sv_pure", "0" );
 		UI_ArenaServersMenu();
 		break;
 
@@ -133,7 +139,7 @@ void Main_MenuEvent (void* ptr, int event) {
 		break;
 
 	case ID_HELP:
-		//UI_HelpMenu();
+		UI_HelpMenu();
 		break;
 
 	case ID_EXIT:
@@ -150,6 +156,8 @@ MainMenu_Cache
 */
 void MainMenu_Cache( void ) {
 	s_main.bannerModel = trap_R_RegisterModel( MAIN_BANNER_MODEL );
+	trap_R_RegisterShaderNoMip( ART_HELP_ENG );
+	trap_R_RegisterShaderNoMip( ART_HELP_BOS );
 }
 
 sfxHandle_t ErrorMessage_Key(int key)

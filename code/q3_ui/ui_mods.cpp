@@ -213,7 +213,7 @@ static void UI_Mods_MenuInit( void ) {
 
 	UI_Mods_LoadMods();
 
-	Menu_AddItem( &s_mods.menu, &s_mods.banner );
+	//Menu_AddItem( &s_mods.menu, &s_mods.banner );
 	Menu_AddItem( &s_mods.menu, &s_mods.framel );
 	Menu_AddItem( &s_mods.menu, &s_mods.framer );
 	Menu_AddItem( &s_mods.menu, &s_mods.list );

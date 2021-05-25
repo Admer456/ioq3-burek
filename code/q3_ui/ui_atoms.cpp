@@ -384,6 +384,8 @@ void UI_DrawBannerString( int x, int y, const char* str, int style, vec4_t color
 	int				width;
 	vec4_t			drawcolor;
 
+	return;
+
 	// find the width of the drawn text
 	s = str;
 	width = 0;

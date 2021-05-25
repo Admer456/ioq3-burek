@@ -286,13 +286,13 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.back.height						= 64;
 	setupMenuInfo.back.focuspic						= ART_BACK1;
 
-	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.banner );
+	//Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.banner );
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.framel );
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.framer );
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.setupplayer );
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.setupcontrols );
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.setupsystem );
-	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.game );
+	//Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.game );
 //	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.cdkey );
 //	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.load );
 //	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.save );

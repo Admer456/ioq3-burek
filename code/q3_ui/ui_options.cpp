@@ -207,7 +207,7 @@ void Options_MenuInit( void ) {
 	s_options.back.height  		    = 64;
 	s_options.back.focuspic         = ART_BACK1;
 
-	Menu_AddItem( &s_options.menu, ( void * ) &s_options.banner );
+	//Menu_AddItem( &s_options.menu, ( void * ) &s_options.banner );
 	Menu_AddItem( &s_options.menu, ( void * ) &s_options.framel );
 	Menu_AddItem( &s_options.menu, ( void * ) &s_options.framer );
 	Menu_AddItem( &s_options.menu, ( void * ) &s_options.graphics );

@@ -189,6 +189,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\code\q3_ui\ui_addbots.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_atoms.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_campaign.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_cdkey.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_cinematics.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_confirm.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="..\..\code\q3_ui\ui_demo2.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_display.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_gameinfo.cpp" />
+    <ClCompile Include="..\..\code\q3_ui\ui_help.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_ingame.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_main.cpp" />
     <ClCompile Include="..\..\code\q3_ui\ui_menu.cpp" />
