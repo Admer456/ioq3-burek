@@ -818,6 +818,7 @@ void CG_AddSkyDome()
 
 	qhandle_t material = trap_R_RegisterShaderNoMip( "textures/skies/remdaskytest_dome" );
 	qhandle_t model = trap_R_RegisterModel( "models/sky/skydome_unwrap2.iqm" );
+	qhandle_t terrain = trap_R_RegisterModel( "models/mega/mostar1_sky.iqm" );
 	Vector pos, viewAngles;
 	refEntity_t re;
 	memset( &re, 0, sizeof( re ) );
@@ -834,12 +835,36 @@ void CG_AddSkyDome()
 	// Rotate it
 	angles.y = GetClient()->Time() / 3.0f;
 
-	re.nonNormalizedAxes = true;
+	re.nonNormalizedAxes = false;
 
 	re.reType = RT_MODEL;
 	re.renderfx = RF_NOSHADOW | RF_MINLIGHT;
 
 	re.shaderTime = 0;
+
+	trap_R_AddRefEntityToScene( &re );
+
+	pos = cg.refdef.vieworg;
+	pos -= Vector( 0, 0, 30 );
+
+	re.hModel = terrain;
+	re.origin << pos;
+	re.lightingOrigin << Vector( 0, 10000, 2000 );
+
+	re.customShader = 0;
+	AnglesToAxis( Vector::Zero, re.axis );
+
+	re.shaderRGBA[0] = 255;
+	re.shaderRGBA[1] = 255;
+	re.shaderRGBA[2] = 255;
+	re.shaderRGBA[3] = 255;
+
+	re.renderfx |= RF_FIRST_PERSON;
+
+	// Scale it up
+	for ( int i = 0; i < 3; i++ )
+		for ( int j = 0; j < 3; j++ )
+			re.axis[i][j] *= 0.125f;
 
 	trap_R_AddRefEntityToScene( &re );
 }
