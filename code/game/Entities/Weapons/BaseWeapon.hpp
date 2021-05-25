@@ -37,10 +37,15 @@ namespace Entities
 		virtual WeaponInfo GetWeaponInfo() = 0;
 		virtual uint16_t GetWeaponFlags() = 0;
 
+		inline static sfxHandle_t PickupSound{};
+
 		DeclareEntityClass();
 
 		void			Spawn() override;
 		void			WeaponTouch( IEntity* other, trace_t* trace );
+		void			WeaponUse( IEntity* activator, IEntity* caller, float value );
+
+		uint32_t		ObjectFlags() override { return OF_ImpulseUse; }
 
 		BasePlayer*		GetPlayer();
 		void			SetPlayer( BasePlayer* player );

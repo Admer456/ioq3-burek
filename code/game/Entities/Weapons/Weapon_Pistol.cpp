@@ -6,9 +6,14 @@
 #include "../BasePlayer.hpp"
 #include "BaseWeapon.hpp"
 
+#include "Entities/AI/AI_Common.hpp"
+#include "Entities/AI/Neander/Mercenary.hpp"
+
 #include "Weapon_Pistol.hpp"
 
 using namespace Entities;
+
+extern vmCvar_t g_violence;
 
 DefineEntityClass( "weapon_pistol", Weapon_Pistol, BaseWeapon );
 
@@ -43,6 +48,10 @@ void Weapon_Pistol::Precache()
 
 	LaserSounds[LaserOn] = gameWorld->PrecacheSound( "sound/weapons/laseron.wav" );
 	LaserSounds[LaserOff] = gameWorld->PrecacheSound( "sound/weapons/laseroff.wav" );
+
+	ShootSounds[0] = gameWorld->PrecacheSound( "sound/weapons/pistol_shot1.wav" );
+	ShootSounds[1] = gameWorld->PrecacheSound( "sound/weapons/pistol_shot2.wav" );
+	ShootSounds[2] = gameWorld->PrecacheSound( "sound/weapons/pistol_shot3.wav" );
 }
 
 // ===================
@@ -154,6 +163,8 @@ void Weapon_Pistol::Reload()
 // ===================
 void Weapon_Pistol::Shoot()
 {
+	Mercenary::ShotAlert( player, player->GetViewOrigin(), 512.0f );
+
 	trace_t tr;
 	Vector randomVector = Vector( crandom(), crandom(), crandom() ) * 0.01f;
 	Vector forward;
@@ -165,8 +176,6 @@ void Weapon_Pistol::Shoot()
 
 	gameImports->Trace( &tr, start, nullptr, nullptr, end, player->GetEntityIndex(), MASK_SHOT );
 
-	engine->Print( va( "tr.entityNum = %i; tr.fraction = %1.3f; ENTITYNUM_WORLD = %i\n", tr.entityNum, tr.fraction, ENTITYNUM_WORLD ) );
-
 	if ( tr.entityNum == ENTITYNUM_NONE || tr.fraction == 1.0f )
 		return;
 
@@ -176,8 +185,23 @@ void Weapon_Pistol::Shoot()
 
 	float bulletDamage = 40.0f;
 
+#if 1
+	{
+		EventData ed;
+		ed.id = CE_Explosion;
+		ed.fparm = 50;
+		ed.parm = 0;
+		ed.parm2 = 0; // use builtin explosion preset 1
+		ed.vparm = Vector( 0, 0, 1 );
+		ed.sound = gameWorld->PrecacheSound( "sound/debris/explode1.wav" );
+
+		// Create the explosion
+		gameWorld->EmitComplexEvent( tr.endpos, Vector::Zero, ed );
+	}
+#endif
+
 	// Damage the entity if applicable
-	ent->TakeDamage( player, player, 0, bulletDamage );
+	ent->TakeDamage( player, player, DamageFlags::Bullet, bulletDamage );
 
 	// Add a bullet hole if it's a brush or worldspawn
 	if ( (ent->GetState()->solid == SOLID_BMODEL) || (ent->GetEntityIndex() == ENTITYNUM_WORLD) )
@@ -191,6 +215,12 @@ void Weapon_Pistol::Shoot()
 		{
 			AddBulletHole( tr.plane.normal, forward, bulletHoleOrigin, isGlass );
 		}
+	}
+
+	// If it's an enemy, do blood puffs
+	if ( ent->IsClass( Mercenary::ClassInfo ) && g_violence.integer )
+	{
+		gameWorld->EmitComplexEvent( tr.endpos, Vector::Zero, CE_BloodPuff );
 	}
 
 	// Try going through the wall if thin enough
@@ -255,7 +285,7 @@ void Weapon_Pistol::TestThroughWall( trace_t* tr, Vector direction, float damage
 		}
 	}
 
-	ent->TakeDamage( player, player, 0, damage );
+	ent->TakeDamage( player, player, DamageFlags::Bullet, damage );
 	TestThroughWall( tr, direction, damage );
 }
 

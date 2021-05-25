@@ -48,7 +48,9 @@ void FuncButton::ButtonUse( IEntity* activator, IEntity* caller, float value )
 	SetTouch( nullptr );
 	SetUse( nullptr );
 
-	AddEvent( EV_GENERAL_SOUND, buttonSound );
+	gameWorld
+		->CreateTempEntity( GetCurrentOrigin() + GetAverageOrigin(), EV_GENERAL_SOUND )
+		->GetState()->eventParm = buttonSound;
 
 	SetThink( &FuncButton::ButtonThink );
 	nextThink = level.time * 0.001f + resetTime;
@@ -64,8 +66,6 @@ void FuncButton::ButtonTouch( IEntity* other, trace_t* trace )
 {
 	if ( spawnFlags & SF_NoTouch )
 		return;
-
-	engine->Print( "FuncButton::ButtonTouch\n" );
 
 	Use( other, this, 0 );
 }

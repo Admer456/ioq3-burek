@@ -98,9 +98,9 @@ void BasePlayer::Command_Noclip()
 	//}
 
 	if ( client->noclip )
-		msg = "notarget OFF\n";
+		msg = "noclip OFF\n";
 	else
-		msg = "notarget ON\n";
+		msg = "noclip ON\n";
 
 	client->noclip = !client->noclip;
 

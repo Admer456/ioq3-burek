@@ -23,6 +23,7 @@ namespace Entities
 
 		static inline qhandle_t BulletHoleDecals[6] = {};
 		static inline sfxHandle_t LaserSounds[2] = {};
+		static inline sfxHandle_t ShootSounds[3] = {};
 
 		enum LaserSounds
 		{

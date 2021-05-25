@@ -57,6 +57,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define FL_FORCE_GESTURE		0x00008000	// force gesture on client
 #define FL_REMOVE_ME			0x00010000	// Mark entity for removal
 
+struct DamageFlags
+{
+	static constexpr int Punch = 1 << 0;
+	static constexpr int Bullet = 1 << 1;
+};
+
 // movers are things like doors, plats, buttons, etc
 typedef enum {
 	MOVER_POS1,

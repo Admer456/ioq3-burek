@@ -16,7 +16,12 @@ DefineEntityClass_NoMapSpawn( BasePlayer, BaseEntity );
 
 void BasePlayer::Spawn()
 {
-	// Do nothing
+	SetModel( "models/characters/ragib/ragib.iqm" );
+}
+
+void BasePlayer::Precache()
+{
+	gameWorld->PrecacheModel( "models/characters/ragib/ragib.iqm" );
 }
 
 void BasePlayer::TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFlags, float damageDealt )
@@ -460,7 +465,7 @@ void BasePlayer::PlayerUse()
 	Vector::AngleVectors( viewAngles, &forward, nullptr, nullptr );
 
 	// TODO: Simplify some of this
-	gameImports->Trace( &tr, eyes, nullptr, nullptr, eyes + forward * 64.0f, GetEntityIndex(), CONTENTS_SOLID );
+	gameImports->Trace( &tr, eyes, nullptr, nullptr, eyes + forward * 64.0f, GetEntityIndex(), CONTENTS_SOLID | CONTENTS_NOTTEAM1 );
 
 	// Didn't hit anything, return
 	if ( tr.fraction == 1.0f )

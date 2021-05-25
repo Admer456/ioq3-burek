@@ -17,6 +17,7 @@ BaseClientWeapon::WeaponInfo Weapon_Pistol::GetWeaponInfo()
 	wi.name = "Pistol";
 	wi.viewModel = "models/weapons/v_pistol.iqm";
 	wi.worldModel = "models/weapons/w_pistol.iqm";
+	wi.worldModelHandle = trap_R_RegisterModel( wi.worldModel );
 
 	return wi;
 }
@@ -39,6 +40,7 @@ void Weapon_Pistol::Precache()
 	soundShoot[1] = trap_S_RegisterSound( "sound/weapons/pistol_shot2.wav", false );
 	soundShoot[2] = trap_S_RegisterSound( "sound/weapons/pistol_shot3.wav", false );
 	soundShootEmpty = trap_S_RegisterSound( "sound/weapons/empty.wav", false );
+	soundReload = trap_S_RegisterSound( "sound/weapons/pistol_reload.wav", false );
 
 	soundLaserOn = trap_S_RegisterSound( "sound/weapons/laseron.wav", false );
 	soundLaserOff = trap_S_RegisterSound( "sound/weapons/laseroff.wav", false );
@@ -181,6 +183,8 @@ void Weapon_Pistol::OnReload()
 
 	GetClient()->GetView()->AddPunch( 2.5f, Vector( -1.0f, 1.0f, 0.0f ) );
 	GetClient()->GetView()->AddShake( 0.5f, 1.0f, Vector( 0.0f, 0.0f, -4.0f ) );
+
+	trap_S_StartLocalSound( soundReload, CHAN_AUTO );
 }
 
 Vector Weapon_Pistol::CalculateLaserDotDirection()

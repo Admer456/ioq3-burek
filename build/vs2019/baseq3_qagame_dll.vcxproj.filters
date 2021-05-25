@@ -61,6 +61,12 @@
     <Filter Include="Sources\Entities\AI\Neander">
       <UniqueIdentifier>{8f46c472-2fc1-49fc-888c-b29c7b02e555}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Entities\Item">
+      <UniqueIdentifier>{0a5b811a-8921-41ca-8f82-b893168a7e5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Entities\Prop">
+      <UniqueIdentifier>{4e3b0afe-5c86-47f1-9211-5aac2e5364ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\shared\bg_local.hpp">
@@ -237,6 +243,15 @@
     <ClInclude Include="..\..\code\game\Game\GameMusic.hpp">
       <Filter>Sources\Game</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Item\ItemMedkit.hpp">
+      <Filter>Sources\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Audio\Audio2D.hpp">
+      <Filter>Sources\Entities\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\Entities\Prop\PropExplosiveBarrel.hpp">
+      <Filter>Sources\Entities\Prop</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -403,6 +418,18 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Game\GameMusic.cpp">
       <Filter>Sources\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Item\ItemMedkit.cpp">
+      <Filter>Sources\Entities\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Audio\Audio2D.cpp">
+      <Filter>Sources\Entities\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Prop\PropExplosiveBarrel.cpp">
+      <Filter>Sources\Entities\Prop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerEnd.cpp">
+      <Filter>Sources\Entities\Trigger</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

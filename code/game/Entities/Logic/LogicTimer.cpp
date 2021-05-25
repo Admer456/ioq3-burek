@@ -60,7 +60,7 @@ void LogicTimer::TimerThink()
 		nextThink = 0;
 	}
 
-	Util::Print( va( "LogicTimer::TimerThink() at %3.2f\n", level.time*0.001f ) );
+	Util::PrintDev( va( "LogicTimer::TimerThink() at %3.2f\n", level.time*0.001f ), 1 );
 }
 
 float LogicTimer::CalculateDelay()

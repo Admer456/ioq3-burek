@@ -61,7 +61,7 @@ namespace Entities
 			"sound/debris/concrete_bust3.wav",
 
 			"sound/debris/metal_bust1.wav",
-			"sound/debris/metal_bust2.wav"
+			"sound/debris/metal_bust2.wav",
 			"sound/debris/metal_bust3.wav"
 		};
 
@@ -71,7 +71,7 @@ namespace Entities
 		void		Use( IEntity* activator, IEntity* caller, float value ) override;
 		void		TakeDamage( IEntity* attacker, IEntity* inflictor, int damageFlags, float damage ) override;
 
-		void		Break();
+		void		Break( IEntity* breaker );
 
 	protected:
 		Vector		gibDirection{ Vector::Zero };

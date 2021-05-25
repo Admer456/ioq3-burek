@@ -31,6 +31,7 @@ namespace ClientEntities
 
 		sfxHandle_t soundShoot[3]{};
 		sfxHandle_t soundShootEmpty{};
+		sfxHandle_t soundReload{};
 
 		sfxHandle_t soundLaserOn{};
 		sfxHandle_t soundLaserOff{};

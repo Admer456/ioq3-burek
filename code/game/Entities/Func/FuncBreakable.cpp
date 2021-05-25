@@ -8,6 +8,9 @@
 #include "Game/IGameImports.h"
 #include "Entities/BasePlayer.hpp"
 
+#include "Entities/AI/AI_Common.hpp"
+#include "Entities/AI/Neander/Mercenary.hpp"
+
 #include "FuncBreakable.hpp"
 
 using namespace Entities;
@@ -39,7 +42,7 @@ void FuncBreakable::Precache()
 
 void FuncBreakable::Use( IEntity* activator, IEntity* caller, float value )
 {
-	Break();
+	Break( activator );
 	health = 0;
 }
 
@@ -60,10 +63,10 @@ void FuncBreakable::TakeDamage( IEntity* attacker, IEntity* inflictor, int damag
 	*/
 
 	if ( health <= 0 )
-		Break();
+		Break( attacker );
 }
 
-void FuncBreakable::Break()
+void FuncBreakable::Break( IEntity* breaker )
 {
 	SetModel( nullptr );
 	UseTargets( this );
@@ -87,12 +90,16 @@ void FuncBreakable::Break()
 	ed.model = gibModels[0];
 	ed.parm4 = materialType;
 
+	Vector realOrigin = GetCurrentOrigin() + GetAverageOrigin();
+
 	// Spawn gibs
 	gameWorld
-		->EmitComplexEvent( GetCurrentOrigin() + GetAverageOrigin(), GetAngles(), ed );
+		->EmitComplexEvent( realOrigin, GetAngles(), ed );
 
 	// Emit a "bust" sound
 	gameWorld
-		->CreateTempEntity( GetCurrentOrigin() + GetAverageOrigin(), EV_GENERAL_SOUND )
+		->CreateTempEntity( realOrigin, EV_GENERAL_SOUND )
 		->GetState()->eventParm = sounds[rand() % 3];
+
+	Mercenary::ShotAlert( static_cast<BaseEntity*>( breaker ), realOrigin, 512.0f );
 }

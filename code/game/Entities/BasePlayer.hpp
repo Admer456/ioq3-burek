@@ -12,6 +12,7 @@ namespace Entities
 		DeclareEntityClass();
 
 		void			Spawn() override;
+		void			Precache() override;
 
 		void			TakeDamage( IEntity* inflictor, IEntity* attacker, int damageFlags, float damageDealt ) override;
 

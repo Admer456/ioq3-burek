@@ -188,6 +188,7 @@
     <ClInclude Include="..\..\code\game\Entities\AI\Neander\NavNode.hpp" />
     <ClInclude Include="..\..\code\game\Entities\AI\Neander\Node.hpp" />
     <ClInclude Include="..\..\code\game\Entities\AI\Neander\ScriptedSequence.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Audio\Audio2D.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Audio\AudioAmbient.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Audio\AudioMusicSet.hpp" />
     <ClInclude Include="..\..\code\game\Entities\BaseEntity.hpp" />
@@ -213,8 +214,10 @@
     <ClInclude Include="..\..\code\game\Entities\Info\InfoNull.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Info\InfoPlayerStart.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Item\ItemMedkit.hpp" />
     <ClInclude Include="..\..\code\game\Entities\KeyValueElement.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Logic\LogicTimer.hpp" />
+    <ClInclude Include="..\..\code\game\Entities\Prop\PropExplosiveBarrel.hpp" />
     <ClInclude Include="..\..\code\game\Entities\TestModel.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Trigger\TriggerMultiple.hpp" />
     <ClInclude Include="..\..\code\game\Entities\Trigger\TriggerOnce.hpp" />
@@ -245,6 +248,7 @@
     <ClCompile Include="..\..\code\game\Entities\AI\Neander\NavNode.cpp" />
     <ClCompile Include="..\..\code\game\Entities\AI\Neander\Node.cpp" />
     <ClCompile Include="..\..\code\game\Entities\AI\Neander\ScriptedSequence.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Audio\Audio2D.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Audio\AudioAmbient.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Audio\AudioMusicSet.cpp" />
     <ClCompile Include="..\..\code\game\Entities\BaseEntity.cpp" />
@@ -270,9 +274,12 @@
     <ClCompile Include="..\..\code\game\Entities\Info\InfoNull.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerDeathmatch.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Info\InfoPlayerStart.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Item\ItemMedkit.cpp" />
     <ClCompile Include="..\..\code\game\Entities\KeyValueElement.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Logic\LogicTimer.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Prop\PropExplosiveBarrel.cpp" />
     <ClCompile Include="..\..\code\game\Entities\TestModel.cpp" />
+    <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerEnd.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerMultiple.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Trigger\TriggerOnce.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Weapons\BaseWeapon.cpp" />

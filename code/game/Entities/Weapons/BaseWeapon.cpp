@@ -16,6 +16,7 @@ void BaseWeapon::Spawn()
 	BaseEntity::Spawn();
 
 	SetTouch( &BaseWeapon::WeaponTouch );
+	SetUse( &BaseWeapon::WeaponUse );
 
 	const char* model = GetWeaponInfo().worldModel;
 	int modelIndex = G_ModelIndex( const_cast<char*>(model) );
@@ -25,7 +26,9 @@ void BaseWeapon::Spawn()
 	Vector( -16, -16, 0 ).CopyToArray( GetShared()->mins );
 	gameImports->LinkEntity( this );
 
-	shared.r.contents |= CONTENTS_TRIGGER;
+	GetShared()->contents = CONTENTS_NOTTEAM1 | CONTENTS_TRIGGER;
+
+	PickupSound = gameWorld->PrecacheSound( "sound/weapons/pickup.wav" );
 }
 
 void BaseWeapon::WeaponTouch( IEntity* other, trace_t* trace )
@@ -34,12 +37,22 @@ void BaseWeapon::WeaponTouch( IEntity* other, trace_t* trace )
 	if ( !other->IsClass( BasePlayer::ClassInfo ) )
 		return;
 
+	gameWorld
+		->CreateTempEntity( GetOrigin(), EV_GENERAL_SOUND )
+		->GetState()->eventParm = PickupSound;
+
 	GetState()->modelindex = 0;
 	SetTouch( nullptr );
+	SetUse( nullptr );
 	gameImports->UnlinkEntity( this );
 
 	player = static_cast<BasePlayer*>( other );
 	player->AddWeapon( this );
+}
+
+void BaseWeapon::WeaponUse( IEntity* activator, IEntity* caller, float value )
+{
+	WeaponTouch( activator, nullptr );
 }
 
 BasePlayer* BaseWeapon::GetPlayer()
