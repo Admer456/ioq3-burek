@@ -11,12 +11,13 @@
 #include "Entities/Weapons/BaseWeapon.hpp"
 #include "Entities/Weapons/Weapon_Fists.hpp"
 
+#include "GameMusic.hpp"
+
 #include <type_traits>
 #include <array>
 
 GameWorld* gameWorld;
 
-// Temporarily copied here from g_client.cpp
 static const float*	playerMins = HumanHullMins;
 static const float*	playerMaxs = HumanHullMaxs;
 
@@ -224,6 +225,14 @@ void GameWorld::SpawnWorldspawn()
 	nothingEnt->GetShared()->ownerNum = ENTITYNUM_NONE;
 	nothingEnt->className = "nothing";
 	nothingEnt->spawnArgs = nullptr;
+
+	// Initialise the music system here, ugh, move elsewhere eventually
+	char serverInfo[MAX_INFO_STRING];
+	gameImports->GetServerInfo( serverInfo, MAX_INFO_STRING );
+	char* mapName = Info_ValueForKey( serverInfo, "mapname" );
+	char musicFile[200];
+	Com_sprintf( musicFile, 260, "maps/%s.mus", mapName );
+	GameMusic::Initialise( musicFile );
 }
 
 void GameWorld::SpawnEntity( KeyValueLibrary& map )
@@ -307,7 +316,7 @@ void GameWorld::EmitComplexEvent( const Vector& origin, const Vector& angles, co
 
 	es.number = ent->GetEntityIndex();
 	es.eType = ET_EVENTS + ed.id;
-	es.complexEvent = 1U;
+	//es.complexEvent = 1U;
 	ent->GetShared()->plow = NetPlow_ForcePVS;
 
 	// USUALLY, I would NEVER do this, but in this case, it makes sense
@@ -830,6 +839,8 @@ void GameWorld::SpawnClient( Entities::BasePlayer* player )
 		ClientEndFrame( player );
 	}
 
+	GameMusic::ToAmbient();
+
 	// clear entity state values
 	return BG_PlayerStateToEntityState( &client->ps, player->GetState(), qtrue );
 }
@@ -1172,7 +1183,10 @@ void GameWorld::ClientThinkReal( Entities::BasePlayer* player )
 			// pressing attack or use is the normal respawn method
 			if ( ucmd->interactionButtons & (Interaction_PrimaryAttack | Interaction_Use | Interaction_UseItem) ) 
 			{
-				ClientRespawn( player );
+				if ( g_gametype.integer != GT_SINGLE_PLAYER )
+					ClientRespawn( player );
+				else
+					engine->SendConsoleCommand( EXEC_APPEND, "disconnect" );
 			}
 		}
 		return;

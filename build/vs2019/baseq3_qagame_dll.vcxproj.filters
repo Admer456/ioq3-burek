@@ -234,6 +234,9 @@
     <ClInclude Include="..\..\code\game\Entities\Env\EnvMirror.hpp">
       <Filter>Sources\Entities\Env</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\code\game\Game\GameMusic.hpp">
+      <Filter>Sources\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\code\shared\bg_misc.cpp">
@@ -397,6 +400,9 @@
     </ClCompile>
     <ClCompile Include="..\..\code\game\Entities\Env\EnvMirror.cpp">
       <Filter>Sources\Entities\Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\game\Game\GameMusic.cpp">
+      <Filter>Sources\Game</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

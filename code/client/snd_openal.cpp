@@ -2534,12 +2534,14 @@ void S_AL_InitDynamicMusic( const char* file )
 	{
 		DynamicSong ds;
 
+		// Label name
 		token = COM_Parse( &cp );
 		if ( !token[0] )
 			break;
 
 		strcpy( ds.label, token );
 
+		// Song path
 		token = COM_ParseExt( &cp, qfalse );
 		if ( !token[0] )
 		{
@@ -2548,6 +2550,9 @@ void S_AL_InitDynamicMusic( const char* file )
 		}
 
 		strcpy( ds.path, token );
+
+		// Song length, ignore
+		COM_ParseExt( &cp, qfalse );
 
 		dynamicSongs.push_back( ds );
 	}
@@ -2640,6 +2645,9 @@ void S_AL_PauseDynamicSong( bool stop, bool shouldContinue )
 	if ( currentSong == NoSongsLoaded )
 		return;
 
+	if ( currentSong >= dynamicSongs.size() )
+		return;
+
 	ALuint source = S_AL_GetCurrentDynamicSong();
 	src_t* src = dynamicSongs.at( currentSong ).src;
 
@@ -2694,13 +2702,13 @@ qboolean S_AL_Init( soundInterface_t *si )
 	// New console variables
 	s_alPrecache = Cvar_Get( "s_alPrecache", "1", CVAR_ARCHIVE );
 	s_alGain = Cvar_Get( "s_alGain", "1.0", CVAR_ARCHIVE );
-	s_alSources = Cvar_Get( "s_alSources", "96", CVAR_ARCHIVE );
+	s_alSources = Cvar_Get( "s_alSources", "128", CVAR_ARCHIVE );
 	s_alDopplerFactor = Cvar_Get( "s_alDopplerFactor", "1.0", CVAR_ARCHIVE );
 	s_alDopplerSpeed = Cvar_Get( "s_alDopplerSpeed", "9000", CVAR_ARCHIVE );
-	s_alMinDistance = Cvar_Get( "s_alMinDistance", "120", CVAR_CHEAT );
-	s_alMaxDistance = Cvar_Get("s_alMaxDistance", "1024", CVAR_CHEAT);
+	s_alMinDistance = Cvar_Get( "s_alMinDistance", "80", CVAR_CHEAT );
+	s_alMaxDistance = Cvar_Get("s_alMaxDistance", "800", CVAR_CHEAT);
 	s_alRolloff = Cvar_Get( "s_alRolloff", "2", CVAR_CHEAT);
-	s_alGraceDistance = Cvar_Get("s_alGraceDistance", "512", CVAR_CHEAT);
+	s_alGraceDistance = Cvar_Get("s_alGraceDistance", "100", CVAR_CHEAT);
 
 	s_alDriver = Cvar_Get( "s_alDriver", ALDRIVER_DEFAULT, CVAR_ARCHIVE | CVAR_LATCH | CVAR_PROTECTED );
 

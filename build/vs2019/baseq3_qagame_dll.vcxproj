@@ -224,6 +224,7 @@
     <ClInclude Include="..\..\code\game\Entities\Worldspawn.hpp" />
     <ClInclude Include="..\..\code\game\Game\GameExportImport.h" />
     <ClInclude Include="..\..\code\game\Game\GameLocal.h" />
+    <ClInclude Include="..\..\code\game\Game\GameMusic.hpp" />
     <ClInclude Include="..\..\code\game\Game\GameWorld.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_local.hpp" />
     <ClInclude Include="..\..\code\game\Game\g_public.hpp" />
@@ -279,6 +280,7 @@
     <ClCompile Include="..\..\code\game\Entities\Weapons\Weapon_Pistol.cpp" />
     <ClCompile Include="..\..\code\game\Entities\Worldspawn.cpp" />
     <ClCompile Include="..\..\code\game\Game\GameLocal.cpp" />
+    <ClCompile Include="..\..\code\game\Game\GameMusic.cpp" />
     <ClCompile Include="..\..\code\game\Game\GameWorld.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_cmds.cpp" />
     <ClCompile Include="..\..\code\game\Game\g_main.cpp" />

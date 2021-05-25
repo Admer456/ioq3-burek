@@ -9,6 +9,8 @@
 #include "../qcommon/IEngineExports.h"
 #include "Game/GameWorld.hpp"
 
+#include "GameMusic.hpp"
+
 #include "Entities/IEntity.hpp"
 #include "Entities/BaseEntity.hpp"
 #include "Entities/BasePlayer.hpp"
@@ -31,6 +33,8 @@ typedef struct
 	qboolean	trackChange;	    // track this variable, and announce if changed
 	qboolean teamShader;        // track and if changed, update shader state
 } cvarTable_t;
+
+vmCvar_t g_violence;
 
 static cvarTable_t gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -99,7 +103,9 @@ static cvarTable_t gameCvarTable[] = {
 	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO, 0, qfalse},
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
-	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
+	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse },
+
+	{ &g_violence, "g_violence", "0", 0, 0, qfalse }
 };
 
 static int gameCvarTableSize = ARRAY_LEN( gameCvarTable );
@@ -752,6 +758,9 @@ void GameLocal::RunFrame( int levelTime )
 	//// Check team votes
 	//::CheckTeamVote( TEAM_RED );
 	//::CheckTeamVote( TEAM_BLUE );
+
+	// Update music system
+	GameMusic::Update( level.time * 0.001f );
 
 	// For tracking changes
 	CheckCVars();
