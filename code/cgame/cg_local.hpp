@@ -365,6 +365,8 @@ typedef struct {
 	animation_t		animations[MAX_TOTALANIMATIONS];
 
 	sfxHandle_t		sounds[MAX_CUSTOM_SOUNDS];
+
+	float			animationFrame;
 } clientInfo_t;
 
 

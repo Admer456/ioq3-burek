@@ -1687,21 +1687,69 @@ int CG_LightVerts( vec3_t normal, int numVerts, polyVert_t *verts )
 	return qtrue;
 }
 
+#include "../shared/Weapons/WeaponIDs.hpp"
+
+// CG_PlayerAnimate is a quick hackjob to let players 
+// have a running animation
+/*
+ // run_frgun: 45 frames at 60fps - done (690 to 735)
+ AnimationDef run_frgun
+ {
+ 	firstFrame 690
+ 	numFrames 44
+ 	frameLerp 16.6666667
+ }
+*/
+void CG_PlayerAnimate( centity_t* cent, refEntity_t* ent, clientInfo_t* ci )
+{
+	// Some constants from the NPC's model config file
+	constexpr float firstFrame = 690.0f;
+	constexpr float numFrames = 44.0f;
+	constexpr float lastFrame = firstFrame + numFrames;
+
+	float& animFrame = ci->animationFrame;
+
+	// Velocity is encoded into pos.trDelta
+	Vector velocity = cent->currentState.pos.trDelta;
+	float speed = velocity.Length();
+
+	Vector forward;
+	Vector::AngleVectors( cent->lerpAngles, &forward, nullptr, nullptr );
+
+	// Hard determination of going forward/backward
+	float dot = forward * velocity.Normalized();
+	if ( dot >= 0 )
+		dot = 1.0f;
+	else
+		dot = -1.0f;
+
+	animFrame += speed * dot * cg.frametime * 0.001f * 0.25f;
+
+	// Roll back the animation
+	if ( animFrame > lastFrame ) animFrame -= numFrames;
+	if ( animFrame < firstFrame ) animFrame += numFrames;
+
+	// If the player is standing still, then stand still!
+	if ( speed < 5.0f ) animFrame = firstFrame + ( numFrames / 2 );
+
+	// Update the actual animation vars
+	ent->oldframe = animFrame;
+	ent->frame = ent->oldframe + 1;
+	ent->backlerp = 1.0f - (animFrame - (int)animFrame);
+}
+
 /*
 ===============
 CG_Player
 ===============
 */
-void CG_Player( centity_t *cent ) // TODO: Render the player as a single IQM instead of three MD3's -Admer
+void CG_Player( centity_t *cent )
 {
 	clientInfo_t	*ci;
-	refEntity_t		legs;
-	refEntity_t		torso;
-	refEntity_t		head;
+	refEntity_t		body;
 	int				clientNum;
 	int				renderfx;
-	//qboolean		shadow;
-	//float			shadowPlane;
+
 	// the client number is stored in clientNum.  It can't be derived
 	// from the entity number, because a single client may have
 	// multiple corpses on the level using the same clientinfo
@@ -1729,18 +1777,6 @@ void CG_Player( centity_t *cent ) // TODO: Render the player as a single IQM ins
 		}
 	}
 
-
-	memset( &legs, 0, sizeof(legs) );
-	memset( &torso, 0, sizeof(torso) );
-	memset( &head, 0, sizeof(head) );
-
-	// get the rotation information
-	CG_PlayerAngles( cent, legs.axis, torso.axis, head.axis );
-	
-	// get the animation state (after rotation, to allow feet shuffle)
-	CG_PlayerAnimation( cent, &legs.oldframe, &legs.frame, &legs.backlerp,
-		 &torso.oldframe, &torso.frame, &torso.backlerp );
-
 	// add the talk baloon or disconnect icon
 	CG_PlayerSprites( cent );
 
@@ -1752,70 +1788,76 @@ void CG_Player( centity_t *cent ) // TODO: Render the player as a single IQM ins
 		renderfx |= RF_SHADOW_PLANE;
 	}
 	
-	renderfx |= RF_LIGHTING_ORIGIN;			// use the same origin for all
+	Vector playerOrigin = cent->lerpOrigin;
 
-	//
-	// add the legs
-	//
-	legs.hModel = ci->legsModel;
-	legs.customSkin = ci->legsSkin;
+	memset( &body, 0, sizeof( body ) );
 
-	VectorCopy( cent->lerpOrigin, legs.origin );
+	// convert angles to axis
+	AnglesToAxis( cent->lerpAngles, body.axis );
 
-	VectorCopy( cent->lerpOrigin, legs.lightingOrigin );
-	//legs.shadowPlane = shadowPlane;
-	legs.renderfx = renderfx;
-	VectorCopy (legs.origin, legs.oldorigin);	// don't positionally lerp at all
+	body.hModel = trap_R_RegisterModel( "models/characters/ragib/ragib.iqm" );
+	body.origin << playerOrigin;
+	body.renderfx = renderfx;
+	
+	CG_PlayerAnimate( cent, &body, ci );
 
-	trap_R_AddRefEntityToScene( &legs );
+	trap_R_AddRefEntityToScene( &body );
 
-	// if the model failed, allow the default nullmodel to be displayed
-	if (!legs.hModel) {
-		return;
+	// Add the head model
+	{
+		refEntity_t	head;
+		memcpy( &head, &body, sizeof( head ) );
+		head.hModel = trap_R_RegisterModel( "models/characters/head2.iqm" );
+		AxisClear( head.axis );
+
+		// So that the head doesn't end up getting rotated wrongly
+		// Man, I should've just made a monolithic model lol
+		Vector correctedRotation = Vector( 0, 0, -90 );
+
+		head.hModel = cgs.media.headModels[HeadShape_Normal*2];
+
+		AnglesToAxis( correctedRotation, head.axis );
+		CG_PositionRotatedEntityOnTag( &head, &body, body.hModel, "Head" );
+
+		trap_R_AddRefEntityToScene( &head );
+
+		// Add hair
+		head.hModel = cgs.media.accessoryModels[Accessory_Hair];
+		trap_R_AddRefEntityToScene( &head );
+
+		// Add sunglasses
+		head.hModel = cgs.media.accessoryModels[Accessory_Sunglasses];
+		trap_R_AddRefEntityToScene( &head );
 	}
 
-	//
-	// add the torso
-	//
-	torso.hModel = ci->torsoModel;
-	if (!torso.hModel) {
-		return;
+	// Add the weapon model
+	{
+		refEntity_t weapon;
+		memcpy( &weapon, &body, sizeof( weapon ) );
+		AxisClear( weapon.axis );
+
+		Vector correctedRotation;
+
+		correctedRotation = Vector( 0, 90, -90 );
+
+		AnglesToAxis( correctedRotation, weapon.axis );
+
+		weapon.hModel = gWeapons[WeaponID_Pistol]->GetWeaponInfo().worldModelHandle;
+		char* boneName = "RWrist";
+		CG_PositionRotatedEntityOnTag( &weapon, &body, body.hModel, boneName );
+
+		float time = GetClient()->Time();
+
+		Vector origin = weapon.origin;
+
+		origin += Vector( weapon.axis[0] ) * 5.6f;
+		origin += Vector( weapon.axis[1] ) * -2.4f;
+		origin += Vector( weapon.axis[2] ) * 0.4f;
+
+		weapon.origin << origin;
+
+		trap_R_AddRefEntityToScene( &weapon );
 	}
-
-	torso.customSkin = ci->torsoSkin;
-
-	VectorCopy( cent->lerpOrigin, torso.lightingOrigin );
-
-	CG_PositionRotatedEntityOnTag( &torso, &legs, ci->legsModel, "tag_torso");
-
-	//torso.shadowPlane = shadowPlane;
-	torso.renderfx = renderfx;
-
-	trap_R_AddRefEntityToScene( &torso );
-
-	//
-	// add the head
-	//
-	head.hModel = ci->headModel;
-	if (!head.hModel) {
-		return;
-	}
-	head.customSkin = ci->headSkin;
-
-	VectorCopy( cent->lerpOrigin, head.lightingOrigin );
-
-	CG_PositionRotatedEntityOnTag( &head, &torso, ci->torsoModel, "tag_head");
-
-	//head.shadowPlane = shadowPlane;
-	head.renderfx = renderfx;
-
-	trap_R_AddRefEntityToScene( &head );
-
-	// add the gun / barrel / flash
-	//CG_AddPlayerWeapon( &torso, NULL, cent, ci->team );
-
-	// add powerups floating behind the player
-	CG_PlayerPowerups( cent, &torso );
 }
 
 
