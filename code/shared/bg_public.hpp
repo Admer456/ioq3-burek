@@ -532,6 +532,8 @@ enum ComplexEvent
 // to use less bandwidth (approx. 500 bytes vs. 80)
 struct EventData
 {
+	EventData( ComplexEvent ce ) : id( ce ) {}
+
 	EventData() = default;
 
 	// defined in bg_misc.cpp
