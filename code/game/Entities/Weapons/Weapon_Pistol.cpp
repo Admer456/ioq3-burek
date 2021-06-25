@@ -185,7 +185,7 @@ void Weapon_Pistol::Shoot()
 
 	float bulletDamage = 40.0f;
 
-#if 1
+#if 0
 	{
 		EventData ed;
 		ed.id = CE_Explosion;
