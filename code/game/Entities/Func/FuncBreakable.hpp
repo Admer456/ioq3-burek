@@ -80,6 +80,7 @@ namespace Entities
 		qhandle_t	gibModels[3];
 		qhandle_t	sounds[3];
 
-		qhandle_t	currentModel{};
+		// keeps track of the entity's model, and brings it back when this respawns
+		qhandle_t	currentModel{}; 
 	};
 }
