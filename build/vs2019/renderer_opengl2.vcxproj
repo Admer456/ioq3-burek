@@ -322,169 +322,169 @@
   <ItemGroup>
     <CustomBuild Include="..\..\code\renderergl2\glsl\bokeh_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/bokeh_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\bokeh_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/bokeh_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\calclevels4x_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/calclevels4x_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\calclevels4x_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/calclevels4x_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\depthblur_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/depthblur_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\depthblur_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/depthblur_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\dlight_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/dlight_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\dlight_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/dlight_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\down4x_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/down4x_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\down4x_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/down4x_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\fogpass_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/fogpass_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\fogpass_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/fogpass_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\generic_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/generic_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\generic_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/generic_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\lightall_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/lightall_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\lightall_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/lightall_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\pshadow_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/pshadow_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\pshadow_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/pshadow_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\shadowfill_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/shadowfill_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\shadowfill_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/shadowfill_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\shadowmask_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/shadowmask_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\shadowmask_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/shadowmask_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\ssao_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/ssao_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\ssao_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/ssao_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\texturecolor_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/texturecolor_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\texturecolor_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/texturecolor_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\tonemap_fp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/tonemap_fp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\code\renderergl2\glsl\tonemap_vp.glsl">
       <FileType>Document</FileType>
-      <Command>cscript.exe "E:/Workfolders/Quake3/SourceCodes/ioq3-burek/misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
+      <Command>cscript.exe "$(SolutionDir)../../misc/msvc/glsl_stringify.vbs" //Nologo "%(Identity)" "dynamic\renderergl2\%(Filename).c"</Command>
       <Outputs>dynamic/renderergl2/tonemap_vp.c</Outputs>
       <Message>Stringifying %(Filename)%(Extension)</Message>
     </CustomBuild>
