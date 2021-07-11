@@ -3,6 +3,7 @@
 ![BurekTech 'logo'](https://i.imgur.com/uhxkRl8.png)
 
 Specialised version of idTech 3 (precisely [ioquake3](https://github.com/ioquake/ioq3)) for development of retro shooters and retro immersive sims.  
+Discord: [Planet U2-A](https://discord.gg/tneyeuhgxH)  
 
 ## Features, limits and changes
 

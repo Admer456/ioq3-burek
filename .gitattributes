@@ -1,0 +1,18 @@
+# Make 100% sure that .cpp and .h files are C++
+*.cpp linguist-language=C++
+*.hpp linguist-langauge=C++
+*.h linguist-language=C++
+
+# Don't count 3rd-party libraries
+code/asm/*.c linguist-vendored
+code/AL/* linguist-vendored
+code/curl-7.54.0/* linguist-vendored
+code/jpeg-8c/* linguist-vendored
+code/libogg-1.3.3/* linguist-vendored
+code/libvorbis-1.3.6/* linguist-vendored
+code/opus-1.2.1/* linguist-vendored
+code/opusfile-0.9/* linguist-vendored
+code/SDL2/* linguist-vendored
+code/tools/* linguist-vendored
+code/zlib/* linguist-vendored
+code/AL/* linguist-vendored
