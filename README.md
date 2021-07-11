@@ -2,7 +2,7 @@
 
 ![BurekTech 'logo'](https://i.imgur.com/uhxkRl8.png)
 
-Specialised version of idTech 3 (precisely [ioquake3](https://github.com/ioquake/ioq3)) for development of retro shooters and retro immersive sims.  
+Specialised version of idTech 3 (precisely [ioquake3](https://github.com/ioquake/ioq3)) for development of retro shooters and retro immersive sims. Currently inactive, work had switched focus on [BurekTech 2](https://github.com/Admer456/burektech2).  
 Discord: [Planet U2-A](https://discord.gg/tneyeuhgxH)  
 
 ## Features, limits and changes
@@ -31,7 +31,12 @@ Discord: [Planet U2-A](https://discord.gg/tneyeuhgxH)
 
 ## Downloads
 
-None at the moment. This is under heavy and early development. Check back in late 2021 or 2022.
+None at the moment.     
+
+## Base game assets and tools
+
+In order to work with BUREKTech, you might want to download some base game assets, which are available [HERE](https://mega.nz/file/yixwyQST#JmLxjyPB8f4_LuIBN-QU9s7qmNAGE1RN7WjLP_dy1pI) (hosted on MEGA).   
+It includes a game config for TrenchBroom 2021.1, a game demo, and pre-built Windows x86 binaries. Soon, it'll also include extra tools (custom q3map2, Blender IQM export plugin etc.)
 
 ## How to build
 
