@@ -658,6 +658,9 @@ static void CG_LoadClientInfo( int clientNum, clientInfo_t *ci ) {
 	teamname[0] = 0;
 
 	modelloaded = qtrue;
+
+	// Admer: do not load sarge.md3 et al, we wanna be standalone and independent of Q3
+	/*
 	if ( !CG_RegisterClientModelname( ci, ci->modelName, ci->skinName, ci->headModelName, ci->headSkinName, teamname ) ) {
 		if ( cg_buildScript.integer ) {
 			CG_Error( "CG_RegisterClientModelname( %s, %s, %s, %s %s ) failed", ci->modelName, ci->skinName, ci->headModelName, ci->headSkinName, teamname );
@@ -690,6 +693,7 @@ static void CG_LoadClientInfo( int clientNum, clientInfo_t *ci ) {
 			ci->newAnims = qtrue;
 		}
 	}
+	*/
 
 	// sounds
 	dir = ci->modelName;
