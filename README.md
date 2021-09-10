@@ -43,7 +43,9 @@ It includes a game config for TrenchBroom 2021.1, a game demo, and pre-built Win
 Note: I haven't updated the makefiles for Linux, unfortunately. I am doing all development on Windows, but I will eventually get to it.   
   
 In order to build BUREKTech, clone or download the code, go to the `build` directory, then go to `vs2019`, and open `BurekTech.sln`.  
-It's as simple as building the entire solution. The compiled binaries will appear in the `bin` directory in the repo's folder.  
+It's as simple as building the entire solution. The compiled binaries will appear in the `bin` directory in the repo's folder.
+
+Next you need to download SDL2: https://www.libsdl.org/release/SDL2-devel-2.0.16-VC.zip and take the SDL2.dll and put it into the executable folder. Make sure its for the right platform
     
 CMake is planned to be used in the future.  
   
