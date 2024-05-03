@@ -1,3 +1,5 @@
+*Note: This project is abandoned; all my engine dev effort is now focused on [Elegy Engine](https://github.com/ElegyEngine/ElegyEngine).*
+
 # BUREKTech
 
 ![BurekTech 'logo'](https://i.imgur.com/uhxkRl8.png)
